@@ -1,0 +1,216 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Scene" type="SceneType"/>
+  <xs:simpleType name="ValueTypeEnum" final="restriction">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Constant"/>
+      <xs:enumeration value="Add"/>
+      <xs:enumeration value="Sub"/>
+      <xs:enumeration value="Mul"/>
+      <xs:enumeration value="Div"/>
+      <xs:enumeration value="Pow"/>
+      <xs:enumeration value="Perlin"/>
+      <xs:enumeration value="Turbulence"/>
+      <xs:enumeration value="Erosion"/>
+      <xs:enumeration value="Voronoi"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="SceneType">
+    <xs:sequence>
+      <xs:element type="CameraType" name="Camera1" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="CameraType" name="Camera2" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="CameraType" name="Camera3" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="CameraType" name="Camera4" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="ControlledComponentType" name="ControlledComponent" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="ComponentListType" name="Components" maxOccurs="1" minOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CameraType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="Name" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="ControlledComponentType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="Name" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="ComponentListType">
+    <xs:sequence>
+      <xs:element type="ComponentType" name="Component" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ComponentType">
+    <xs:sequence>
+      <xs:element type="ParametersType" name="Parameters" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="GeolocType" name="Geoloc" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="Vector3DType" name="Position" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="Vector3DType" name="Rotation" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="PhysicsType" name="Physics" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="ControllerType" name="Controller" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="IRType" name="IR" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="MeshType" name="Mesh" maxOccurs="1" minOccurs="0"/>
+    </xs:sequence>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="Name" use="required"/>
+        <xs:attribute type="xs:string" name="Class" use="required"/>
+        <xs:attribute type="xs:string" name="PositionTarget" use="optional"/>
+        <xs:attribute type="xs:string" name="RotationTarget" use="optional"/>
+        <xs:attribute type="xs:bool" name="Playing" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="ParametersType">
+    <xs:sequence>
+      <xs:element type="GeneralType" name="General" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="HeightType" name="Height" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="VegetationType" name="Vegetation" maxOccurs="1" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="GeneralType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:int" name="Levels" use="optional"/>
+        <xs:attribute type="xs:int" name="Resolution" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="HeightType">
+    <xs:sequence>
+      <xs:element type="ValueType" name="Value" maxOccurs="1" minOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ValueType">
+    <xs:sequence>
+      <xs:element type="OperandType" name="Operand" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="ValueTypeEnum" name="Type" use="required"/>
+        <xs:attribute type="xs:float" name="Value" use="optional"/>
+        <xs:attribute type="xs:float" name="InputScale" use="optional"/>
+        <xs:attribute type="xs:float" name="OutputScale" use="optional"/>
+        <xs:attribute type="xs:float" name="MinClamp" use="optional"/>
+        <xs:attribute type="xs:float" name="MaxClamp" use="optional"/>
+        <xs:attribute type="xs:float" name="Displace" use="optional"/>
+        <xs:attribute type="xs:int" name="Iterations" use="optional"/>
+        <xs:attribute type="xs:float" name="InputScaleFactor" use="optional"/>
+        <xs:attribute type="xs:float" name="OutputScaleFactor" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="OperandType">
+    <xs:sequence>
+      <xs:element type="ValueType" name="Value" maxOccurs="1" minOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="VegetationType">
+    <xs:sequence>
+      <xs:element type="TreeType" name="Tree" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TreeType">
+    <xs:sequence>
+      <xs:element type="DNAType" name="DNA" maxOccurs="1" minOccurs="1"/>
+      <xs:element type="CoverageType" name="Coverage" maxOccurs="1" minOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="DNAType">
+    <xs:sequence>
+      <xs:element type="LeafType" name="Leaf" maxOccurs="1" minOccurs="1"/>
+    </xs:sequence>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:int" name="Levels" use="required"/>
+        <xs:attribute type="xs:float" name="TrunkLength" use="optional"/>
+        <xs:attribute type="xs:float" name="TrunkRadius" use="optional"/>
+        <xs:attribute type="xs:float" name="BranchLengthScale" use="optional"/>
+        <xs:attribute type="xs:float" name="BranchRadiusScale" use="optional"/>
+        <xs:attribute type="xs:float" name="LeafScale" use="optional"/>
+        <xs:attribute type="xs:float" name="GravityFactor" use="optional"/>
+        <xs:attribute type="xs:float" name="Spread" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="LeafType">
+    <xs:sequence>
+      <xs:element type="FFDType" name="FFD" maxOccurs="1" minOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="FFDType">
+    <xs:sequence>
+      <xs:element type="PointType" name="Point" maxOccurs="7" minOccurs="7"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="CoverageType">
+    <xs:sequence>
+      <xs:element type="ValueType" name="Value" maxOccurs="1" minOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="GeolocType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:float" name="Latitude" use="required"/>
+        <xs:attribute type="xs:float" name="Longitude" use="required"/>
+        <xs:attribute type="xs:float" name="Altitude" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="Vector3DType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:float" name="x" use="required"/>
+        <xs:attribute type="xs:float" name="y" use="required"/>
+        <xs:attribute type="xs:float" name="z" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="PhysicsType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:bool" name="PhysicsActive" use="optional"/>
+        <xs:attribute type="xs:float" name="MassKG" use="optional"/>
+        <xs:attribute type="xs:float" name="SpeedMS" use="optional"/>
+        <xs:attribute type="xs:float" name="TurnSpeedDS" use="optional"/>
+        <xs:attribute type="xs:float" name="Drag" use="optional"/>
+        <xs:attribute type="xs:float" name="Friction" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="ControllerType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="Class" use="required"/>
+        <xs:attribute type="xs:float" name="ForceFactor" use="optional"/>
+        <xs:attribute type="xs:string" name="PositionTarget" use="optional"/>
+        <xs:attribute type="xs:string" name="RotationTarget" use="optional"/>
+        <xs:attribute type="xs:string" name="TurretYawTarget" use="optional"/>
+        <xs:attribute type="xs:string" name="TurretPitchTarget" use="optional"/>
+        <xs:attribute type="xs:string" name="LeftWingTarget" use="optional"/>
+        <xs:attribute type="xs:string" name="RightWingTarget" use="optional"/>
+        <xs:attribute type="xs:string" name="ElevatorTarget" use="optional"/>
+        <xs:attribute type="xs:string" name="RudderTarget" use="optional"/>
+        <xs:attribute type="xs:string" name="Engine1Target" use="optional"/>
+        <xs:attribute type="xs:string" name="Engine2Target" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="IRType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:float" name="Factor" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="MeshType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="Name" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+</xs:schema>

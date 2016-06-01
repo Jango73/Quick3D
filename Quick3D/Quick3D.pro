@@ -10,21 +10,25 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Quick3D
 TEMPLATE = lib
-
 DEFINES += QUICK3D_LIB
 DEFINES += SFML_SYSTEM_EXPORTS
 DEFINES += SFML_WINDOW_EXPORTS
+INCLUDEPATH += ../COTS/SFML-1.6/include
+INCLUDEPATH += ../COTS/unzip11
+INCLUDEPATH += ../COTS/SFML-1.6/src
+LIBS += -lopengl32 -luser32 -lgdi32 -lwinmm
 
+# C++ Flags
 QMAKE_CXXFLAGS += -Wno-invalid-offsetof
 QMAKE_CXXFLAGS += -Wno-unused-parameter
 QMAKE_CXXFLAGS += -Wno-reorder
 
-INCLUDEPATH += ../COTS/SFML-1.6/include
-INCLUDEPATH += ../COTS/unzip11
-INCLUDEPATH += ../COTS/SFML-1.6/src
+# Help
+helpfile = Quick3D.qdocconf
 
-LIBS += -lopengl32 -luser32 -lgdi32 -lwinmm
+QMAKE_POST_LINK += qdoc $$quote($$shell_path($$helpfile)) $$escape_expand(\\n\\t)
 
+# Code
 SOURCES += \
     C3DScene.cpp \
     CAircraft.cpp \
@@ -379,8 +383,3 @@ DISTFILES +=
 
 RESOURCES += \
     Quick3DBase.qrc
-
-# Generate help
-helpfile = Quick3D.qdocconf
-
-QMAKE_POST_LINK += qdoc $$quote($$shell_path($$helpfile)) $$escape_expand(\\n\\t)

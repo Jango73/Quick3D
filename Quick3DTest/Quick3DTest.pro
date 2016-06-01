@@ -10,11 +10,20 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Quick3DTest
 TEMPLATE = app
+INCLUDEPATH += $$PWD/../Quick3D
+DEPENDPATH += $$PWD/../Quick3D
 
+# C++ Flags
 QMAKE_CXXFLAGS += -Wno-invalid-offsetof
 QMAKE_CXXFLAGS += -Wno-unused-parameter
 QMAKE_CXXFLAGS += -Wno-reorder
 
+# Libraries
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../Quick3D/release/ -lQuick3D
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../Quick3D/debug/ -lQuick3D
+else:unix: LIBS += -L$$OUT_PWD/../Quick3D/ -lQuick3D
+
+# Code
 SOURCES += \
     Quick3DTest.cpp \
     main.cpp
@@ -30,10 +39,3 @@ RESOURCES += \
 FORMS += \
     ExportDialog.ui \
     Quick3DTest.ui
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../Quick3D/release/ -lQuick3D
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../Quick3D/debug/ -lQuick3D
-else:unix: LIBS += -L$$OUT_PWD/../Quick3D/ -lQuick3D
-
-INCLUDEPATH += $$PWD/../Quick3D
-DEPENDPATH += $$PWD/../Quick3D

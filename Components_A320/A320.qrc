@@ -1,7 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>Resources/A320.mtl</file>
-        <file>Resources/A320.obj</file>
         <file>Resources/A320.q3d</file>
         <file>Resources/Textures/DynTex_PFD_CAPT.png</file>
         <file>Resources/Textures/DynTex_ND_CAPT.png</file>

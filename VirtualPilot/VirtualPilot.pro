@@ -1,0 +1,38 @@
+#-------------------------------------------------
+#
+# Project created by QtCreator 2016-01-22T20:41:20
+#
+#-------------------------------------------------
+
+QT += core gui network opengl xml
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+TARGET = VirtualPilot
+TEMPLATE = app
+
+QMAKE_CXXFLAGS += -Wno-invalid-offsetof
+QMAKE_CXXFLAGS += -Wno-unused-parameter
+QMAKE_CXXFLAGS += -Wno-reorder
+
+SOURCES += \
+    VirtualPilot.cpp \
+    main.cpp
+
+HEADERS  += \
+    VirtualPilot.h
+
+DISTFILES +=
+
+RESOURCES += \
+    VirtualPilot.qrc
+
+FORMS += \
+    VirtualPilot.ui
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../Quick3D/release/ -lQuick3D
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../Quick3D/debug/ -lQuick3D
+else:unix: LIBS += -L$$OUT_PWD/../Quick3D/ -lQuick3D
+
+INCLUDEPATH += $$PWD/../Quick3D
+DEPENDPATH += $$PWD/../Quick3D

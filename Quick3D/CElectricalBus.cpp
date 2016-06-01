@@ -1,0 +1,27 @@
+
+// Application
+#include "CLogManager.h"
+#include "C3DScene.h"
+#include "CElectricalBus.h"
+
+//-------------------------------------------------------------------------------------------------
+
+CComponent* CElectricalBus::instanciator(C3DScene* pScene)
+{
+	return new CElectricalBus(pScene);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+CElectricalBus::CElectricalBus(C3DScene* pScene)
+: CElectricalComponent(pScene)
+{
+	LOG_DEBUG("CElectricalBus::CElectricalBus()");
+}
+
+//-------------------------------------------------------------------------------------------------
+
+CElectricalBus::~CElectricalBus()
+{
+	LOG_DEBUG("CElectricalBus::~CElectricalBus()");
+}

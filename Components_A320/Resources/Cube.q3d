@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Root>
+	<Material Name="Material">
+		<Diffuse g="0.8000" b="0.8000" r="0.8000" DiffuseMap=""/>
+		<Specular g="1.0000" b="1.0000" Intensity="0.5" r="1.0000"/>
+	</Material>
+	<Component Class="CMesh" Name="Cube">
+		<Position z="0.0000" x="0.0000" y="0.0000"/>
+		<Rotation z="0.0000" x="0.0000" y="0.0000"/>
+		<Vertices>
+			<Vertex z="-1.0000" x="1.0000" y="-1.0000"/>
+			<Vertex z="1.0000" x="1.0000" y="-1.0000"/>
+			<Vertex z="1.0000" x="-1.0000" y="-1.0000"/>
+			<Vertex z="-1.0000" x="-1.0000" y="-1.0000"/>
+			<Vertex z="-1.0000" x="1.0000" y="1.0000"/>
+			<Vertex z="1.0000" x="1.0000" y="1.0000"/>
+			<Vertex z="1.0000" x="-1.0000" y="1.0000"/>
+			<Vertex z="-1.0000" x="-1.0000" y="1.0000"/>
+		</Vertices>
+		<Faces>
+			<Face Vertices="0, 1, 2, 3" Material="0"/>
+			<Face Vertices="4, 7, 6, 5" Material="0"/>
+			<Face Vertices="0, 4, 5, 1" Material="0"/>
+			<Face Vertices="1, 5, 6, 2" Material="0"/>
+			<Face Vertices="2, 6, 7, 3" Material="0"/>
+			<Face Vertices="4, 0, 3, 7" Material="0"/>
+		</Faces>
+	</Component>
+</Root>

@@ -1,0 +1,16 @@
+project = Quick3D
+description = Quick3D Documentation
+
+sourcedirs = .
+headerdirs = .
+
+sources.fileextensions = "*.cpp *.qdoc *.mm *.qml"
+headers.fileextensions = "*.h *.ch *.h++ *.hh *.hpp *.hxx"
+
+outputdir = help
+outputformats = HTML
+
+HTML.stylesheets = style.css
+HTML.headerstyles = "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/style.css\" />"
+HTML.postheader = "<div id=\"maincontents\">"
+HTML.footer = "</div>"

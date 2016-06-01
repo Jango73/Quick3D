@@ -1,0 +1,32 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Resources/Plascoa1500.mtl</file>
+        <file>Resources/Plascoa1500.obj</file>
+        <file>Resources/PVP.mtl</file>
+        <file>Resources/PVP.obj</file>
+        <file>Resources/BigMast.mtl</file>
+        <file>Resources/BigMast.obj</file>
+        <file>Resources/CargoShip.mtl</file>
+        <file>Resources/CargoShip.obj</file>
+        <file>Resources/Axis.mtl</file>
+        <file>Resources/Axis.obj</file>
+        <file>Resources/PCC.mtl</file>
+        <file>Resources/PCC.obj</file>
+        <file>Resources/BDD_Base.obj</file>
+        <file>Resources/BDD_Pan.obj</file>
+        <file>Resources/BDD_Tilt.obj</file>
+        <file>Resources/BDD_Mat01.obj</file>
+        <file>Resources/BDD_Mat02.obj</file>
+        <file>Resources/BDD_Mat03.obj</file>
+        <file>Resources/BDD_Mat04.obj</file>
+        <file>Resources/BDD_Mat05.obj</file>
+        <file>Resources/VBCI.mtl</file>
+        <file>Resources/VBCI.obj</file>
+        <file>Resources/VBCI_Gun.mtl</file>
+        <file>Resources/VBCI_Gun.obj</file>
+        <file>Resources/VBCI_Turret.mtl</file>
+        <file>Resources/VBCI_Turret.obj</file>
+        <file>Resources/SmoothingTest.mtl</file>
+        <file>Resources/SmoothingTest.obj</file>
+    </qresource>
+</RCC>

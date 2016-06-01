@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scene>
+	<Components>
+		<Component Name="Terrain" Class="CAutoTerrain">
+			<Parameters>
+				<General Levels="18" Resolution="15"/>
+				<Height>
+					<Value Type="Sub">
+						<Operand>
+							<Value Type="Add">
+								<Operand>
+									<Value Type="Constant" Value="-100.0"/>
+								</Operand>
+								<Operand>
+									<Value Type="Turbulence" InputScale="0.000001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="1500.0"/>
+								</Operand>
+								<Operand>
+									<Value Type="Turbulence" InputScale="0.00001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="500.0"/>
+								</Operand>
+								<Operand>
+									<Value Type="Turbulence" InputScale="0.0001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="100.0"/>
+								</Operand>
+								<Operand>
+									<Value Type="Turbulence" InputScale="0.01" MinClamp="-1.0" MaxClamp="1.0" OutputScale="4.0"/>
+								</Operand>
+								<Operand>
+									<Value Type="Turbulence" InputScale="0.1" MinClamp="-1.0" MaxClamp="1.0" OutputScale="2.0"/>
+								</Operand>
+								<Operand>
+									<!-- Detail -->
+									<Value Type="Mul">
+										<Operand>
+											<!-- Coverage -->
+											<Value Type="Perlin" InputScale="0.5" MinClamp="0.0" MaxClamp="0.2" OutputScale="1.0"/>
+										</Operand>
+										<Operand>
+											<!-- Height -->
+											<Value Type="Add">
+												<Operand>
+													<Value Type="Turbulence" InputScale="2.0" MinClamp="0.0" MaxClamp="1.0" OutputScale="3.0"/>
+												</Operand>
+												<Operand>
+													<Value Type="Turbulence" InputScale="1.5" MinClamp="0.0" MaxClamp="1.0" OutputScale="2.0"/>
+												</Operand>
+												<Operand>
+													<Value Type="Turbulence" InputScale="1.0" MinClamp="0.0" MaxClamp="1.0" OutputScale="0.5"/>
+												</Operand>
+											</Value>
+										</Operand>
+									</Value>
+								</Operand>
+								<Operand>
+									<!-- Large moutains -->
+									<Value Type="Mul">
+										<Operand>
+											<!-- Continent factor -->
+											<Value Type="Turbulence" InputScale="0.000001" MinClamp="0.0" MaxClamp="1.0" OutputScale="1.0"/>
+										</Operand>
+										<Operand>
+											<Value Type="Mul">
+												<Operand>
+													<!-- Coverage -->
+													<Value Type="Perlin" InputScale="0.00002" MinClamp="0.0" MaxClamp="0.4" OutputScale="1.0"/>
+												</Operand>
+												<Operand>
+													<!-- Height -->
+													<Value Type="Add">
+														<Operand>
+															<Value Type="Pow" Value="4.0">
+																<Operand>
+																	<Value Type="Erosion" InputScale="0.00003" MinClamp="0.0" MaxClamp="1.0" OutputScale="15.0" Displace="5.0"/>
+																</Operand>
+															</Value>
+														</Operand>
+														<Operand>
+															<Value Type="Pow" Value="4.0">
+																<Operand>
+																	<Value Type="Erosion" InputScale="0.00005" MinClamp="0.0" MaxClamp="1.0" OutputScale="12.0" Displace="6.0"/>
+																</Operand>
+															</Value>
+														</Operand>
+													</Value>
+												</Operand>
+											</Value>
+										</Operand>
+									</Value>
+								</Operand>
+								<Operand>
+									<!-- Small moutains -->
+									<Value Type="Mul">
+										<Operand>
+											<!-- Continent factor -->
+											<Value Type="Turbulence" InputScale="0.000001" MinClamp="0.0" MaxClamp="1.0" OutputScale="1.0"/>
+										</Operand>
+										<Operand>
+											<Value Type="Mul">
+												<Operand>
+													<!-- Coverage -->
+													<Value Type="Add">
+														<Operand>
+															<Value Type="Constant" Value="0.2"/>
+														</Operand>
+														<Operand>
+															<Value Type="Perlin" InputScale="0.001" MinClamp="-0.2" MaxClamp="0.8" OutputScale="1.0"/>
+														</Operand>
+													</Value>
+												</Operand>
+												<Operand>
+													<!-- Height -->
+													<Value Type="Pow" Value="2.0">
+														<Operand>
+															<Value Type="Turbulence" InputScale="0.0001" MinClamp="0.0" MaxClamp="1.0" OutputScale="100.0"/>
+														</Operand>
+													</Value>
+												</Operand>
+											</Value>
+										</Operand>
+									</Value>
+								</Operand>
+								<Operand>
+									<Value Type="Sub">
+										<Operand>
+											<Value Type="Add">
+												<Operand>
+													<Value Type="Mul">
+														<Operand>
+															<Value Type="Perlin" InputScale="0.001" MinClamp="0.0" MaxClamp="0.2" OutputScale="1.0"/>
+														</Operand>
+														<Operand>
+															<Value Type="Turbulence" InputScale="0.001" MinClamp="0.0" MaxClamp="1.0" OutputScale="800.0"/>
+														</Operand>
+													</Value>
+												</Operand>
+												<Operand>
+													<Value Type="Mul">
+														<Operand>
+															<Value Type="Perlin" InputScale="0.003" MinClamp="0.0" MaxClamp="0.1" OutputScale="1.0"/>
+														</Operand>
+														<Operand>
+															<Value Type="Turbulence" InputScale="0.01" MinClamp="0.0" MaxClamp="1.0" OutputScale="400.0"/>
+														</Operand>
+													</Value>
+												</Operand>
+											</Value>
+										</Operand>
+										<Operand>
+											<Value Type="Mul">
+												<Operand>
+													<Value Type="Perlin" InputScale="0.0001" MinClamp="0.0" MaxClamp="0.2" OutputScale="1.0"/>
+												</Operand>
+												<Operand>
+													<Value Type="Turbulence" InputScale="0.001" MinClamp="0.0" MaxClamp="1.0" OutputScale="800.0"/>
+												</Operand>
+											</Value>
+										</Operand>
+									</Value>
+								</Operand>
+							</Value>
+						</Operand>
+						<Operand>
+							<!-- Canyons -->
+							<Value Type="Mul">
+								<Operand>
+									<!-- Coverage -->
+									<Value Type="Mul">
+										<Operand>
+											<Value Type="Sub">
+												<Operand>
+													<Value Type="Turbulence" InputScale="0.0002" MinClamp="0.2" MaxClamp="0.3" OutputScale="1.0"/>
+												</Operand>
+												<Operand>
+													<Value Type="Constant" Value="0.2"/>
+												</Operand>
+											</Value>
+										</Operand>
+										<Operand>
+											<Value Type="Constant" Value="10.0"/>
+										</Operand>
+									</Value>
+								</Operand>
+								<Operand>
+									<!-- Height -->
+									<Value Type="Mul">
+										<Operand>
+											<Value Type="Mul">
+												<Operand>
+													<Value Type="Sub">
+														<Operand>
+															<Value Type="Turbulence" InputScale="0.001" MinClamp="0.0" MaxClamp="0.5" OutputScale="1.0"/>
+														</Operand>
+														<Operand>
+															<Value Type="Constant" Value="0.0"/>
+														</Operand>
+													</Value>
+												</Operand>
+												<Operand>
+													<Value Type="Constant" Value="2.0"/>
+												</Operand>
+											</Value>
+										</Operand>
+										<Operand>
+											<Value Type="Constant" Value="1000.0"/>
+										</Operand>
+									</Value>
+								</Operand>
+							</Value>
+						</Operand>
+					</Value>
+				</Height>
+				<Vegetation>
+					<Tree>
+						<DNA Levels="5" TrunkLength="50.0" TrunkRadius="4.0" BranchLengthScale="0.70" BranchRadiusScale="0.8" LeafScale="2.0" GravityFactor="1.2" Spread="0.00092">
+							<Leaf>
+								<FFD>
+									<Point fx=" 0.50" fy="0.0" fz="-0.50" tx=" 0.00" ty=" 0.0" tz="-0.50"/>
+									<Point fx=" 0.50" fy="0.0" fz=" 0.00" tx=" 0.50" ty=" 0.0" tz=" 0.00"/>
+									<Point fx=" 0.50" fy="0.0" fz=" 0.50" tx=" 0.00" ty="-0.1" tz=" 0.50"/>
+									<Point fx=" 0.00" fy="0.0" fz=" 0.50" tx=" 0.00" ty="-0.3" tz=" 0.50"/>
+									<Point fx="-0.50" fy="0.0" fz="-0.50" tx="-0.00" ty=" 0.0" tz="-0.50"/>
+									<Point fx="-0.50" fy="0.0" fz=" 0.00" tx="-0.50" ty=" 0.0" tz=" 0.00"/>
+									<Point fx="-0.50" fy="0.0" fz=" 0.50" tx="-0.00" ty="-0.1" tz=" 0.50"/>
+								</FFD>
+							</Leaf>
+						</DNA>
+						<Coverage>
+							<Value Type="Mul">
+								<Operand>
+									<!-- Coverage -->
+									<Value Type="Perlin" InputScale="0.0001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="1.0"/>
+								</Operand>
+								<Operand>
+									<!-- Probability -->
+									<Value Type="Turbulence" InputScale="0.001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="10.0"/>
+								</Operand>
+							</Value>
+						</Coverage>
+					</Tree>
+					<Tree>
+						<DNA Levels="5" TrunkLength="15.0" TrunkRadius="1.5" BranchLengthScale="0.80" BranchRadiusScale="0.5" LeafScale="2.0" GravityFactor="0.5" Spread="0.00025">
+							<Leaf>
+								<FFD>
+									<Point fx=" 0.50" fy="0.0" fz="-0.50" tx=" 0.00" ty=" 0.0" tz="-0.50"/>
+									<Point fx=" 0.50" fy="0.0" fz=" 0.00" tx=" 0.50" ty=" 0.0" tz=" 0.00"/>
+									<Point fx=" 0.50" fy="0.0" fz=" 0.50" tx=" 0.00" ty="-0.1" tz=" 0.50"/>
+									<Point fx=" 0.00" fy="0.0" fz=" 0.50" tx=" 0.00" ty="-0.3" tz=" 0.50"/>
+									<Point fx="-0.50" fy="0.0" fz="-0.50" tx="-0.00" ty=" 0.0" tz="-0.50"/>
+									<Point fx="-0.50" fy="0.0" fz=" 0.00" tx="-0.50" ty=" 0.0" tz=" 0.00"/>
+									<Point fx="-0.50" fy="0.0" fz=" 0.50" tx="-0.00" ty="-0.1" tz=" 0.50"/>
+								</FFD>
+							</Leaf>
+						</DNA>
+						<Coverage>
+							<Value Type="Mul">
+								<Operand>
+									<!-- Coverage -->
+									<Value Type="Perlin" InputScale="0.0001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="1.0"/>
+								</Operand>
+								<Operand>
+									<!-- Probability -->
+									<Value Type="Turbulence" InputScale="0.001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="10.0"/>
+								</Operand>
+							</Value>
+						</Coverage>
+					</Tree>
+					<Tree>
+						<DNA Levels="5" TrunkLength="4.0" TrunkRadius="0.4" BranchLengthScale="0.90" BranchRadiusScale="0.5" LeafScale="1.0" GravityFactor="0.3" Spread="0.00035">
+							<Leaf>
+								<FFD>
+									<Point fx=" 0.50" fy="0.0" fz="-0.50" tx=" 0.00" ty=" 0.0" tz="-0.50"/>
+									<Point fx=" 0.50" fy="0.0" fz=" 0.00" tx=" 0.50" ty=" 0.0" tz=" 0.00"/>
+									<Point fx=" 0.50" fy="0.0" fz=" 0.50" tx=" 0.00" ty="-0.1" tz=" 0.50"/>
+									<Point fx=" 0.00" fy="0.0" fz=" 0.50" tx=" 0.00" ty="-0.3" tz=" 0.50"/>
+									<Point fx="-0.50" fy="0.0" fz="-0.50" tx="-0.00" ty=" 0.0" tz="-0.50"/>
+									<Point fx="-0.50" fy="0.0" fz=" 0.00" tx="-0.50" ty=" 0.0" tz=" 0.00"/>
+									<Point fx="-0.50" fy="0.0" fz=" 0.50" tx="-0.00" ty="-0.1" tz=" 0.50"/>
+								</FFD>
+							</Leaf>
+						</DNA>
+						<Coverage>
+							<Value Type="Mul">
+								<Operand>
+									<!-- Coverage -->
+									<Value Type="Perlin" InputScale="0.0001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="1.0"/>
+								</Operand>
+								<Operand>
+									<!-- Probability -->
+									<Value Type="Turbulence" InputScale="0.01" MinClamp="-1.0" MaxClamp="1.0" OutputScale="10.0"/>
+								</Operand>
+							</Value>
+						</Coverage>
+					</Tree>
+					<Tree>
+						<DNA Levels="5" TrunkLength="2.0" TrunkRadius="0.2" BranchLengthScale="0.70" BranchRadiusScale="0.5" LeafScale="1.0" GravityFactor="1.0" Spread="0.0002">
+							<Leaf>
+								<FFD>
+									<Point fx=" 0.50" fy="0.0" fz="-0.50" tx=" 0.00" ty=" 0.0" tz="-0.50"/>
+									<Point fx=" 0.50" fy="0.0" fz=" 0.00" tx=" 0.50" ty=" 0.0" tz=" 0.00"/>
+									<Point fx=" 0.50" fy="0.0" fz=" 0.50" tx=" 0.00" ty="-0.1" tz=" 0.50"/>
+									<Point fx=" 0.00" fy="0.0" fz=" 0.50" tx=" 0.00" ty="-0.3" tz=" 0.50"/>
+									<Point fx="-0.50" fy="0.0" fz="-0.50" tx="-0.00" ty=" 0.0" tz="-0.50"/>
+									<Point fx="-0.50" fy="0.0" fz=" 0.00" tx="-0.50" ty=" 0.0" tz=" 0.00"/>
+									<Point fx="-0.50" fy="0.0" fz=" 0.50" tx="-0.00" ty="-0.1" tz=" 0.50"/>
+								</FFD>
+							</Leaf>
+						</DNA>
+						<Coverage>
+							<Value Type="Mul">
+								<Operand>
+									<!-- Coverage -->
+									<Value Type="Perlin" InputScale="0.0001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="1.0"/>
+								</Operand>
+								<Operand>
+									<!-- Probability -->
+									<Value Type="Turbulence" InputScale="0.01" MinClamp="-1.0" MaxClamp="1.0" OutputScale="10.0"/>
+								</Operand>
+							</Value>
+						</Coverage>
+					</Tree>
+					<Tree>
+						<DNA Levels="3" TrunkLength="0.3" TrunkRadius="0.05" BranchLengthScale="0.95" BranchRadiusScale="0.50" LeafScale="6.0" GravityFactor="0.5" Spread="0.00015">
+							<Leaf>
+								<FFD>
+									<Point fx=" 0.50" fy="0.0" fz="-0.50" tx=" 0.00" ty=" 0.0" tz="-0.50"/>
+									<Point fx=" 0.50" fy="0.0" fz=" 0.00" tx=" 0.50" ty=" 0.0" tz=" 0.00"/>
+									<Point fx=" 0.50" fy="0.0" fz=" 0.50" tx=" 0.00" ty="-0.4" tz=" 0.50"/>
+									<Point fx=" 0.00" fy="0.0" fz=" 0.50" tx=" 0.00" ty="-0.3" tz=" 0.50"/>
+									<Point fx="-0.50" fy="0.0" fz="-0.50" tx="-0.00" ty=" 0.0" tz="-0.50"/>
+									<Point fx="-0.50" fy="0.0" fz=" 0.00" tx="-0.50" ty=" 0.0" tz=" 0.00"/>
+									<Point fx="-0.50" fy="0.0" fz=" 0.50" tx="-0.00" ty="-0.4" tz=" 0.50"/>
+								</FFD>
+							</Leaf>
+						</DNA>
+						<Coverage>
+							<Value Type="Mul">
+								<Operand>
+									<!-- Coverage -->
+									<Value Type="Perlin" InputScale="0.0001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="1.0"/>
+								</Operand>
+								<Operand>
+									<!-- Probability -->
+									<Value Type="Turbulence" InputScale="0.1" MinClamp="-1.0" MaxClamp="1.0" OutputScale="10.0"/>
+								</Operand>
+							</Value>
+						</Coverage>
+					</Tree>
+				</Vegetation>
+			</Parameters>
+		</Component>
+
+		<Component Name="SkyBox" Class="CSkyBox">
+		</Component>
+	</Components>
+</Scene>

@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Resources/Shaders/FS_Standard.c</file>
+        <file>Resources/Shaders/VS_Standard.c</file>
+        <file>Resources/Textures/Dirt01.jpg</file>
+        <file>Resources/Textures/Dirt02.jpg</file>
+        <file>Resources/Textures/Dirt03.jpg</file>
+        <file>Resources/Textures/Dirt04.jpg</file>
+        <file>Resources/Textures/Grass01.jpg</file>
+        <file>Resources/Textures/Grass02.jpg</file>
+        <file>Resources/Textures/Rock01.jpg</file>
+        <file>Resources/Textures/Sand01.jpg</file>
+        <file>Resources/Textures/Snow01.jpg</file>
+        <file>Resources/Textures/Stone01.jpg</file>
+        <file>Resources/Textures/Stone02.jpg</file>
+        <file>Resources/Textures/Stone03.jpg</file>
+        <file>Resources/Textures/Stone04.jpg</file>
+        <file>Resources/Textures/Tree01.jpg</file>
+        <file>Resources/Textures/Tree02.jpg</file>
+        <file>Resources/Textures/WoodChips01.jpg</file>
+    </qresource>
+</RCC>

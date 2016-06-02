@@ -9,232 +9,239 @@ using namespace Math;
 //-------------------------------------------------------------------------------------------------
 
 CGenerateFunction::CGenerateFunction(CXMLNode xNode)
-	: m_eType(toNone)
-	, m_dConstant(0.0)
-	, m_dInputScale(1.0)
-	, m_dOutputScale(1.0)
-	, m_dMinClamp(-1.0)
-	, m_dMaxClamp(1.0)
-	, m_dDisplace(0.0)
-	, m_dIterations(1)
-	, m_dInputScaleFactor(10.0)
-	, m_dOutputScaleFactor(0.25)
+    : m_eType(toNone)
+    , m_dConstant(0.0)
+    , m_dInputScale(1.0)
+    , m_dOutputScale(1.0)
+    , m_dMinClamp(-1.0)
+    , m_dMaxClamp(1.0)
+    , m_dDisplace(0.0)
+    , m_dIterations(1)
+    , m_dInputScaleFactor(10.0)
+    , m_dOutputScaleFactor(0.25)
 {
-	const QString& sType = xNode.m_vAttributes["Type"];
+    const QString& sType = xNode.m_vAttributes["Type"];
 
-	if (sType.toLower() == "constant")
-	{
-		m_eType = toConstant;
-		m_dConstant = xNode.m_vAttributes["Value"].toDouble();
-	}
-	else if (sType.toLower() == "add")
-	{
-		m_eType = toAdd;
-		QVector<CXMLNode> xOperands = xNode.getNodesByTagName("Operand");
-		foreach (CXMLNode xOperand, xOperands)
-		{
-			m_vOperands.append(new CGenerateFunction(xOperand.getNodeByTagName("Value")));
-		}
-	}
-	else if (sType.toLower() == "sub")
-	{
-		m_eType = toSub;
-		QVector<CXMLNode> xOperands = xNode.getNodesByTagName("Operand");
-		foreach (CXMLNode xOperand, xOperands)
-		{
-			m_vOperands.append(new CGenerateFunction(xOperand.getNodeByTagName("Value")));
-		}
-	}
-	else if (sType.toLower() == "mul")
-	{
-		m_eType = toMul;
-		QVector<CXMLNode> xOperands = xNode.getNodesByTagName("Operand");
-		foreach (CXMLNode xOperand, xOperands)
-		{
-			m_vOperands.append(new CGenerateFunction(xOperand.getNodeByTagName("Value")));
-		}
-	}
-	else if (sType.toLower() == "div")
-	{
-		m_eType = toDiv;
-		QVector<CXMLNode> xOperands = xNode.getNodesByTagName("Operand");
-		foreach (CXMLNode xOperand, xOperands)
-		{
-			m_vOperands.append(new CGenerateFunction(xOperand.getNodeByTagName("Value")));
-		}
-	}
-	else if (sType.toLower() == "pow")
-	{
-		m_eType = toPow;
-		m_dConstant = xNode.m_vAttributes["Value"].toDouble();
-		m_vOperands.append(new CGenerateFunction(xNode.getNodeByTagName("Operand").getNodeByTagName("Value")));
-	}
-	else if (sType.toLower() == "perlin")
-	{
-		m_eType = toPerlin;
-		getProceduralParameters(xNode);
-	}
-	else if (sType.toLower() == "turbulence")
-	{
-		m_eType = toTurbulence;
-		getProceduralParameters(xNode);
-	}
-	else if (sType.toLower() == "erosion")
-	{
-		m_eType = toErosion;
-		getProceduralParameters(xNode);
-	}
-	else if (sType.toLower() == "voronoi")
-	{
-		m_eType = toVoronoi;
-		getProceduralParameters(xNode);
-	}
+    if (sType.toLower() == "constant")
+    {
+        m_eType = toConstant;
+        m_dConstant = xNode.m_vAttributes["Value"].toDouble();
+    }
+    else if (sType.toLower() == "add")
+    {
+        m_eType = toAdd;
+        QVector<CXMLNode> xOperands = xNode.getNodesByTagName("Operand");
+        foreach (CXMLNode xOperand, xOperands)
+        {
+            m_vOperands.append(new CGenerateFunction(xOperand.getNodeByTagName("Value")));
+        }
+    }
+    else if (sType.toLower() == "sub")
+    {
+        m_eType = toSub;
+        QVector<CXMLNode> xOperands = xNode.getNodesByTagName("Operand");
+        foreach (CXMLNode xOperand, xOperands)
+        {
+            m_vOperands.append(new CGenerateFunction(xOperand.getNodeByTagName("Value")));
+        }
+    }
+    else if (sType.toLower() == "mul")
+    {
+        m_eType = toMul;
+        QVector<CXMLNode> xOperands = xNode.getNodesByTagName("Operand");
+        foreach (CXMLNode xOperand, xOperands)
+        {
+            m_vOperands.append(new CGenerateFunction(xOperand.getNodeByTagName("Value")));
+        }
+    }
+    else if (sType.toLower() == "div")
+    {
+        m_eType = toDiv;
+        QVector<CXMLNode> xOperands = xNode.getNodesByTagName("Operand");
+        foreach (CXMLNode xOperand, xOperands)
+        {
+            m_vOperands.append(new CGenerateFunction(xOperand.getNodeByTagName("Value")));
+        }
+    }
+    else if (sType.toLower() == "pow")
+    {
+        m_eType = toPow;
+        m_dConstant = xNode.m_vAttributes["Value"].toDouble();
+        m_vOperands.append(new CGenerateFunction(xNode.getNodeByTagName("Operand").getNodeByTagName("Value")));
+    }
+    else if (sType.toLower() == "perlin")
+    {
+        m_eType = toPerlin;
+        getProceduralParameters(xNode);
+    }
+    else if (sType.toLower() == "turbulence")
+    {
+        m_eType = toTurbulence;
+        getProceduralParameters(xNode);
+    }
+    else if (sType.toLower() == "erosion")
+    {
+        m_eType = toErosion;
+        getProceduralParameters(xNode);
+    }
+    else if (sType.toLower() == "voronoi")
+    {
+        m_eType = toVoronoi;
+        getProceduralParameters(xNode);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CGenerateFunction::~CGenerateFunction()
 {
-	foreach (CGenerateFunction* pFunction, m_vOperands)
-	{
-		delete pFunction;
-	}
+    foreach (CGenerateFunction* pFunction, m_vOperands)
+    {
+        delete pFunction;
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CGenerateFunction::getProceduralParameters(CXMLNode xParams)
 {
-	if (xParams.m_vAttributes["InputScale"].isEmpty() == false)
-	{
-		m_dInputScale = xParams.m_vAttributes["InputScale"].toDouble();
-	}
+    if (xParams.m_vAttributes["InputScale"].isEmpty() == false)
+    {
+        m_dInputScale = xParams.m_vAttributes["InputScale"].toDouble();
+    }
 
-	if (xParams.m_vAttributes["OutputScale"].isEmpty() == false)
-	{
-		m_dOutputScale = xParams.m_vAttributes["OutputScale"].toDouble();
-	}
+    if (xParams.m_vAttributes["OutputScale"].isEmpty() == false)
+    {
+        m_dOutputScale = xParams.m_vAttributes["OutputScale"].toDouble();
+    }
 
-	if (xParams.m_vAttributes["MinClamp"].isEmpty() == false)
-	{
-		m_dMinClamp = xParams.m_vAttributes["MinClamp"].toDouble();
-	}
+    if (xParams.m_vAttributes["MinClamp"].isEmpty() == false)
+    {
+        m_dMinClamp = xParams.m_vAttributes["MinClamp"].toDouble();
+    }
 
-	if (xParams.m_vAttributes["MaxClamp"].isEmpty() == false)
-	{
-		m_dMaxClamp = xParams.m_vAttributes["MaxClamp"].toDouble();
-	}
+    if (xParams.m_vAttributes["MaxClamp"].isEmpty() == false)
+    {
+        m_dMaxClamp = xParams.m_vAttributes["MaxClamp"].toDouble();
+    }
 
-	if (xParams.m_vAttributes["Displace"].isEmpty() == false)
-	{
-		m_dDisplace = xParams.m_vAttributes["Displace"].toDouble();
-	}
+    if (xParams.m_vAttributes["Displace"].isEmpty() == false)
+    {
+        m_dDisplace = xParams.m_vAttributes["Displace"].toDouble();
+    }
 
-	if (xParams.m_vAttributes["Iterations"].isEmpty() == false)
-	{
-		m_dIterations = xParams.m_vAttributes["Iterations"].toInt();
+    if (xParams.m_vAttributes["Iterations"].isEmpty() == false)
+    {
+        m_dIterations = xParams.m_vAttributes["Iterations"].toInt();
 
-		if (m_dIterations <  1) m_dIterations =  1;
-		if (m_dIterations > 50) m_dIterations = 50;
-	}
+        if (m_dIterations <  1) m_dIterations =  1;
+        if (m_dIterations > 50) m_dIterations = 50;
+    }
 
-	if (xParams.m_vAttributes["InputScaleFactor"].isEmpty() == false)
-	{
-		m_dInputScaleFactor = xParams.m_vAttributes["InputScaleFactor"].toDouble();
-	}
+    if (xParams.m_vAttributes["InputScaleFactor"].isEmpty() == false)
+    {
+        m_dInputScaleFactor = xParams.m_vAttributes["InputScaleFactor"].toDouble();
+    }
 
-	if (xParams.m_vAttributes["OutputScaleFactor"].isEmpty() == false)
-	{
-		m_dOutputScaleFactor = xParams.m_vAttributes["OutputScaleFactor"].toDouble();
-	}
+    if (xParams.m_vAttributes["OutputScaleFactor"].isEmpty() == false)
+    {
+        m_dOutputScaleFactor = xParams.m_vAttributes["OutputScaleFactor"].toDouble();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
 double CGenerateFunction::process(CPerlin* pPerlin, const CVector3& vPosition, const Math::CAxis& aAxis) const
 {
-	switch (m_eType)
-	{
-		case toNone:
-			break;
+    switch (m_eType)
+    {
+        case toNone:
+            break;
 
-		case toConstant:
-			return m_dConstant;
+        case toConstant:
+            return m_dConstant;
 
-		case toAdd:
-		case toSub:
-		case toMul:
-		case toDiv:
-		{
-			if (m_vOperands.count() > 0)
-			{
-				double dReturnValue = m_vOperands[0]->process(pPerlin, vPosition, aAxis);
+        case toAdd:
+        case toSub:
+        case toMul:
+        case toDiv:
+        {
+            if (m_vOperands.count() > 0)
+            {
+                double dReturnValue = m_vOperands[0]->process(pPerlin, vPosition, aAxis);
 
-				for (int iIndex = 1; iIndex < m_vOperands.count(); iIndex++)
-				{
-					double dCurrentValue = m_vOperands[iIndex]->process(pPerlin, vPosition, aAxis);
+                for (int iIndex = 1; iIndex < m_vOperands.count(); iIndex++)
+                {
+                    double dCurrentValue = m_vOperands[iIndex]->process(pPerlin, vPosition, aAxis);
 
-					switch (m_eType)
-					{
-						case toNone:
-						case toConstant : break;
-						case toAdd: dReturnValue += dCurrentValue; break;
-						case toSub: dReturnValue -= dCurrentValue; break;
-						case toMul: dReturnValue *= dCurrentValue; break;
-						case toDiv: dReturnValue /= dCurrentValue; break;
-					}
-				}
+                    switch (m_eType)
+                    {
+                        case toNone:
+                        case toConstant : break;
+                        case toAdd: dReturnValue += dCurrentValue; break;
+                        case toSub: dReturnValue -= dCurrentValue; break;
+                        case toMul: dReturnValue *= dCurrentValue; break;
+                        case toDiv: dReturnValue /= dCurrentValue; break;
+                    }
+                }
 
-				return dReturnValue;
-			}
-			return 0.0;
-		}
-			break;
+                return dReturnValue;
+            }
 
-		case toPow:
-		{
-			if (m_vOperands.count() > 0)
-			{
-				return pow(m_vOperands[0]->process(pPerlin, vPosition, aAxis), m_dConstant);
-			}
-			return 0.0;
-		}
-			break;
+            return 0.0;
+        }
 
-		case toPerlin:
-		case toTurbulence:
-		case toErosion:
-		case toVoronoi:
-		{
-			double dValue = 0.0;
-			double dInputScale = m_dInputScale;
-			double dOutputScale = m_dOutputScale;
+        case toPow:
+        {
+            if (m_vOperands.count() > 0)
+            {
+                return pow(m_vOperands[0]->process(pPerlin, vPosition, aAxis), m_dConstant);
+            }
 
-			for (int iIteration = 0; iIteration < m_dIterations; iIteration++)
-			{
-				double dNewValue = 0.0;
+            return 0.0;
+        }
 
-				switch (m_eType)
-				{
-					case toPerlin: dNewValue = pPerlin->getNoise(vPosition * dInputScale); break;
-					case toTurbulence: dNewValue = pPerlin->getTurbulence(vPosition * dInputScale); break;
-					case toErosion: dNewValue = pPerlin->getErosion(vPosition * dInputScale, aAxis, m_dDisplace); break;
-					case toVoronoi: pPerlin->getVoronoi(vPosition * dInputScale, aAxis, m_dDisplace); break;
-				}
+        case toPerlin:
+        case toTurbulence:
+        case toErosion:
+        case toVoronoi:
+        {
+            double dValue = 0.0;
+            double dInputScale = m_dInputScale;
+            double dOutputScale = m_dOutputScale;
 
-				if (dNewValue < m_dMinClamp) dNewValue = m_dMinClamp;
-				if (dNewValue > m_dMaxClamp) dNewValue = m_dMaxClamp;
+            for (int iIteration = 0; iIteration < m_dIterations; iIteration++)
+            {
+                double dNewValue = 0.0;
 
-				dValue += dNewValue * dOutputScale;
+                switch (m_eType)
+                {
+                    case toPerlin:
+                        dNewValue = pPerlin->getNoise(vPosition * dInputScale);
+                        break;
+                    case toTurbulence:
+                        dNewValue = pPerlin->getTurbulence(vPosition * dInputScale);
+                        break;
+                    case toErosion:
+                        dNewValue = pPerlin->getErosion(vPosition * dInputScale, aAxis, m_dDisplace);
+                        break;
+                    case toVoronoi:
+                        pPerlin->getVoronoi(vPosition * dInputScale, aAxis, m_dDisplace);
+                        break;
+                }
 
-				dInputScale *= m_dInputScaleFactor;
-				dOutputScale *= m_dOutputScaleFactor;
-			}
+                if (dNewValue < m_dMinClamp) dNewValue = m_dMinClamp;
+                if (dNewValue > m_dMaxClamp) dNewValue = m_dMaxClamp;
 
-			return dValue;
-		}
-			break;
-	}
+                dValue += dNewValue * dOutputScale;
 
-	return 0.0;
+                dInputScale *= m_dInputScaleFactor;
+                dOutputScale *= m_dOutputScaleFactor;
+            }
+
+            return dValue;
+        }
+    }
+
+    return 0.0;
 }

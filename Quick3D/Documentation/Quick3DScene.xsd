@@ -28,27 +28,13 @@
   </xs:simpleType>
   <xs:complexType name="SceneType">
     <xs:sequence>
-      <xs:element type="CameraType" name="Camera1" maxOccurs="1" minOccurs="0"/>
-      <xs:element type="CameraType" name="Camera2" maxOccurs="1" minOccurs="0"/>
-      <xs:element type="CameraType" name="Camera3" maxOccurs="1" minOccurs="0"/>
-      <xs:element type="CameraType" name="Camera4" maxOccurs="1" minOccurs="0"/>
-      <xs:element type="ControlledComponentType" name="ControlledComponent" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="NamedType" name="Camera1" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="NamedType" name="Camera2" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="NamedType" name="Camera3" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="NamedType" name="Camera4" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="NamedType" name="ControlledComponent" maxOccurs="1" minOccurs="0"/>
       <xs:element type="ComponentListType" name="Components" maxOccurs="1" minOccurs="0"/>
     </xs:sequence>
-  </xs:complexType>
-  <xs:complexType name="CameraType">
-    <xs:simpleContent>
-      <xs:extension base="xs:string">
-        <xs:attribute type="xs:string" name="Name" use="required"/>
-      </xs:extension>
-    </xs:simpleContent>
-  </xs:complexType>
-  <xs:complexType name="ControlledComponentType">
-    <xs:simpleContent>
-      <xs:extension base="xs:string">
-        <xs:attribute type="xs:string" name="Name" use="required"/>
-      </xs:extension>
-    </xs:simpleContent>
   </xs:complexType>
   <xs:complexType name="ComponentListType">
     <xs:sequence>
@@ -56,13 +42,6 @@
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="ComponentType">
-    <xs:annotation>
-      <xs:documentation>
-        Defines a component.
-		Class is the class name of the component, as it appears in code.
-		Name is a user define string used to identify the component.
-      </xs:documentation>
-    </xs:annotation>
     <xs:sequence>
       <xs:element type="ParametersType" name="Parameters" maxOccurs="1" minOccurs="0"/>
       <xs:element type="GeolocType" name="Geoloc" maxOccurs="1" minOccurs="0"/>
@@ -83,52 +62,152 @@
     </xs:sequence>
     <xs:simpleContent>
       <xs:extension base="xs:string">
-        <xs:attribute type="xs:string" name="Name" use="required"/>
-        <xs:attribute type="xs:string" name="Class" use="required"/>
-        <xs:attribute type="xs:string" name="PositionTarget" use="optional"/>
-        <xs:attribute type="xs:string" name="RotationTarget" use="optional"/>
-        <xs:attribute type="xs:bool" name="Playing" use="optional"/>
+        <xs:attribute type="xs:string" name="Name" use="required">
+          <xs:annotation>
+            <xs:documentation>
+              User defined string used to identify the component.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" name="Class" use="required">
+          <xs:annotation>
+            <xs:documentation>
+              Class name as it appears in code.
+            </xs:documentation>
+          </xs:annotation>
+		</xs:attribute>
+        <xs:attribute type="xs:string" name="PositionTarget" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              Used by animation component: defines the target object for translations.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" name="RotationTarget" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              Used by animation component: defines the target object for rotations.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:bool" name="Playing" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              Used by animation component: defines play state of the animation.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
   <xs:complexType name="ComponentGeneralType">
     <xs:simpleContent>
       <xs:extension base="xs:string">
-        <xs:attribute type="xs:bool" name="Closed" use="optional"/>
+        <xs:attribute type="xs:bool" name="Closed" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              Used by electrical component: defines closure of the contactor.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
   <xs:complexType name="ParametersType">
     <xs:sequence>
-      <xs:element type="GeneralType" name="General" maxOccurs="1" minOccurs="0"/>
-      <xs:element type="MaterialType" name="Material" maxOccurs="1" minOccurs="0"/>
-      <xs:element type="HeightType" name="Height" maxOccurs="1" minOccurs="0"/>
-      <xs:element type="VegetationType" name="Vegetation" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="GeneralType" name="General" maxOccurs="1" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>
+            Defines the general parameters for the terrain.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element type="MaterialType" name="Material" maxOccurs="1" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>
+            Defines the material for the terrain.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element type="HeightType" name="Height" maxOccurs="1" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>
+            Defines the height field for the terrain.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element type="VegetationType" name="Vegetation" maxOccurs="1" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>
+            Defines the vegetation for the terrain.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="GeneralType">
     <xs:simpleContent>
       <xs:extension base="xs:string">
-        <xs:attribute type="xs:int" name="Levels" use="optional"/>
-        <xs:attribute type="xs:int" name="Resolution" use="optional"/>
+        <xs:attribute type="xs:int" name="Levels" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              Used by terrain component: defines the depth of the LOD. Defaults to 15 and ranges from 2 to 20.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:int" name="Resolution" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              Used by terrain component: defines the number of vertices for each terrain patch. Defaults to 31 and ranges from 3 to 81.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
   <xs:complexType name="MaterialType">
     <xs:simpleContent>
       <xs:extension base="xs:string">
-        <xs:attribute type="MaterialTypeEnum" name="Type" use="required"/>
+        <xs:attribute type="MaterialTypeEnum" name="Type" use="required">
+          <xs:annotation>
+            <xs:documentation>
+              Used by terrain component: defines the type of the material. If not present, material used is standard planet material with multi-texturing.
+              The bing type will fetch terrain texture tiles from bing server.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
   <xs:complexType name="HeightType">
     <xs:sequence>
-      <xs:element type="ValueType" name="Value" maxOccurs="1" minOccurs="1"/>
+      <xs:element type="ValueType" name="Value" maxOccurs="1" minOccurs="1">
+        <xs:annotation>
+          <xs:documentation>
+            When there is no type defined for terrain, it defaults to generated height field and uses this function (or constant) to generate height.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
     </xs:sequence>
     <xs:simpleContent>
       <xs:extension base="xs:string">
-        <xs:attribute type="HeightTypeEnum" name="Type" use="optional"/>
-        <xs:attribute type="xs:string" name="Path" use="optional"/>
+        <xs:attribute type="HeightTypeEnum" name="Type" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              Defines the type of height field to use. If not present, the terrain will be generated from functions. See the Value element.
+              srtm: Loads SRTM files as needed from the specified path.
+              hgt: Loads HGT files as needed from the specified path.
+              bil: Loads BIL files as needed from the specified path.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" name="Path" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              Defines the path where terrain files can be found.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
@@ -138,16 +217,76 @@
     </xs:sequence>
     <xs:simpleContent>
       <xs:extension base="xs:string">
-        <xs:attribute type="ValueTypeEnum" name="Type" use="required"/>
-        <xs:attribute type="xs:float" name="Value" use="optional"/>
-        <xs:attribute type="xs:float" name="InputScale" use="optional"/>
-        <xs:attribute type="xs:float" name="OutputScale" use="optional"/>
-        <xs:attribute type="xs:float" name="MinClamp" use="optional"/>
-        <xs:attribute type="xs:float" name="MaxClamp" use="optional"/>
-        <xs:attribute type="xs:float" name="Displace" use="optional"/>
-        <xs:attribute type="xs:int" name="Iterations" use="optional"/>
-        <xs:attribute type="xs:float" name="InputScaleFactor" use="optional"/>
-        <xs:attribute type="xs:float" name="OutputScaleFactor" use="optional"/>
+        <xs:attribute type="ValueTypeEnum" name="Type" use="required">
+          <xs:annotation>
+            <xs:documentation>
+              Defines the type of function to use. Refer to ValueTypeEnum.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:float" name="Value" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              In case Type is set to Constant, defines the constant value.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:float" name="InputScale" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              Defines the scale for the position before it is sent to the function. It defaults to 1.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:float" name="OutputScale" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              Defines the scale for the value that is returned by the function. It defaults to 1.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:float" name="MinClamp" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              Defines the minimum for the value that is returned by the function, before it is scaled by OutputScale. It defaults to -1.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:float" name="MaxClamp" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              Defines the maximum for the value that is returned by the function, before it is scaled by OutputScale. It defaults to 1.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:float" name="Displace" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              Used by Erosion: defines a displacement factor for the position that is sent to the Erosion function. It defaults to 0.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:int" name="Iterations" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              Defines the number of times that the function will be called, summing each output of the function. It defaults to 1.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:float" name="InputScaleFactor" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              When iteration is more than 1, the InputScale is multiplied by this factor after each iteration. It defaults to 10.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:float" name="OutputScaleFactor" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              When iteration is more than 1, the InputScale is multiplied by this factor after each iteration. It defaults to 0.25.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
@@ -273,7 +412,13 @@
   <xs:complexType name="NamedType">
     <xs:simpleContent>
       <xs:extension base="xs:string">
-        <xs:attribute type="xs:string" name="Name" use="required"/>
+        <xs:attribute type="xs:string" name="Name" use="required">
+          <xs:annotation>
+            <xs:documentation>
+              Name of a component.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>

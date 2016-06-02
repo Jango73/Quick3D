@@ -14,6 +14,18 @@
       <xs:enumeration value="Voronoi"/>
     </xs:restriction>
   </xs:simpleType>
+  <xs:simpleType name="MaterialTypeEnum" final="restriction">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="bing"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="HeightTypeEnum" final="restriction">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="srtm"/>
+      <xs:enumeration value="hgt"/>
+      <xs:enumeration value="bil"/>
+    </xs:restriction>
+  </xs:simpleType>
   <xs:complexType name="SceneType">
     <xs:sequence>
       <xs:element type="CameraType" name="Camera1" maxOccurs="1" minOccurs="0"/>
@@ -21,7 +33,7 @@
       <xs:element type="CameraType" name="Camera3" maxOccurs="1" minOccurs="0"/>
       <xs:element type="CameraType" name="Camera4" maxOccurs="1" minOccurs="0"/>
       <xs:element type="ControlledComponentType" name="ControlledComponent" maxOccurs="1" minOccurs="0"/>
-      <xs:element type="ComponentListType" name="Components" maxOccurs="1" minOccurs="1"/>
+      <xs:element type="ComponentListType" name="Components" maxOccurs="1" minOccurs="0"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="CameraType">
@@ -44,15 +56,30 @@
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="ComponentType">
+    <xs:annotation>
+      <xs:documentation>
+        Defines a component.
+		Class is the class name of the component, as it appears in code.
+		Name is a user define string used to identify the component.
+      </xs:documentation>
+    </xs:annotation>
     <xs:sequence>
       <xs:element type="ParametersType" name="Parameters" maxOccurs="1" minOccurs="0"/>
       <xs:element type="GeolocType" name="Geoloc" maxOccurs="1" minOccurs="0"/>
       <xs:element type="Vector3DType" name="Position" maxOccurs="1" minOccurs="0"/>
       <xs:element type="Vector3DType" name="Rotation" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="Vector3DType" name="RotationFactor" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="Vector3DType" name="AileronPosition" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="Vector3DType" name="CenterOfMass" maxOccurs="1" minOccurs="0"/>
       <xs:element type="PhysicsType" name="Physics" maxOccurs="1" minOccurs="0"/>
       <xs:element type="ControllerType" name="Controller" maxOccurs="1" minOccurs="0"/>
       <xs:element type="IRType" name="IR" maxOccurs="1" minOccurs="0"/>
-      <xs:element type="MeshType" name="Mesh" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="DynamicTextureType" name="DynamicTexture" maxOccurs="unbounded" minOccurs="0"/>
+      <xs:element type="ThrustType" name="Thrust" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="NamedType" name="Mesh" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="NamedType" name="PowerInput" maxOccurs="unbounded" minOccurs="0"/>
+      <xs:element type="NamedType" name="DataInput" maxOccurs="unbounded" minOccurs="0"/>
+      <xs:element type="ComponentGeneralType" name="General" maxOccurs="1" minOccurs="0"/>
     </xs:sequence>
     <xs:simpleContent>
       <xs:extension base="xs:string">
@@ -64,9 +91,17 @@
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
+  <xs:complexType name="ComponentGeneralType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:bool" name="Closed" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
   <xs:complexType name="ParametersType">
     <xs:sequence>
       <xs:element type="GeneralType" name="General" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="MaterialType" name="Material" maxOccurs="1" minOccurs="0"/>
       <xs:element type="HeightType" name="Height" maxOccurs="1" minOccurs="0"/>
       <xs:element type="VegetationType" name="Vegetation" maxOccurs="1" minOccurs="0"/>
     </xs:sequence>
@@ -79,10 +114,23 @@
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
+  <xs:complexType name="MaterialType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="MaterialTypeEnum" name="Type" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
   <xs:complexType name="HeightType">
     <xs:sequence>
       <xs:element type="ValueType" name="Value" maxOccurs="1" minOccurs="1"/>
     </xs:sequence>
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="HeightTypeEnum" name="Type" use="optional"/>
+        <xs:attribute type="xs:string" name="Path" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
   </xs:complexType>
   <xs:complexType name="ValueType">
     <xs:sequence>
@@ -178,6 +226,7 @@
         <xs:attribute type="xs:float" name="TurnSpeedDS" use="optional"/>
         <xs:attribute type="xs:float" name="Drag" use="optional"/>
         <xs:attribute type="xs:float" name="Friction" use="optional"/>
+        <xs:attribute type="xs:float" name="StickToNOLL" use="optional"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
@@ -206,7 +255,22 @@
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
-  <xs:complexType name="MeshType">
+  <xs:complexType name="DynamicTextureType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="Name" use="required"/>
+        <xs:attribute type="xs:string" name="Updater" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="ThrustType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:float" name="MaxThrustKG" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="NamedType">
     <xs:simpleContent>
       <xs:extension base="xs:string">
         <xs:attribute type="xs:string" name="Name" use="required"/>

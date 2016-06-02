@@ -15,49 +15,49 @@ class QUICK3D_EXPORT CGeneratedField : public CHeightField
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	CGeneratedField(CXMLNode xParameters);
+    //!
+    CGeneratedField(CXMLNode xParameters);
 
-	//!
-	virtual ~CGeneratedField();
+    //!
+    virtual ~CGeneratedField();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual double getHeightAt(const Math::CGeoloc& gPosition, double* pRigidness = NULL);
+    //!
+    virtual double getHeightAt(const Math::CGeoloc& gPosition, double* pRigidness = NULL);
 
-	//!
-	virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, double* pRigidness = NULL);
+    //!
+    virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, double* pRigidness = NULL);
 
-	//!
-	virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, bool bForPhysics = true);
+    //!
+    virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, bool bForPhysics = true);
 
-	//!
-	virtual bool isGenerated();
+    //!
+    virtual bool isGenerated();
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual void flatten(const Math::CGeoloc& gPosition, double dRadius);
+    //!
+    virtual void flatten(const Math::CGeoloc& gPosition, double dRadius);
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	CXMLNode			m_xParameters;
-	CGenerateFunction*	m_pFunction;
+    CXMLNode			m_xParameters;
+    CGenerateFunction*	m_pFunction;
 };

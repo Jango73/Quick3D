@@ -37,3 +37,5 @@ Makefile*
 
 # Project specific
 Quick3D/help
+*.log
+*.exe

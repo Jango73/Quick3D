@@ -6,7 +6,7 @@
 //-------------------------------------------------------------------------------------------------
 
 // Quick3D
-#include "../Quick3D/CWaypoint.h"
+#include "CWaypoint.h"
 
 // Application
 #include "Constants.h"

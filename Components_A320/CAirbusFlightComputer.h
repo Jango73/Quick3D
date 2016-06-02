@@ -4,7 +4,7 @@
 //-------------------------------------------------------------------------------------------------
 
 // Quick3D
-#include "../Quick3D/CElectricalConsumer.h"
+#include "CElectricalConsumer.h"
 
 // Application
 #include "components_a320_global.h"

@@ -1,6 +1,6 @@
 
 // Quick3D
-#include "../Quick3D/CLogManager.h"
+#include "CLogManager.h"
 
 // Application
 #include "CAirbusData.h"

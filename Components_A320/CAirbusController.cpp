@@ -1,6 +1,6 @@
 
 // Quick3D
-#include "../Quick3D/CConsoleBoard.h"
+#include "CConsoleBoard.h"
 
 // Application
 #include "CAirbusController.h"

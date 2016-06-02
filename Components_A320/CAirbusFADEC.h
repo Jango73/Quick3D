@@ -7,9 +7,9 @@
 //-------------------------------------------------------------------------------------------------
 
 // Quick3D
-#include "../Quick3D/CPIDController.h"
-#include "../Quick3D/CComponentReference.h"
-#include "../Quick3D/CJetEngine.h"
+#include "CPIDController.h"
+#include "CComponentReference.h"
+#include "CJetEngine.h"
 
 // Application
 #include "CAirbusFlightComputer.h"

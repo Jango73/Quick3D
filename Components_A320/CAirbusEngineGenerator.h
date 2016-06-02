@@ -7,7 +7,7 @@
 //-------------------------------------------------------------------------------------------------
 
 // Quick3D
-#include "../Quick3D/CElectricalComponent.h"
+#include "CElectricalComponent.h"
 
 class C3DScene;
 

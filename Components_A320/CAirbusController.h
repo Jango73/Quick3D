@@ -8,8 +8,8 @@
 #include <QMouseEvent>
 
 // Quick3D
-#include "../Quick3D/CAircraftController.h"
-#include "../Quick3D/CComponentReference.h"
+#include "CAircraftController.h"
+#include "CComponentReference.h"
 
 // Application
 #include "Constants.h"

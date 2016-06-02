@@ -3,8 +3,8 @@
 #include <QPainter>
 
 // Quick3D
-#include "../Quick3D/CLogManager.h"
-#include "../Quick3D/C3DScene.h"
+#include "CLogManager.h"
+#include "C3DScene.h"
 
 // Application
 #include "CAirbusDMC.h"

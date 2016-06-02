@@ -1,9 +1,9 @@
 
 // Quick3D
-#include "../Quick3D/CLogManager.h"
-#include "../Quick3D/CConsoleBoard.h"
-#include "../Quick3D/C3DScene.h"
-#include "../Quick3D/CElectricalComponent.h"
+#include "CLogManager.h"
+#include "CConsoleBoard.h"
+#include "C3DScene.h"
+#include "CElectricalComponent.h"
 
 // Application
 #include "CAirbusFlightComputer.h"

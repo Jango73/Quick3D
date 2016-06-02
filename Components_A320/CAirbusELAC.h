@@ -6,11 +6,11 @@
 //-------------------------------------------------------------------------------------------------
 
 // Quick3D
-#include "../Quick3D/CPIDController.h"
-#include "../Quick3D/CComponentReference.h"
-#include "../Quick3D/CWing.h"
-#include "../Quick3D/CElevator.h"
-#include "../Quick3D/CVector2.h"
+#include "CPIDController.h"
+#include "CComponentReference.h"
+#include "CWing.h"
+#include "CElevator.h"
+#include "CVector2.h"
 
 // Application
 #include "Constants.h"

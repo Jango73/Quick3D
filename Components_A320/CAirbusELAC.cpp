@@ -1,10 +1,10 @@
 
 // Quick3D
-#include "../Quick3D/CLogManager.h"
-#include "../Quick3D/CConsoleBoard.h"
-#include "../Quick3D/C3DScene.h"
-#include "../Quick3D/CWing.h"
-#include "../Quick3D/CElevator.h"
+#include "CLogManager.h"
+#include "CConsoleBoard.h"
+#include "C3DScene.h"
+#include "CWing.h"
+#include "CElevator.h"
 
 // Application
 #include "CAirbusELAC.h"

@@ -6,7 +6,7 @@
 //-------------------------------------------------------------------------------------------------
 
 // Quick3D
-#include "../Quick3D/CPIDController.h"
+#include "CPIDController.h"
 
 // Application
 #include "Constants.h"

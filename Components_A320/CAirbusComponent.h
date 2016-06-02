@@ -2,7 +2,7 @@
 #pragma once
 
 // Quick3D
-#include "../Quick3D/CComponent.h"
+#include "CComponent.h"
 
 // Application
 #include "components_a320_global.h"

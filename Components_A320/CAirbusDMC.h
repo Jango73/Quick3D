@@ -6,8 +6,8 @@
 //-------------------------------------------------------------------------------------------------
 
 // Quick3D
-#include "../Quick3D/Interpolator.h"
-#include "../Quick3D/CGeoloc.h"
+#include "Interpolator.h"
+#include "CGeoloc.h"
 
 // Application
 #include "Constants.h"

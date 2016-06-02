@@ -1,10 +1,10 @@
 
 // Quick3D
-#include "../Quick3D/CLogManager.h"
-#include "../Quick3D/CConsoleBoard.h"
-#include "../Quick3D/C3DScene.h"
-#include "../Quick3D/CAtmosphere.h"
-#include "../Quick3D/CAircraft.h"
+#include "CLogManager.h"
+#include "CConsoleBoard.h"
+#include "C3DScene.h"
+#include "CAtmosphere.h"
+#include "CAircraft.h"
 
 #include "CAirbusStaticPort.h"
 

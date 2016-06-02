@@ -10,7 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Quick3DTest
 TEMPLATE = app
-INCLUDEPATH += $$PWD/../Quick3D
+INCLUDEPATH += $$PWD/../Quick3D/Source
 DEPENDPATH += $$PWD/../Quick3D
 
 # C++ Flags

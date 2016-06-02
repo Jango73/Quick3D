@@ -1,5 +1,5 @@
 
-#include "../Quick3D/CPluginInterface.h"
+#include "CPluginInterface.h"
 
 #include "Constants.h"
 

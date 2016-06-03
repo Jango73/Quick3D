@@ -13,134 +13,188 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    \class CBILField
+    \brief A height field based on .BIL terrain files.
+    \inmodule Quick3D
+    \sa CHeightField
+*/
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Constructs a CBILField using parameters in \a xParameters. \br\br
+    \a sPathToBILFiles specifies the path where the .BIL files can be found. \br
+    \a dValueForNoData if the special value that identifies empty data.
+*/
 CBILField::CBILField(CXMLNode xParameters, const QString& sPathToBILFiles, double dValueForNoData)
-: m_tMutex(QMutex::Recursive)
-, m_xParameters(xParameters)
-, m_dValueForNoData(dValueForNoData)
+    : m_tMutex(QMutex::Recursive)
+    , m_xParameters(xParameters)
+    , m_dValueForNoData(dValueForNoData)
 {
-	LOG_DEBUG(QString("CBILField::CBILField(%1)").arg(sPathToBILFiles));
+    LOG_DEBUG(QString("CBILField::CBILField(%1)").arg(sPathToBILFiles));
 
-	if (sPathToBILFiles.isEmpty() == false)
-	{
-		m_sPath = sPathToBILFiles;
-	}
-	else
-	{
-		m_sPath = QCoreApplication::applicationDirPath() + "/BIL";
-	}
+    // Set path to argument path if not empty, else default to application path + "/BIL"
 
-	parseBILFiles();
+    if (sPathToBILFiles.isEmpty() == false)
+    {
+        m_sPath = sPathToBILFiles;
+    }
+    else
+    {
+        m_sPath = QCoreApplication::applicationDirPath() + "/BIL";
+    }
+
+    parseBILFiles();
 }
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Destroys a CBILField.
+*/
 CBILField::~CBILField()
 {
-	foreach (CBILData* pChunk, m_vChunks)
-	{
-		delete pChunk;
-	}
+    // Delete each chunk of data
+
+    foreach (CBILData* pChunk, m_vChunks)
+    {
+        delete pChunk;
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Parses all .BIL files in the given path.
+*/
 void CBILField::parseBILFiles()
 {
-	LOG_DEBUG(QString("CBILField::parseBILFiles()"));
+    LOG_DEBUG(QString("CBILField::parseBILFiles()"));
 
-	QStringList nameFilter;
+    // List all BIL files in path
 
-	nameFilter.append(QString("*.zip"));
+    QStringList nameFilter;
 
-	QDir dDirectory(m_sPath);
-	QStringList lFiles = dDirectory.entryList(nameFilter);
+    nameFilter.append(QString("*.zip"));
 
-	foreach (QString sFile, lFiles)
-	{
-		LOG_DEBUG(QString("CBILField::parseBILFiles() : Creating chunk for %1...").arg(sFile));
+    QDir dDirectory(m_sPath);
+    QStringList lFiles = dDirectory.entryList(nameFilter);
 
-		CBILData* pChunk = new CBILData(m_dValueForNoData);
+    // Create a chunk for each file
 
-		pChunk->setFileName(m_sPath + "/" + sFile);
+    foreach (QString sFile, lFiles)
+    {
+        LOG_DEBUG(QString("CBILField::parseBILFiles() : Creating chunk for %1...").arg(sFile));
 
-		m_vChunks.append(pChunk);
-	}
+        CBILData* pChunk = new CBILData(m_dValueForNoData);
+
+        pChunk->setFileName(m_sPath + "/" + sFile);
+
+        m_vChunks.append(pChunk);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    This is called by the getHeightAt() methods. Every 2000 calls, it deletes chunks which have not been used in the last 20 seconds.
+*/
 void CBILField::collectGarbage()
 {
-	QMutexLocker locker(&m_tMutex);
+    QMutexLocker locker(&m_tMutex);
 
-	static int iGarbageCounter = 0;
+    static int iGarbageCounter = 0;
 
-	iGarbageCounter++;
+    iGarbageCounter++;
 
-	if (iGarbageCounter > 2000)
-	{
-		iGarbageCounter = 0;
+    if (iGarbageCounter > 2000)
+    {
+        iGarbageCounter = 0;
 
-		for (int iIndex = 0; iIndex < m_vChunks.count(); iIndex++)
-		{
-			if (m_vChunks[iIndex]->getLastUsed().secsTo(QDateTime::currentDateTime()) > 20)
-			{
-				m_vChunks[iIndex]->clearData();
-			}
-		}
-	}
+        for (int iIndex = 0; iIndex < m_vChunks.count(); iIndex++)
+        {
+            if (m_vChunks[iIndex]->getLastUsed().secsTo(QDateTime::currentDateTime()) > 20)
+            {
+                m_vChunks[iIndex]->clearData();
+            }
+        }
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Returns the height at the specified \a gPosition. \br\br
+    \a pRigidness, if not NULL, is filled with the terrain rigidness at the specified location. Always 1.0 for now.
+*/
 double CBILField::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 {
-	if (pRigidness) *pRigidness = 1.0;
+    if (pRigidness) *pRigidness = 1.0;
 
-	foreach (CBILData* pChunk, m_vChunks)
-	{
-		if (pChunk->contains(gPosition))
-		{
-			return pChunk->getHeightAt(gPosition, pRigidness);
-		}
-	}
+    foreach (CBILData* pChunk, m_vChunks)
+    {
+        if (pChunk->contains(gPosition))
+        {
+            return pChunk->getHeightAt(gPosition, pRigidness);
+        }
+    }
 
-	collectGarbage();
+    collectGarbage();
 
-	return Q3D_INFINITY;
+    return Q3D_INFINITY;
 }
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Returns the height at the specified \a gPosition. \br\br
+    \a pRigidness, if not NULL, is filled with the terrain rigidness at the specified location. Always 1.0 for now.
+    \a aAxis
+*/
 double CBILField::getHeightAt(const CVector3& vPosition, const CAxis& aAxis, double* pRigidness)
 {
-	double dReturnValue = getHeightAt(CGeoloc(vPosition), pRigidness);
+    double dReturnValue = getHeightAt(CGeoloc(vPosition), pRigidness);
 
-	collectGarbage();
+    collectGarbage();
 
-	return dReturnValue;
+    return dReturnValue;
 }
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Returns the height at the specified \a gPosition. \br\br
+    \a aAxis
+    \a bForPhysics
+*/
 double CBILField::getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, bool bForPhysics)
 {
-	double dReturnValue = getHeightAt(CGeoloc(vPosition), NULL);
+    double dReturnValue = getHeightAt(CGeoloc(vPosition), NULL);
 
-	collectGarbage();
+    collectGarbage();
 
-	return dReturnValue;
+    return dReturnValue;
 }
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Flattens terrain at the specified \a gPosition, to the extents of \a dRadius.
+*/
 void CBILField::flatten(const Math::CGeoloc& gPosition, double dRadius)
 {
 }
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Adds the \a pData chunk to this field.
+*/
 void CBILField::addChunk(CBILData* pData)
 {
-	m_vChunks.append(pData);
+    if (m_vChunks.contains(pData) == false)
+    {
+        m_vChunks.append(pData);
+    }
 }

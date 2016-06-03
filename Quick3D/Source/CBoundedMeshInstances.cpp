@@ -9,7 +9,7 @@ using namespace Math;
 //-------------------------------------------------------------------------------------------------
 
 CBoundedMeshInstances::CBoundedMeshInstances(C3DScene* pScene)
-: CComponent(pScene)
+    : CComponent(pScene)
 {
 }
 
@@ -17,68 +17,68 @@ CBoundedMeshInstances::CBoundedMeshInstances(C3DScene* pScene)
 
 CBoundedMeshInstances::~CBoundedMeshInstances()
 {
-	foreach (CMeshInstance* pMesh, m_vMeshes)
-	{
-		if (pMesh != NULL)
+    foreach (CMeshInstance* pMesh, m_vMeshes)
+    {
+        if (pMesh != NULL)
         {
-			delete pMesh;
+            delete pMesh;
         }
-	}
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CBoundedMeshInstances::setBounds(CBoundingBox bBounds)
 {
-	m_bBounds = bBounds;
+    m_bBounds = bBounds;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CBoundingBox CBoundedMeshInstances::getBounds() const
 {
-	return m_bBounds;
+    return m_bBounds;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CBoundingBox CBoundedMeshInstances::getWorldBounds() const
 {
-	return m_bBounds;
+    return m_bBounds;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CBoundedMeshInstances::update(double dDeltaTime)
 {
-	foreach (CMeshInstance* pMeshInstance, m_vMeshes)
-	{
-		pMeshInstance->update(dDeltaTime);
-	}
+    foreach (CMeshInstance* pMeshInstance, m_vMeshes)
+    {
+        pMeshInstance->update(dDeltaTime);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CBoundedMeshInstances::paint(CRenderContext* pContext)
 {
-	CVector3 vPosition = pContext->internalCameraMatrix() * getWorldBounds().center();
-	double dRadius = getWorldBounds().radius();
+    CVector3 vPosition = pContext->internalCameraMatrix() * getWorldBounds().center();
+    double dRadius = getWorldBounds().radius();
 
-	if (pContext->camera()->contains(vPosition, dRadius))
-	{
-		foreach (CMeshInstance* pMeshInstance, m_vMeshes)
-		{
-			pMeshInstance->paint(pContext);
-		}
-	}
+    if (pContext->camera()->contains(vPosition, dRadius))
+    {
+        foreach (CMeshInstance* pMeshInstance, m_vMeshes)
+        {
+            pMeshInstance->paint(pContext);
+        }
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CBoundedMeshInstances::add(CMeshInstance* pMeshInstance)
 {
-	if (pMeshInstance != NULL && m_vMeshes.contains(pMeshInstance) == false)
-	{
-		m_vMeshes.append(pMeshInstance);
-	}
+    if (pMeshInstance != NULL && m_vMeshes.contains(pMeshInstance) == false)
+    {
+        m_vMeshes.append(pMeshInstance);
+    }
 }

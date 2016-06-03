@@ -324,7 +324,6 @@ HEADERS  += \
     Source/CXMLNode.h \
     Source/CZip.h \
     Source/glext.h \
-    Source/IController.h \
     Source/ILogger.h \
     Source/Interpolator.h \
     Source/IProgressListener.h \

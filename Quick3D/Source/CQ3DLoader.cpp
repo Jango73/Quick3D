@@ -171,7 +171,7 @@ void CQ3DLoader::loadComponent(
 
     foreach (CXMLNode xFace, vxFaces)
     {
-        CFace NewFace;
+        CFace NewFace(pMesh);
 
         QStringList lVertices = xFace.m_vAttributes[ParamName_Vertices].split(",");
 

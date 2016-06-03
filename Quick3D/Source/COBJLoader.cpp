@@ -121,7 +121,7 @@ void COBJLoader::load(C3DScene* pScene, CMesh* pMesh, QString sText)
                 }
                 else if (sFirstWord == TOKEN_face && lWords.count() > 3)
                 {
-                    CFace NewFace;
+                    CFace NewFace(pMesh);
 
                     NewFace.setSmoothingGroup(iSmoothingGroup);
                     NewFace.setMaterialIndex(iMaterialIndex);

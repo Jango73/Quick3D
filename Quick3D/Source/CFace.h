@@ -18,51 +18,51 @@ class QUICK3D_EXPORT CEdge
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//! Constructeur par défaut
-	CEdge()
-	{
-		m_aIndices[0] = 0;
-		m_aIndices[1] = 0;
-		m_iNewVertex = 0;
-	}
+    //! Constructeur par défaut
+    CEdge()
+    {
+        m_aIndices[0] = 0;
+        m_aIndices[1] = 0;
+        m_iNewVertex = 0;
+    }
 
-	//! Constructeur avec deux indices de sommet
-	CEdge(int iV1, int iV2)
-	{
-		m_aIndices[0] = iV1;
-		m_aIndices[1] = iV2;
-		m_iNewVertex = 0;
-	}
+    //! Constructeur avec deux indices de sommet
+    CEdge(int iV1, int iV2)
+    {
+        m_aIndices[0] = iV1;
+        m_aIndices[1] = iV2;
+        m_iNewVertex = 0;
+    }
 
-	//! Constructeur avec deux indices de sommet et un indice de nouveau sommet
-	CEdge(int iV1, int iV2, int iN)
-	{
-		m_aIndices[0] = iV1;
-		m_aIndices[1] = iV2;
-		m_iNewVertex = iN;
-	}
+    //! Constructeur avec deux indices de sommet et un indice de nouveau sommet
+    CEdge(int iV1, int iV2, int iN)
+    {
+        m_aIndices[0] = iV1;
+        m_aIndices[1] = iV2;
+        m_iNewVertex = iN;
+    }
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//! Opérateur de comparaison
-	bool operator == (const CEdge& target) const
-	{
-		return	(m_aIndices[0] == target.m_aIndices[0] && m_aIndices[1] == target.m_aIndices[1]) ||
-				(m_aIndices[0] == target.m_aIndices[1] && m_aIndices[1] == target.m_aIndices[0]);
-	}
+    //! Opérateur de comparaison
+    bool operator == (const CEdge& target) const
+    {
+        return	(m_aIndices[0] == target.m_aIndices[0] && m_aIndices[1] == target.m_aIndices[1]) ||
+                (m_aIndices[0] == target.m_aIndices[1] && m_aIndices[1] == target.m_aIndices[0]);
+    }
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
-	int m_aIndices[2];
-	int m_iNewVertex;
+    int m_aIndices[2];
+    int m_iNewVertex;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -71,95 +71,98 @@ class QUICK3D_EXPORT CFace
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//! Constructeur par défaut
-	CFace();
+    //! Constructeur par défaut
+    CFace();
 
-	//! Constructeur de copie
-	CFace(CMesh* pParent, const CFace&);
+    //! Constructeur avec parent
+    CFace(CMesh* pParent);
 
-	//! Constructeur avec trois indices de sommet (triangle)
-	CFace(CMesh* pParent, int iV1, int iV2, int iV3);
+    //! Constructeur de copie
+    CFace(CMesh* pParent, const CFace&);
 
-	//! Constructeur avec quatre indices de sommet (quad)
-	CFace(CMesh* pParent, int iV1, int iV2, int iV3, int iV4);
+    //! Constructeur avec trois indices de sommet (triangle)
+    CFace(CMesh* pParent, int iV1, int iV2, int iV3);
 
-	//! Constructeur avec n indices de sommet (polygone)
-	CFace(CMesh* pParent, QVector<int> vIndices);
+    //! Constructeur avec quatre indices de sommet (quad)
+    CFace(CMesh* pParent, int iV1, int iV2, int iV3, int iV4);
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //! Constructeur avec n indices de sommet (polygone)
+    CFace(CMesh* pParent, QVector<int> vIndices);
 
-	//!
-	void setSmoothingGroup(int iGroup) { m_iSmoothingGroup = iGroup; }
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	void setMaterialIndex(int iIndex) { m_iMaterialIndex = iIndex; }
+    //!
+    void setSmoothingGroup(int iGroup) { m_iSmoothingGroup = iGroup; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //!
+    void setMaterialIndex(int iIndex) { m_iMaterialIndex = iIndex; }
 
-	//! Retourne la liste des indice de sommets
-	QVector<int>& getIndices() { return m_vIndices; }
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//! Retourne la liste des indice de sommets
-	const QVector<int>& getIndices() const { return m_vIndices; }
+    //! Retourne la liste des indice de sommets
+    QVector<int>& getIndices() { return m_vIndices; }
 
-	//! Retourne le vecteur normal de la facette
-	Math::CVector3& getNormal() { return m_vNormal; }
+    //! Retourne la liste des indice de sommets
+    const QVector<int>& getIndices() const { return m_vIndices; }
 
-	//! Retourne le vecteur normal de la facette
-	Math::CVector3 getNormal() const { return m_vNormal; }
+    //! Retourne le vecteur normal de la facette
+    Math::CVector3& getNormal() { return m_vNormal; }
 
-	//! Retourne le vecteur tangent de la facette
-	Math::CVector3 getTangent() const { return m_vTangent; }
+    //! Retourne le vecteur normal de la facette
+    Math::CVector3 getNormal() const { return m_vNormal; }
 
-	//!
-	int getSmoothingGroup() const { return m_iSmoothingGroup; }
+    //! Retourne le vecteur tangent de la facette
+    Math::CVector3 getTangent() const { return m_vTangent; }
 
-	//!
-	int getMaterialIndex() const { return m_iMaterialIndex; }
+    //!
+    int getSmoothingGroup() const { return m_iSmoothingGroup; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //!
+    int getMaterialIndex() const { return m_iMaterialIndex; }
 
-	//! Opérateur de copie
-	CFace& operator = (const CFace& target);
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//! Opérateur de tri
-	bool operator < (const CFace& target) const;
+    //! Opérateur de copie
+    CFace& operator = (const CFace& target);
 
-	//! Calcule le vecteur normal de la facette
-	void computeNormal(CMesh* parent);
+    //! Opérateur de tri
+    bool operator < (const CFace& target) const;
 
-	//! Calcul l'intersection entre le rayon fourni et la facette formée par les trois points fournis
-	static Math::RayTracingResult intersectTriangle(
-		const Math::CRay3& ray,
-		Math::CVector3 v0,
-		Math::CVector3 v1,
-		Math::CVector3 v2
-		);
+    //! Calcule le vecteur normal de la facette
+    void computeNormal();
 
-	//! Calcul l'intersection entre le rayon fourni et cette facette
-	//! Retourne systématiquement l'infini pour l'instant
-	Math::RayTracingResult intersect(Math::CRay3 ray) const;
+    //! Calcul l'intersection entre le rayon fourni et la facette formée par les trois points fournis
+    static Math::RayTracingResult intersectTriangle(
+            const Math::CRay3& ray,
+            Math::CVector3 v0,
+            Math::CVector3 v1,
+            Math::CVector3 v2
+            );
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //! Calcul l'intersection entre le rayon fourni et cette facette
+    //! Retourne systématiquement l'infini pour l'instant
+    Math::RayTracingResult intersect(Math::CRay3 ray) const;
+
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	CMesh*			m_pParent;
-	QVector<int>	m_vIndices;
-	Math::CVector3	m_vNormal;
-	Math::CVector3	m_vTangent;
-	int				m_iSmoothingGroup;
-	int				m_iMaterialIndex;
+    CMesh*          m_pParent;
+    QVector<int>    m_vIndices;
+    Math::CVector3  m_vNormal;
+    Math::CVector3  m_vTangent;
+    int             m_iSmoothingGroup;
+    int             m_iMaterialIndex;
 };

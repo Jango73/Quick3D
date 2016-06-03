@@ -3,72 +3,75 @@
 
 #include "quick3d_global.h"
 
-// Fondations
+//-------------------------------------------------------------------------------------------------
+
+// Application
 #include "CVector3.h"
 #include "CGeoloc.h"
 #include "CXMLNode.h"
-
 #include "CHeightField.h"
 #include "CSRTMData.h"
+
+//-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CSRTMField : public CHeightField
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//! Constructeur avec paramètres
-	CSRTMField(CXMLNode xParameters, const QString& sPathToSRTMFiles = "", double dValueForNoData = -2000.0);
+    //! Constructeur avec paramètres
+    CSRTMField(CXMLNode xParameters, const QString& sPathToSRTMFiles = "", double dValueForNoData = -2000.0);
 
-	//! Destructeur
-	virtual ~CSRTMField();
+    //! Destructeur
+    virtual ~CSRTMField();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);
+    //!
+    virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);
 
-	//!
-	virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, double* pRigidness = NULL);
+    //!
+    virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, double* pRigidness = NULL);
 
-	//!
-	virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, bool bForPhysics = true);
+    //!
+    virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, bool bForPhysics = true);
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual void flatten(const CGeoloc& gPosition, double dRadius);
+    //!
+    virtual void flatten(const CGeoloc& gPosition, double dRadius);
 
-	//!
-	void addChunk(CSRTMData* pData);
+    //!
+    void addChunk(CSRTMData* pData);
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes protégées
-	//-------------------------------------------------------------------------------------------------
-
-protected:
-
-	//!
-	void parseSRTMFiles();
-
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes protégées
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	CXMLNode			m_xParameters;
-	double				m_dValueForNoData;
-	QString				m_sPath;
-	QVector<CSRTMData*>	m_vChunks;
+    //!
+    void parseSRTMFiles();
+
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
+
+protected:
+
+    CXMLNode            m_xParameters;
+    double              m_dValueForNoData;
+    QString             m_sPath;
+    QVector<CSRTMData*> m_vChunks;
 };

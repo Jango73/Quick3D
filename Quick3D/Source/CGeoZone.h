@@ -7,87 +7,87 @@ class CGeoZone
 {
 public:
 
-	enum EGeoZoneFlag
-	{
-		gzfAll,
-		gzfUnknown,
-		gzfPedestrian,
-		gzfTerrestrialVehicle,
-		gzfSmallSeaVehicle,
-		gzfBigSeaVehicle
-	};
+    enum EGeoZoneFlag
+    {
+        gzfAll,
+        gzfUnknown,
+        gzfPedestrian,
+        gzfTerrestrialVehicle,
+        gzfSmallSeaVehicle,
+        gzfBigSeaVehicle
+    };
 
-	//!
-	CGeoZone()
-		: m_eFlag(gzfUnknown)
-	{
-	}
+    //!
+    CGeoZone()
+        : m_eFlag(gzfUnknown)
+    {
+    }
 
-	//!
-	CGeoZone(const CGeoZone& target)
-	{
-		*this = target;
-	}
+    //!
+    CGeoZone(const CGeoZone& target)
+    {
+        *this = target;
+    }
 
-	//!
-	CGeoZone(EGeoZoneFlag eFlag)
-		: m_eFlag(eFlag)
-	{
-	}
+    //!
+    CGeoZone(EGeoZoneFlag eFlag)
+        : m_eFlag(eFlag)
+    {
+    }
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	void setFlag(EGeoZoneFlag value) { m_eFlag = value; }
+    //!
+    void setFlag(EGeoZoneFlag value) { m_eFlag = value; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	EGeoZoneFlag getFlag() const { return m_eFlag; }
+    //!
+    EGeoZoneFlag getFlag() const { return m_eFlag; }
 
-	//!
-	QVector<CGeoloc>& getPoints() { return m_vPoints; }
+    //!
+    QVector<CGeoloc>& getPoints() { return m_vPoints; }
 
-	//!
-	const QVector<CGeoloc>& getPoints() const { return m_vPoints; }
+    //!
+    const QVector<CGeoloc>& getPoints() const { return m_vPoints; }
 
-	//!
-	QVector<Math::CVector2>& getLocalPoints() { return m_vLocalPoints; }
+    //!
+    QVector<Math::CVector2>& getLocalPoints() { return m_vLocalPoints; }
 
-	//!
-	const QVector<Math::CVector2>& getLocalPoints() const { return m_vLocalPoints; }
+    //!
+    const QVector<Math::CVector2>& getLocalPoints() const { return m_vLocalPoints; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthode de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthode de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	CGeoZone& operator = (const CGeoZone& target)
-	{
-		m_eFlag			= target.m_eFlag;
-		m_vPoints		= target.m_vPoints;
-		m_vLocalPoints	= target.m_vLocalPoints;
+    //!
+    CGeoZone& operator = (const CGeoZone& target)
+    {
+        m_eFlag			= target.m_eFlag;
+        m_vPoints		= target.m_vPoints;
+        m_vLocalPoints	= target.m_vLocalPoints;
 
-		return *this;
-	}
+        return *this;
+    }
 
-	//!
-	void addPoint(const CGeoloc& gPoint)
-	{
-		m_vPoints.append(gPoint);
-	}
+    //!
+    void addPoint(const CGeoloc& gPoint)
+    {
+        m_vPoints.append(gPoint);
+    }
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	EGeoZoneFlag			m_eFlag;
-	QVector<CGeoloc>	m_vPoints;
-	QVector<Math::CVector2>	m_vLocalPoints;
+    EGeoZoneFlag			m_eFlag;
+    QVector<CGeoloc>	m_vPoints;
+    QVector<Math::CVector2>	m_vLocalPoints;
 };

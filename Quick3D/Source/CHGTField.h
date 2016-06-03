@@ -34,7 +34,7 @@ public:
 	//-------------------------------------------------------------------------------------------------
 
 	//!
-	virtual double getHeightAt(const Math::CGeoloc& gPosition, double* pRigidness = NULL);
+	virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);
 
 	//!
 	virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, double* pRigidness = NULL);
@@ -47,7 +47,7 @@ public:
 	//-------------------------------------------------------------------------------------------------
 
 	//!
-	virtual void flatten(const Math::CGeoloc& gPosition, double dRadius);
+	virtual void flatten(const CGeoloc& gPosition, double dRadius);
 
 	//-------------------------------------------------------------------------------------------------
 	// Méthodes protégées

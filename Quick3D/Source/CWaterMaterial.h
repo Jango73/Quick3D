@@ -49,7 +49,7 @@ public:
 	virtual QGLShaderProgram* activate(CRenderContext* pContext);
 
 	//! Retourne l'altitude à la géolocalisation donnée
-	virtual double getHeightAt(const Math::CGeoloc& gPosition, double* pRigidness = NULL);
+	virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);
 
 	//! Retourne l'altitude à la géolocalisation donnée
 	virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, double* pRigidness = NULL);
@@ -62,7 +62,7 @@ public:
 	//-------------------------------------------------------------------------------------------------
 
 	//! Retourne l'altitude de vague à la géolocalisation donnée
-	double WaveHeight(Math::CGeoloc gPosition);
+	double WaveHeight(CGeoloc gPosition);
 
 	//-------------------------------------------------------------------------------------------------
 	// Méthodes protégées

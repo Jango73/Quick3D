@@ -109,6 +109,6 @@ double CHGTField::getHeightAt(const Math::CVector3& vPosition, const Math::CAxis
 
 //-------------------------------------------------------------------------------------------------
 
-void CHGTField::flatten(const Math::CGeoloc& gPosition, double dRadius)
+void CHGTField::flatten(const CGeoloc& gPosition, double dRadius)
 {
 }

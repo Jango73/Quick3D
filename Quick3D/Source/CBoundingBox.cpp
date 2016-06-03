@@ -113,7 +113,7 @@ bool CBoundingBox::contains(CGeoloc gPosition) const
 
 //-------------------------------------------------------------------------------------------------
 
-bool CBoundingBox::containsSpherical(Math::CGeoloc gPosition) const
+bool CBoundingBox::containsSpherical(CGeoloc gPosition) const
 {
 	return (gPosition.toVector3() - center()).getMagnitude() < radius();
 }

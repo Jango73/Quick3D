@@ -18,175 +18,175 @@ class QUICK3D_EXPORT CPhysicalComponent : public CComponent
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Enumérateurs
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Enumérateurs
+    //-------------------------------------------------------------------------------------------------
 
-	enum ECollisionType
-	{
-		ctSphere,
-		ctBox,
-		ctMesh
-	};
+    enum ECollisionType
+    {
+        ctSphere,
+        ctBox,
+        ctMesh
+    };
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//! Retourne une nouvelle instance de cet objet
-	static CComponent* instanciator(C3DScene* pScene);
+    //! Retourne une nouvelle instance de cet objet
+    static CComponent* instanciator(C3DScene* pScene);
 
-	//! Constructeur d'après une scène
-	CPhysicalComponent(C3DScene* pScene);
+    //! Constructeur d'après une scène
+    CPhysicalComponent(C3DScene* pScene);
 
-	//! Destructeur
-	virtual ~CPhysicalComponent();
+    //! Destructeur
+    virtual ~CPhysicalComponent();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//! Définit la trainée
-	void setDrag_norm(double value) { m_dDrag_norm = value; }
+    //! Définit la trainée
+    void setDrag_norm(double value) { m_dDrag_norm = value; }
 
-	//! Définit la trainée angulaire
-	void setAngularDrag_norm(double value) { m_dAngularDrag_norm = value; }
+    //! Définit la trainée angulaire
+    void setAngularDrag_norm(double value) { m_dAngularDrag_norm = value; }
 
-	//! Définit la masse en kilogrammes
-	void setMass_kg(double value) { m_dMass_kg = value; }
+    //! Définit la masse en kilogrammes
+    void setMass_kg(double value) { m_dMass_kg = value; }
 
-	//! Définit la vélocité en mètres/seconde
-	void setVelocity_ms(Math::CVector3 value) { m_vVelocity_ms = value; }
+    //! Définit la vélocité en mètres/seconde
+    void setVelocity_ms(Math::CVector3 value) { m_vVelocity_ms = value; }
 
-	//! Définit la vélocité angulaire en radians/seconde
-	void setAngularVelocity_rs(Math::CVector3 value) { m_vAngularVelocity_rs = value; }
+    //! Définit la vélocité angulaire en radians/seconde
+    void setAngularVelocity_rs(Math::CVector3 value) { m_vAngularVelocity_rs = value; }
 
-	//! Définit l'accelération en mètres/seconde/seconde
-	void setAcceleration_mss(Math::CVector3 value) { m_vSummedForces_mss = value; }
+    //! Définit l'accelération en mètres/seconde/seconde
+    void setAcceleration_mss(Math::CVector3 value) { m_vSummedForces_mss = value; }
 
-	//! Définit l'accelération angulaire en mètres/seconde/seconde
-	void setAngularAcceleration_rss(Math::CVector3 value) { m_vSummedTorques_rss = value; }
+    //! Définit l'accelération angulaire en mètres/seconde/seconde
+    void setAngularAcceleration_rss(Math::CVector3 value) { m_vSummedTorques_rss = value; }
 
-	//! Définit si les collisions sont activées
-	void setCollisions(bool bEnabled);
+    //! Définit si les collisions sont activées
+    void setCollisions(bool bEnabled);
 
-	//! Définit le type d'objet de collision à utiliser
-	void setCollisionType (ECollisionType eType);
+    //! Définit le type d'objet de collision à utiliser
+    void setCollisionType (ECollisionType eType);
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//! Retourne le nom de cette classe
-	virtual QString getClassName() const { return ClassName_CPhysicalComponent; }
+    //! Retourne le nom de cette classe
+    virtual QString getClassName() const { return ClassName_CPhysicalComponent; }
 
-	//! Retourne la trainée normalisée
-	double getDrag_norm() const { return m_dDrag_norm; }
+    //! Retourne la trainée normalisée
+    double getDrag_norm() const { return m_dDrag_norm; }
 
-	//! Retourne la trainée angulaire normalisée
-	double getAngularDrag_norm() const { return m_dAngularDrag_norm; }
+    //! Retourne la trainée angulaire normalisée
+    double getAngularDrag_norm() const { return m_dAngularDrag_norm; }
 
-	//! Retourne la masse en kilogrammes
-	double getMass_kg() const { return m_dMass_kg; }
+    //! Retourne la masse en kilogrammes
+    double getMass_kg() const { return m_dMass_kg; }
 
-	//! Retourne la masse totale (enfants compris) en kilogrammes
-	double getTotalMass_kg() const;
+    //! Retourne la masse totale (enfants compris) en kilogrammes
+    double getTotalMass_kg() const;
 
-	//! Retourne le vecteur vélocité en mètres/seconde
-	Math::CVector3 getVelocity_ms() const { return m_vVelocity_ms; }
+    //! Retourne le vecteur vélocité en mètres/seconde
+    Math::CVector3 getVelocity_ms() const { return m_vVelocity_ms; }
 
-	//! Retourne la vélocité angulaire en radians/seconde
-	Math::CVector3 getAngularVelocity_rs() const { return m_vAngularVelocity_rs; }
+    //! Retourne la vélocité angulaire en radians/seconde
+    Math::CVector3 getAngularVelocity_rs() const { return m_vAngularVelocity_rs; }
 
-	//! Retourne toutes les forces en mètres/seconde/seconde
-	Math::CVector3 getSummedForces_mss()  const { return m_vSummedForces_mss; }
+    //! Retourne toutes les forces en mètres/seconde/seconde
+    Math::CVector3 getSummedForces_mss()  const { return m_vSummedForces_mss; }
 
-	//! Retourne tous les couples en radians/seconde/seconde
-	Math::CVector3 getSummedTorques_rss() const { return m_vSummedTorques_rss; }
+    //! Retourne tous les couples en radians/seconde/seconde
+    Math::CVector3 getSummedTorques_rss() const { return m_vSummedTorques_rss; }
 
-	//! Retourne vrai si les collisions sont activées
-	bool getCollisionsActive() const { return m_bCollisionsActive; }
+    //! Retourne vrai si les collisions sont activées
+    bool getCollisionsActive() const { return m_bCollisionsActive; }
 
-	//! Retourne le type d'objet utilisé pour les collisions
-	ECollisionType getCollisionType() const { return m_eCollisionType; }
+    //! Retourne le type d'objet utilisé pour les collisions
+    ECollisionType getCollisionType() const { return m_eCollisionType; }
 
-	//!
-	Math::CVector3 getVelocityVectorAngles() const;
+    //!
+    Math::CVector3 getVelocityVectorAngles() const;
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//! Opérateur d'assignation
-	CPhysicalComponent& operator = (const CPhysicalComponent& target);
+    //! Opérateur d'assignation
+    CPhysicalComponent& operator = (const CPhysicalComponent& target);
 
-	//! Charge les paramètres de cet objet
-	virtual void loadParameters(CXMLNode xComponent);
+    //! Charge les paramètres de cet objet
+    virtual void loadParameters(CXMLNode xComponent);
 
-	//! Méthode de mise à jour avec temps delta depuis la dernière itération
-	virtual void update(double dDeltaTime);
+    //! Méthode de mise à jour avec temps delta depuis la dernière itération
+    virtual void update(double dDeltaTime);
 
-	//! Appel de la méthode update des enfants
-	virtual void postUpdate(double dDeltaTimeS);
+    //! Appel de la méthode update des enfants
+    virtual void postUpdate(double dDeltaTimeS);
 
-	//! Dump du contenu dans un flux
-	virtual void dump(QTextStream& stream, int iIdent);
+    //! Dump du contenu dans un flux
+    virtual void dump(QTextStream& stream, int iIdent);
 
-	//! Ajoute un champ de hauteurs pour cet objet
-	void addField(CHeightField* value);
+    //! Ajoute un champ de hauteurs pour cet objet
+    void addField(CHeightField* value);
 
-	//! Arrête les calculs de physique
-	void sleep();
+    //! Arrête les calculs de physique
+    void sleep();
 
-	//! Reprend les calculs de physique
-	void wakeUp();
+    //! Reprend les calculs de physique
+    void wakeUp();
 
-	//! Ajoute une force en kilogrammes dans le repère local de l'objet, de manière excentrée
-	//! Elle peut donc produire un couple
-	void addUncenteredLocalForce_kg(Math::CVector3 vPosition, Math::CVector3 vForce_kg);
+    //! Ajoute une force en kilogrammes dans le repère local de l'objet, de manière excentrée
+    //! Elle peut donc produire un couple
+    void addUncenteredLocalForce_kg(Math::CVector3 vPosition, Math::CVector3 vForce_kg);
 
-	//! Ajoute une force en kilogrammes dans le repère local de l'objet
-	void addLocalForce_kg(Math::CVector3 vForce_kg);
+    //! Ajoute une force en kilogrammes dans le repère local de l'objet
+    void addLocalForce_kg(Math::CVector3 vForce_kg);
 
-	//! Ajoute une force en kilogrammes dans le repère NOLL de l'objet
-	void addForce_kg(Math::CVector3 vForce_kg);
+    //! Ajoute une force en kilogrammes dans le repère NOLL de l'objet
+    void addForce_kg(Math::CVector3 vForce_kg);
 
-	//! Ajoute un couple en kilogrammes dans le repère local de l'objet
-	void addLocalTorque_kg(Math::CVector3 vForce_kg);
+    //! Ajoute un couple en kilogrammes dans le repère local de l'objet
+    void addLocalTorque_kg(Math::CVector3 vForce_kg);
 
-	//! Ajoute un couple en kilogrammes dans le repère NOLL de l'objet
-	void addTorque_kg(Math::CVector3 vForce_kg);
+    //! Ajoute un couple en kilogrammes dans le repère NOLL de l'objet
+    void addTorque_kg(Math::CVector3 vForce_kg);
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes statiques
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes statiques
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	static void computeCollisions(QVector<QSharedPointer<CComponent> >& vComponents, double dDeltaTimeS);
+    //!
+    static void computeCollisions(QVector<QSharedPointer<CComponent> >& vComponents, double dDeltaTimeS);
 
-	//!
-	static void computeCollisionsForComponent(CPhysicalComponent* pComponent, QVector<QSharedPointer<CComponent> >& vOtherComponents, double dDeltaTimeS);
+    //!
+    static void computeCollisionsForComponent(CPhysicalComponent* pComponent, QVector<QSharedPointer<CComponent> >& vOtherComponents, double dDeltaTimeS);
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	QVector<CHeightField*>	m_pFields;						// Les champs de hauteurs dont dépend cet objet
+    QVector<CHeightField*>	m_pFields;						// Les champs de hauteurs dont dépend cet objet
 
-	bool					m_bPhysicsActive;				// Calculs de physique activés
-	bool					m_bCollisionsActive;			// Calculs de collisions activés
-	bool					m_bOnGround;					// Indicateur si véhicule au sol
-	double					m_dDrag_norm;					// Facteur de trainée normalisé (0..1)
-	double					m_dAngularDrag_norm;			// Facteur de trainée angulaire normalisé (0..1)
-	double					m_dFriction_norm;				// Facteur de friction normalisé (0..1)
-	double					m_dMass_kg;						// Masse en kilogrammes
-	double					m_dStickToNOLL;					// 
-	Math::CVector3			m_vCenterOfMass;				// Centre de masse
-	Math::CVector3			m_vVelocity_ms;					// Vélocité en mètres/seconde, repère NOLL
-	Math::CVector3			m_vAngularVelocity_rs;			// Vélocité angulaire en degrés/seconde, repère NOLL
-	Math::CVector3			m_vSummedForces_mss;			// Accelération en mètres/seconde/seconde, repère NOLL
-	Math::CVector3			m_vSummedTorques_rss;			// Accelération angulaire en mètres/seconde/seconde, repère NOLL
-	ECollisionType			m_eCollisionType;				// Type de collisions à utiliser
+    bool					m_bPhysicsActive;				// Calculs de physique activés
+    bool					m_bCollisionsActive;			// Calculs de collisions activés
+    bool					m_bOnGround;					// Indicateur si véhicule au sol
+    double					m_dDrag_norm;					// Facteur de trainée normalisé (0..1)
+    double					m_dAngularDrag_norm;			// Facteur de trainée angulaire normalisé (0..1)
+    double					m_dFriction_norm;				// Facteur de friction normalisé (0..1)
+    double					m_dMass_kg;						// Masse en kilogrammes
+    double					m_dStickToNOLL;					//
+    Math::CVector3			m_vCenterOfMass;				// Centre de masse
+    Math::CVector3			m_vVelocity_ms;					// Vélocité en mètres/seconde, repère NOLL
+    Math::CVector3			m_vAngularVelocity_rs;			// Vélocité angulaire en degrés/seconde, repère NOLL
+    Math::CVector3			m_vSummedForces_mss;			// Accelération en mètres/seconde/seconde, repère NOLL
+    Math::CVector3			m_vSummedTorques_rss;			// Accelération angulaire en mètres/seconde/seconde, repère NOLL
+    ECollisionType			m_eCollisionType;				// Type de collisions à utiliser
 };

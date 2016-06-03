@@ -113,7 +113,7 @@ public:
 	void setParent(CComponent* pParent);
 
 	//! Définit la géolocalisation
-	virtual void setGeoloc(Math::CGeoloc gGeoloc);
+	virtual void setGeoloc(CGeoloc gGeoloc);
 
 	//! Définit la position d'origine
 	void setOriginPosition(Math::CVector3 Position);
@@ -198,7 +198,7 @@ public:
 	CComponent* getRoot();
 
 	//! Retourne la géolocalisation
-	virtual Math::CGeoloc getGeoloc() const;
+	virtual CGeoloc getGeoloc() const;
 
 	//! Retourne la rotation dans le repère ECEF (Earth-centered earth-fixed)
 	virtual Math::CVector3 getECEFRotation() const { return m_vECEFRotation; }
@@ -337,7 +337,7 @@ public:
 
 private:
 
-	Math::CGeoloc			m_gGeoloc;						// Géolocalisation de l'objet
+	CGeoloc			m_gGeoloc;						// Géolocalisation de l'objet
 	Math::CVector3			m_vECEFRotation;				// Rotation de l'objet dans le repère ECEF (Earth-centered earth-fixed)
 	Math::CVector3			m_vOriginPosition;				// Position de l'objet dans le repère NOLL (North-oriented local-level)
 	Math::CVector3			m_vOriginRotation;				// Rotation de l'objet (euleur) dans le repère NOLL
@@ -357,7 +357,7 @@ protected:
 	Math::CMatrix4			m_mWorldTransform;				// Transformation "monde" de l'objet
 	Math::CMatrix4			m_mWorldTransformInverse;		// Transformation "monde" inverse de l'objet
 	Math::CMatrix4			m_mPreviousWorldTransform;
-	Math::CGeoloc			m_gSavedGeoloc;
+	CGeoloc			m_gSavedGeoloc;
 	Math::CVector3			m_vSavedOriginPosition;
 	Math::CVector3			m_vSavedOriginRotation;
 	Math::CVector3			m_vSavedOriginScale;

@@ -12,13 +12,13 @@ using namespace Math;
 //-------------------------------------------------------------------------------------------------
 
 CBuildingGenerator::CBuildingGenerator(C3DScene* pScene)
-: m_mMutex(QMutex::Recursive)
-, m_pScene(pScene)
-, m_pBuilding1(NULL)
+    : m_mMutex(QMutex::Recursive)
+    , m_pScene(pScene)
+    , m_pBuilding1(NULL)
 {
-	m_pBuilding1 = QSharedPointer<CMesh>(new CBox(m_pScene, 150.0));
+    m_pBuilding1 = QSharedPointer<CMesh>(new CBox(m_pScene, 150.0));
 
-	m_pScene->getRessourcesManager()->share(m_pBuilding1);
+    m_pScene->getRessourcesManager()->share(m_pBuilding1);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -31,63 +31,63 @@ CBuildingGenerator::~CBuildingGenerator()
 
 CMeshInstance* CBuildingGenerator::getBuilding(EBuildingType eType, CGeoloc gPosition, double dRadius, double dSeed)
 {
-	return NULL;
+    return NULL;
 
-	/*
-	if (m_pScene == NULL) return NULL;
+    /*
+    if (m_pScene == NULL) return NULL;
 
-	QMutexLocker locker(&m_mMutex);
+    QMutexLocker locker(&m_mMutex);
 
-	CMeshInstance* pMeshInstance = m_pScene->getRessourcesManager()->share(m_pBuilding1);
-	CPerlin* perlin = CPerlin::getInstance();
+    CMeshInstance* pMeshInstance = m_pScene->getRessourcesManager()->share(m_pBuilding1);
+    CPerlin* perlin = CPerlin::getInstance();
 
-	double dBuildingTypeScale = 0.04;
+    double dBuildingTypeScale = 0.04;
 
-	switch (eType)
-	{
-	case BT_Skyscraper:
-		{
-			double dHeight = 150.0 + perlin->getNoise_0_1(vPosition * dBuildingTypeScale) * 150.0;
-			double dBasemintHeight = 10.0;
-			double dWidth = 20.0 + perlin->getNoise_0_1(vPosition * dBuildingTypeScale) * 20.0;
+    switch (eType)
+    {
+    case BT_Skyscraper:
+        {
+            double dHeight = 150.0 + perlin->getNoise_0_1(vPosition * dBuildingTypeScale) * 150.0;
+            double dBasemintHeight = 10.0;
+            double dWidth = 20.0 + perlin->getNoise_0_1(vPosition * dBuildingTypeScale) * 20.0;
 
-			Vector3 vNewPosition(vPosition.X, vPosition.Y - dBasemintHeight + (dHeight / 2.0), vPosition.Z);
-			Vector3 vNewScale(dWidth, dHeight + dBasemintHeight, dWidth);
+            Vector3 vNewPosition(vPosition.X, vPosition.Y - dBasemintHeight + (dHeight / 2.0), vPosition.Z);
+            Vector3 vNewScale(dWidth, dHeight + dBasemintHeight, dWidth);
 
-			pMeshInstance->setOriginPosition(vNewPosition);
-			pMeshInstance->setOriginScale(vNewScale);
-		}
-		break;
+            pMeshInstance->setOriginPosition(vNewPosition);
+            pMeshInstance->setOriginScale(vNewScale);
+        }
+        break;
 
-	case BT_MiddleSized:
-		{
-			double dHeight = 15.0 + perlin->getNoise_0_1(vPosition * dBuildingTypeScale) * 15.0;
-			double dBasemintHeight = 10.0;
-			double dWidth = 20.0 + perlin->getNoise_0_1(vPosition * dBuildingTypeScale) * 20.0;
+    case BT_MiddleSized:
+        {
+            double dHeight = 15.0 + perlin->getNoise_0_1(vPosition * dBuildingTypeScale) * 15.0;
+            double dBasemintHeight = 10.0;
+            double dWidth = 20.0 + perlin->getNoise_0_1(vPosition * dBuildingTypeScale) * 20.0;
 
-			Vector3 vNewPosition(vPosition.X, vPosition.Y - dBasemintHeight + (dHeight / 2.0), vPosition.Z);
-			Vector3 vNewScale(dWidth, dHeight + dBasemintHeight, dWidth);
+            Vector3 vNewPosition(vPosition.X, vPosition.Y - dBasemintHeight + (dHeight / 2.0), vPosition.Z);
+            Vector3 vNewScale(dWidth, dHeight + dBasemintHeight, dWidth);
 
-			pMeshInstance->setOriginPosition(vNewPosition);
-			pMeshInstance->setOriginScale(vNewScale);
-		}
-		break;
+            pMeshInstance->setOriginPosition(vNewPosition);
+            pMeshInstance->setOriginScale(vNewScale);
+        }
+        break;
 
-	case BT_House:
-		{
-			double dHeight = 4.0 + perlin->getNoise_0_1(vPosition * dBuildingTypeScale) * 2.0;
-			double dBasemintHeight = 10.0;
-			double dWidth = 10.0 + perlin->getNoise_0_1(vPosition * dBuildingTypeScale) * 5.0;
+    case BT_House:
+        {
+            double dHeight = 4.0 + perlin->getNoise_0_1(vPosition * dBuildingTypeScale) * 2.0;
+            double dBasemintHeight = 10.0;
+            double dWidth = 10.0 + perlin->getNoise_0_1(vPosition * dBuildingTypeScale) * 5.0;
 
-			Vector3 vNewPosition(vPosition.X, vPosition.Y - dBasemintHeight + (dHeight / 2.0), vPosition.Z);
-			Vector3 vNewScale(dWidth, dHeight + dBasemintHeight, dWidth);
+            Vector3 vNewPosition(vPosition.X, vPosition.Y - dBasemintHeight + (dHeight / 2.0), vPosition.Z);
+            Vector3 vNewScale(dWidth, dHeight + dBasemintHeight, dWidth);
 
-			pMeshInstance->setOriginPosition(vNewPosition);
-			pMeshInstance->setOriginScale(vNewScale);
-		}
-		break;
-	}
+            pMeshInstance->setOriginPosition(vNewPosition);
+            pMeshInstance->setOriginScale(vNewScale);
+        }
+        break;
+    }
 
-	return pMeshInstance;
-	*/
+    return pMeshInstance;
+    */
 }

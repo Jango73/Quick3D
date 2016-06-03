@@ -17,15 +17,15 @@ class C3DScene;
 
 enum EWaypointType
 {
-	wtNone,
-	wtFix,
-	wtVOR,
-	wtVORTAC,
-	wtNDB,
-	wtAirport,
-	wtRunway,
-	wtBottomOfClimb,
-	wtTopOfDescent
+    wtNone,
+    wtFix,
+    wtVOR,
+    wtVORTAC,
+    wtNDB,
+    wtAirport,
+    wtRunway,
+    wtBottomOfClimb,
+    wtTopOfDescent
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -34,66 +34,66 @@ class QUICK3D_EXPORT CWaypoint
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	CWaypoint();
+    //!
+    CWaypoint();
 
-	//!
-	CWaypoint(EWaypointType eType, QString sName, Math::CGeoloc gGeoloc, double dFrequency, bool bGenerated = false);
+    //!
+    CWaypoint(EWaypointType eType, QString sName, CGeoloc gGeoloc, double dFrequency, bool bGenerated = false);
 
-	//!
-	virtual ~CWaypoint();
+    //!
+    virtual ~CWaypoint();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes héritées
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes héritées
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual QString getClassName() const { return ClassName_CWaypoint; }
+    //!
+    virtual QString getClassName() const { return ClassName_CWaypoint; }
 
-	//!
-	QString getName() const { return m_sName; }
+    //!
+    QString getName() const { return m_sName; }
 
-	//!
-	EWaypointType getType() const { return m_eType; }
+    //!
+    EWaypointType getType() const { return m_eType; }
 
-	//!
-	Math::CGeoloc getGeoloc() const { return m_gGeoloc; }
+    //!
+    CGeoloc getGeoloc() const { return m_gGeoloc; }
 
-	//!
-	Math::CGeoloc getEndGeoloc() const { return m_gEndGeoloc; }
+    //!
+    CGeoloc getEndGeoloc() const { return m_gEndGeoloc; }
 
-	//!
-	double getFrequency() const { return m_dFrequency; }
+    //!
+    double getFrequency() const { return m_dFrequency; }
 
-	//!
-	bool isGenerated() const { return m_bGenerated; }
+    //!
+    bool isGenerated() const { return m_bGenerated; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	EWaypointType	m_eType;
-	QString			m_sName;
-	Math::CGeoloc	m_gGeoloc;
-	Math::CGeoloc	m_gEndGeoloc;
-	double			m_dFrequency;
-	bool			m_bGenerated;
+    EWaypointType   m_eType;
+    QString         m_sName;
+    CGeoloc         m_gGeoloc;
+    CGeoloc         m_gEndGeoloc;
+    double          m_dFrequency;
+    bool            m_bGenerated;
 };

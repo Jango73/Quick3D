@@ -63,7 +63,7 @@ public:
 	static CComponent* instanciator(C3DScene* pScene);
 
 	//!
-	CAutoTerrain(C3DScene* pScene, Math::CGeoloc gCameraPosition = Math::CGeoloc(), CHeightField* pHeights = NULL, bool bGenerateNow = false);
+	CAutoTerrain(C3DScene* pScene, CGeoloc gCameraPosition = CGeoloc(), CHeightField* pHeights = NULL, bool bGenerateNow = false);
 
 	//!
 	virtual ~CAutoTerrain();
@@ -108,10 +108,10 @@ public:
 	virtual void postUpdate(double dDeltaTime);
 
 	//!
-	virtual double getHeightAt(const Math::CGeoloc& gPosition, double* pRigidness = NULL);
+	virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);
 
 	//!
-	virtual void flatten(const Math::CGeoloc& gPosition, double dRadius);
+	virtual void flatten(const CGeoloc& gPosition, double dRadius);
 
 	//! Calcul d'intersection avec un rayon
 	virtual Math::RayTracingResult intersect(Math::CRay3 ray) const;
@@ -135,7 +135,7 @@ protected:
 	void buildRecurse(CWorldChunk* pChunk, CRenderContext* pContext, int iLevel);
 
 	//!
-	double getHeightAtRecurse(const Math::CGeoloc& gPosition, CWorldChunk* pChunk, double* pRigidness = NULL);
+	double getHeightAtRecurse(const CGeoloc& gPosition, CWorldChunk* pChunk, double* pRigidness = NULL);
 
 	//!
 	void collectGarbage();

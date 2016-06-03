@@ -13,10 +13,10 @@ using namespace Math;
 //-------------------------------------------------------------------------------------------------
 
 CTiledMaterial::CTiledMaterial(C3DScene* pScene)
-: CMaterial(pScene)
-, m_iLevels(18)
+    : CMaterial(pScene)
+    , m_iLevels(18)
 {
-	connect(&m_tClient, SIGNAL(tileReady(QString)), this, SLOT(onTileReady(QString)));
+    connect(&m_tClient, SIGNAL(tileReady(QString)), this, SLOT(onTileReady(QString)));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -29,161 +29,161 @@ CTiledMaterial::~CTiledMaterial()
 
 void CTiledMaterial::onTileReady(QString sTileName)
 {
-	if (m_mTiles.contains(sTileName))
-	{
-		// m_mTiles[sTileName].m_uiTexture = createTexture(m_tClient.getTile(sTileName), QSize(256, 256));
+    if (m_mTiles.contains(sTileName))
+    {
+        // m_mTiles[sTileName].m_uiTexture = createTexture(m_tClient.getTile(sTileName), QSize(256, 256));
 
-		m_mTiles[sTileName].m_pTexture = new CTexture(m_pScene, sTileName, m_tClient.getTile(sTileName), QSize(256, 256), m_vDiffuseTextures.count());
+        m_mTiles[sTileName].m_pTexture = new CTexture(m_pScene, sTileName, m_tClient.getTile(sTileName), QSize(256, 256), m_vDiffuseTextures.count());
 
-		LOG_DEBUG(QString("CTiledMaterial::onTileReady() : created texture %1").arg(m_mTiles[sTileName].m_pTexture->getGLTexture()));
-	}
+        LOG_DEBUG(QString("CTiledMaterial::onTileReady() : created texture %1").arg(m_mTiles[sTileName].m_pTexture->getGLTexture()));
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CVector2 CTiledMaterial::getTexCoords(const CGeoloc& gPosition, int iLevel)
 {
-	double dX = gPosition.Longitude / 180.0;
-	double dY = gPosition.Latitude / 90.0;
+    double dX = gPosition.Longitude / 180.0;
+    double dY = gPosition.Latitude / 90.0;
 
-	return CVector2(dX, dY);
+    return CVector2(dX, dY);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void CTiledMaterial::setCurrentPositionAndLevel(const Math::CGeoloc& gPosition, int iLevel)
+void CTiledMaterial::setCurrentPositionAndLevel(const CGeoloc& gPosition, int iLevel)
 {
-	m_sCurrentQuadKey = quadKeyFromPositionAndLevel(gPosition, iLevel);
+    m_sCurrentQuadKey = quadKeyFromPositionAndLevel(gPosition, iLevel);
 
-	if (quadKeyPresent(m_sCurrentQuadKey) == false)
-	{
-		m_mTiles[m_sCurrentQuadKey] = CTile(0, 0);
-		m_tClient.loadTile(m_sCurrentQuadKey);
-	}
+    if (quadKeyPresent(m_sCurrentQuadKey) == false)
+    {
+        m_mTiles[m_sCurrentQuadKey] = CTile(0, 0);
+        m_tClient.loadTile(m_sCurrentQuadKey);
+    }
 
-	collectGarbage();
+    collectGarbage();
 }
 
 //-------------------------------------------------------------------------------------------------
 
 QGLShaderProgram* CTiledMaterial::activate(CRenderContext* pContext)
 {
-	QGLShaderProgram* pProgram = CMaterial::activate(pContext);
+    QGLShaderProgram* pProgram = CMaterial::activate(pContext);
 
-	if (pProgram != NULL)
-	{
-		pProgram->setUniformValue("u_texture_diffuse_enable", (GLint) 0);
+    if (pProgram != NULL)
+    {
+        pProgram->setUniformValue("u_texture_diffuse_enable", (GLint) 0);
 
-		if (m_mTiles.contains(m_sCurrentQuadKey))
-		{
-			if (m_mTiles[m_sCurrentQuadKey].m_pTexture != NULL)
-			{
-				m_mTiles[m_sCurrentQuadKey].m_tLastUsed = QDateTime::currentDateTime();
-				m_mTiles[m_sCurrentQuadKey].m_pTexture->activate();
+        if (m_mTiles.contains(m_sCurrentQuadKey))
+        {
+            if (m_mTiles[m_sCurrentQuadKey].m_pTexture != NULL)
+            {
+                m_mTiles[m_sCurrentQuadKey].m_tLastUsed = QDateTime::currentDateTime();
+                m_mTiles[m_sCurrentQuadKey].m_pTexture->activate();
 
-				pProgram->setUniformValue("u_texture_diffuse_enable", (GLint) 1);
-				pProgram->setUniformValue("u_texture_diffuse_0", (GLint) 1);
-			}
-		}
-	}
+                pProgram->setUniformValue("u_texture_diffuse_enable", (GLint) 1);
+                pProgram->setUniformValue("u_texture_diffuse_0", (GLint) 1);
+            }
+        }
+    }
 
-	return pProgram;
+    return pProgram;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CGeoloc CTiledMaterial::transformGeoloc(const CGeoloc& gPosition)
 {
-	CGeoloc gReturnValue;
+    CGeoloc gReturnValue;
 
-	double dNormalized = gPosition.Latitude / (90.0 / Math::Pi); // 28.6512;
-	double dFinal = atan(sinh(dNormalized));
+    double dNormalized = gPosition.Latitude / (90.0 / Math::Pi); // 28.6512;
+    double dFinal = atan(sinh(dNormalized));
 
-	dFinal = Math::Angles::toDeg(dFinal);
+    dFinal = Math::Angles::toDeg(dFinal);
 
-	gReturnValue.Latitude = Math::Angles::clipDouble(dFinal, -LAT_MAX, LAT_MAX);
-	gReturnValue.Longitude = gPosition.Longitude;
-	gReturnValue.Altitude = gPosition.Altitude;
+    gReturnValue.Latitude = Math::Angles::clipDouble(dFinal, -LAT_MAX, LAT_MAX);
+    gReturnValue.Longitude = gPosition.Longitude;
+    gReturnValue.Altitude = gPosition.Altitude;
 
-	return gReturnValue;
+    return gReturnValue;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-QString CTiledMaterial::quadKeyFromPositionAndLevel(const Math::CGeoloc& gPosition, int iLevel)
+QString CTiledMaterial::quadKeyFromPositionAndLevel(const CGeoloc& gPosition, int iLevel)
 {
-	int iBingLevel = m_iLevels - iLevel;
+    int iBingLevel = m_iLevels - iLevel;
 
-	double dLatitude = (gPosition.Latitude * -1.0) + 90.0;
-	double dLongitude = Math::Angles::clipAngleDegree(gPosition.Longitude + 180.0);
-	double dLatScale = 90.0;
-	double dLonScale = 180.0;
+    double dLatitude = (gPosition.Latitude * -1.0) + 90.0;
+    double dLongitude = Math::Angles::clipAngleDegree(gPosition.Longitude + 180.0);
+    double dLatScale = 90.0;
+    double dLonScale = 180.0;
 
-	return QString("a") + TileXYToQuadKey(
-		(int) ( (dLongitude / dLonScale) * (pow(2.0, (double) iBingLevel - 1.0)) ),
-		(int) ( (dLatitude / dLatScale) * (pow(2.0, (double) iBingLevel - 1.0)) ),
-		iBingLevel
-		);
+    return QString("a") + TileXYToQuadKey(
+                (int) ( (dLongitude / dLonScale) * (pow(2.0, (double) iBingLevel - 1.0)) ),
+                (int) ( (dLatitude / dLatScale) * (pow(2.0, (double) iBingLevel - 1.0)) ),
+                iBingLevel
+                );
 }
 
 //-------------------------------------------------------------------------------------------------
 
 QString CTiledMaterial::TileXYToQuadKey(int tileX, int tileY, int levelOfDetail)
 {
-	int lTileX = tileX;
-	int lTileY = tileY;
+    int lTileX = tileX;
+    int lTileY = tileY;
 
-	QString sKey;
+    QString sKey;
 
-	while (levelOfDetail > 0)
-	{
-		int lX = lTileX % 2;
-		int lY = lTileY % 2;
+    while (levelOfDetail > 0)
+    {
+        int lX = lTileX % 2;
+        int lY = lTileY % 2;
 
-		lTileX = lTileX / 2;
-		lTileY = lTileY / 2;
+        lTileX = lTileX / 2;
+        lTileY = lTileY / 2;
 
-		int lCode = (lY * 2) + lX;
-		sKey.insert(0, QString('0' + lCode));
+        int lCode = (lY * 2) + lX;
+        sKey.insert(0, QString('0' + lCode));
 
-		levelOfDetail--;
-	}
+        levelOfDetail--;
+    }
 
-	return sKey;
+    return sKey;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 bool CTiledMaterial::quadKeyPresent(QString sKey)
 {
-	return m_mTiles.contains(sKey);
+    return m_mTiles.contains(sKey);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CTiledMaterial::collectGarbage()
 {
-	static int iGarbageCounter = 0;
+    static int iGarbageCounter = 0;
 
-	iGarbageCounter++;
+    iGarbageCounter++;
 
-	if (iGarbageCounter > 2000)
-	{
-		iGarbageCounter = 0;
+    if (iGarbageCounter > 2000)
+    {
+        iGarbageCounter = 0;
 
-		QList<QString> keys = m_mTiles.keys();
+        QList<QString> keys = m_mTiles.keys();
 
-		for (int iIndex = 0; iIndex < keys.count(); iIndex++)
-		{
-			QString sKey = keys[iIndex];
+        for (int iIndex = 0; iIndex < keys.count(); iIndex++)
+        {
+            QString sKey = keys[iIndex];
 
-			if (m_mTiles[sKey].m_tLastUsed.secsTo(QDateTime::currentDateTime()) > 20)
-			{
-				// LOG_DEBUG(QString("CTiledMaterial::collectGarbage() : deleting texture %1").arg(m_mTiles[sKey].m_uiTexture));
-				// destroyTexture(m_mTiles[sKey].m_uiTexture);
+            if (m_mTiles[sKey].m_tLastUsed.secsTo(QDateTime::currentDateTime()) > 20)
+            {
+                // LOG_DEBUG(QString("CTiledMaterial::collectGarbage() : deleting texture %1").arg(m_mTiles[sKey].m_uiTexture));
+                // destroyTexture(m_mTiles[sKey].m_uiTexture);
 
-				m_mTiles.remove(sKey);
-			}
-		}
-	}
+                m_mTiles.remove(sKey);
+            }
+        }
+    }
 }

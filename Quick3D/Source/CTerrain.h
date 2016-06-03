@@ -57,10 +57,10 @@ public:
 	CTerrain(
 		C3DScene* pScene,
 		CHeightField* pHeights,
-		Math::CGeoloc gOriginalGeoloc,
-		Math::CGeoloc gOriginalSize,
-		Math::CGeoloc gGeoloc,
-		Math::CGeoloc gSize,
+		CGeoloc gOriginalGeoloc,
+		CGeoloc gOriginalSize,
+		CGeoloc gGeoloc,
+		CGeoloc gSize,
 		int iPoints,
 		int iLevel,
 		int iMaxLevel,
@@ -114,10 +114,10 @@ public:
 	virtual void paint(CRenderContext* pContext);
 
 	//!
-	virtual double getHeightAt(const Math::CGeoloc& gPosition, double* pRigidness = NULL);
+	virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);
 
 	//!
-	virtual void flatten(const Math::CGeoloc& gPosition, double dRadius);
+	virtual void flatten(const CGeoloc& gPosition, double dRadius);
 
 	//! Calcul d'intersection avec un rayon
 	virtual Math::RayTracingResult intersect(Math::CRay3 ray) const;
@@ -148,9 +148,9 @@ public:
 protected:
 
 	CHeightField*						m_pHeights;
-	Math::CGeoloc						m_gOriginalGeoloc;
-	Math::CGeoloc						m_gOriginalSize;
-	Math::CGeoloc						m_gSize;
+	CGeoloc						m_gOriginalGeoloc;
+	CGeoloc						m_gOriginalSize;
+	CGeoloc						m_gSize;
 	CMesh*								m_pMesh;
 	QVector<CMesh*>						m_vSeams;
 	int									m_iNumPoints;

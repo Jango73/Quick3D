@@ -16,38 +16,38 @@
 
 class QUICK3D_EXPORT CComponentFactory : public CSingleton<CComponentFactory>
 {
-	friend class CSingleton<CComponentFactory>;
+    friend class CSingleton<CComponentFactory>;
 
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	CComponentFactory();
+    //!
+    CComponentFactory();
 
-	//!
-	virtual ~CComponentFactory();
+    //!
+    virtual ~CComponentFactory();
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//! Enregistre les composants du noyau
-	void registerCoreComponents();
+    //! Enregistre les composants du noyau
+    void registerCoreComponents();
 
-	//! Enregistre un composant
-	void registerComponent(QString sClassName, MComponentInstanciator pInstanciator);
+    //! Enregistre un composant
+    void registerComponent(QString sClassName, MComponentInstanciator pInstanciator);
 
-	//! Instancie un composant selon son nom de classe pour la scène donnée
-	CComponent* instanciateComponent(QString sClassName, C3DScene* pScene);
+    //! Instancie un composant selon son nom de classe pour la scène donnée
+    CComponent* instanciateComponent(QString sClassName, C3DScene* pScene);
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	static QMap<QString, MComponentInstanciator>	s_vComponentInstanciators;
+    static QMap<QString, MComponentInstanciator>	s_vComponentInstanciators;
 };

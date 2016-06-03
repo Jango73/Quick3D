@@ -376,7 +376,7 @@ void Quick3DTest::onExportTerrainClicked()
 
 			double dPointSpacing = dTileSizeM / (double) iPointsPerTile;
 
-			Math::CGeoloc gStart(dStartLat, dStartLon, 0.0);
+			CGeoloc gStart(dStartLat, dStartLon, 0.0);
 
 			double dCurrentX = 0.0;
 			double dCurrentZ = 0.0;
@@ -403,7 +403,7 @@ void Quick3DTest::onExportTerrainClicked()
 								double dPointX = dCurrentX + dPointSpacing * (double) iX;
 								double dPointZ = dCurrentZ + dPointSpacing * (double) iZ;
 
-								Math::CGeoloc gPoint(gStart, Math::CVector3(dPointX, 0.0, dPointZ));
+								CGeoloc gPoint(gStart, Math::CVector3(dPointX, 0.0, dPointZ));
 
 								double dAltitude = dHeightOffset + pTerrain->getHeights()->getHeightAt(gPoint);
 								if (dAltitude < 0.0) dAltitude = 0.0;

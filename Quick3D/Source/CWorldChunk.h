@@ -28,162 +28,162 @@ class CAutoTerrain;
 
 enum ETerrainType
 {
-	ttGround,
-	ttWater,
-	ttVegetation
+    ttGround,
+    ttWater,
+    ttVegetation
 };
 
 class QUICK3D_EXPORT CWorldChunk : public CWorker, public CComponent, public CHeightField
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	CWorldChunk(C3DScene* pScene, CAutoTerrain* pAutoTerrain, CHeightField* pContainer);
+    //!
+    CWorldChunk(C3DScene* pScene, CAutoTerrain* pAutoTerrain, CHeightField* pContainer);
 
-	//!
-	virtual ~CWorldChunk();
+    //!
+    virtual ~CWorldChunk();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual void setGeoloc(Math::CGeoloc gGeoloc);
+    //!
+    virtual void setGeoloc(CGeoloc gGeoloc);
 
-	//!
-	virtual void setSize(Math::CGeoloc value);
+    //!
+    virtual void setSize(CGeoloc value);
 
-	//!
-	void setLastUsed(QDateTime value) { m_tLastUsed = value; }
+    //!
+    void setLastUsed(QDateTime value) { m_tLastUsed = value; }
 
-	//!
-	void setTerrain(CTerrain* value, bool bGenerateNow = false);
+    //!
+    void setTerrain(CTerrain* value, bool bGenerateNow = false);
 
-	//!
-	void setWater(CTerrain* value);
+    //!
+    void setWater(CTerrain* value);
 
-	//!
-	void setDistance(double value) { m_dDistance = value; }
+    //!
+    void setDistance(double value) { m_dDistance = value; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	Math::CGeoloc getOriginalGeoloc() const { return m_gOriginalGeoloc; }
+    //!
+    CGeoloc getOriginalGeoloc() const { return m_gOriginalGeoloc; }
 
-	//!
-	Math::CGeoloc getOriginalSize() const { return m_gOriginalSize; }
+    //!
+    CGeoloc getOriginalSize() const { return m_gOriginalSize; }
 
-	//!
-	Math::CGeoloc getSize() const { return m_gSize; }
+    //!
+    CGeoloc getSize() const { return m_gSize; }
 
-	//!
-	CTerrain* getTerrain() const { return m_pTerrain; }
+    //!
+    CTerrain* getTerrain() const { return m_pTerrain; }
 
-	//!
-	CTerrain* getWater() const { return m_pWater; }
+    //!
+    CTerrain* getWater() const { return m_pWater; }
 
-	//!
-	QDateTime getLastUsed() const { return m_tLastUsed; }
+    //!
+    QDateTime getLastUsed() const { return m_tLastUsed; }
 
-	//!
-	bool isOK() const { return m_bOK; }
+    //!
+    bool isOK() const { return m_bOK; }
 
-	//!
-	static int getNumWorldChunks() { return m_iNumWorldChunks; }
+    //!
+    static int getNumWorldChunks() { return m_iNumWorldChunks; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes héritées
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes héritées
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual CBoundingBox getBounds() const;
+    //!
+    virtual CBoundingBox getBounds() const;
 
-	//!
-	virtual CBoundingBox getWorldBounds() const;
+    //!
+    virtual CBoundingBox getWorldBounds() const;
 
-	//!
-	virtual CBoundingBox getBuildWorldBounds();
+    //!
+    virtual CBoundingBox getBuildWorldBounds();
 
-	//!
-	virtual void update(double dDeltaTime);
+    //!
+    virtual void update(double dDeltaTime);
 
-	//!
-	virtual double getHeightAt(const Math::CGeoloc& gPosition, double* pRigidness = NULL);
+    //!
+    virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);
 
-	//!
-	virtual void flatten(const Math::CGeoloc& gPosition, double dRadius);
+    //!
+    virtual void flatten(const CGeoloc& gPosition, double dRadius);
 
-	//! Calcul d'intersection avec un rayon
-	virtual Math::RayTracingResult intersect(Math::CRay3 ray) const;
+    //! Calcul d'intersection avec un rayon
+    virtual Math::RayTracingResult intersect(Math::CRay3 ray) const;
 
-	//! Dump du contenu dans un flux
-	virtual void dump(QTextStream& stream, int iIdent);
+    //! Dump du contenu dans un flux
+    virtual void dump(QTextStream& stream, int iIdent);
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	bool operator < (const CWorldChunk& other);
+    //!
+    bool operator < (const CWorldChunk& other);
 
-	//!
-	void paint(CRenderContext* pContext, ETerrainType eType);
+    //!
+    void paint(CRenderContext* pContext, ETerrainType eType);
 
-	//!
-	bool drawable();
+    //!
+    bool drawable();
 
-	//!
-	bool isEmpty();
+    //!
+    bool isEmpty();
 
-	//!
-	CBoundingBox createBoundsForTerrain(Math::CGeoloc gPosition, Math::CGeoloc gSize, double dAltitudeFactor = 1.0);
+    //!
+    CBoundingBox createBoundsForTerrain(CGeoloc gPosition, CGeoloc gSize, double dAltitudeFactor = 1.0);
 
-	//!
-	void build();
+    //!
+    void build();
 
-	//!
-	void clearTerrain();
+    //!
+    void clearTerrain();
 
-	//!
-	virtual void work();
+    //!
+    virtual void work();
 
-	//!
-	void placeTree(Math::CGeoloc gPosition, double dRadius, int iTreeIndex);
+    //!
+    void placeTree(CGeoloc gPosition, double dRadius, int iTreeIndex);
 
-	//!
-	void placeBuilding(Math::CGeoloc gPosition, double dRadius, int iBuildingIndex);
+    //!
+    void placeBuilding(CGeoloc gPosition, double dRadius, int iBuildingIndex);
 
-	//!
-	bool checkPositionFree(Math::CGeoloc gPosition, double dRadius);
+    //!
+    bool checkPositionFree(CGeoloc gPosition, double dRadius);
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	CAutoTerrain*					m_pAutoTerrain;
-	CHeightField*					m_pContainer;
-	Math::CGeoloc					m_gOriginalGeoloc;
-	Math::CGeoloc					m_gOriginalSize;
-	Math::CGeoloc					m_gSize;
-	CBoundingBox					m_bWorldBounds;
-	CTerrain*						m_pTerrain;
-	CTerrain*						m_pWater;
-	CBox*							m_mBoundingBoxVisual;
-	QVector<CBoundedMeshInstances*>	m_vMeshes;
-	QDateTime						m_tLastUsed;
-	QMutex							m_mMutex;
-	double							m_dDistance;
-	bool							m_bOK;
+    CAutoTerrain*                   m_pAutoTerrain;
+    CHeightField*                   m_pContainer;
+    CGeoloc                         m_gOriginalGeoloc;
+    CGeoloc                         m_gOriginalSize;
+    CGeoloc                         m_gSize;
+    CBoundingBox                    m_bWorldBounds;
+    CTerrain*                       m_pTerrain;
+    CTerrain*                       m_pWater;
+    CBox*                           m_mBoundingBoxVisual;
+    QVector<CBoundedMeshInstances*> m_vMeshes;
+    QDateTime						m_tLastUsed;
+    QMutex							m_mMutex;
+    double							m_dDistance;
+    bool							m_bOK;
 
-	static int						m_iNumWorldChunks;
+    static int						m_iNumWorldChunks;
 };

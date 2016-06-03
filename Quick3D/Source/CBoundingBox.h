@@ -77,16 +77,16 @@ public:
 	bool contains(Math::CVector3 vPosition) const;
 
 	//!
-	bool contains(Math::CGeoloc gPosition) const;
+	bool contains(CGeoloc gPosition) const;
 
 	//!
-	bool containsSpherical(Math::CGeoloc gPosition) const;
+	bool containsSpherical(CGeoloc gPosition) const;
 
 	//!
 	bool contains(Math::CVector3 vPosition, double dRadius) const;
 
 	//!
-	bool contains(Math::CGeoloc gPosition, double dRadius) const;
+	bool contains(CGeoloc gPosition, double dRadius) const;
 
 	//!
 	bool intersects(const CBoundingBox& target) const;

@@ -41,7 +41,7 @@ public:
 	//-------------------------------------------------------------------------------------------------
 
 	//!
-	CHGTData(const Math::CGeoloc& gGeoloc, const Math::CGeoloc& gSize);
+	CHGTData(const CGeoloc& gGeoloc, const CGeoloc& gSize);
 
 	//!
 	virtual ~CHGTData();
@@ -58,7 +58,7 @@ public:
 	//-------------------------------------------------------------------------------------------------
 
 	//!
-	double getHeightAt(const Math::CGeoloc& gPosition, double* pRigidness = NULL);
+	double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);
 
 	//!
 	int getNumCellsWidth() { return m_iNumCellsWidth; }
@@ -71,7 +71,7 @@ public:
 	//-------------------------------------------------------------------------------------------------
 
 	//!
-	bool contains(const Math::CGeoloc& gPosition) const;
+	bool contains(const CGeoloc& gPosition) const;
 
 	//-------------------------------------------------------------------------------------------------
 	// Méthodes protégées
@@ -88,8 +88,8 @@ protected:
 	QMutex				m_tMutex;
 	QFile*				m_pFile;
 	QString				m_sFileName;
-	Math::CGeoloc		m_gGeoloc;
-	Math::CGeoloc		m_gSize;
+	CGeoloc		m_gGeoloc;
+	CGeoloc		m_gSize;
 	int					m_iNumCellsWidth;
 	int					m_iNumCellsHeight;
 };

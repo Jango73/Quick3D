@@ -50,10 +50,10 @@ public:
 	EGeoZoneFlag getFlag() const { return m_eFlag; }
 
 	//!
-	QVector<Math::CGeoloc>& getPoints() { return m_vPoints; }
+	QVector<CGeoloc>& getPoints() { return m_vPoints; }
 
 	//!
-	const QVector<Math::CGeoloc>& getPoints() const { return m_vPoints; }
+	const QVector<CGeoloc>& getPoints() const { return m_vPoints; }
 
 	//!
 	QVector<Math::CVector2>& getLocalPoints() { return m_vLocalPoints; }
@@ -76,7 +76,7 @@ public:
 	}
 
 	//!
-	void addPoint(const Math::CGeoloc& gPoint)
+	void addPoint(const CGeoloc& gPoint)
 	{
 		m_vPoints.append(gPoint);
 	}
@@ -88,6 +88,6 @@ public:
 protected:
 
 	EGeoZoneFlag			m_eFlag;
-	QVector<Math::CGeoloc>	m_vPoints;
+	QVector<CGeoloc>	m_vPoints;
 	QVector<Math::CVector2>	m_vLocalPoints;
 };

@@ -46,7 +46,7 @@ int CComponent::m_iNumComponents = 0;
 */
 CComponent* CComponent::instanciator(C3DScene* pScene)
 {
-	return new CComponent(pScene);
+    return new CComponent(pScene);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -55,28 +55,28 @@ CComponent* CComponent::instanciator(C3DScene* pScene)
     Constructs a CComponent with its default parameters.
 */
 CComponent::CComponent(C3DScene* pScene)
-: m_pScene(pScene)
-, m_pController(NULL)
-, m_pParent(NULL)
-, m_vOriginPosition(0.0, 0.0, 0.0)
-, m_vOriginRotation(0.0, 0.0, 0.0)
-, m_vOriginScale(1.0, 1.0, 1.0)
-, m_vPosition(0.0, 0.0, 0.0)
-, m_vRotation(0.0, 0.0, 0.0)
-, m_vScale(1.0, 1.0, 1.0)
-, m_vRotationFactor(1.0, 1.0, 1.0)
-, m_bVisible(true)
-, m_bCastShadows(true)
-, m_bReceiveShadows(true)
-, m_bRaytracable(true)
-, m_bInheritTransform(true)
-, m_bSelected(false)
-, m_dStatus(1.0)
+    : m_pScene(pScene)
+    , m_pController(NULL)
+    , m_pParent(NULL)
+    , m_vOriginPosition(0.0, 0.0, 0.0)
+    , m_vOriginRotation(0.0, 0.0, 0.0)
+    , m_vOriginScale(1.0, 1.0, 1.0)
+    , m_vPosition(0.0, 0.0, 0.0)
+    , m_vRotation(0.0, 0.0, 0.0)
+    , m_vScale(1.0, 1.0, 1.0)
+    , m_vRotationFactor(1.0, 1.0, 1.0)
+    , m_bVisible(true)
+    , m_bCastShadows(true)
+    , m_bReceiveShadows(true)
+    , m_bRaytracable(true)
+    , m_bInheritTransform(true)
+    , m_bSelected(false)
+    , m_dStatus(1.0)
 {
     Q_UNUSED(pScene);
-	LOG_DEBUG(QString("CComponent::CComponent() : %1").arg((quint32) this));
+    LOG_DEBUG(QString("CComponent::CComponent() : %1").arg((quint32) this));
 
-	m_iNumComponents++;
+    m_iNumComponents++;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -86,14 +86,14 @@ CComponent::CComponent(C3DScene* pScene)
 */
 CComponent::~CComponent()
 {
-	LOG_DEBUG(QString("CComponent::~CComponent() : %1").arg((quint32) this));
+    LOG_DEBUG(QString("CComponent::~CComponent() : %1").arg((quint32) this));
 
-	m_iNumComponents--;
+    m_iNumComponents--;
 
-	foreach (CComponent* pChild, m_vChildren)
-	{
-		delete pChild;
-	}
+    foreach (CComponent* pChild, m_vChildren)
+    {
+        delete pChild;
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -174,20 +174,20 @@ void CComponent::setSelected(bool bValue)
 */
 void CComponent::setParent(CComponent* pParent)
 {
-	// Si l'objet a déjà un parent, on le supprime de la liste d'enfants du parent
-	if (m_pParent != NULL)
-	{
-		m_pParent->m_vChildren.remove(m_pParent->m_vChildren.indexOf(this));
-	}
+    // Si l'objet a déjà un parent, on le supprime de la liste d'enfants du parent
+    if (m_pParent != NULL)
+    {
+        m_pParent->m_vChildren.remove(m_pParent->m_vChildren.indexOf(this));
+    }
 
-	// Assignation du nom de parent et du parent
-	m_sParentName = pParent->m_sName;
-	m_pParent = pParent;
+    // Assignation du nom de parent et du parent
+    m_sParentName = pParent->m_sName;
+    m_pParent = pParent;
 
-	if (m_bInheritTransform && m_pParent != NULL)
-	{
-		m_pParent->m_vChildren.append(this);
-	}
+    if (m_bInheritTransform && m_pParent != NULL)
+    {
+        m_pParent->m_vChildren.append(this);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -197,10 +197,10 @@ void CComponent::setParent(CComponent* pParent)
 */
 void CComponent::solveLinks(C3DScene* pScene)
 {
-	foreach (CComponent* pChild, m_vChildren)
-	{
-		pChild->solveLinks(pScene);
-	}
+    foreach (CComponent* pChild, m_vChildren)
+    {
+        pChild->solveLinks(pScene);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -211,46 +211,46 @@ void CComponent::solveLinks(C3DScene* pScene)
 */
 CComponent* CComponent::findComponent(QString sName, CComponent* pCaller)
 {
-	QStringList lNames = sName.split(".", QString::KeepEmptyParts);
+    QStringList lNames = sName.split(".", QString::KeepEmptyParts);
 
-	if (lNames[0].isEmpty() && pCaller != NULL)
-	{
-		lNames[0] = pCaller->getRoot()->getName();
-	}
+    if (lNames[0].isEmpty() && pCaller != NULL)
+    {
+        lNames[0] = pCaller->getRoot()->getName();
+    }
 
-	if (lNames[0] == m_sName)
-	{
-		if (lNames.count() == 1)
-		{
-			return this;
-		}
+    if (lNames[0] == m_sName)
+    {
+        if (lNames.count() == 1)
+        {
+            return this;
+        }
 
-		QString sRemaining;
+        QString sRemaining;
 
-		for (int iIndex = 1; iIndex < lNames.count(); iIndex++)
-		{
-			if (sRemaining.length() > 0)
-			{
-				sRemaining = sRemaining + "." + lNames[iIndex];
-			}
-			else
-			{
-				sRemaining = lNames[iIndex];
-			}
-		}
+        for (int iIndex = 1; iIndex < lNames.count(); iIndex++)
+        {
+            if (sRemaining.length() > 0)
+            {
+                sRemaining = sRemaining + "." + lNames[iIndex];
+            }
+            else
+            {
+                sRemaining = lNames[iIndex];
+            }
+        }
 
-		foreach (CComponent* pChild, m_vChildren)
-		{
-			CComponent* pFound = pChild->findComponent(sRemaining);
+        foreach (CComponent* pChild, m_vChildren)
+        {
+            CComponent* pFound = pChild->findComponent(sRemaining);
 
-			if (pFound != NULL)
-			{
-				return pFound;
-			}
-		}
-	}
+            if (pFound != NULL)
+            {
+                return pFound;
+            }
+        }
+    }
 
-	return NULL;
+    return NULL;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -260,17 +260,17 @@ CComponent* CComponent::findComponent(QString sName, CComponent* pCaller)
 */
 QString CComponent::getQualifiedName() const
 {
-	QString sReturnValue = m_sName;
+    QString sReturnValue = m_sName;
 
-	const CComponent* pParent = m_pParent;
+    const CComponent* pParent = m_pParent;
 
-	while (pParent != NULL)
-	{
-		sReturnValue = pParent->m_sName + "." + sReturnValue;
-		pParent = pParent->m_pParent;
-	}
+    while (pParent != NULL)
+    {
+        sReturnValue = pParent->m_sName + "." + sReturnValue;
+        pParent = pParent->m_pParent;
+    }
 
-	return sReturnValue;
+    return sReturnValue;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -321,32 +321,32 @@ bool CComponent::receivesShadows() const
 */
 void CComponent::setGeoloc(CGeoloc gGeoloc)
 {
-	// Les coordonnées sont recalées entre -180.0 et +180.0 degrés
-	gGeoloc.Latitude = Math::Angles::clipAngleDegreePIMinusPI(gGeoloc.Latitude);
-	gGeoloc.Longitude = Math::Angles::clipAngleDegreePIMinusPI(gGeoloc.Longitude);
+    // Les coordonnées sont recalées entre -180.0 et +180.0 degrés
+    gGeoloc.Latitude = Math::Angles::clipAngleDegreePIMinusPI(gGeoloc.Latitude);
+    gGeoloc.Longitude = Math::Angles::clipAngleDegreePIMinusPI(gGeoloc.Longitude);
 
-	// La latitude est limitée entre -89.9 et +89.9 degrés
-	gGeoloc.Latitude = Math::Angles::clipDouble(gGeoloc.Latitude, -89.9, 89.9);
-	gGeoloc.Altitude = Math::Angles::clipDouble(gGeoloc.Altitude, -20000.0, 12000000.0);
+    // La latitude est limitée entre -89.9 et +89.9 degrés
+    gGeoloc.Latitude = Math::Angles::clipDouble(gGeoloc.Latitude, -89.9, 89.9);
+    gGeoloc.Altitude = Math::Angles::clipDouble(gGeoloc.Altitude, -20000.0, 12000000.0);
 
-	// Est-ce que l'objet est un objet racine ou est-il indépendant d'un point de vue transformation?
-	if (isRootObject() || m_bInheritTransform == false)
-	{
-		if (gGeoloc.valid())
-		{
-			m_vOriginPosition = CVector3(0.0, 0.0, 0.0);
-			m_gGeoloc = gGeoloc;
-		}
-	}
+    // Est-ce que l'objet est un objet racine ou est-il indépendant d'un point de vue transformation?
+    if (isRootObject() || m_bInheritTransform == false)
+    {
+        if (gGeoloc.valid())
+        {
+            m_vOriginPosition = CVector3(0.0, 0.0, 0.0);
+            m_gGeoloc = gGeoloc;
+        }
+    }
 
-	if (isRootObject() && m_bInheritTransform)
-	{
-		m_vECEFRotation = toECEFRotation(m_vOriginRotation);
-	}
-	else
-	{
-		m_vECEFRotation = m_vOriginRotation;
-	}
+    if (isRootObject() && m_bInheritTransform)
+    {
+        m_vECEFRotation = toECEFRotation(m_vOriginRotation);
+    }
+    else
+    {
+        m_vECEFRotation = m_vOriginRotation;
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -356,24 +356,24 @@ void CComponent::setGeoloc(CGeoloc gGeoloc)
 */
 void CComponent::setOriginPosition(CVector3 vPosition)
 {
-	if (isRootObject() || m_bInheritTransform == false)
-	{
-		m_vOriginPosition = CVector3(0.0, 0.0, 0.0);
-		m_gGeoloc = CGeoloc(vPosition);
-	}
-	else
-	{
-		m_vOriginPosition = vPosition;
-	}
+    if (isRootObject() || m_bInheritTransform == false)
+    {
+        m_vOriginPosition = CVector3(0.0, 0.0, 0.0);
+        m_gGeoloc = CGeoloc(vPosition);
+    }
+    else
+    {
+        m_vOriginPosition = vPosition;
+    }
 
-	if (isRootObject() && m_bInheritTransform)
-	{
-		m_vECEFRotation = toECEFRotation(m_vOriginRotation);
-	}
-	else
-	{
-		m_vECEFRotation = m_vOriginRotation;
-	}
+    if (isRootObject() && m_bInheritTransform)
+    {
+        m_vECEFRotation = toECEFRotation(m_vOriginRotation);
+    }
+    else
+    {
+        m_vECEFRotation = m_vOriginRotation;
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -384,23 +384,23 @@ void CComponent::setOriginPosition(CVector3 vPosition)
 */
 void CComponent::setOriginRotation(CVector3 Rotation)
 {
-	// Assignation de la rotation d'origine
-	m_vOriginRotation = Rotation * m_vRotationFactor;
+    // Assignation de la rotation d'origine
+    m_vOriginRotation = Rotation * m_vRotationFactor;
 
-	// Recalage des angles entre -PI et +PI
-	m_vOriginRotation.X = Math::Angles::clipAngleRadianPIMinusPI(m_vOriginRotation.X);
-	m_vOriginRotation.Y = Math::Angles::clipAngleRadianPIMinusPI(m_vOriginRotation.Y);
-	m_vOriginRotation.Z = Math::Angles::clipAngleRadianPIMinusPI(m_vOriginRotation.Z);
+    // Recalage des angles entre -PI et +PI
+    m_vOriginRotation.X = Math::Angles::clipAngleRadianPIMinusPI(m_vOriginRotation.X);
+    m_vOriginRotation.Y = Math::Angles::clipAngleRadianPIMinusPI(m_vOriginRotation.Y);
+    m_vOriginRotation.Z = Math::Angles::clipAngleRadianPIMinusPI(m_vOriginRotation.Z);
 
-	if (isRootObject() || m_bInheritTransform == false)
-	{
-		// Calcul de la rotation dans le repère géocentrique
-		m_vECEFRotation = toECEFRotation(m_vOriginRotation);
-	}
-	else
-	{
-		m_vECEFRotation = m_vOriginRotation;
-	}
+    if (isRootObject() || m_bInheritTransform == false)
+    {
+        // Calcul de la rotation dans le repère géocentrique
+        m_vECEFRotation = toECEFRotation(m_vOriginRotation);
+    }
+    else
+    {
+        m_vECEFRotation = m_vOriginRotation;
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -410,7 +410,7 @@ void CComponent::setOriginRotation(CVector3 Rotation)
 */
 void CComponent::setOriginScale(CVector3 Scale)
 {
-	m_vOriginScale = Scale;
+    m_vOriginScale = Scale;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -420,8 +420,8 @@ void CComponent::setOriginScale(CVector3 Scale)
 */
 void CComponent::setPosition(CVector3 Position)
 {
-	// Assignation de la position
-	m_vPosition = Position;
+    // Assignation de la position
+    m_vPosition = Position;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -432,13 +432,13 @@ void CComponent::setPosition(CVector3 Position)
 */
 void CComponent::setRotation(CVector3 Rotation)
 {
-	// Assignation de la rotation
-	m_vRotation = Rotation * m_vRotationFactor;
+    // Assignation de la rotation
+    m_vRotation = Rotation * m_vRotationFactor;
 
-	// Recalage des angles entre -PI et +PI
-	m_vRotation.X = Math::Angles::clipAngleRadianPIMinusPI(m_vRotation.X);
-	m_vRotation.Y = Math::Angles::clipAngleRadianPIMinusPI(m_vRotation.Y);
-	m_vRotation.Z = Math::Angles::clipAngleRadianPIMinusPI(m_vRotation.Z);
+    // Recalage des angles entre -PI et +PI
+    m_vRotation.X = Math::Angles::clipAngleRadianPIMinusPI(m_vRotation.X);
+    m_vRotation.Y = Math::Angles::clipAngleRadianPIMinusPI(m_vRotation.Y);
+    m_vRotation.Z = Math::Angles::clipAngleRadianPIMinusPI(m_vRotation.Z);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -448,8 +448,8 @@ void CComponent::setRotation(CVector3 Rotation)
 */
 void CComponent::setScale(CVector3 Scale)
 {
-	// Assignation de l'échelle
-	m_vScale = Scale;
+    // Assignation de l'échelle
+    m_vScale = Scale;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -460,10 +460,10 @@ void CComponent::setScale(CVector3 Scale)
 */
 void CComponent::setWorldTransform(const Math::CMatrix4& value)
 {
-	// Assignation de la matrice de transformation et de son inverse
+    // Assignation de la matrice de transformation et de son inverse
 
-	m_mWorldTransform = value;
-	m_mWorldTransformInverse = m_mWorldTransform.inverse();
+    m_mWorldTransform = value;
+    m_mWorldTransformInverse = m_mWorldTransform.inverse();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -473,14 +473,14 @@ void CComponent::setWorldTransform(const Math::CMatrix4& value)
 */
 void CComponent::setInheritTransform(bool bValue)
 {
-	m_bInheritTransform = bValue;
+    m_bInheritTransform = bValue;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CComponent::setPreviousWorldTransform(const Math::CMatrix4& mTransform)
 {
-	m_mPreviousWorldTransform = mTransform;
+    m_mPreviousWorldTransform = mTransform;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -497,7 +497,7 @@ void CComponent::setStatus(double dValue)
 
 CVector3 CComponent::toECEFRotation(CVector3 vRotation) const
 {
-	return CAxis(vRotation).transferTo(m_gGeoloc.getNOLLAxis()).euleurAngles();
+    return CAxis(vRotation).transferTo(m_gGeoloc.getNOLLAxis()).euleurAngles();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -507,24 +507,24 @@ CVector3 CComponent::toECEFRotation(CVector3 vRotation) const
 */
 CComponent& CComponent::operator = (const CComponent& target)
 {
-	m_pScene						= target.m_pScene;
-	m_sName							= target.m_sName;
-	m_sParentName					= target.m_sParentName;
-	m_pParent						= target.m_pParent;
-	m_gGeoloc						= target.m_gGeoloc;
-	m_vECEFRotation					= target.m_vECEFRotation;
-	m_vOriginPosition				= target.m_vOriginPosition;
-	m_vOriginRotation				= target.m_vOriginRotation;
-	m_vOriginScale					= target.m_vOriginScale;
-	m_vPosition						= target.m_vPosition;
-	m_vRotation						= target.m_vRotation;
-	m_vScale						= target.m_vScale;
-	m_mWorldTransform				= target.m_mWorldTransform;
-	m_mWorldTransformInverse		= target.m_mWorldTransformInverse;
-	m_bVisible						= target.m_bVisible;
-	m_bInheritTransform				= target.m_bInheritTransform;
+    m_pScene						= target.m_pScene;
+    m_sName							= target.m_sName;
+    m_sParentName					= target.m_sParentName;
+    m_pParent						= target.m_pParent;
+    m_gGeoloc						= target.m_gGeoloc;
+    m_vECEFRotation					= target.m_vECEFRotation;
+    m_vOriginPosition				= target.m_vOriginPosition;
+    m_vOriginRotation				= target.m_vOriginRotation;
+    m_vOriginScale					= target.m_vOriginScale;
+    m_vPosition						= target.m_vPosition;
+    m_vRotation						= target.m_vRotation;
+    m_vScale						= target.m_vScale;
+    m_mWorldTransform				= target.m_mWorldTransform;
+    m_mWorldTransformInverse		= target.m_mWorldTransformInverse;
+    m_bVisible						= target.m_bVisible;
+    m_bInheritTransform				= target.m_bInheritTransform;
 
-	return *this;
+    return *this;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -534,78 +534,78 @@ CComponent& CComponent::operator = (const CComponent& target)
 */
 void CComponent::loadParameters(CXMLNode xComponent)
 {
-	CXMLNode tGeolocNode = xComponent.getNodeByTagName(ParamName_Geoloc);
-	CXMLNode tPositionNode = xComponent.getNodeByTagName(ParamName_Position);
-	CXMLNode tRotationNode = xComponent.getNodeByTagName(ParamName_Rotation);
-	CXMLNode tScaleNode = xComponent.getNodeByTagName(ParamName_Scale);
-	CXMLNode tRotationFactorNode = xComponent.getNodeByTagName(ParamName_RotationFactor);
+    CXMLNode tGeolocNode = xComponent.getNodeByTagName(ParamName_Geoloc);
+    CXMLNode tPositionNode = xComponent.getNodeByTagName(ParamName_Position);
+    CXMLNode tRotationNode = xComponent.getNodeByTagName(ParamName_Rotation);
+    CXMLNode tScaleNode = xComponent.getNodeByTagName(ParamName_Scale);
+    CXMLNode tRotationFactorNode = xComponent.getNodeByTagName(ParamName_RotationFactor);
 
-	// Nom du composant
+    // Nom du composant
 
-	if (xComponent.m_vAttributes[ParamName_Name].isEmpty() == false)
-	{
-		m_sName = xComponent.m_vAttributes[ParamName_Name];
-	}
+    if (xComponent.m_vAttributes[ParamName_Name].isEmpty() == false)
+    {
+        m_sName = xComponent.m_vAttributes[ParamName_Name];
+    }
 
-	// Position d'origine
+    // Position d'origine
 
-	if (tPositionNode.isEmpty() == false)
-	{
-		setOriginPosition(CVector3(
-			tPositionNode.m_vAttributes[ParamName_x].toDouble(),
-			tPositionNode.m_vAttributes[ParamName_y].toDouble(),
-			tPositionNode.m_vAttributes[ParamName_z].toDouble()
-		));
-	}
+    if (tPositionNode.isEmpty() == false)
+    {
+        setOriginPosition(CVector3(
+                              tPositionNode.m_vAttributes[ParamName_x].toDouble(),
+                              tPositionNode.m_vAttributes[ParamName_y].toDouble(),
+                              tPositionNode.m_vAttributes[ParamName_z].toDouble()
+                              ));
+    }
 
-	// Geolocalisation
+    // Geolocalisation
 
-	if (tGeolocNode.isEmpty() == false)
-	{
-		setGeoloc(CGeoloc(
-			tGeolocNode.m_vAttributes[ParamName_Latitude].toDouble(),
-			tGeolocNode.m_vAttributes[ParamName_Longitude].toDouble(),
-			tGeolocNode.m_vAttributes[ParamName_Altitude].toDouble()
-		));
-	}
+    if (tGeolocNode.isEmpty() == false)
+    {
+        setGeoloc(CGeoloc(
+                      tGeolocNode.m_vAttributes[ParamName_Latitude].toDouble(),
+                      tGeolocNode.m_vAttributes[ParamName_Longitude].toDouble(),
+                      tGeolocNode.m_vAttributes[ParamName_Altitude].toDouble()
+                      ));
+    }
 
-	// Rotation d'origine
+    // Rotation d'origine
 
-	if (tRotationNode.isEmpty() == false)
-	{
-		setOriginRotation(CVector3(
-			Angles::toRad(tRotationNode.m_vAttributes[ParamName_x].toDouble()),
-			Angles::toRad(tRotationNode.m_vAttributes[ParamName_y].toDouble()),
-			Angles::toRad(tRotationNode.m_vAttributes[ParamName_z].toDouble())
-		));
-	}
+    if (tRotationNode.isEmpty() == false)
+    {
+        setOriginRotation(CVector3(
+                              Angles::toRad(tRotationNode.m_vAttributes[ParamName_x].toDouble()),
+                              Angles::toRad(tRotationNode.m_vAttributes[ParamName_y].toDouble()),
+                              Angles::toRad(tRotationNode.m_vAttributes[ParamName_z].toDouble())
+                              ));
+    }
 
-	// Facteurs de rotation (permet de verrouiller un ou plusierus axes)
+    // Facteurs de rotation (permet de verrouiller un ou plusierus axes)
 
-	if (tRotationFactorNode.isEmpty() == false)
-	{
-		m_vRotationFactor = CVector3(
-			tRotationFactorNode.m_vAttributes[ParamName_x].toDouble(),
-			tRotationFactorNode.m_vAttributes[ParamName_y].toDouble(),
-			tRotationFactorNode.m_vAttributes[ParamName_z].toDouble()
-		);
-	}
+    if (tRotationFactorNode.isEmpty() == false)
+    {
+        m_vRotationFactor = CVector3(
+                    tRotationFactorNode.m_vAttributes[ParamName_x].toDouble(),
+                    tRotationFactorNode.m_vAttributes[ParamName_y].toDouble(),
+                    tRotationFactorNode.m_vAttributes[ParamName_z].toDouble()
+                    );
+    }
 
-	// Echelle
+    // Echelle
 
-	if (tScaleNode.isEmpty() == false)
-	{
-		CVector3 vScale = CVector3(
-			tScaleNode.m_vAttributes[ParamName_x].toDouble(),
-			tScaleNode.m_vAttributes[ParamName_y].toDouble(),
-			tScaleNode.m_vAttributes[ParamName_z].toDouble()
-		);
+    if (tScaleNode.isEmpty() == false)
+    {
+        CVector3 vScale = CVector3(
+                    tScaleNode.m_vAttributes[ParamName_x].toDouble(),
+                    tScaleNode.m_vAttributes[ParamName_y].toDouble(),
+                    tScaleNode.m_vAttributes[ParamName_z].toDouble()
+                    );
 
-		if (vScale.X != 0.0 && vScale.Y != 0.0 && vScale.Z != 0.0)
-		{
-			setOriginScale(vScale);
-		}
-	}
+        if (vScale.X != 0.0 && vScale.Y != 0.0 && vScale.Z != 0.0)
+        {
+            setOriginScale(vScale);
+        }
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -621,22 +621,22 @@ void CComponent::addItems(C3DScene* pScene)
 
 void CComponent::updateContext(CRenderContext* pContext)
 {
-	// Appel de la méthode updateContext de chaque enfant
-	foreach (CComponent* pChild, m_vChildren)
-	{
-		pChild->updateContext(pContext);
-	}
+    // Appel de la méthode updateContext de chaque enfant
+    foreach (CComponent* pChild, m_vChildren)
+    {
+        pChild->updateContext(pContext);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CComponent::updateItems(C3DScene* pScene)
 {
-	// Appel de la méthode updateItems de chaque enfant
-	foreach (CComponent* pChild, m_vChildren)
-	{
-		pChild->updateItems(pScene);
-	}
+    // Appel de la méthode updateItems de chaque enfant
+    foreach (CComponent* pChild, m_vChildren)
+    {
+        pChild->updateItems(pScene);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -646,7 +646,7 @@ void CComponent::updateItems(C3DScene* pScene)
 */
 void CComponent::paint(CRenderContext* pContext)
 {
-	// Sans géométrie, on ne dessine rien
+    // Sans géométrie, on ne dessine rien
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -656,12 +656,12 @@ void CComponent::paint(CRenderContext* pContext)
 */
 void CComponent::postPaint(CRenderContext* pContext)
 {
-	// Appel de la méthode paint de chaque enfant
-	foreach (CComponent* pChild, m_vChildren)
-	{
-		pChild->paint(pContext);
-		pChild->postPaint(pContext);
-	}
+    // Appel de la méthode paint de chaque enfant
+    foreach (CComponent* pChild, m_vChildren)
+    {
+        pChild->paint(pContext);
+        pChild->postPaint(pContext);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -671,9 +671,9 @@ void CComponent::postPaint(CRenderContext* pContext)
 */
 CBoundingBox CComponent::getBounds() const
 {
-	// Sans géométrie, retourner une boite vide
+    // Sans géométrie, retourner une boite vide
 
-	return CBoundingBox();
+    return CBoundingBox();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -683,9 +683,9 @@ CBoundingBox CComponent::getBounds() const
 */
 CBoundingBox CComponent::getWorldBounds() const
 {
-	// Sans géométrie, retourner une boite vide
+    // Sans géométrie, retourner une boite vide
 
-	return CBoundingBox();
+    return CBoundingBox();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -695,9 +695,9 @@ CBoundingBox CComponent::getWorldBounds() const
 */
 RayTracingResult CComponent::intersect(Math::CRay3 ray) const
 {
-	// Sans géométrie, retourner l'infini
+    // Sans géométrie, retourner l'infini
 
-	return RayTracingResult(Q3D_INFINITY);
+    return RayTracingResult(Q3D_INFINITY);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -707,11 +707,11 @@ RayTracingResult CComponent::intersect(Math::CRay3 ray) const
 */
 void CComponent::flipNormals()
 {
-	// Appel de la méthode flipNormals de chaque enfant
-	foreach (CComponent* pChild, m_vChildren)
-	{
-		pChild->flipNormals();
-	}
+    // Appel de la méthode flipNormals de chaque enfant
+    foreach (CComponent* pChild, m_vChildren)
+    {
+        pChild->flipNormals();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -721,11 +721,11 @@ void CComponent::flipNormals()
 */
 void CComponent::transformVertices(const Math::CMatrix4& matrix)
 {
-	// Appel de la méthode transformVertices de chaque enfant
-	foreach (CComponent* pChild, m_vChildren)
-	{
-		pChild->transformVertices(matrix);
-	}
+    // Appel de la méthode transformVertices de chaque enfant
+    foreach (CComponent* pChild, m_vChildren)
+    {
+        pChild->transformVertices(matrix);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -744,18 +744,18 @@ void CComponent::update(double dDeltaTimeS)
 */
 void CComponent::postUpdate(double dDeltaTimeS)
 {
-	// Calcul de la matrice de transformation
-	computeWorldTransform();
+    // Calcul de la matrice de transformation
+    computeWorldTransform();
 
-	foreach (CComponent* pChild, m_vChildren)
-	{
-		pChild->update(dDeltaTimeS);
-	}
+    foreach (CComponent* pChild, m_vChildren)
+    {
+        pChild->update(dDeltaTimeS);
+    }
 
-	foreach (CComponent* pChild, m_vChildren)
-	{
-		pChild->postUpdate(dDeltaTimeS);
-	}
+    foreach (CComponent* pChild, m_vChildren)
+    {
+        pChild->postUpdate(dDeltaTimeS);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -771,7 +771,7 @@ void CComponent::updateTexture(CTexture* pTexture, double dDeltaTime)
 */
 CMatrix4 CComponent::getWorldTransform() const
 {
-	return m_mWorldTransform;
+    return m_mWorldTransform;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -781,14 +781,14 @@ CMatrix4 CComponent::getWorldTransform() const
 */
 CMatrix4 CComponent::getWorldTransformInverse() const
 {
-	return m_mWorldTransformInverse;
+    return m_mWorldTransformInverse;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 Math::CMatrix4 CComponent::getPreviousWorldTransform() const
 {
-	return m_mPreviousWorldTransform;
+    return m_mPreviousWorldTransform;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -798,7 +798,7 @@ Math::CMatrix4 CComponent::getPreviousWorldTransform() const
 */
 CVector3 CComponent::getWorldPosition() const
 {
-	return m_mWorldTransform * CVector3(0.0, 0.0, 0.0);
+    return m_mWorldTransform * CVector3(0.0, 0.0, 0.0);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -808,19 +808,19 @@ CVector3 CComponent::getWorldPosition() const
 */
 CVector3 CComponent::getWorldRotation() const
 {
-	CVector3 vVec1(0.0, 0.0, 0.0);
-	CVector3 vVec2(0.0, 0.0, 1.0);
-	CVector3 vVec3(1.0, 0.0, 0.0);
-	CVector3 vVec4(0.0, 1.0, 0.0);
+    CVector3 vVec1(0.0, 0.0, 0.0);
+    CVector3 vVec2(0.0, 0.0, 1.0);
+    CVector3 vVec3(1.0, 0.0, 0.0);
+    CVector3 vVec4(0.0, 1.0, 0.0);
 
-	vVec1 = m_mWorldTransform * vVec1;
-	vVec2 = m_mWorldTransform * vVec2;
-	vVec3 = m_mWorldTransform * vVec3;
-	vVec4 = m_mWorldTransform * vVec4;
+    vVec1 = m_mWorldTransform * vVec1;
+    vVec2 = m_mWorldTransform * vVec2;
+    vVec3 = m_mWorldTransform * vVec3;
+    vVec4 = m_mWorldTransform * vVec4;
 
-	CAxis aAxis(vVec2 - vVec1, vVec4 - vVec1, vVec3 - vVec1);
+    CAxis aAxis(vVec2 - vVec1, vVec4 - vVec1, vVec3 - vVec1);
 
-	return aAxis.euleurAngles();
+    return aAxis.euleurAngles();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -830,10 +830,10 @@ CVector3 CComponent::getWorldRotation() const
 */
 CVector3 CComponent::getWorldDirection() const
 {
-	CVector3 vVec1(0.0, 0.0, 0.0);
-	CVector3 vVec2(0.0, 0.0, 1.0);
+    CVector3 vVec1(0.0, 0.0, 0.0);
+    CVector3 vVec2(0.0, 0.0, 1.0);
 
-	return ((m_mWorldTransform * vVec2) - (m_mWorldTransform * vVec1)).Normalize();
+    return ((m_mWorldTransform * vVec2) - (m_mWorldTransform * vVec1)).Normalize();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -843,7 +843,7 @@ CVector3 CComponent::getWorldDirection() const
 */
 CVector3 CComponent::getWorldScale() const
 {
-	return m_vOriginScale * m_vScale;
+    return m_vOriginScale * m_vScale;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -864,10 +864,10 @@ double CComponent::getStatus() const
 */
 void CComponent::saveTransform()
 {
-	m_gSavedGeoloc			= m_gGeoloc;
-	m_vSavedOriginPosition	= m_vOriginPosition;
-	m_vSavedOriginRotation	= m_vOriginRotation;
-	m_vSavedOriginScale		= m_vOriginScale;
+    m_gSavedGeoloc			= m_gGeoloc;
+    m_vSavedOriginPosition	= m_vOriginPosition;
+    m_vSavedOriginRotation	= m_vOriginRotation;
+    m_vSavedOriginScale		= m_vOriginScale;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -877,19 +877,19 @@ void CComponent::saveTransform()
 */
 void CComponent::loadTransform()
 {
-	m_gGeoloc			= m_gSavedGeoloc;
-	m_vOriginPosition	= m_vSavedOriginPosition;
-	m_vOriginRotation	= m_vSavedOriginRotation;
-	m_vOriginScale		= m_vSavedOriginScale;
+    m_gGeoloc			= m_gSavedGeoloc;
+    m_vOriginPosition	= m_vSavedOriginPosition;
+    m_vOriginRotation	= m_vSavedOriginRotation;
+    m_vOriginScale		= m_vSavedOriginScale;
 
-	if (isRootObject() && m_bInheritTransform)
-	{
-		m_vECEFRotation = toECEFRotation(m_vOriginRotation);
-	}
-	else
-	{
-		m_vECEFRotation = m_vOriginRotation;
-	}
+    if (isRootObject() && m_bInheritTransform)
+    {
+        m_vECEFRotation = toECEFRotation(m_vOriginRotation);
+    }
+    else
+    {
+        m_vECEFRotation = m_vOriginRotation;
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -899,45 +899,45 @@ void CComponent::loadTransform()
 */
 void CComponent::computeWorldTransform()
 {
-	CMatrix4 mOriginRotation;
-	CMatrix4 mRotation;
-	CMatrix4 mOriginPosition;
-	CMatrix4 mPosition;
+    CMatrix4 mOriginRotation;
+    CMatrix4 mRotation;
+    CMatrix4 mOriginPosition;
+    CMatrix4 mPosition;
 
-	// Création matrices de rotation d'origine
-	mOriginRotation = CMatrix4::MakeRotation(m_vECEFRotation);
+    // Création matrices de rotation d'origine
+    mOriginRotation = CMatrix4::MakeRotation(m_vECEFRotation);
 
-	// Création matrices de rotation d'animation
-	mRotation = CMatrix4::MakeRotation(m_vRotation);
+    // Création matrices de rotation d'animation
+    mRotation = CMatrix4::MakeRotation(m_vRotation);
 
-	// Création matrice de position d'origine
-	mOriginPosition = CMatrix4::MakeTranslation(m_vOriginPosition);
+    // Création matrice de position d'origine
+    mOriginPosition = CMatrix4::MakeTranslation(m_vOriginPosition);
 
-	// Création matrice de position d'animation
-	mPosition = CMatrix4::MakeTranslation(m_vPosition);
+    // Création matrice de position d'animation
+    mPosition = CMatrix4::MakeTranslation(m_vPosition);
 
-	// Application des matrices de transformation à m_mWorldTransform
-	m_mWorldTransform.MakeIdentity();
+    // Application des matrices de transformation à m_mWorldTransform
+    m_mWorldTransform.MakeIdentity();
 
-	m_mWorldTransform = m_mWorldTransform * mRotation;
-	m_mWorldTransform = m_mWorldTransform * mOriginRotation;
-	m_mWorldTransform = m_mWorldTransform * mPosition;
-	m_mWorldTransform = m_mWorldTransform * mOriginPosition;
+    m_mWorldTransform = m_mWorldTransform * mRotation;
+    m_mWorldTransform = m_mWorldTransform * mOriginRotation;
+    m_mWorldTransform = m_mWorldTransform * mPosition;
+    m_mWorldTransform = m_mWorldTransform * mOriginPosition;
 
-	if (isRootObject() || m_bInheritTransform == false)
-	{
-		CVector3 vPosition = m_gGeoloc.toVector3();
-		mPosition = CMatrix4::MakeTranslation(vPosition);
-		m_mWorldTransform = m_mWorldTransform * mPosition;
-	}
+    if (isRootObject() || m_bInheritTransform == false)
+    {
+        CVector3 vPosition = m_gGeoloc.toVector3();
+        mPosition = CMatrix4::MakeTranslation(vPosition);
+        m_mWorldTransform = m_mWorldTransform * mPosition;
+    }
 
-	if (m_pParent && m_bInheritTransform)
-	{
-		m_mWorldTransform = m_mWorldTransform * m_pParent->m_mWorldTransform;
-	}
+    if (m_pParent && m_bInheritTransform)
+    {
+        m_mWorldTransform = m_mWorldTransform * m_pParent->m_mWorldTransform;
+    }
 
-	// Calcul de l'inverse de la matrice de transformation
-	m_mWorldTransformInverse = m_mWorldTransform.inverse();
+    // Calcul de l'inverse de la matrice de transformation
+    m_mWorldTransformInverse = m_mWorldTransform.inverse();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -947,14 +947,14 @@ void CComponent::computeWorldTransform()
 */
 const CComponent* CComponent::getRoot() const
 {
-	const CComponent* pReturnValue = this;
+    const CComponent* pReturnValue = this;
 
-	while (pReturnValue->m_pParent != NULL)
-	{
-		pReturnValue = pReturnValue->m_pParent;
-	}
+    while (pReturnValue->m_pParent != NULL)
+    {
+        pReturnValue = pReturnValue->m_pParent;
+    }
 
-	return pReturnValue;
+    return pReturnValue;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -964,73 +964,73 @@ const CComponent* CComponent::getRoot() const
 */
 CComponent* CComponent::getRoot()
 {
-	CComponent* pReturnValue = this;
+    CComponent* pReturnValue = this;
 
-	while (pReturnValue->m_pParent != NULL)
-	{
-		pReturnValue = pReturnValue->m_pParent;
-	}
+    while (pReturnValue->m_pParent != NULL)
+    {
+        pReturnValue = pReturnValue->m_pParent;
+    }
 
-	return pReturnValue;
+    return pReturnValue;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CGeoloc CComponent::getGeoloc() const
 {
-	if (isRootObject() || m_bInheritTransform == false)
-	{
-		return m_gGeoloc;
-	}
-	else
-	{
-		return CGeoloc(getWorldPosition());
-	}
+    if (isRootObject() || m_bInheritTransform == false)
+    {
+        return m_gGeoloc;
+    }
+    else
+    {
+        return CGeoloc(getWorldPosition());
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CVector3 CComponent::getOriginPosition() const
 {
-	if (isRootObject() || m_bInheritTransform == false)
-	{
-		return m_gGeoloc.toVector3();
-	}
-	else
-	{
-		return m_vOriginPosition;
-	}
+    if (isRootObject() || m_bInheritTransform == false)
+    {
+        return m_gGeoloc.toVector3();
+    }
+    else
+    {
+        return m_vOriginPosition;
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
 Math::CVector3 CComponent::getOriginRotation() const
 {
-	return m_vOriginRotation;
+    return m_vOriginRotation;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CComponent::lookAt(CComponent* pTarget)
 {
-	CVector3 vPosition = pTarget->getGeoloc().toVector3(getGeoloc());
+    CVector3 vPosition = pTarget->getGeoloc().toVector3(getGeoloc());
 
-	double dY = vPosition.AngleY();
+    double dY = vPosition.AngleY();
 
-	CMatrix4 mRotationCancelPan = CMatrix4::MakeRotation(CVector3(0.0, dY * -1.0, 0.0));
+    CMatrix4 mRotationCancelPan = CMatrix4::MakeRotation(CVector3(0.0, dY * -1.0, 0.0));
 
-	vPosition = mRotationCancelPan * vPosition;
+    vPosition = mRotationCancelPan * vPosition;
 
-	double dX = vPosition.AngleX();
+    double dX = vPosition.AngleX();
 
-	setOriginRotation(CVector3(dX, dY, 0.0));
+    setOriginRotation(CVector3(dX, dY, 0.0));
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CComponent::copyTransform(const CComponent* pTarget)
 {
-	m_mWorldTransform = pTarget->m_mWorldTransform;
+    m_mWorldTransform = pTarget->m_mWorldTransform;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1040,24 +1040,24 @@ void CComponent::copyTransform(const CComponent* pTarget)
 */
 void CComponent::dump(QTextStream& stream, int iIdent)
 {
-	dumpIdent(stream, iIdent, QString("[CComponent]"));
-	dumpIdent(stream, iIdent, QString("Name : %1").arg(m_sName));
-	dumpIdent(stream, iIdent, QString("Parent name : %1").arg(m_sParentName));
-	dumpIdent(stream, iIdent, QString("Geoloc : %1").arg(m_gGeoloc.toString()));
-	dumpIdent(stream, iIdent, QString("ECEF rotation : %1").arg(m_vECEFRotation.toString()));
-	dumpIdent(stream, iIdent, QString("Origin position : %1").arg(m_vOriginPosition.toString()));
-	dumpIdent(stream, iIdent, QString("Origin rotation : %1").arg(m_vOriginRotation.toString()));
-	dumpIdent(stream, iIdent, QString("Origin scale : %1").arg(m_vOriginScale.toString()));
-	dumpIdent(stream, iIdent, QString("Animated position : %1").arg(m_vPosition.toString()));
-	dumpIdent(stream, iIdent, QString("Animated rotation : %1").arg(m_vRotation.toString()));
-	dumpIdent(stream, iIdent, QString("Animated scale : %1").arg(m_vScale.toString()));
-	dumpIdent(stream, iIdent, QString("World transform : %1").arg(m_mWorldTransform.toString()));
-	dumpIdent(stream, iIdent, QString("Children :"));
+    dumpIdent(stream, iIdent, QString("[CComponent]"));
+    dumpIdent(stream, iIdent, QString("Name : %1").arg(m_sName));
+    dumpIdent(stream, iIdent, QString("Parent name : %1").arg(m_sParentName));
+    dumpIdent(stream, iIdent, QString("Geoloc : %1").arg(m_gGeoloc.toString()));
+    dumpIdent(stream, iIdent, QString("ECEF rotation : %1").arg(m_vECEFRotation.toString()));
+    dumpIdent(stream, iIdent, QString("Origin position : %1").arg(m_vOriginPosition.toString()));
+    dumpIdent(stream, iIdent, QString("Origin rotation : %1").arg(m_vOriginRotation.toString()));
+    dumpIdent(stream, iIdent, QString("Origin scale : %1").arg(m_vOriginScale.toString()));
+    dumpIdent(stream, iIdent, QString("Animated position : %1").arg(m_vPosition.toString()));
+    dumpIdent(stream, iIdent, QString("Animated rotation : %1").arg(m_vRotation.toString()));
+    dumpIdent(stream, iIdent, QString("Animated scale : %1").arg(m_vScale.toString()));
+    dumpIdent(stream, iIdent, QString("World transform : %1").arg(m_mWorldTransform.toString()));
+    dumpIdent(stream, iIdent, QString("Children :"));
 
-	dumpOpenBlock(stream, iIdent);
-	foreach (CComponent* pChild, m_vChildren)
-	{
-		pChild->dump(stream, iIdent + 1);
-	}
-	dumpCloseBlock(stream, iIdent);
+    dumpOpenBlock(stream, iIdent);
+    foreach (CComponent* pChild, m_vChildren)
+    {
+        pChild->dump(stream, iIdent + 1);
+    }
+    dumpCloseBlock(stream, iIdent);
 }

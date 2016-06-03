@@ -24,117 +24,117 @@ class C3DScene;
 
 class QUICK3D_EXPORT CTiledMaterial : public CMaterial
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
 
-	class CTile
-	{
-	public:
+    class CTile
+    {
+    public:
 
-		CTile()
-			: m_iLevel(0)
-			, m_pTexture(NULL)
-		{
-			m_tLastUsed = QDateTime::currentDateTime();
-		}
+        CTile()
+            : m_iLevel(0)
+            , m_pTexture(NULL)
+        {
+            m_tLastUsed = QDateTime::currentDateTime();
+        }
 
-		CTile(int iLevel, CTexture* pTexture)
-			: m_iLevel(iLevel)
-			, m_pTexture(pTexture)
-		{
-			m_tLastUsed = QDateTime::currentDateTime();
-		}
+        CTile(int iLevel, CTexture* pTexture)
+            : m_iLevel(iLevel)
+            , m_pTexture(pTexture)
+        {
+            m_tLastUsed = QDateTime::currentDateTime();
+        }
 
-		~CTile()
-		{
-			if (m_pTexture != NULL)
-			{
-				delete m_pTexture;
-			}
-		}
+        ~CTile()
+        {
+            if (m_pTexture != NULL)
+            {
+                delete m_pTexture;
+            }
+        }
 
-		int				m_iLevel;
-		Math::CGeoloc	m_gCenter;
-		Math::CGeoloc	m_gSize;
-		CTexture*		m_pTexture;
-		QDateTime		m_tLastUsed;
-	};
+        int         m_iLevel;
+        CGeoloc     m_gCenter;
+        CGeoloc     m_gSize;
+        CTexture*   m_pTexture;
+        QDateTime   m_tLastUsed;
+    };
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	CTiledMaterial(C3DScene* pScene);
+    //!
+    CTiledMaterial(C3DScene* pScene);
 
-	//!
-	virtual ~CTiledMaterial();
+    //!
+    virtual ~CTiledMaterial();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	void setLevels(int value) { m_iLevels = value; }
+    //!
+    void setLevels(int value) { m_iLevels = value; }
 
-	//! Définit la géolocalisation et le niveau
-	void setCurrentPositionAndLevel(const Math::CGeoloc& gPosition, int iLevel);
+    //! Définit la géolocalisation et le niveau
+    void setCurrentPositionAndLevel(const CGeoloc& gPosition, int iLevel);
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//! Retourne le nom de la classe
-	virtual QString getClassName() const { return ClassName_CTiledMaterial; }
+    //! Retourne le nom de la classe
+    virtual QString getClassName() const { return ClassName_CTiledMaterial; }
 
-	//! Retourne des coordonnées de texture pour une géolocalisation donnée
-	virtual Math::CVector2 getTexCoords(const Math::CGeoloc& gPosition, int iLevel);
+    //! Retourne des coordonnées de texture pour une géolocalisation donnée
+    virtual Math::CVector2 getTexCoords(const CGeoloc& gPosition, int iLevel);
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes héritées
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes héritées
+    //-------------------------------------------------------------------------------------------------
 
-	//! Active ce matériau pour le rendu
-	virtual QGLShaderProgram* activate(CRenderContext* pContext);
+    //! Active ce matériau pour le rendu
+    virtual QGLShaderProgram* activate(CRenderContext* pContext);
 
-	//! Applique des transformations à la géolocalisation donnée (ex: Mercator)
-	virtual Math::CGeoloc transformGeoloc(const Math::CGeoloc& gPosition);
+    //! Applique des transformations à la géolocalisation donnée (ex: Mercator)
+    virtual CGeoloc transformGeoloc(const CGeoloc& gPosition);
 
 protected:
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes protégées
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes protégées
+    //-------------------------------------------------------------------------------------------------
 
-	//! Retourne une quad key pour une géolocalisation et un niveau donnés
-	QString quadKeyFromPositionAndLevel(const Math::CGeoloc& gPosition, int iLevel);
+    //! Retourne une quad key pour une géolocalisation et un niveau donnés
+    QString quadKeyFromPositionAndLevel(const CGeoloc& gPosition, int iLevel);
 
-	//!
-	QString TileXYToQuadKey(int tileX, int tileY, int levelOfDetail);
+    //!
+    QString TileXYToQuadKey(int tileX, int tileY, int levelOfDetail);
 
-	//!
-	bool quadKeyPresent(QString sKey);
+    //!
+    bool quadKeyPresent(QString sKey);
 
-	//! Détruit les textures de terrain inutilisées
-	void collectGarbage();
+    //! Détruit les textures de terrain inutilisées
+    void collectGarbage();
 
-	//-------------------------------------------------------------------------------------------------
-	// Slots
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Slots
+    //-------------------------------------------------------------------------------------------------
 
 protected slots:
 
-	void onTileReady(QString sTileName);
+    void onTileReady(QString sTileName);
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	int						m_iLevels;
-	CHTTPMapClient			m_tClient;
-	QMap<QString, CTile>	m_mTiles;
-	QString					m_sCurrentQuadKey;
+    int                     m_iLevels;
+    CHTTPMapClient          m_tClient;
+    QMap<QString, CTile>    m_mTiles;
+    QString                 m_sCurrentQuadKey;
 };

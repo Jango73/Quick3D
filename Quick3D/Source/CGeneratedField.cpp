@@ -57,6 +57,6 @@ bool CGeneratedField::isGenerated()
 
 //-------------------------------------------------------------------------------------------------
 
-void CGeneratedField::flatten(const Math::CGeoloc& gPosition, double dRadius)
+void CGeneratedField::flatten(const CGeoloc& gPosition, double dRadius)
 {
 }

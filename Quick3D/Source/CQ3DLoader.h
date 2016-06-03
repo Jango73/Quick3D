@@ -11,22 +11,22 @@
 
 class QUICK3D_EXPORT CQ3DLoader : public CSingleton<CQ3DLoader>
 {
-	friend class CSingleton<CQ3DLoader>;
+    friend class CSingleton<CQ3DLoader>;
 
 public:
 
-	//!
-	void load(C3DScene* pScene, CMesh* pMesh, QString sText);
+    //!
+    void load(C3DScene* pScene, CMesh* pMesh, QString sText);
 
-	//!
-	void loadComponent(C3DScene* pScene, CMesh* pMesh, CXMLNode xNode, QVector<QSharedPointer<CMaterial> >& vMaterials, CComponent* pParent = NULL);
+    //!
+    void loadComponent(C3DScene* pScene, CMesh* pMesh, CXMLNode xNode, QVector<QSharedPointer<CMaterial> >& vMaterials, CComponent* pParent = NULL);
 
-	//!
-	void addBounds(CMesh* pMesh, CBoundingBox& bBox, Math::CMatrix4 mTransform);
+    //!
+    void addBounds(CMesh* pMesh, CBoundingBox& bBox, Math::CMatrix4 mTransform);
 
 protected:
 
-	CQ3DLoader();
+    CQ3DLoader();
 };
 
 #endif // CQ3DLOADER_H

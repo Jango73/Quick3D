@@ -15,64 +15,64 @@ class QUICK3D_EXPORT CBILField : public CHeightField
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//! Constructeur avec paramètres
-	CBILField(CXMLNode xParameters, const QString& sPathToBILFiles = "", double dValueForNoData = 0.0);
+    //! Constructeur avec paramètres
+    CBILField(CXMLNode xParameters, const QString& sPathToBILFiles = "", double dValueForNoData = 0.0);
 
-	//! Destructeur
-	virtual ~CBILField();
+    //! Destructeur
+    virtual ~CBILField();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual double getHeightAt(const Math::CGeoloc& gPosition, double* pRigidness = NULL);
+    //!
+    virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);
 
-	//!
-	virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, double* pRigidness = NULL);
+    //!
+    virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, double* pRigidness = NULL);
 
-	//!
-	virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, bool bForPhysics = true);
+    //!
+    virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, bool bForPhysics = true);
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual void flatten(const Math::CGeoloc& gPosition, double dRadius);
+    //!
+    virtual void flatten(const CGeoloc& gPosition, double dRadius);
 
-	//!
-	void addChunk(CBILData* pData);
+    //!
+    void addChunk(CBILData* pData);
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes protégées
-	//-------------------------------------------------------------------------------------------------
-
-protected:
-
-	//!
-	void parseBILFiles();
-
-	//!
-	void collectGarbage();
-
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes protégées
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	QMutex				m_tMutex;
-	CXMLNode			m_xParameters;
-	double				m_dValueForNoData;
-	QString				m_sPath;
-	QVector<CBILData*>	m_vChunks;
+    //!
+    void parseBILFiles();
+
+    //!
+    void collectGarbage();
+
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
+
+protected:
+
+    QMutex              m_tMutex;
+    CXMLNode            m_xParameters;
+    double              m_dValueForNoData;
+    QString             m_sPath;
+    QVector<CBILData*>  m_vChunks;
 };

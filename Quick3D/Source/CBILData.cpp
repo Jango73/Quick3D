@@ -74,8 +74,8 @@ CBILData::CBILData(double dValueForNoData)
 //-------------------------------------------------------------------------------------------------
 
 CBILData::CBILData(
-	Math::CGeoloc gGeoloc,
-	Math::CGeoloc gSize,
+	CGeoloc gGeoloc,
+	CGeoloc gSize,
 	int iNumCellsWidth,
 	int iNumCellsHeight,
 	qint16 ui16NoDataValue,

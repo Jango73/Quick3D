@@ -41,7 +41,7 @@ public:
 	CSRTMData(double dValueForNoData = 0.0);
 
 	//! Constructeur avec paramètres
-	CSRTMData(Math::CGeoloc gGeoloc, Math::CGeoloc gSize, int iNumCellsWidth, int iNumCellsHeight, qint16 ui16NoDataValue, const qint16* vData, double dValueForNoData = -2000.0);
+	CSRTMData(CGeoloc gGeoloc, CGeoloc gSize, int iNumCellsWidth, int iNumCellsHeight, qint16 ui16NoDataValue, const qint16* vData, double dValueForNoData = -2000.0);
 
 	//! Constructeur de copie
 	CSRTMData(const CSRTMData& target);
@@ -61,13 +61,13 @@ public:
 	//-------------------------------------------------------------------------------------------------
 
 	//! Retourne le centre géolocalisé de la tuile
-	Math::CGeoloc getGeoloc() const { return m_gGeoloc; }
+	CGeoloc getGeoloc() const { return m_gGeoloc; }
 
 	//! Retourne la taille géolocalisée de la tuile
-	Math::CGeoloc getSize() const { return m_gSize; }
+	CGeoloc getSize() const { return m_gSize; }
 
 	//! Retourne l'altitude à la géolocalisation spécifiée
-	double getHeightAt(const Math::CGeoloc& gPosition, double* pRigidness = NULL);
+	double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);
 
 	//! Retourne le nombre de cellules en largeur
 	int getNumCellsWidth() const { return m_iNumCellsWidth; }
@@ -86,7 +86,7 @@ public:
 	//-------------------------------------------------------------------------------------------------
 
 	//! Retourne vrai si la tuile contient le point géolocalisé spécifié
-	bool contains(const Math::CGeoloc& gPosition) const;
+	bool contains(const CGeoloc& gPosition) const;
 
 	//! Opérateur de copie
 	CSRTMData& operator = (const CSRTMData& target);
@@ -112,8 +112,8 @@ protected:
 	QMutex			m_tMutex;
 	double			m_dValueForNoData;
 	QString			m_sFileName;
-	Math::CGeoloc	m_gGeoloc;
-	Math::CGeoloc	m_gSize;
+	CGeoloc	m_gGeoloc;
+	CGeoloc	m_gSize;
 	int				m_iNumCellsWidth;
 	int				m_iNumCellsHeight;
 	short			m_ui16NoDataValue;

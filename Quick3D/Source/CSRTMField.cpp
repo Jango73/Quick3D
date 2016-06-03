@@ -93,7 +93,7 @@ double CSRTMField::getHeightAt(const Math::CVector3& vPosition, const Math::CAxi
 
 //-------------------------------------------------------------------------------------------------
 
-void CSRTMField::flatten(const Math::CGeoloc& gPosition, double dRadius)
+void CSRTMField::flatten(const CGeoloc& gPosition, double dRadius)
 {
 }
 

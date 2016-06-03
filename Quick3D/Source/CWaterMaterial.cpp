@@ -36,7 +36,7 @@ QGLShaderProgram* CWaterMaterial::activate(CRenderContext* pContext)
 	return pProgram;
 }
 
-double CWaterMaterial::getHeightAt(const Math::CGeoloc& gPosition, double* pRigidness)
+double CWaterMaterial::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 {
 	if (pRigidness != NULL)
 	{

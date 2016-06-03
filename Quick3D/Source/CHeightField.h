@@ -13,51 +13,51 @@ class QUICK3D_EXPORT CHeightField
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	CHeightField(double dRigidness = 1.0);
+    //!
+    CHeightField(double dRigidness = 1.0);
 
-	//!
-	virtual ~CHeightField();
+    //!
+    virtual ~CHeightField();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual double getHeightAt(const Math::CGeoloc& gPosition, double* pRigidness = NULL);
+    //!
+    virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);
 
-	//!
-	virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, double* pRigidness = NULL);
+    //!
+    virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, double* pRigidness = NULL);
 
-	//!
-	virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, bool bForPhysics = true);
+    //!
+    virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, bool bForPhysics = true);
 
-	//!
-	double getRigidness() const { return m_dRigidness; }
+    //!
+    double getRigidness() const { return m_dRigidness; }
 
-	//!
-	virtual bool isGenerated();
+    //!
+    virtual bool isGenerated();
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual void flatten(const Math::CGeoloc& gPosition, double dRadius);
+    //!
+    virtual void flatten(const CGeoloc& gPosition, double dRadius);
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	double			m_dRigidness;
+    double			m_dRigidness;
 };

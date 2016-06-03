@@ -182,7 +182,7 @@ double CBILField::getHeightAt(const Math::CVector3& vPosition, const Math::CAxis
 /*!
     Flattens terrain at the specified \a gPosition, to the extents of \a dRadius.
 */
-void CBILField::flatten(const Math::CGeoloc& gPosition, double dRadius)
+void CBILField::flatten(const CGeoloc& gPosition, double dRadius)
 {
 }
 

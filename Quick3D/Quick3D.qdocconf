@@ -1,5 +1,6 @@
 project = Quick3D
 description = Quick3D Documentation
+indexTitle = Quick3D C++ Classes
 
 sourcedirs = .
 headerdirs = .

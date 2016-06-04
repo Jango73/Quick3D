@@ -115,7 +115,7 @@ attribute float			a_altitude;
 
 float distance(vec3 pos)
 {
-	return abs(sqrt(pos.x * pos.x + pos.y * pos.y + pos.z * pos.z));
+    return abs(sqrt(pos.x * pos.x + pos.y * pos.y + pos.z * pos.z));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -123,30 +123,30 @@ float distance(vec3 pos)
 
 float perlin_hash(in vec3 p)
 {
-	return fract(sin(dot(p, vec3(127.1, 311.7, 321.4))) * 43758.5453123);
+    return fract(sin(dot(p, vec3(127.1, 311.7, 321.4))) * 43758.5453123);
 }
 
 float perlin(in vec3 p)
 {
     vec3 i = floor(p);
-	vec3 f = fract(p); 
-	f *= f * (3.0 - 2.0 * f);
+    vec3 f = fract(p);
+    f *= f * (3.0 - 2.0 * f);
 
     float n = mix(
-		mix(mix(perlin_hash(i + vec3(0.0, 0.0, 0.0)), perlin_hash(i + vec3(1.0, 0.0, 0.0)), f.x),
-			mix(perlin_hash(i + vec3(0.0, 1.0, 0.0)), perlin_hash(i + vec3(1.0, 1.0, 0.0)), f.x),
-			f.y),
-		mix(mix(perlin_hash(i + vec3(0.0, 0.0, 1.0)), perlin_hash(i + vec3(1.0, 0.0, 1.0)), f.x),
-			mix(perlin_hash(i + vec3(0.0, 1.0, 1.0)), perlin_hash(i + vec3(1.0, 1.0, 1.0)), f.x),
-			f.y),
-		f.z);
+                mix(mix(perlin_hash(i + vec3(0.0, 0.0, 0.0)), perlin_hash(i + vec3(1.0, 0.0, 0.0)), f.x),
+                    mix(perlin_hash(i + vec3(0.0, 1.0, 0.0)), perlin_hash(i + vec3(1.0, 1.0, 0.0)), f.x),
+                    f.y),
+                mix(mix(perlin_hash(i + vec3(0.0, 0.0, 1.0)), perlin_hash(i + vec3(1.0, 0.0, 1.0)), f.x),
+                    mix(perlin_hash(i + vec3(0.0, 1.0, 1.0)), perlin_hash(i + vec3(1.0, 1.0, 1.0)), f.x),
+                    f.y),
+                f.z);
 
-	return clamp((n - 0.49) * 2.05, -1.0, 1.0);
+    return clamp((n - 0.49) * 2.05, -1.0, 1.0);
 }
 
 float perlin_0_1(in vec3 p)
 {
-	return (perlin(p) + 1.0) / 2.0;
+    return (perlin(p) + 1.0) / 2.0;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -156,19 +156,19 @@ float perlin_0_1(in vec3 p)
 
 float turbulence(vec3 ipos)
 {
-	vec3 pos = ipos;
+    vec3 pos = ipos;
 
-	float f = 0.0;
+    float f = 0.0;
 
-	for (int i = 0; i < TURBULENCE_OCTAVES; i++)
-	{
-		pos = (pos.yzx + pos.zyx * vec3(1.0, -1.0, 1.0)) / sqrt(2.0);
-		f = f * 2.0 + perlin(pos);
-		pos *= 1.5;
-	}
+    for (int i = 0; i < TURBULENCE_OCTAVES; i++)
+    {
+        pos = (pos.yzx + pos.zyx * vec3(1.0, -1.0, 1.0)) / sqrt(2.0);
+        f = f * 2.0 + perlin(pos);
+        pos *= 1.5;
+    }
 
-	f /= pow(2.0, float(TURBULENCE_OCTAVES));
-	return f;
+    f /= pow(2.0, float(TURBULENCE_OCTAVES));
+    return f;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -176,167 +176,66 @@ float turbulence(vec3 ipos)
 
 float waveHeight(vec3 input_position)
 {
-	vec3 position_1 = input_position;
-	vec3 position_2 = input_position + vec3(2.0, 2.0, 2.0);
+    vec3 position_1 = input_position;
+    vec3 position_2 = input_position + vec3(2.0, 2.0, 2.0);
 
-	float value_1 = turbulence((position_1 * 0.005) + vec3(u_time, u_time, u_time) * 0.1) * u_wave_amplitude * 4.0;
-	float value_2 = turbulence((position_2 * 0.005) - vec3(u_time, u_time, u_time) * 0.1) * u_wave_amplitude * 4.0;
+    float value_1 = turbulence((position_1 * 0.005) + vec3(u_time, u_time, u_time) * 0.1) * u_wave_amplitude * 4.0;
+    float value_2 = turbulence((position_2 * 0.005) - vec3(u_time, u_time, u_time) * 0.1) * u_wave_amplitude * 4.0;
 
-	// float value_3 = turbulence((position_1 * 0.050) + vec3(u_time, u_time, u_time) * 0.5) * u_wave_amplitude * 0.8;
-	// float value_4 = turbulence((position_2 * 0.050) - vec3(u_time, u_time, u_time) * 0.5) * u_wave_amplitude * 0.8;
+    // float value_3 = turbulence((position_1 * 0.050) + vec3(u_time, u_time, u_time) * 0.5) * u_wave_amplitude * 0.8;
+    // float value_4 = turbulence((position_2 * 0.050) - vec3(u_time, u_time, u_time) * 0.5) * u_wave_amplitude * 0.8;
 
-	float alpha_factor = clamp(((a_altitude * -1.0) / 40.0), 0.0, 1.0);
-	// float alpha_factor = 1.0;
+    float alpha_factor = clamp(((a_altitude * -1.0) / 40.0), 0.0, 1.0);
+    // float alpha_factor = 1.0;
 
-	// return (value_1 + value_2 + value_3 + value_4) * alpha_factor;
-	return value_1 + value_2;
-}
-
-//-------------------------------------------------------------------------------------------------
-// Lights
-
-vec3 doLighting(vec3 position, vec3 normal, vec3 eye)
-{
-	vec3 color = vec3(0.0, 0.0, 0.0);
-
-	float selfIllumination = u_material_self_illum;
-
-	if (bool(u_IR_enable))
-	{
-		if (selfIllumination < u_IR_factor) selfIllumination = u_IR_factor;
-	}
-
-	for (int index = 0; index < u_num_lights; index++)
-	{
-		vec3 diff = u_light_position[index] - position;
-		float dist = distance(diff);
-
-		if (u_light_distance[index] == 0.0 || dist < u_light_distance[index])
-		{
-			// Light ray
-			vec3 ray = normalize(diff);
-
-			// Compute distance attenuation
-			float attenuation = 1.0;
-
-			if (u_light_distance[index] > 0.0)
-			{
-				attenuation = 1.0 - (dist / u_light_distance[index]);
-			}
-
-			// Compute spot attenuation
-			if (u_light_direction[index] != vec3(0.0, 0.0, 0.0))
-			{
-				float spotcutoff = cos(u_light_spot_angle[index]);
-
-				if (dot(-u_light_direction[index], ray) < spotcutoff)
-				{
-					attenuation = 0.0;
-				}
-			}
-
-			// Continue if attenuation is not 0
-			if (attenuation > 0.0)
-			{
-				// Light angle
-				float dot_normal_ray = max(dot(normal, ray), 0.0);
-
-				// Reflected ray
-				vec3 reflected = normalize(reflect(ray, normal));
-
-				float dot_reflected_eye = dot(reflected, eye);
-
-				// Diffuse light
-				vec3 diffuse = u_material_diffuse.xyz * (u_light_color[index] * dot_normal_ray);
-
-				// Specular light
-				vec3 specular;
-				vec3 subdermal;
-
-				if (u_material_shininess > 0.0)
-				{
-					specular = u_material_specular.xyz * pow(max(dot_reflected_eye, 0.0), u_material_shininess);
-				}
-				else
-				{
-					specular = vec3(0.0, 0.0, 0.0);
-				}
-
-				// Reflected light
-				vec3 reflection = vec3(0.0, 0.0, 0.0);
-
-				// Subsurface scattering
-				if (u_material_sss_factor > 0.0)
-				{
-					subdermal = (u_material_subdermal.xyz * (u_light_color[index] * dot_normal_ray)) * u_material_sss_factor;
-				}
-				else
-				{
-					subdermal = vec3(0.0, 0.0, 0.0);
-				}
-
-				// Add color components
-				color = color + ((diffuse + subdermal + specular) * attenuation) + reflection;
-			}
-		}
-	}
-
-	// Return material ambient plus light color
-	return u_global_ambient + u_material_ambient.xyz + u_material_diffuse.xyz * selfIllumination + color;
+    // return (value_1 + value_2 + value_3 + value_4) * alpha_factor;
+    return value_1 + value_2;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void main()
 {
-	vec4 vertex_pos = u_model_matrix * vec4(a_position, 1.0);
-	vec4 normal = u_model_matrix * vec4(a_normal, 0.0);
-	vec4 tangent = u_model_matrix * vec4(a_tangent, 0.0);
-	vec3 binormal = normalize(cross(normal.xyz, tangent.xyz));
-	vec4 shadow_coord = u_shadow_projection_matrix * (u_shadow_matrix * vertex_pos);
+    vec4 vertex_pos = u_model_matrix * vec4(a_position, 1.0);
+    vec4 normal = u_model_matrix * vec4(a_normal, 0.0);
+    vec4 tangent = u_model_matrix * vec4(a_tangent, 0.0);
+    vec3 binormal = normalize(cross(normal.xyz, tangent.xyz));
+    vec4 shadow_coord = u_shadow_projection_matrix * (u_shadow_matrix * vertex_pos);
 
-	// Distance
-	float distance = length((u_camera_matrix * vertex_pos).xyz);
+    // Distance
+    float distance = length((u_camera_matrix * vertex_pos).xyz);
 
-	// Compute wave height and normal
-	if (bool(u_wave_enable))
-	{
-		float waveheight = waveHeight(vertex_pos.xyz);
-		vertex_pos += (normal * waveheight);
-	}
+    // Compute wave height and normal
+    if (bool(u_wave_enable))
+    {
+        float waveheight = waveHeight(vertex_pos.xyz);
+        vertex_pos += (normal * waveheight);
+    }
 
-	// Assign varyings
-	if (bool(u_rendering_shadows) || u_shaderQuality < 0.10)
-	{
-		v_color = u_material_diffuse;
-	}
-	else
-	{
-		v_color = vec4(doLighting(vertex_pos.xyz, normal.xyz, u_camera_direction.xyz), u_material_diffuse.a);
-	}
+    // Assign varyings
+    v_color = u_material_diffuse;
+    v_position = vertex_pos.xyz;
+    v_distance = distance;
 
-	v_position = vertex_pos.xyz;
-	v_distance = distance;
+    if (!bool(u_rendering_shadows))
+    {
+        v_normal = normal.xyz;
+        v_tangent = tangent.xyz;
+        v_binormal = binormal.xyz;
+        v_texcoord = a_texcoord;
+        v_shadow_coord = shadow_coord;
+        v_altitude = a_altitude;
 
-	if (!bool(u_rendering_shadows))
-	{
-		v_normal = normal.xyz;
-		v_tangent = tangent.xyz;
-		v_binormal = binormal.xyz;
-		v_texcoord = a_texcoord;
-		v_shadow_coord = shadow_coord;
-		v_altitude = a_altitude;
+        v_difftex_weight_0 = a_difftext_weight_0_1_2.x;
+        v_difftex_weight_1 = a_difftext_weight_0_1_2.y;
+        v_difftex_weight_2 = a_difftext_weight_0_1_2.z;
+        v_difftex_weight_3 = a_difftext_weight_3_4_5.x;
+        v_difftex_weight_4 = a_difftext_weight_3_4_5.y;
+        v_difftex_weight_5 = a_difftext_weight_3_4_5.z;
+        v_difftex_weight_6 = a_difftext_weight_6_7_8.x;
+        v_difftex_weight_7 = a_difftext_weight_6_7_8.y;
+    }
 
-		v_difftex_weight_0 = a_difftext_weight_0_1_2.x;
-		v_difftex_weight_1 = a_difftext_weight_0_1_2.y;
-		v_difftex_weight_2 = a_difftext_weight_0_1_2.z;
-		v_difftex_weight_3 = a_difftext_weight_3_4_5.x;
-		v_difftex_weight_4 = a_difftext_weight_3_4_5.y;
-		v_difftex_weight_5 = a_difftext_weight_3_4_5.z;
-		v_difftex_weight_6 = a_difftext_weight_6_7_8.x;
-		v_difftex_weight_7 = a_difftext_weight_6_7_8.y;
-	}
-
-	// Vertex screen position
-	gl_Position = u_camera_projection_matrix * (u_camera_matrix * vertex_pos);
+    // Vertex screen position
+    gl_Position = u_camera_projection_matrix * (u_camera_matrix * vertex_pos);
 }

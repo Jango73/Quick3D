@@ -9,10 +9,10 @@ CWaterMaterial::CWaterMaterial(C3DScene* pScene)
 : CMaterial(pScene)
 {
 	m_cDiffuse = Vector4(0.05, 0.20, 0.10, 1.0);
-	m_cSpecular = Vector4(0.9, 0.9, 0.9, 1.0);
-	m_dShininess = 50.0;
-	m_dReflection = 0.8;
-	m_dReflectionSteepness = 4.0;
+    m_cSpecular = Vector4(0.8, 0.8, 0.8, 1.0);
+    m_dShininess = 10.0;
+    m_dReflection = 0.8;
+    m_dReflectionSteepness = 4.0;
 	m_dIRFactor = 0.2;
 	m_dRigidness = 0.75;
 }

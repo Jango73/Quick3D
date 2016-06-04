@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scene>
 
-	<Camera1 Name="VBCI.Pilot"/>
-	<Camera2 Name="Man1.Head"/>
-	<ControlledComponent Name="VBCI"/>
+	<Camera1 Name="Man1.Head"/>
+	<Camera2 Name="VBCI.Pilot"/>
+	<ControlledComponent Name="Man1"/>
 
 	<!--
 	<Camera1 Name="Plascoa01Pilot"/>

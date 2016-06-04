@@ -110,10 +110,6 @@ void CQ3DLoader::loadComponent(
             pNewMaterial->getDiffuse().Y = xDiffuse.m_vAttributes[ParamName_g].toDouble();
             pNewMaterial->getDiffuse().Z = xDiffuse.m_vAttributes[ParamName_b].toDouble();
 
-            pNewMaterial->getSpecular().X = xSpecular.m_vAttributes[ParamName_r].toDouble();
-            pNewMaterial->getSpecular().Y = xSpecular.m_vAttributes[ParamName_g].toDouble();
-            pNewMaterial->getSpecular().Z = xSpecular.m_vAttributes[ParamName_b].toDouble();
-
             QString sTextureName = xDiffuse.m_vAttributes[ParamName_Map];
 
             if (sTextureName.isEmpty() == false)
@@ -129,6 +125,15 @@ void CQ3DLoader::loadComponent(
                     pNewMaterial->addDiffuseTexture(sTextureName);
                 }
             }
+        }
+
+        if (xSpecular.isEmpty() == false)
+        {
+            double dIntensity = xSpecular.m_vAttributes[ParamName_Intensity].toDouble();
+            pNewMaterial->getSpecular().X = xSpecular.m_vAttributes[ParamName_r].toDouble() * dIntensity;
+            pNewMaterial->getSpecular().Y = xSpecular.m_vAttributes[ParamName_g].toDouble() * dIntensity;
+            pNewMaterial->getSpecular().Z = xSpecular.m_vAttributes[ParamName_b].toDouble() * dIntensity;
+            pNewMaterial->setShininess(xSpecular.m_vAttributes[ParamName_Hardness].toDouble());
         }
 
         vMaterials.append(QSharedPointer<CMaterial>(pNewMaterial));

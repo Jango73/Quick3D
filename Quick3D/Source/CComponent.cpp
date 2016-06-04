@@ -890,6 +890,8 @@ void CComponent::loadTransform()
     {
         m_vECEFRotation = m_vOriginRotation;
     }
+
+    computeWorldTransform();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1024,6 +1026,8 @@ void CComponent::lookAt(CComponent* pTarget)
     double dX = vPosition.AngleX();
 
     setOriginRotation(CVector3(dX, dY, 0.0));
+
+    computeWorldTransform();
 }
 
 //-------------------------------------------------------------------------------------------------

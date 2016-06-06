@@ -75,13 +75,13 @@ CCamera& CCamera::operator = (const CCamera& target)
 {
     CPhysicalComponent::operator =(target);
 
-    m_dFOV				= target.m_dFOV;
-    m_dZoom				= target.m_dZoom;
-    m_dFocus			= target.m_dFocus;
-    m_dGain				= target.m_dGain;
-    m_dMinDistance		= target.m_dMinDistance;
-    m_dMaxDistance		= target.m_dMaxDistance;
-    m_pFrustumPlanes	= target.m_pFrustumPlanes;
+    m_dFOV              = target.m_dFOV;
+    m_dZoom             = target.m_dZoom;
+    m_dFocus            = target.m_dFocus;
+    m_dGain             = target.m_dGain;
+    m_dMinDistance      = target.m_dMinDistance;
+    m_dMaxDistance      = target.m_dMaxDistance;
+    m_pFrustumPlanes    = target.m_pFrustumPlanes;
 
     return *this;
 }
@@ -129,10 +129,10 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
             CVector3 vCamPos = pLight->getWorldPosition();
             CVector3 vCamRot = pLight->getWorldRotation();
 
-            mShadowMatrix = CCamera::getQtMatrix(vCamPos - pScene->getWorldOrigin(), vCamRot);
+            mShadowMatrix = CCamera::getQtCameraMatrix(vCamPos - pScene->getWorldOrigin(), vCamRot);
             mShadowProjectionMatrix = CCamera::getQtProjectionMatrix(pLight->getFOV(), 1.0, pLight->getMinDistance(), pLight->getMaxDistance());
 
-            CMatrix4 mInternalCameraMatrix = CCamera::getInternalMatrix(vCamPos, vCamRot);
+            CMatrix4 mInternalCameraMatrix = CCamera::getInternalCameraMatrix(vCamPos, vCamRot);
             CMatrix4 mInternalProjectionMatrix = CCamera::getInternalProjectionMatrix(pLight->getFOV(), 1.0, pLight->getMinDistance(), pLight->getMaxDistance());
 
             CRenderContext Context(
@@ -216,7 +216,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
             double dMinDistance = 1.0;
             double dMaxDistance = 2000.0;
 
-            mShadowMatrix = CCamera::getQtMatrix(vLitePos - pScene->getWorldOrigin(), vLiteRot);
+            mShadowMatrix = CCamera::getQtCameraMatrix(vLitePos - pScene->getWorldOrigin(), vLiteRot);
             mShadowProjectionMatrix = CCamera::getQtProjectionMatrix(pLight->getFOV(), 1.0, dMinDistance, dMaxDistance);
 
             pLight->loadTransform();
@@ -245,7 +245,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
 
     double dVerticalFOV = dFOV * ((double) iHeight / (double) iWidth);
 
-    QMatrix4x4 mCameraMatrix = CCamera::getQtMatrix(vCamPos - pScene->getWorldOrigin(), vCamRot);
+    QMatrix4x4 mCameraMatrix = CCamera::getQtCameraMatrix(vCamPos - pScene->getWorldOrigin(), vCamRot);
     QMatrix4x4 mCameraProjection = CCamera::getQtProjectionMatrix(
                 dVerticalFOV,
                 (double) iWidth / (double) iHeight,
@@ -262,13 +262,8 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
         ).toVector3() - vCamPos, Vector3(0.0, 0.0, 0.0));
         */
 
-    CMatrix4 m_mInternalCameraMatrix = CCamera::getInternalMatrix(vCamPos, vCamRot);
-    CMatrix4 m_mInternalProjectionMatrix = CCamera::getInternalProjectionMatrix(
-                dVerticalFOV,
-                (double) iWidth / (double) iHeight,
-                m_dMinDistance,
-                m_dMaxDistance
-                );
+    CMatrix4 m_mInternalCameraMatrix = CCamera::getInternalCameraMatrix(vCamPos, vCamRot);
+    CMatrix4 m_mInternalProjectionMatrix = CMatrix4::FromQtMatrix(mCameraProjection);
 
     CRenderContext Context(
                 mCameraProjection, mCameraMatrix,
@@ -790,7 +785,7 @@ QMatrix4x4 CCamera::getQtProjectionMatrix(double dFOV, double dAspectRatio, doub
 
 //-------------------------------------------------------------------------------------------------
 
-QMatrix4x4 CCamera::getQtMatrix(CVector3 vPosition, CVector3 vRotation)
+QMatrix4x4 CCamera::getQtCameraMatrix(CVector3 vPosition, CVector3 vRotation)
 {
     // Création d'une matrice de transformation Qt avec vPosition et vRotation
 
@@ -807,7 +802,14 @@ QMatrix4x4 CCamera::getQtMatrix(CVector3 vPosition, CVector3 vRotation)
 
 //-------------------------------------------------------------------------------------------------
 
-CMatrix4 CCamera::getInternalMatrix(CVector3 vPosition, CVector3 vRotation)
+CMatrix4 CCamera::getInternalProjectionMatrix(double dFOV, double dAspectRatio, double dMinDistance, double dMaxDistance)
+{
+    return CMatrix4::FromQtMatrix(getQtProjectionMatrix(dFOV, dAspectRatio, dMinDistance, dMaxDistance));
+}
+
+//-------------------------------------------------------------------------------------------------
+
+CMatrix4 CCamera::getInternalCameraMatrix(CVector3 vPosition, CVector3 vRotation)
 {
     // Création d'une matrice de transformation interne avec vPosition et vRotation
     // Utilisée pour les tests d'intersection BoundingBox/Frustum entre autres
@@ -820,13 +822,6 @@ CMatrix4 CCamera::getInternalMatrix(CVector3 vPosition, CVector3 vRotation)
     mMatrix = CMatrix4().MakeTranslation(vPosition * -1.0) * mMatrix;
 
     return mMatrix;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-CMatrix4 CCamera::getInternalProjectionMatrix(double dFOV, double dAspectRatio, double dMinDistance, double dMaxDistance)
-{
-    return CMatrix4::FromQtMatrix(getQtProjectionMatrix(dFOV, dAspectRatio, dMinDistance, dMaxDistance));
 }
 
 //-------------------------------------------------------------------------------------------------

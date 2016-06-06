@@ -228,9 +228,20 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
 
             if (vColor.X != 0.0 || vColor.Y != 0.0 || vColor.Z != 0.0)
             {
-                CVector3 vWorldPosition = m_vLights[iLightIndex]->getWorldPosition() - m_WorldOrigin;
+                CVector3 vLightPosition = m_vLights[iLightIndex]->getWorldPosition();
+                CVector3 vWorldPosition = vLightPosition - m_WorldOrigin;
                 CVector3 vWorldDirection = m_vLights[iLightIndex]->getWorldDirection();
-                CVector3 vScreenPosition = pContext->internalProjectionMatrix() * (pContext->internalCameraMatrix() * m_vLights[iLightIndex]->getWorldPosition());
+
+                QVector4D vRelativePosition(vWorldPosition.X, vWorldPosition.Y, vWorldPosition.Z, 1.0);
+                vRelativePosition = pContext->cameraMatrix() * vRelativePosition;
+                vRelativePosition = pContext->cameraProjectionMatrix() * vRelativePosition;
+                if (vRelativePosition.w() != 0.0)
+                {
+                    vRelativePosition.setX(vRelativePosition.x() / vRelativePosition.w() + 0.5);
+                    vRelativePosition.setY(vRelativePosition.y() / vRelativePosition.w() + 0.5);
+                    vRelativePosition.setZ(vRelativePosition.z() / vRelativePosition.w());
+                }
+                CVector3 vScreenPosition(vRelativePosition.x(), vRelativePosition.y(), vRelativePosition.z());
 
                 if (iLightIndex == 0)
                 {

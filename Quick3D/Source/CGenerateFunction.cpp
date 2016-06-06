@@ -182,6 +182,8 @@ double CGenerateFunction::process(CPerlin* pPerlin, const CVector3& vPosition, c
                         case toSub: dReturnValue -= dCurrentValue; break;
                         case toMul: dReturnValue *= dCurrentValue; break;
                         case toDiv: dReturnValue /= dCurrentValue; break;
+                        default:
+                            break;
                     }
                 }
 
@@ -227,6 +229,8 @@ double CGenerateFunction::process(CPerlin* pPerlin, const CVector3& vPosition, c
                         break;
                     case toVoronoi:
                         pPerlin->getVoronoi(vPosition * dInputScale, aAxis, m_dDisplace);
+                        break;
+                    default:
                         break;
                 }
 

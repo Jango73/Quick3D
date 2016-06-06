@@ -325,7 +325,7 @@ vec3 stars(vec3 direction)
     return vec3(a);
 }
 
-vec3 lightRays(vec3 origin, vec3 direction)
+vec3 lightGlows(vec3 origin, vec3 direction, vec2 xy)
 {
     vec3 color = vec3(0.0, 0.0, 0.0);
 
@@ -334,18 +334,25 @@ vec3 lightRays(vec3 origin, vec3 direction)
         vec3 lightDirection = normalize(u_light_position[index] - origin);
 
         // Large glow
-        // toto
         float amount = max(dot(direction, lightDirection), 0.0);
         color += (u_light_color[index] * amount * amount * 0.25) * gAtmosphereFactor;
         color += (u_light_color[index] * min(pow(amount, 1000.0), 1.0));
-        // float factor = u_light_distance[index];
-        // color += (u_light_color[index] * amount * factor * 0.25) * gAtmosphereFactor;
+
+        // Ray
+        float diffX = abs(xy.x - u_light_screen_position[index].x);
+        float mixX = mix(1.0, 0.90, diffX);
+        float rayAmountX = clamp(mixX, 0.0, 1.0);
+        float diffY = abs(xy.y - u_light_screen_position[index].y);
+        float mixY = mix(0.9, 0.00, diffY);
+        float rayAmountY = clamp(mixY, 0.0, 1.0);
+        float final = pow(rayAmountX * rayAmountY, 10.0);
+        color += u_light_color[index] * final;
     }
 
     return color;
 }
 
-vec3 getSkyAt(vec3 origin, vec3 direction)
+vec3 getSkyAt(vec3 origin, vec3 direction, vec2 xy)
 {
     vec3 earthDirection = normalize(-u_world_origin - origin);
     vec3 zenithColor = u_fog_color;
@@ -366,7 +373,7 @@ vec3 getSkyAt(vec3 origin, vec3 direction)
     }
 
     // Light glows
-    sky += lightRays(origin, direction);
+    sky += lightGlows(origin, direction, xy);
 
     // Stars
     sky += stars(direction);
@@ -488,7 +495,7 @@ vec4 volumetricLights(vec3 pos)
 //-------------------------------------------------------------------------------------------------
 // Lights
 
-vec3 doLighting(vec3 position, vec3 normal, vec3 eye)
+vec3 doLighting(vec3 position, vec3 normal, vec3 eye, vec2 xy)
 {
     vec3 color = vec3(0.0, 0.0, 0.0);
 
@@ -560,7 +567,7 @@ vec3 doLighting(vec3 position, vec3 normal, vec3 eye)
 
                 if (u_shaderQuality >= 0.75 && u_material_reflection > 0.0)
                 {
-                    reflection = getSkyAt(position, reflect(eye, normal)) * u_material_reflection;
+                    reflection = getSkyAt(position, reflect(eye, normal), xy) * u_material_reflection;
 
                     if (u_material_reflection_steepness > 0.0)
                     {
@@ -723,11 +730,11 @@ void main()
             // The eye-to-vertex vector
             vec3 eye_to_vertex = normalize(v_position - u_camera_position);
 
-            // Input color
-            vec4 color = vec4(doLighting(v_position, normal, eye_to_vertex), 1.0);
-
             // Screen coordinates
             vec2 xy = gl_FragCoord.xy / u_resolution.xy;
+
+            // Input color
+            vec4 color = vec4(doLighting(v_position, normal, eye_to_vertex, xy), 1.0);
 
             // Atmosphere factor
             gAtmosphereFactor = clamp((u_atmosphere_altitude - u_camera_altitude) / u_atmosphere_altitude, 0.0, 1.0);
@@ -784,7 +791,7 @@ void main()
             // Apply sky if asked
             if (bool(u_sky_enable))
             {
-                color = vec4(getSkyAt(u_camera_position, eye_to_vertex), color.a);
+                color = vec4(getSkyAt(u_camera_position, eye_to_vertex, xy), color.a);
             }
 
             // Apply water if asked

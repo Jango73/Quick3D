@@ -192,13 +192,13 @@ public:
     static QMatrix4x4 getQtProjectionMatrix(double dFOV, double dAspectRatio, double dMinDistance, double dMaxDistance);
 
     //! Retourne une matrice de transformation au format Qt
-    static QMatrix4x4 getQtMatrix(Math::CVector3 vPosition, Math::CVector3 vRotation);
-
-    //! Retourne une matrice de transformation utilisée par les méthodes internes
-    static Math::CMatrix4 getInternalMatrix(Math::CVector3 vPosition, Math::CVector3 vRotation);
+    static QMatrix4x4 getQtCameraMatrix(Math::CVector3 vPosition, Math::CVector3 vRotation);
 
     //! Retourne une matrice de porojection utilisée par les méthodes internes
     static Math::CMatrix4 getInternalProjectionMatrix(double dFOV, double dAspectRatio, double dMinDistance, double dMaxDistance);
+
+    //! Retourne une matrice de transformation utilisée par les méthodes internes
+    static Math::CMatrix4 getInternalCameraMatrix(Math::CVector3 vPosition, Math::CVector3 vRotation);
 
     //! Retourne une catégorie de détection pour le point vPoint en utilisant les zones localPolygons
     CGeoZone::EGeoZoneFlag categorizePointFromZones(const QVector<CGeoZone>& vZones, Math::CVector2 vPoint);

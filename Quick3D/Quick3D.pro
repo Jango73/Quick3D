@@ -381,4 +381,5 @@ HEADERS  += \
 DISTFILES +=
 
 RESOURCES += \
-    Quick3DBase.qrc
+    Quick3DBase.qrc \
+    Quick3DShaders.qrc

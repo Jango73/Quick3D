@@ -36,6 +36,7 @@ uniform vec3			u_global_ambient;
 
 uniform int				u_num_lights;
 uniform vec3			u_light_position[8];
+uniform vec3			u_light_screen_position[8];
 uniform vec3			u_light_direction[8];
 uniform vec3			u_light_color[8];
 uniform float			u_light_distance[8];

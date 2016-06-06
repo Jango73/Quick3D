@@ -41,6 +41,7 @@ uniform vec3			u_global_ambient;
 
 uniform int				u_num_lights;
 uniform vec3			u_light_position[8];
+uniform vec3			u_light_screen_position[8];
 uniform vec3			u_light_direction[8];
 uniform vec3			u_light_color[8];
 uniform float			u_light_distance[8];
@@ -317,21 +318,39 @@ vec4 getCloudsAt(vec3 origin, vec3 direction)
     return color * gAtmosphereFactor;
 }
 
-vec3 getStars(vec3 direction)
+vec3 stars(vec3 direction)
 {
     float n = clamp(perlin(direction * 500.0), 0.95, 1.0);
     float a = pow(n, 80.0);
     return vec3(a);
 }
 
+vec3 lightRays(vec3 origin, vec3 direction)
+{
+    vec3 color = vec3(0.0, 0.0, 0.0);
+
+    for (int index = 0; index < u_num_lights; index++)
+    {
+        vec3 lightDirection = normalize(u_light_position[index] - origin);
+
+        // Large glow
+        // toto
+        float amount = max(dot(direction, lightDirection), 0.0);
+        color += (u_light_color[index] * amount * amount * 0.25) * gAtmosphereFactor;
+        color += (u_light_color[index] * min(pow(amount, 1000.0), 1.0));
+        // float factor = u_light_distance[index];
+        // color += (u_light_color[index] * amount * factor * 0.25) * gAtmosphereFactor;
+    }
+
+    return color;
+}
+
 vec3 getSkyAt(vec3 origin, vec3 direction)
 {
-    vec3 sunDirection = normalize(u_light_position[0] - origin);
     vec3 earthDirection = normalize(-u_world_origin - origin);
     vec3 zenithColor = u_fog_color;
     vec3 horizonColor = u_light_color[0];
     vec3 earthGlowColor = vec3(0.5, 0.75, 1.0);
-    float sunAmount = max(dot(direction, sunDirection), 0.0);
     float earthGlowAmount = max(dot(direction, earthDirection), 0.0);
     float up = pow(1.0 - dot(u_world_up, direction), 6.0);
 
@@ -346,14 +365,11 @@ vec3 getSkyAt(vec3 origin, vec3 direction)
         sky += (earthGlowColor * min(pow(earthGlowAmount, 25.0), 1.0));
     }
 
-    // Sun glow
-    sky += (u_light_color[0] * sunAmount * sunAmount * 0.25) * gAtmosphereFactor;
-
-    // Sun
-    sky += (u_light_color[0] * min(pow(sunAmount, 1000.0), 1.0));
+    // Light glows
+    sky += lightRays(origin, direction);
 
     // Stars
-    sky += getStars(direction);
+    sky += stars(direction);
 
     // Clamping
     sky = clamp(sky, 0.0, 1.0);

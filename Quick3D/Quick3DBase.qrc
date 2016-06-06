@@ -1,7 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>Resources/Shaders/FS_Standard.c</file>
-        <file>Resources/Shaders/VS_Standard.c</file>
         <file>Resources/Textures/Dirt01.jpg</file>
         <file>Resources/Textures/Dirt02.jpg</file>
         <file>Resources/Textures/Dirt03.jpg</file>

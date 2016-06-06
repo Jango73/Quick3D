@@ -132,12 +132,14 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
             mShadowMatrix = CCamera::getQtMatrix(vCamPos - pScene->getWorldOrigin(), vCamRot);
             mShadowProjectionMatrix = CCamera::getQtProjectionMatrix(pLight->getFOV(), 1.0, pLight->getMinDistance(), pLight->getMaxDistance());
 
-            CMatrix4 m_mInternalCameraMatrix = CCamera::getInternalMatrix(vCamPos, vCamRot);
+            CMatrix4 mInternalCameraMatrix = CCamera::getInternalMatrix(vCamPos, vCamRot);
+            CMatrix4 mInternalProjectionMatrix = CCamera::getInternalProjectionMatrix(pLight->getFOV(), 1.0, pLight->getMinDistance(), pLight->getMaxDistance());
 
             CRenderContext Context(
                         mShadowProjectionMatrix, mShadowMatrix,
                         mShadowProjectionMatrix, mShadowMatrix,
-                        m_mInternalCameraMatrix,
+                        mInternalCameraMatrix,
+                        mInternalProjectionMatrix,
                         pScene,
                         pLight
                         );
@@ -261,11 +263,18 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
         */
 
     CMatrix4 m_mInternalCameraMatrix = CCamera::getInternalMatrix(vCamPos, vCamRot);
+    CMatrix4 m_mInternalProjectionMatrix = CCamera::getInternalProjectionMatrix(
+                dVerticalFOV,
+                (double) iWidth / (double) iHeight,
+                m_dMinDistance,
+                m_dMaxDistance
+                );
 
     CRenderContext Context(
                 mCameraProjection, mCameraMatrix,
                 mShadowProjectionMatrix, mShadowMatrix,
                 m_mInternalCameraMatrix,
+                m_mInternalProjectionMatrix,
                 pScene,
                 this
                 );
@@ -811,6 +820,13 @@ CMatrix4 CCamera::getInternalMatrix(CVector3 vPosition, CVector3 vRotation)
     mMatrix = CMatrix4().MakeTranslation(vPosition * -1.0) * mMatrix;
 
     return mMatrix;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+CMatrix4 CCamera::getInternalProjectionMatrix(double dFOV, double dAspectRatio, double dMinDistance, double dMaxDistance)
+{
+    return CMatrix4::FromQtMatrix(getQtProjectionMatrix(dFOV, dAspectRatio, dMinDistance, dMaxDistance));
 }
 
 //-------------------------------------------------------------------------------------------------

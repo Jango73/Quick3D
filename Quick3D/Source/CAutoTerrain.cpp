@@ -12,12 +12,26 @@
 #include "CHGTField.h"
 #include "CBILField.h"
 
+//-------------------------------------------------------------------------------------------------
+
 using namespace Math;
 
 #define LAT_MAX  90.0
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    \class CAutoTerrain
+    \brief A dynamic terrain, with automatic LOD.
+    \inmodule Quick3D
+    \sa C3DScene
+*/
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Instantiates a new CAutoTerrain.
+*/
 CComponent* CAutoTerrain::instanciator(C3DScene* pScene)
 {
 	return new CAutoTerrain(pScene);
@@ -25,6 +39,13 @@ CComponent* CAutoTerrain::instanciator(C3DScene* pScene)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Constructs a CAutoTerrain \br\br.
+    \a pScene is the scene to which this terrain belongs.
+    \a gCameraPosition is the geo-localization of the camera, used to build the initial terrain patches.
+    \a pHeights is the height field to use for altitudes.
+    \a bGenerateNow tells whether the terrain should be immediately created or threaded.
+*/
 CAutoTerrain::CAutoTerrain(C3DScene* pScene, CGeoloc gCameraPosition, CHeightField* pHeights, bool bGenerateNow)
 : CComponent(pScene)
 , m_bGenerateNow(bGenerateNow)
@@ -68,6 +89,9 @@ CAutoTerrain::CAutoTerrain(C3DScene* pScene, CGeoloc gCameraPosition, CHeightFie
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Destroys a CAutoTerrain.
+*/
 CAutoTerrain::~CAutoTerrain()
 {
 	if (m_pRoot) delete m_pRoot;
@@ -80,6 +104,9 @@ CAutoTerrain::~CAutoTerrain()
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Sets the terrain resolution to \a value.
+*/
 void CAutoTerrain::setTerrainResolution(int value)
 {
 	m_iTerrainResolution = Angles::clipInt(value, 3, 81);
@@ -87,6 +114,9 @@ void CAutoTerrain::setTerrainResolution(int value)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Loads the properties of this terrain from \a xComponent.
+*/
 void CAutoTerrain::loadParameters(CXMLNode xComponent)
 {
 	CComponent::loadParameters(xComponent);
@@ -157,6 +187,9 @@ void CAutoTerrain::loadParameters(CXMLNode xComponent)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Paints the terrain using \a pContext.
+*/
 void CAutoTerrain::paint(CRenderContext* pContext)
 {
 	static int iBuildCounter = 0;
@@ -211,18 +244,27 @@ void CAutoTerrain::paint(CRenderContext* pContext)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Updates the terrain using \a dDeltaTimeS, which is the elapsed seconds since the last frame.
+*/
 void CAutoTerrain::update(double dDeltaTime)
 {
 }
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Does post update work on the terrain using \a dDeltaTimeS, which is the elapsed seconds since the last frame.
+*/
 void CAutoTerrain::postUpdate(double dDeltaTime)
 {
 }
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Builds the root of the terrain.
+*/
 void CAutoTerrain::buildRoot()
 {
 	if (m_pRoot == NULL)
@@ -238,6 +280,12 @@ void CAutoTerrain::buildRoot()
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Called by paint() to build necessary terrain patches given the camera location. \br\br
+    \a pChunk is any chunk in the chunk tree of the terrain. \br
+    \a pContext is the rendering context.
+    \a iLevel is the depth in the chunk tree.
+*/
 void CAutoTerrain::buildRecurse(CWorldChunk* pChunk, CRenderContext* pContext, int iLevel)
 {
 	CGeoloc gOriginalChunkPosition = pChunk->getOriginalGeoloc();
@@ -249,6 +297,7 @@ void CAutoTerrain::buildRecurse(CWorldChunk* pChunk, CRenderContext* pContext, i
 	CBoundingBox bChunkBounds = pChunk->getBuildWorldBounds();
 
 	// On décide si ce niveau de détail est suffisant
+    // Decide whether this level of detail is enough
 	bool bStayHere = (
 		bChunkBounds.containsSpherical(pContext->camera()->getGeoloc()) == false ||
 		iLevel == 0
@@ -257,6 +306,7 @@ void CAutoTerrain::buildRecurse(CWorldChunk* pChunk, CRenderContext* pContext, i
 
 	if (bStayHere)
 	{
+        // Create terrain for the chunk if needed
 		if (pChunk->getTerrain() == NULL)
 		{
 			LOG_DEBUG(QString("Creating terrain for tile at lat %1, lon %2, level %3")
@@ -338,47 +388,56 @@ void CAutoTerrain::buildRecurse(CWorldChunk* pChunk, CRenderContext* pContext, i
 				0.0
 				);
 
+            // Create for child chunks
 			CWorldChunk* pChild1 = new CWorldChunk(m_pScene, this, this);
 			CWorldChunk* pChild2 = new CWorldChunk(m_pScene, this, this);
 			CWorldChunk* pChild3 = new CWorldChunk(m_pScene, this, this);
 			CWorldChunk* pChild4 = new CWorldChunk(m_pScene, this, this);
 
+            // Children don't inherit transforms
 			pChild1->setInheritTransform(false);
 			pChild2->setInheritTransform(false);
 			pChild3->setInheritTransform(false);
 			pChild4->setInheritTransform(false);
 
+            // Children's parent are the given chunk
 			pChild1->CComponent::setParent((CComponent*) pChunk);
 			pChild2->CComponent::setParent((CComponent*) pChunk);
 			pChild3->CComponent::setParent((CComponent*) pChunk);
 			pChild4->CComponent::setParent((CComponent*) pChunk);
 
+            // Append the chlidren to the given chunk
 			pChunk->getChildren().append(pChild1);
 			pChunk->getChildren().append(pChild2);
 			pChunk->getChildren().append(pChild3);
 			pChunk->getChildren().append(pChild4);
 
+            // Distribute children equally in the given chunk's extents
 			pChild1->setGeoloc(CGeoloc(gStart.Latitude + gOriginalChunkSize.Latitude * 0.25, gStart.Longitude + gOriginalChunkSize.Longitude * 0.25, 0.0));
 			pChild2->setGeoloc(CGeoloc(gStart.Latitude + gOriginalChunkSize.Latitude * 0.25, gStart.Longitude + gOriginalChunkSize.Longitude * 0.75, 0.0));
 			pChild3->setGeoloc(CGeoloc(gStart.Latitude + gOriginalChunkSize.Latitude * 0.75, gStart.Longitude + gOriginalChunkSize.Longitude * 0.25, 0.0));
 			pChild4->setGeoloc(CGeoloc(gStart.Latitude + gOriginalChunkSize.Latitude * 0.75, gStart.Longitude + gOriginalChunkSize.Longitude * 0.75, 0.0));
 
+            // Compute transforms of children
 			pChild1->computeWorldTransform();
 			pChild2->computeWorldTransform();
 			pChild3->computeWorldTransform();
 			pChild4->computeWorldTransform();
 
+            // Set size of children
 			pChild1->setSize(gSize);
 			pChild2->setSize(gSize);
 			pChild3->setSize(gSize);
 			pChild4->setSize(gSize);
 
+            // Tell children to build themselves
 			pChild1->build();
 			pChild2->build();
 			pChild3->build();
 			pChild4->build();
 		}
 
+        // Recurse in child chunks
 		foreach (CComponent* pChildComponent, pChunk->getChildren())
 		{
 			CWorldChunk* pChild = dynamic_cast<CWorldChunk*>(pChildComponent);
@@ -492,6 +551,9 @@ void CAutoTerrain::paintRecurse(QVector<CWorldChunk*>& vChunkCollect, CRenderCon
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Called by paint in order to collect any useless chunks.
+*/
 void CAutoTerrain::collectGarbage()
 {
 	if (m_pRoot != NULL)
@@ -502,6 +564,9 @@ void CAutoTerrain::collectGarbage()
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Destroys \a pChunk 's terrain if it has not been used since 60 seconds and collects garbage on child chunks.
+*/
 void CAutoTerrain::collectGarbageRecurse(CWorldChunk* pChunk)
 {
 	if (pChunk->getTerrain() != NULL)
@@ -591,6 +656,9 @@ double CAutoTerrain::getHeightAtRecurse(const CGeoloc& gPosition, CWorldChunk* p
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Flattens terrain at the specified \a gPosition, to the extents of \a dRadius.
+*/
 void CAutoTerrain::flatten(const CGeoloc& gPosition, double dRadius)
 {
 	/*
@@ -609,6 +677,9 @@ void CAutoTerrain::flatten(const CGeoloc& gPosition, double dRadius)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Reads parameters for vegetation and creates appropriate meshes.
+*/
 void CAutoTerrain::readVegetationParameters()
 {
     CXMLNode xVegeationNode = m_xParameters.getNodeByTagName(ParamName_Vegetation);
@@ -697,6 +768,9 @@ RayTracingResult CAutoTerrain::intersect(Math::CRay3 ray) const
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Checks if \a ray intersects this terrain.
+*/
 RayTracingResult CAutoTerrain::intersectRecurse(CWorldChunk* pChunk, const Math::CRay3& ray) const
 {
 	RayTracingResult dResult(Q3D_INFINITY);
@@ -728,6 +802,9 @@ RayTracingResult CAutoTerrain::intersectRecurse(CWorldChunk* pChunk, const Math:
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Dumps this component to \a stream using the indentation value in \a iIdent.
+*/
 void CAutoTerrain::dump(QTextStream& stream, int iIdent)
 {
 	dumpIdent(stream, iIdent, QString("[CAutoTerrain]"));

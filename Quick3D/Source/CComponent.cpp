@@ -530,7 +530,7 @@ CComponent& CComponent::operator = (const CComponent& target)
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Loads the properties of this component from a CXMLNode.
+    Loads the properties of this component from \a xComponent.
 */
 void CComponent::loadParameters(CXMLNode xComponent)
 {

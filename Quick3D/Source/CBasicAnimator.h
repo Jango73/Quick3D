@@ -24,62 +24,62 @@ class QUICK3D_EXPORT CBasicAnimator : public CAnimator
 
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//! Retourne une nouvelle instance de cet objet
-	static CComponent* instanciator(C3DScene* pScene);
+    //! Retourne une nouvelle instance de cet objet
+    static CComponent* instanciator(C3DScene* pScene);
 
-	//! Constructeur d'après une scène
-	CBasicAnimator(C3DScene* pScene);
+    //! Constructeur d'après une scène
+    CBasicAnimator(C3DScene* pScene);
 
-	//! Destructeur
-	virtual ~CBasicAnimator();
+    //! Destructeur
+    virtual ~CBasicAnimator();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//! Retourne une référence sur les pas de translations
-	CAnimatorFrame* getTranslationFrame() { return m_pTranslationFrame; }
+    //! Retourne une référence sur les pas de translations
+    CAnimatorFrame* getTranslationFrame() { return m_pTranslationFrame; }
 
-	//! Retourne une référence sur les pas de rotations
-	CAnimatorFrame* getRotationFrame() { return m_pRotationFrame; }
+    //! Retourne une référence sur les pas de rotations
+    CAnimatorFrame* getRotationFrame() { return m_pRotationFrame; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//! Ajoute un pas de translation
-	void addTranslationStep(CBasicAnimationStep value);
+    //! Ajoute un pas de translation
+    void addTranslationStep(CBasicAnimationStep value);
 
-	//! Ajoute un pas de rotation
-	void addRotationStep(CBasicAnimationStep value);
+    //! Ajoute un pas de rotation
+    void addRotationStep(CBasicAnimationStep value);
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes héritées
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes héritées
+    //-------------------------------------------------------------------------------------------------
 
-	//! Retourne le nom de classe de cet objet
-	virtual QString getClassName() const { return ClassName_CBasicAnimator; }
+    //! Retourne le nom de classe de cet objet
+    virtual QString getClassName() const { return ClassName_CBasicAnimator; }
 
-	//! Charge les paramètres de cet objet d'après le noeud XML fourni
-	virtual void loadParameters(CXMLNode xComponent);
+    //! Charge les paramètres de cet objet d'après le noeud XML fourni
+    virtual void loadParameters(CXMLNode xComponent);
 
-	//! Met l'objet à jour d'après le temps écoulé depuis la dernière image
-	virtual void update(double dDeltaTime);
+    //! Met l'objet à jour d'après le temps écoulé depuis la dernière image
+    virtual void update(double dDeltaTime);
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	CAnimatorFrame*		m_pTranslationFrame;
-	CAnimatorFrame*		m_pRotationFrame;
+    CAnimatorFrame*     m_pTranslationFrame;
+    CAnimatorFrame*     m_pRotationFrame;
 };

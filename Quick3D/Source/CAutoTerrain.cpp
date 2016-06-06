@@ -123,7 +123,7 @@ void CAutoTerrain::loadParameters(CXMLNode xComponent)
 		m_pHeights = new CGeneratedField(m_xParameters);
 	}
 
-	generateVegetation();
+    readVegetationParameters();
 
 	CXMLNode xMaterialNode = m_xParameters.getNodeByTagName(ParamName_Material);
 
@@ -609,34 +609,32 @@ void CAutoTerrain::flatten(const CGeoloc& gPosition, double dRadius)
 
 //-------------------------------------------------------------------------------------------------
 
-void CAutoTerrain::generateVegetation()
+void CAutoTerrain::readVegetationParameters()
 {
-	return;
+    CXMLNode xVegeationNode = m_xParameters.getNodeByTagName(ParamName_Vegetation);
 
-	CXMLNode xVegeationNode = m_xParameters.getNodeByTagName("Vegetation");
-
-	QVector<CXMLNode> xTrees = xVegeationNode.getNodesByTagName("Tree");
+    QVector<CXMLNode> xTrees = xVegeationNode.getNodesByTagName(ParamName_Tree);
 
 	foreach (CXMLNode xTree, xTrees)
 	{
-		CXMLNode xDNA = xTree.getNodeByTagName("DNA");
-		CXMLNode xCoverage = xTree.getNodeByTagName("Coverage");
+        CXMLNode xDNA = xTree.getNodeByTagName(ParamName_DNA);
+        CXMLNode xCoverage = xTree.getNodeByTagName(ParamName_Coverage);
 
-		CGenerateFunction* pFunction = new CGenerateFunction(xCoverage.getNodeByTagName("Value"));
+        CGenerateFunction* pFunction = new CGenerateFunction(xCoverage.getNodeByTagName(ParamName_Value));
 
-		int iLevels = xDNA.m_vAttributes["Levels"].toDouble();
-		double dTrunkLength = xDNA.m_vAttributes["TrunkLength"].toDouble();
-		double dTrunkRadius = xDNA.m_vAttributes["TrunkRadius"].toDouble();
-		double dBranchLengthScale = xDNA.m_vAttributes["BranchLengthScale"].toDouble();
-		double dBranchRadiusScale = xDNA.m_vAttributes["BranchRadiusScale"].toDouble();
-		double dLeafScale = xDNA.m_vAttributes["LeafScale"].toDouble();
-		double dGravityFactor = xDNA.m_vAttributes["GravityFactor"].toDouble();
-		double dSpread = xDNA.m_vAttributes["Spread"].toDouble();
+        int iLevels = xDNA.m_vAttributes[ParamName_Levels].toDouble();
+        double dTrunkLength = xDNA.m_vAttributes[ParamName_TrunkLength].toDouble();
+        double dTrunkRadius = xDNA.m_vAttributes[ParamName_TrunkRadius].toDouble();
+        double dBranchLengthScale = xDNA.m_vAttributes[ParamName_BranchLengthScale].toDouble();
+        double dBranchRadiusScale = xDNA.m_vAttributes[ParamName_BranchRadiusScale].toDouble();
+        double dLeafScale = xDNA.m_vAttributes[ParamName_LeafScale].toDouble();
+        double dGravityFactor = xDNA.m_vAttributes[ParamName_GravityFactor].toDouble();
+        double dSpread = xDNA.m_vAttributes[ParamName_Spread].toDouble();
 
-		CXMLNode xLeaf = xDNA.getNodeByTagName("Leaf");
-		CXMLNode xFFD = xLeaf.getNodeByTagName("FFD");
+        CXMLNode xLeaf = xDNA.getNodeByTagName(ParamName_Leaf);
+        CXMLNode xFFD = xLeaf.getNodeByTagName(ParamName_FFD);
 
-		QVector<CXMLNode> xPoints = xFFD.getNodesByTagName("Point");
+        QVector<CXMLNode> xPoints = xFFD.getNodesByTagName(ParamName_Point);
 
 		QVector<CVector3> vFFDFrom;
 		QVector<CVector3> vFFDTo;

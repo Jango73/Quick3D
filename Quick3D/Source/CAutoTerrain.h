@@ -144,7 +144,7 @@ protected:
 	void collectGarbageRecurse(CWorldChunk* pChunk);
 
 	//!
-	void generateVegetation();
+	void readVegetationParameters();
 
 	//! Calcul d'intersection avec un rayon
 	Math::RayTracingResult intersectRecurse(CWorldChunk* pChunk, const Math::CRay3& ray) const;

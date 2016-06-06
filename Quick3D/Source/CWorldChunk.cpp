@@ -435,7 +435,7 @@ void CWorldChunk::work()
         msleep(50);
     }
 
-    if (m_pTerrain)
+    if (m_pTerrain != NULL)
     {
         CPerlin* perlin = CPerlin::getInstance();
 
@@ -549,10 +549,10 @@ void CWorldChunk::placeTree(CGeoloc gPosition, double dRadius, int iTreeIndex)
         {
             pMeshInstance->setGeoloc(gPosition);
             pMeshInstance->setOriginRotation(CVector3(0.0, ((double) rand() / 32768.0) * Math::Pi * 2.0, 0.0));
+            pMeshInstance->computeWorldTransform();
 
             foreach (CBoundedMeshInstances* pBounded, m_vMeshes)
             {
-                // if (pBounded->getWorldBounds().containsSpherical(gPosition))
                 if (pBounded->getWorldBounds().contains(gPosition, dRadius))
                 {
                     pBounded->add(pMeshInstance);

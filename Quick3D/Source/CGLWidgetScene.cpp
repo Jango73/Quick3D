@@ -237,9 +237,9 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
                 vRelativePosition = pContext->cameraProjectionMatrix() * vRelativePosition;
                 if (vRelativePosition.w() != 0.0)
                 {
-                    vRelativePosition.setX(vRelativePosition.x() / vRelativePosition.w() + 0.5);
-                    vRelativePosition.setY(vRelativePosition.y() / vRelativePosition.w() + 0.5);
-                    vRelativePosition.setZ(vRelativePosition.z() / vRelativePosition.w());
+                    vRelativePosition.setX(vRelativePosition.x() / (vRelativePosition.w() * 2.0) + 0.5);
+                    vRelativePosition.setY(vRelativePosition.y() / (vRelativePosition.w() * 2.0) + 0.5);
+                    vRelativePosition.setZ(vRelativePosition.z() / (vRelativePosition.w() * 2.0));
                 }
                 CVector3 vScreenPosition(vRelativePosition.x(), vRelativePosition.y(), vRelativePosition.z());
 

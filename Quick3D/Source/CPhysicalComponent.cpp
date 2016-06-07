@@ -518,6 +518,7 @@ void CPhysicalComponent::computeCollisions(QVector<QSharedPointer<CComponent> >&
 void CPhysicalComponent::computeCollisionsForComponent(CPhysicalComponent* pComponent, QVector<QSharedPointer<CComponent> >& vOtherComponents, double dDeltaTimeS)
 {
     // On parcourt chacun des autres composants
+    // Iterate through each other components
     foreach (QSharedPointer<CComponent> pOtherComponent, vOtherComponents)
     {
         CPhysicalComponent* pOtherPhysical = dynamic_cast<CPhysicalComponent*>(pOtherComponent.data());
@@ -526,7 +527,8 @@ void CPhysicalComponent::computeCollisionsForComponent(CPhysicalComponent* pComp
         {
             if (pComponent != pOtherPhysical && pOtherPhysical->isRootObject() && pOtherPhysical->getCollisionsActive() == true)
             {
-                // Pour l'instant les terrains sont ignorés car traités dans update
+                // Pour l'instant les terrains sont ignorés car traités dans update()
+                // Terrains are for now processed in update()
                 if (pOtherPhysical->getClassName() != ClassName_CAutoTerrain)
                 {
                     // Calcul de distance avec l'autre objet

@@ -28,6 +28,7 @@
 #include "CVehicle.h"
 #include "CTerrestrialVehicle.h"
 #include "CSeaVehicle.h"
+#include "CWheel.h"
 #include "CMan.h"
 
 #include "CAircraft.h"
@@ -84,7 +85,9 @@ void CComponentFactory::registerCoreComponents()
     registerComponent(ClassName_CVehicle, CVehicle::instanciator);
     registerComponent(ClassName_CTerrestrialVehicle, CTerrestrialVehicle::instanciator);
     registerComponent(ClassName_CSeaVehicle, CSeaVehicle::instanciator);
+    registerComponent(ClassName_CWheel, CWheel::instanciator);
     registerComponent(ClassName_CMan, CMan::instanciator);
+
     registerComponent(ClassName_CAircraft, CAircraft::instanciator);
     registerComponent(ClassName_CWing, CWing::instanciator);
     registerComponent(ClassName_CElevator, CElevator::instanciator);

@@ -137,6 +137,7 @@ SOURCES += \
     Source/CWater.cpp \
     Source/CWaterMaterial.cpp \
     Source/CWaypoint.cpp \
+    Source/CWheel.cpp \
     Source/CWing.cpp \
     Source/CWorker.cpp \
     Source/CWorkerManager.cpp \
@@ -317,6 +318,7 @@ HEADERS  += \
     Source/CWater.h \
     Source/CWaterMaterial.h \
     Source/CWaypoint.h \
+    Source/CWheel.h \
     Source/CWing.h \
     Source/CWorker.h \
     Source/CWorkerManager.h \

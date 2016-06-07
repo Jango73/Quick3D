@@ -56,6 +56,7 @@
 #define ClassName_CSeaVehicle				"CSeaVehicle"
 #define ClassName_CTerrestrialVehicle		"CTerrestrialVehicle"
 #define ClassName_CVehicle					"CVehicle"
+#define ClassName_CWheel					"CWheel"
 
 #define ClassName_CAircraft					"CAircraft"
 #define ClassName_CWing						"CWing"

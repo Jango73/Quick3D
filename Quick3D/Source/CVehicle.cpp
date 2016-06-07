@@ -168,7 +168,7 @@ void CVehicle::update(double dDeltaTime)
 
 						double dDiffZ = (Right - Left).AngleZ();
 
-						CVector3 torque(-dDiffX * 2.0, 0.0, -dDiffZ);
+                        CVector3 torque(-dDiffX * 4.0, 0.0, -dDiffZ);
 
 						addLocalTorque_kg(torque * getTotalMass_kg());
 					}

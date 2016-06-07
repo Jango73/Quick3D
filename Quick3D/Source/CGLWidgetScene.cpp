@@ -217,6 +217,7 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
             pProgram->setUniformValue("u_shadow_enable", 0);
         }
 
+        GLint u_light_is_sun [MAX_GL_LIGHTS];
         QVector3D u_light_position [MAX_GL_LIGHTS];
         QVector3D u_light_screen_position [MAX_GL_LIGHTS];
         QVector3D u_light_direction [MAX_GL_LIGHTS];
@@ -260,6 +261,7 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
                     vWorldDirection = CVector3();
                 }
 
+                u_light_is_sun[iOpenGLLightIndex]               = (GLint) (vLights[iLightIndex]->getTag() == "SUN");
                 u_light_position[iOpenGLLightIndex]             = QVector3D(vWorldPosition.X, vWorldPosition.Y, vWorldPosition.Z);
                 u_light_screen_position[iOpenGLLightIndex]      = QVector3D(vScreenPosition.X, vScreenPosition.Y, vScreenPosition.Z);
                 u_light_direction[iOpenGLLightIndex]            = QVector3D(vWorldDirection.X, vWorldDirection.Y, vWorldDirection.Z);
@@ -273,6 +275,7 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
         }
 
         pProgram->setUniformValue("u_num_lights", (GLint) iOpenGLLightIndex);
+        pProgram->setUniformValueArray("u_light_is_sun", u_light_is_sun, MAX_GL_LIGHTS);
         pProgram->setUniformValueArray("u_light_position", u_light_position, MAX_GL_LIGHTS);
         pProgram->setUniformValueArray("u_light_screen_position", u_light_screen_position, MAX_GL_LIGHTS);
         pProgram->setUniformValueArray("u_light_direction", u_light_direction, MAX_GL_LIGHTS);

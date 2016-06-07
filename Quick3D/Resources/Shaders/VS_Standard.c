@@ -35,6 +35,7 @@ uniform float			u_atmosphere_altitude;
 uniform vec3			u_global_ambient;
 
 uniform int				u_num_lights;
+uniform int     		u_light_is_sun[8];
 uniform vec3			u_light_position[8];
 uniform vec3			u_light_screen_position[8];
 uniform vec3			u_light_direction[8];

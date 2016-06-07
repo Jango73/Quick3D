@@ -40,6 +40,7 @@ uniform float			u_atmosphere_altitude;
 uniform vec3			u_global_ambient;
 
 uniform int				u_num_lights;
+uniform int     		u_light_is_sun[8];
 uniform vec3			u_light_position[8];
 uniform vec3			u_light_screen_position[8];
 uniform vec3			u_light_direction[8];
@@ -327,30 +328,36 @@ vec3 stars(vec3 direction)
     return vec3(a);
 }
 
-vec3 lightGlows(vec3 origin, vec3 direction, vec2 xy)
+vec3 lightRays(vec3 origin, vec3 direction, vec2 xy)
 {
     vec3 color = vec3(0.0, 0.0, 0.0);
 
     for (int index = 0; index < u_num_lights; index++)
     {
-        vec3 lightDirection = normalize(u_light_position[index] - origin);
-
-        float distanceFactor = clamp(u_light_distance_to_camera[index] / u_light_distance[index], 0.0, 1.0);
+        float distanceFactor = clamp((u_light_distance[index] * 2.0) / u_light_distance_to_camera[index], 0.0, 1.0);
 
         // Large glow
-        float amount = max(dot(direction, lightDirection), 0.0) * distanceFactor;
-        color += (u_light_color[index] * amount * amount * 0.25) * gAtmosphereFactor;
-        color += (u_light_color[index] * min(pow(amount, 1000.0), 1.0));
+        if (u_light_is_sun[index] > 0)
+        {
+            vec3 lightDirection = normalize(u_light_position[index] - origin);
+            float amount = max(dot(direction, lightDirection), 0.0);
+            color += (u_light_color[index] * amount * amount * 0.25) * gAtmosphereFactor;
+            color += (u_light_color[index] * min(pow(amount, 1000.0), 1.0));
+            distanceFactor = 1.0;
+        }
 
         // Ray
-        float diffX = abs(xy.x - u_light_screen_position[index].x);
-        float mixX = mix(1.0, 0.90, diffX);
-        float rayAmountX = clamp(mixX, 0.0, 1.0) * distanceFactor;
-        float diffY = abs(xy.y - u_light_screen_position[index].y);
-        float mixY = mix(0.9, 0.00, diffY);
-        float rayAmountY = clamp(mixY, 0.0, 1.0) * distanceFactor;
-        float final = pow(rayAmountX * rayAmountY, 10.0);
-        color += u_light_color[index] * final;
+        if (u_light_screen_position[index].z > 0.0)
+        {
+            float diffX = abs(xy.x - u_light_screen_position[index].x);
+            float mixX = mix(1.0, 0.90, diffX);
+            float rayAmountX = clamp(mixX, 0.0, 1.0) * distanceFactor;
+            float diffY = abs(xy.y - u_light_screen_position[index].y);
+            float mixY = mix(0.9, 0.00, diffY);
+            float rayAmountY = clamp(mixY, 0.0, 1.0) * distanceFactor;
+            float final = pow(rayAmountX * rayAmountY, 20.0);
+            color += u_light_color[index] * final;
+        }
     }
 
     return color;
@@ -375,9 +382,6 @@ vec3 getSkyAt(vec3 origin, vec3 direction, vec2 xy)
     {
         sky += (earthGlowColor * min(pow(earthGlowAmount, 25.0), 1.0));
     }
-
-    // Light glows
-    sky += lightGlows(origin, direction, xy);
 
     // Stars
     sky += stars(direction);
@@ -830,10 +834,6 @@ void main()
                 }
                 else
                 {
-
-                    // Compute lighting
-                    // color = color * 0.5 + vec4(doLighting(v_position, normal, eye_to_vertex), color.a) * 0.5;
-
                     // Compute alpha
                     color.a = gSeaAltitudeFactor_1;
                 }
@@ -864,6 +864,9 @@ void main()
                 color.g = 1.0 - color.g;
                 color.b = 1.0 - color.b;
             }
+
+            // Light rays
+            color += vec4(lightRays(u_camera_position, eye_to_vertex, xy), 0.0);
 
             // Apply effects
             color = vec4(postEffects(color.rgb, xy), color.a);

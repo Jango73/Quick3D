@@ -433,14 +433,14 @@
 			<Component Name="Light1" Class="CLight">
 				<Position x="0.8" y="1.0" z="4.0"/>
 				<Rotation x="4.0" y="0.0" z="0.0"/>
-				<General FOV="20.0" Distance="200.0" CastShadows="0"/>
-				<Color r="1.0" g="1.0" b="0.8"/>
+				<General FOV="20.0" Distance="100.0" CastShadows="0"/>
+				<Color r="2.0" g="2.0" b="1.5"/>
 			</Component>
 			<Component Name="Light2" Class="CLight">
 				<Position x="-0.8" y="1.0" z="4.0"/>
 				<Rotation x="4.0" y="0.0" z="0.0"/>
-				<General FOV="20.0" Distance="200.0" CastShadows="0"/>
-				<Color r="1.0" g="1.0" b="0.8"/>
+				<General FOV="20.0" Distance="100.0" CastShadows="0"/>
+				<Color r="2.0" g="2.0" b="1.5"/>
 			</Component>
 			<!--
 			<Component Class="CBasicAnimator" PositionTarget=".Turret" RotationTarget=".Turret" Playing="1">

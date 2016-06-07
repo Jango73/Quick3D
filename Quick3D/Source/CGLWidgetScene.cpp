@@ -202,12 +202,15 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
         pProgram->setUniformValue("u_atmosphere_altitude", (GLfloat) ATMOSPHERE_ALTITUDE);
 
         // Lights
+        QVector<CLight*> vLights = getLights();
+        QVector<CLight*> vSuns = getLightsByTag("SUN");
+
         // pProgram->setUniformValue("u_global_ambient", QVector3D(0.2, 0.2, 0.3));
         pProgram->setUniformValue("u_global_ambient", QVector3D(0.05, 0.05, 0.15));
 
         if (m_dShaderQuality >= 0.90)
         {
-            pProgram->setUniformValue("u_shadow_enable", (GLint) (m_vLights.count() > 0 && m_vLights[0]->castShadows()));
+            pProgram->setUniformValue("u_shadow_enable", (GLint) (vSuns.count() > 0 && vSuns[0]->castShadows()));
         }
         else
         {
@@ -221,18 +224,25 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
         GLfloat u_light_distance_to_camera [MAX_GL_LIGHTS];
         GLfloat u_light_distance [MAX_GL_LIGHTS];
         GLfloat u_light_spot_angle [MAX_GL_LIGHTS];
+        QVector3D vSunColor;
+
+        if (vSuns.count() > 0)
+        {
+            Vector4 vColor = vSuns[0]->getMaterial()->getDiffuse();
+            vSunColor = QVector3D(vColor.X, vColor.Y, vColor.Z);
+        }
 
         int iOpenGLLightIndex = 0;
 
-        for (int iLightIndex = 0; iLightIndex < m_vLights.count() && iOpenGLLightIndex < MAX_GL_LIGHTS; iLightIndex++)
+        for (int iLightIndex = 0; iLightIndex < vLights.count() && iOpenGLLightIndex < MAX_GL_LIGHTS; iLightIndex++)
         {
-            Vector4 vColor = m_vLights[iLightIndex]->getMaterial()->getDiffuse();
+            Vector4 vColor = vLights[iLightIndex]->getMaterial()->getDiffuse();
 
             if (vColor.X != 0.0 || vColor.Y != 0.0 || vColor.Z != 0.0)
             {
-                CVector3 vLightPosition = m_vLights[iLightIndex]->getWorldPosition();
+                CVector3 vLightPosition = vLights[iLightIndex]->getWorldPosition();
                 CVector3 vWorldPosition = vLightPosition - m_WorldOrigin;
-                CVector3 vWorldDirection = m_vLights[iLightIndex]->getWorldDirection();
+                CVector3 vWorldDirection = vLights[iLightIndex]->getWorldDirection();
 
                 QVector4D vRelativePosition(vWorldPosition.X, vWorldPosition.Y, vWorldPosition.Z, 1.0);
                 vRelativePosition = pContext->cameraMatrix() * vRelativePosition;
@@ -245,7 +255,7 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
                 }
                 CVector3 vScreenPosition(vProjectedPosition.x(), vProjectedPosition.y(), vProjectedPosition.z());
 
-                if (iLightIndex == 0)
+                // if (vLights[iLightIndex]->getTag() == "SUN")
                 {
                     vWorldDirection = CVector3();
                 }
@@ -255,8 +265,8 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
                 u_light_direction[iOpenGLLightIndex]            = QVector3D(vWorldDirection.X, vWorldDirection.Y, vWorldDirection.Z);
                 u_light_color[iOpenGLLightIndex]                = QVector3D(vColor.X, vColor.Y, vColor.Z);
                 u_light_distance_to_camera[iOpenGLLightIndex]   = (GLfloat) vRelativePosition.length();
-                u_light_distance[iOpenGLLightIndex]             = (GLfloat) m_vLights[iLightIndex]->getDistance();
-                u_light_spot_angle[iOpenGLLightIndex]           = (GLfloat) Math::Angles::toRad(m_vLights[iLightIndex]->getFOV());
+                u_light_distance[iOpenGLLightIndex]             = (GLfloat) vLights[iLightIndex]->getDistance();
+                u_light_spot_angle[iOpenGLLightIndex]           = (GLfloat) Math::Angles::toRad(vLights[iLightIndex]->getFOV());
 
                 iOpenGLLightIndex++;
             }
@@ -271,14 +281,15 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
         pProgram->setUniformValueArray("u_light_distance", u_light_distance, MAX_GL_LIGHTS, 1);
         pProgram->setUniformValueArray("u_light_spot_angle", u_light_spot_angle, MAX_GL_LIGHTS, 1);
 
-        if (m_vLights.count() > 0 && m_vLights[0]->castShadows())
+        if (vSuns.count() > 0 && vSuns[0]->castShadows())
         {
-            m_vLights[0]->getMaterial()->activateShadow(pContext, pProgram);
+            vSuns[0]->getMaterial()->activateShadow(pContext, pProgram);
         }
 
         pProgram->setUniformValue("u_fog_enable", (GLint) m_tFog.enabled() ? 1 : 0);
         pProgram->setUniformValue("u_fog_distance", (GLfloat) m_tFog.distance());
         pProgram->setUniformValue("u_fog_color", QVector3D(m_tFog.color().X, m_tFog.color().Y, m_tFog.color().Z));
+        pProgram->setUniformValue("u_sun_color", vSuns.count() > 0 ? vSunColor : QVector3D());
     }
 
     C3DScene::setupEnvironment(pContext, pProgram, bBackgroundItem);
@@ -321,17 +332,19 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
 
     m_dSunIntensity = Math::Angles::_max(m_dSunIntensity, 1.0 - dAtmosphereFactor);
 
-    if (m_vLights.count() > 0)
+    QVector<CLight*> vSuns = getLightsByTag("SUN");
+
+    if (vSuns.count() > 0)
     {
-        m_vLights[0]->setOriginPosition(vSunPosition);
+        vSuns[0]->setOriginPosition(vSunPosition);
 
         if (pContext->camera()->getGeoloc().Altitude >= 0.0)
         {
-            m_vLights[0]->getMaterial()->getDiffuse() = m_vSunColor.getValue(m_dSunIntensity);
+            vSuns[0]->getMaterial()->getDiffuse() = m_vSunColor.getValue(m_dSunIntensity);
         }
         else
         {
-            m_vLights[0]->getMaterial()->getDiffuse() = Vector4(0.00, 0.25, 0.50, 1.00);
+            vSuns[0]->getMaterial()->getDiffuse() = Vector4(0.00, 0.25, 0.50, 1.00);
         }
     }
 

@@ -14,6 +14,7 @@
 #include "CComponent.h"
 #include "CPhysicalComponent.h"
 #include "CCamera.h"
+#include "CLight.h"
 #include "CStandardController.h"
 #include "CForceController.h"
 #include "CCartoController.h"
@@ -70,6 +71,7 @@ void CComponentFactory::registerCoreComponents()
     registerComponent(ClassName_CComponent, CComponent::instanciator);
     registerComponent(ClassName_CPhysicalComponent, CPhysicalComponent::instanciator);
     registerComponent(ClassName_CCamera, CCamera::instanciator);
+    registerComponent(ClassName_CLight, CLight::instanciator);
     registerComponent(ClassName_CStandardController, CStandardController::instanciator);
     registerComponent(ClassName_CForceController, CForceController::instanciator);
     registerComponent(ClassName_CCartoController, CCartoController::instanciator);

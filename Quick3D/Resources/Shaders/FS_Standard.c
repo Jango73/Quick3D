@@ -81,6 +81,7 @@ uniform float			u_wave_amplitude;
 uniform int				u_fog_enable;
 uniform float			u_fog_distance;
 uniform vec3			u_fog_color;
+uniform vec3			u_sun_color;
 
 uniform int				u_IR_enable;
 uniform float			u_IR_factor;
@@ -359,7 +360,7 @@ vec3 getSkyAt(vec3 origin, vec3 direction, vec2 xy)
 {
     vec3 earthDirection = normalize(-u_world_origin - origin);
     vec3 zenithColor = u_fog_color;
-    vec3 horizonColor = u_light_color[0];
+    vec3 horizonColor = u_sun_color;
     vec3 earthGlowColor = vec3(0.5, 0.75, 1.0);
     float earthGlowAmount = max(dot(direction, earthDirection), 0.0);
     float up = pow(1.0 - dot(u_world_up, direction), 6.0);
@@ -619,9 +620,9 @@ vec4 computeLinearFog(vec4 color)
     fog_factor = (1.0 - fog_factor) * gAtmosphereFactor;
 
     // Compute attenuated sun color
-    float average = (0.2125 * u_light_color[0].r) + (0.7154 * u_light_color[0].g) + (0.0721 * u_light_color[0].b);
+    float average = (0.2125 * u_sun_color.r) + (0.7154 * u_sun_color.g) + (0.0721 * u_sun_color.b);
     vec3 sun_intensity = vec3(average, average, average);
-    vec3 sun_light = mix(u_light_color[0], sun_intensity, 0.5);
+    vec3 sun_light = mix(u_sun_color, sun_intensity, 0.5);
     // vec3 sun_light = average;
 
     // Compute color, mix between fog color and sun color

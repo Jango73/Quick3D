@@ -43,32 +43,32 @@ using namespace Math;
     Constructs a C3DScene with its default parameters.
 */
 C3DScene::C3DScene(bool bForDisplay)
-	: m_pRessourcesManager(NULL)
-	, m_pBuildingGenerator(NULL)
-	, m_pTreeGenerator(NULL)
-	, m_vShaders(NULL)
-	, m_bForDisplay(bForDisplay)
-	, m_pController(NULL)
-	, m_pDefaultController(NULL)
-	, m_bEditMode(false)
-	, m_DebugMode(false)
-	, m_bBoundsOnly(false)
-	, m_dShaderQuality(0.5)
-	, m_pRain(NULL)
-	, m_tTimeOfDay(12, 0, 0)
-	, m_dTime(0.0)
-	, m_dWindLevel(0.5)
-	, m_bRenderingShadows(false)
-	, m_bforceWideFOV(false)
-	, m_bforceSmallFOV(false)
-	, m_bForceIR(false)
-	, m_bStreamView(false)
-	, m_bDepthComputing(false)
-	, m_iNumMeshesDrawn(0)
-	, m_iNumPolysDrawn(0)
-	, m_iNumChunksDrawn(0)
+    : m_pRessourcesManager(NULL)
+    , m_pBuildingGenerator(NULL)
+    , m_pTreeGenerator(NULL)
+    , m_vShaders(NULL)
+    , m_bForDisplay(bForDisplay)
+    , m_pController(NULL)
+    , m_pDefaultController(NULL)
+    , m_bEditMode(false)
+    , m_DebugMode(false)
+    , m_bBoundsOnly(false)
+    , m_dShaderQuality(0.5)
+    , m_pRain(NULL)
+    , m_tTimeOfDay(12, 0, 0)
+    , m_dTime(0.0)
+    , m_dWindLevel(0.5)
+    , m_bRenderingShadows(false)
+    , m_bforceWideFOV(false)
+    , m_bforceSmallFOV(false)
+    , m_bForceIR(false)
+    , m_bStreamView(false)
+    , m_bDepthComputing(false)
+    , m_iNumMeshesDrawn(0)
+    , m_iNumPolysDrawn(0)
+    , m_iNumChunksDrawn(0)
 {
-	LOG_DEBUG("C3DScene::C3DScene()");
+    LOG_DEBUG("C3DScene::C3DScene()");
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -78,17 +78,16 @@ C3DScene::C3DScene(bool bForDisplay)
 */
 C3DScene::~C3DScene()
 {
-	LOG_DEBUG("C3DScene::~C3DScene()");
+    LOG_DEBUG("C3DScene::~C3DScene()");
 
-	clearComponents();
-	clearLights();
-	clearViewports();
+    clearComponents();
+    clearViewports();
 
-	if (m_pGLExtension != NULL) delete m_pGLExtension;
-	if (m_vShaders != NULL) delete m_vShaders;
-	if (m_pTreeGenerator != NULL) delete m_pTreeGenerator;
-	if (m_pBuildingGenerator != NULL) delete m_pBuildingGenerator;
-	if (m_pRessourcesManager != NULL) delete m_pRessourcesManager;
+    if (m_pGLExtension != NULL) delete m_pGLExtension;
+    if (m_vShaders != NULL) delete m_vShaders;
+    if (m_pTreeGenerator != NULL) delete m_pTreeGenerator;
+    if (m_pBuildingGenerator != NULL) delete m_pBuildingGenerator;
+    if (m_pRessourcesManager != NULL) delete m_pRessourcesManager;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -98,9 +97,8 @@ C3DScene::~C3DScene()
 */
 void C3DScene::clear()
 {
-	clearComponents();
-	clearLights();
-	clearViewports();
+    clearComponents();
+    clearViewports();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -110,21 +108,9 @@ void C3DScene::clear()
 */
 void C3DScene::clearComponents()
 {
-	// Destruction des composants
+    // Destruction des composants
 
-	m_vComponents.clear();
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/*!
-    Removes all lights in the scene.
-*/
-void C3DScene::clearLights()
-{
-	// Destruction des lumières
-
-	m_vLights.clear();
+    m_vComponents.clear();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -134,14 +120,14 @@ void C3DScene::clearLights()
 */
 void C3DScene::clearViewports()
 {
-	// Destruction des viewports
+    // Destruction des viewports
 
-	foreach (int iIndex, m_pViewports.keys())
-	{
-		delete m_pViewports[iIndex];
-	}
+    foreach (int iIndex, m_pViewports.keys())
+    {
+        delete m_pViewports[iIndex];
+    }
 
-	m_pViewports.clear();
+    m_pViewports.clear();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -151,63 +137,80 @@ void C3DScene::clearViewports()
 */
 void C3DScene::init(QVector<CComponent*> vComponents)
 {
-	LOG_DEBUG("C3DScene::init()");
+    LOG_DEBUG("C3DScene::init()");
 
-	//-----------------------------------------------
-	// Initialisation brume et couleurs du soleil
+    //-----------------------------------------------
+    // Initialisation brume et couleurs du soleil
 
-	m_tFog.enabled() = true;
-	m_tFog.level() = 0.0;
-	m_tFog.color() = CVector3(0.5, 0.5, 0.5);
+    m_tFog.enabled() = true;
+    m_tFog.level() = 0.0;
+    m_tFog.color() = CVector3(0.5, 0.5, 0.5);
 
-	m_vSunColor.clear();
-	m_vSunColor.addValue( 0.00, Vector4(0.0, 0.0, 0.0, 1.0));
-	m_vSunColor.addValue( 0.50, Vector4(1.1, 0.7, 0.2, 1.0));
-	m_vSunColor.addValue( 0.60, Vector4(1.1, 0.7, 0.2, 1.0));
-	m_vSunColor.addValue( 0.75, Vector4(1.4, 1.4, 1.2, 1.0));
-	m_vSunColor.addValue( 1.00, Vector4(1.4, 1.4, 1.2, 1.0));
+    m_vSunColor.clear();
+    m_vSunColor.addValue( 0.00, Vector4(0.0, 0.0, 0.0, 1.0));
+    m_vSunColor.addValue( 0.50, Vector4(1.1, 0.7, 0.2, 1.0));
+    m_vSunColor.addValue( 0.60, Vector4(1.1, 0.7, 0.2, 1.0));
+    m_vSunColor.addValue( 0.75, Vector4(1.4, 1.4, 1.2, 1.0));
+    m_vSunColor.addValue( 1.00, Vector4(1.4, 1.4, 1.2, 1.0));
 
-	//-----------------------------------------------
-	// Ajout soleil
+    //-----------------------------------------------
+    // Création des éléments de décor
 
-	if (m_vLights.count() == 0 || m_vLights[0]->getName() != "Sun")
-	{
-		m_vLights.insert(0, QSharedPointer<CLight>(new CLight(this)));
+    // m_pRain = new CRain(this);
 
-		m_vLights[0]->setName("Sun");
-		m_vLights[0]->setCastShadows(true);
-		m_vLights[0]->setFOV(10.0);
-	}
+    //-----------------------------------------------
+    // Chargement des composants
 
-	//-----------------------------------------------
-	// Création des éléments de décor
+    foreach(CComponent* pComponent, vComponents)
+    {
+        m_vComponents.append(QSharedPointer<CComponent>(pComponent));
+    }
 
-	// m_pRain = new CRain(this);
+    foreach(QSharedPointer<CComponent> pComponent, m_vComponents)
+    {
+        pComponent->addItems(this);
+    }
 
-	//-----------------------------------------------
-	// Chargement des composants
+    //-----------------------------------------------
+    // Ajout soleil
 
-	foreach(CComponent* pComponent, vComponents)
-	{
-		m_vComponents.append(QSharedPointer<CComponent>(pComponent));
-	}
+    QVector<CLight*> vLights = getLights();
+    bool bFoundSun = false;
 
-	foreach(QSharedPointer<CComponent> pComponent, m_vComponents)
-	{
-		pComponent->addItems(this);
-	}
+    foreach (CLight* pLight, vLights)
+    {
+        if (pLight->getTag() == "SUN")
+        {
+            bFoundSun = true;
+            break;
+        }
+    }
 
-	if (m_pController != NULL)
-	{
-		m_pController->solveLinks(this);
-	}
+    if (bFoundSun == false)
+    {
+        CLight* pLight = new CLight(this);
 
-	foreach (QSharedPointer<CComponent> pComponent, m_vComponents)
-	{
-		pComponent->solveLinks(this);
-	}
+        pLight->setName("SUN");
+        pLight->setTag("SUN");
+        pLight->setCastShadows(true);
+        pLight->setFOV(10.0);
 
-	autoResolveHeightFields();
+        m_vComponents.append(QSharedPointer<CLight>(pLight));
+    }
+
+    //-----------------------------------------------
+
+    if (m_pController != NULL)
+    {
+        m_pController->solveLinks(this);
+    }
+
+    foreach (QSharedPointer<CComponent> pComponent, m_vComponents)
+    {
+        pComponent->solveLinks(this);
+    }
+
+    autoResolveHeightFields();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -217,7 +220,7 @@ void C3DScene::init(QVector<CComponent*> vComponents)
 */
 void C3DScene::initShaders()
 {
-	LOG_DEBUG("C3DScene::initShaders()");
+    LOG_DEBUG("C3DScene::initShaders()");
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -238,14 +241,14 @@ void C3DScene::setWorldOrigin(Math::CVector3 value)
 */
 void C3DScene::setController(CController* pController)
 {
-	if (pController != NULL)
-	{
-		m_pController = pController;
-	}
-	else
-	{
-		m_pController = m_pDefaultController;
-	}
+    if (pController != NULL)
+    {
+        m_pController = pController;
+    }
+    else
+    {
+        m_pController = m_pDefaultController;
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -255,8 +258,8 @@ void C3DScene::setController(CController* pController)
 */
 void C3DScene::setDefaultController(CController* pController)
 {
-	m_pDefaultController = pController;
-	m_pController = pController;
+    m_pDefaultController = pController;
+    m_pController = pController;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -278,9 +281,9 @@ void C3DScene::setShaderQuality(double value)
 */
 void C3DScene::setTime(double value)
 {
-	m_dTime = value;
+    m_dTime = value;
 
-	CMaterial::setTime(value);
+    CMaterial::setTime(value);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -298,97 +301,155 @@ void C3DScene::setTimeOfDay(QTime value)
 
 void C3DScene::setFogLevel(double value)
 {
-	m_tFog.level() = value;
+    m_tFog.level() = value;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void C3DScene::setWindLevel(double value)
 {
-	m_dWindLevel = value;
-	if (m_dWindLevel < 0.05) m_dWindLevel = 0.05;
+    m_dWindLevel = value;
+    if (m_dWindLevel < 0.05) m_dWindLevel = 0.05;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void C3DScene::setRainVisible(bool bOnOff)
 {
-	if (m_pRain) m_pRain->setVisible(bOnOff);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-QVector<QSharedPointer<CComponent> > C3DScene::getComponentsByTag(const QString& sTag)
-{
-	QVector<QSharedPointer<CComponent> > vReturnValue;
-
-	foreach(QSharedPointer<CComponent> pComponent, m_vComponents)
-	{
-		if (pComponent->getTag() == sTag)
-		{
-			vReturnValue.append(pComponent);
-		}
-	}
-
-	return vReturnValue;
+    if (m_pRain) m_pRain->setVisible(bOnOff);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void C3DScene::forceWideFOV(bool value)
 {
-	m_bforceWideFOV = value;
+    m_bforceWideFOV = value;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void C3DScene::forceSmallFOV(bool value)
 {
-	m_bforceSmallFOV = value;
+    m_bforceSmallFOV = value;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void C3DScene::forceIR(bool value)
 {
-	m_bForceIR = value;
+    m_bForceIR = value;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QVector<CLight *> C3DScene::getLights()
+{
+    QVector<CLight*> vLights;
+
+    foreach (QSharedPointer<CComponent> pComponent, m_vComponents)
+    {
+        getLightsRecurse(vLights, pComponent.data());
+    }
+
+    return vLights;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void C3DScene::getLightsRecurse(QVector<CLight*>& vLights, CComponent* pComponent)
+{
+    if (pComponent->isLight())
+    {
+        CLight* pLight = dynamic_cast<CLight*>(pComponent);
+
+        if (pLight != NULL)
+        {
+            vLights.append(pLight);
+        }
+    }
+
+    foreach (CComponent* pChild, pComponent->getChildren())
+    {
+        getLightsRecurse(vLights, pChild);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QVector<QSharedPointer<CComponent> > C3DScene::getComponentsByTag(const QString& sTag)
+{
+    QVector<QSharedPointer<CComponent> > vReturnValue;
+
+    foreach(QSharedPointer<CComponent> pComponent, m_vComponents)
+    {
+        if (pComponent->getTag() == sTag)
+        {
+            vReturnValue.append(pComponent);
+        }
+    }
+
+    return vReturnValue;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QVector<CLight*> C3DScene::getLightsByTag(const QString& sTag)
+{
+    QVector<CLight*> vLights;
+
+    foreach (QSharedPointer<CComponent> pComponent, m_vComponents)
+    {
+        getLightsByTagRecurse(vLights, sTag, pComponent.data());
+    }
+
+    return vLights;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void C3DScene::getLightsByTagRecurse(QVector<CLight*>& vLights, const QString& sTag, CComponent* pComponent)
+{
+    if (pComponent->isLight() && pComponent->getTag() == sTag)
+    {
+        CLight* pLight = dynamic_cast<CLight*>(pComponent);
+
+        if (pLight != NULL)
+        {
+            vLights.append(pLight);
+        }
+    }
+
+    foreach (CComponent* pChild, pComponent->getChildren())
+    {
+        getLightsByTagRecurse(vLights, sTag, pChild);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void C3DScene::updateScene(double dDeltaTimeS)
 {
-	if (m_pController != NULL)
-	{
-		m_pController->update(dDeltaTimeS);
-	}
+    if (m_pController != NULL)
+    {
+        m_pController->update(dDeltaTimeS);
+    }
 
-	if (m_bEditMode)
-	{
-		dDeltaTimeS = 0.0;
-	}
+    if (m_bEditMode)
+    {
+        dDeltaTimeS = 0.0;
+    }
 
-	foreach (QSharedPointer<CComponent> pComponent, m_vComponents)
-	{
-		pComponent->update(dDeltaTimeS);
-	}
+    foreach (QSharedPointer<CComponent> pComponent, m_vComponents)
+    {
+        pComponent->update(dDeltaTimeS);
+    }
 
-	foreach (QSharedPointer<CComponent> pComponent, m_vComponents)
-	{
-		pComponent->postUpdate(dDeltaTimeS);
-	}
+    foreach (QSharedPointer<CComponent> pComponent, m_vComponents)
+    {
+        pComponent->postUpdate(dDeltaTimeS);
+    }
 
-	foreach (QSharedPointer<CLight> pLight, m_vLights)
-	{
-		pLight->update(dDeltaTimeS);
-	}
-
-	foreach (QSharedPointer<CLight> pLight, m_vLights)
-	{
-		pLight->postUpdate(dDeltaTimeS);
-	}
-
-	CPhysicalComponent::computeCollisions(m_vComponents, dDeltaTimeS);
+    CPhysicalComponent::computeCollisions(m_vComponents, dDeltaTimeS);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -413,38 +474,38 @@ void C3DScene::makeCurrentRenderingContext()
 
 void C3DScene::addComponent(QSharedPointer<CComponent> pComponent)
 {
-	m_vComponents.append(pComponent);
-	pComponent->solveLinks(this);
-	autoResolveHeightFields();
+    m_vComponents.append(pComponent);
+    pComponent->solveLinks(this);
+    autoResolveHeightFields();
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void C3DScene::autoResolveHeightFields()
 {
-	CHeightField* pTerrain = NULL;
+    CHeightField* pTerrain = NULL;
 
-	foreach (QSharedPointer<CComponent> pComponent, m_vComponents)
-	{
-		if (dynamic_cast<CAutoTerrain*>(pComponent.data()) != NULL)
-		{
-			pTerrain = dynamic_cast<CHeightField*>(pComponent.data());
-		}
-		else
-		{
-			if (dynamic_cast<CTrajectorable*>(pComponent.data()) != NULL)
-			{
-				CPhysicalComponent* pPhysical = dynamic_cast<CPhysicalComponent*>(pComponent.data());
+    foreach (QSharedPointer<CComponent> pComponent, m_vComponents)
+    {
+        if (dynamic_cast<CAutoTerrain*>(pComponent.data()) != NULL)
+        {
+            pTerrain = dynamic_cast<CHeightField*>(pComponent.data());
+        }
+        else
+        {
+            if (dynamic_cast<CTrajectorable*>(pComponent.data()) != NULL)
+            {
+                CPhysicalComponent* pPhysical = dynamic_cast<CPhysicalComponent*>(pComponent.data());
 
-				if (pPhysical != NULL && pTerrain != NULL)
-				{
-					pPhysical->addField(pTerrain);
-				}
-			}
-		}
+                if (pPhysical != NULL && pTerrain != NULL)
+                {
+                    pPhysical->addField(pTerrain);
+                }
+            }
+        }
 
-		pComponent->update(0.0);
-	}
+        pComponent->update(0.0);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -454,14 +515,14 @@ void C3DScene::autoResolveHeightFields()
 */
 void C3DScene::deleteComponentsByTag(const QString& sTag)
 {
-	for (int iIndex = 0; iIndex < m_vComponents.count(); iIndex++)
-	{
-		if (m_vComponents[iIndex]->getTag() == sTag)
-		{
-			m_vComponents.remove(iIndex);
-			iIndex--;
-		}
-	}
+    for (int iIndex = 0; iIndex < m_vComponents.count(); iIndex++)
+    {
+        if (m_vComponents[iIndex]->getTag() == sTag)
+        {
+            m_vComponents.remove(iIndex);
+            iIndex--;
+        }
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -471,19 +532,19 @@ void C3DScene::deleteComponentsByTag(const QString& sTag)
 */
 RayTracingResult C3DScene::intersect(Math::CRay3 aRay) const
 {
-	RayTracingResult dReturnResult(Q3D_INFINITY);
+    RayTracingResult dReturnResult(Q3D_INFINITY);
 
-	foreach (QSharedPointer<CComponent> pComponent, m_vComponents)
-	{
-		RayTracingResult dNewResult = intersectRecurse(pComponent.data(), aRay);
+    foreach (QSharedPointer<CComponent> pComponent, m_vComponents)
+    {
+        RayTracingResult dNewResult = intersectRecurse(pComponent.data(), aRay);
 
-		if (dNewResult.m_dDistance < dReturnResult.m_dDistance)
-		{
-			dReturnResult = dNewResult;
-		}
-	}
+        if (dNewResult.m_dDistance < dReturnResult.m_dDistance)
+        {
+            dReturnResult = dNewResult;
+        }
+    }
 
-	return dReturnResult;
+    return dReturnResult;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -493,27 +554,27 @@ RayTracingResult C3DScene::intersect(Math::CRay3 aRay) const
 */
 RayTracingResult C3DScene::intersectComponentHierarchy(CComponent* pComponent, Math::CRay3 aRay) const
 {
-	RayTracingResult aResult = intersectRecurse(pComponent, aRay);
-	return aResult;
+    RayTracingResult aResult = intersectRecurse(pComponent, aRay);
+    return aResult;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 RayTracingResult C3DScene::intersectRecurse(CComponent* pComponent, const Math::CRay3& aRay) const
 {
-	RayTracingResult dReturnResult = pComponent->intersect(aRay);
+    RayTracingResult dReturnResult = pComponent->intersect(aRay);
 
-	foreach (CComponent* pChild, pComponent->getChildren())
-	{
-		RayTracingResult dChildResult = intersectRecurse(pChild, aRay);
+    foreach (CComponent* pChild, pComponent->getChildren())
+    {
+        RayTracingResult dChildResult = intersectRecurse(pChild, aRay);
 
-		if (dChildResult.m_dDistance < dReturnResult.m_dDistance)
-		{
-			dReturnResult = dChildResult;
-		}
-	}
+        if (dChildResult.m_dDistance < dReturnResult.m_dDistance)
+        {
+            dReturnResult = dChildResult;
+        }
+    }
 
-	return dReturnResult;
+    return dReturnResult;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -523,13 +584,13 @@ RayTracingResult C3DScene::intersectRecurse(CComponent* pComponent, const Math::
 */
 void C3DScene::dump(QTextStream& stream, int iIdent)
 {
-	dumpIdent(stream, iIdent, QString("[C3DScene]"));
-	dumpIdent(stream, iIdent, QString("CComponent::getNumComponents() : %1").arg(CComponent::getNumComponents()));
+    dumpIdent(stream, iIdent, QString("[C3DScene]"));
+    dumpIdent(stream, iIdent, QString("CComponent::getNumComponents() : %1").arg(CComponent::getNumComponents()));
 
-	foreach (QSharedPointer<CComponent> pComponent, m_vComponents)
-	{
-		dumpOpenBlock(stream, iIdent);
-		pComponent->dump(stream, iIdent + 1);
-		dumpCloseBlock(stream, iIdent);
-	}
+    foreach (QSharedPointer<CComponent> pComponent, m_vComponents)
+    {
+        dumpOpenBlock(stream, iIdent);
+        pComponent->dump(stream, iIdent + 1);
+        dumpCloseBlock(stream, iIdent);
+    }
 }

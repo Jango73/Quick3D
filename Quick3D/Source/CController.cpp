@@ -48,16 +48,16 @@ CController::~CController()
 
 //-------------------------------------------------------------------------------------------------
 
-void CController::loadParameters(CXMLNode xNode)
+void CController::loadParameters(CXMLNode xComponent)
 {
-    CComponent::loadParameters(xNode);
+    CComponent::loadParameters(xComponent);
 
-    m_rPositionTarget.setName(xNode.m_vAttributes[ParamName_PositionTarget]);
-    m_rRotationTarget.setName(xNode.m_vAttributes[ParamName_RotationTarget]);
+    m_rPositionTarget.setName(xComponent.m_vAttributes[ParamName_PositionTarget]);
+    m_rRotationTarget.setName(xComponent.m_vAttributes[ParamName_RotationTarget]);
 
-    if (xNode.m_vAttributes[ParamName_ForceFactor].isEmpty() == false)
+    if (xComponent.m_vAttributes[ParamName_ForceFactor].isEmpty() == false)
     {
-        m_dForceFactor = xNode.m_vAttributes[ParamName_ForceFactor].toDouble();
+        m_dForceFactor = xComponent.m_vAttributes[ParamName_ForceFactor].toDouble();
     }
 }
 

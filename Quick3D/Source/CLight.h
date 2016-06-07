@@ -3,68 +3,92 @@
 
 #include "quick3d_global.h"
 
+//-------------------------------------------------------------------------------------------------
+
 // Fondations
 #include "CVector2.h"
 #include "CVector3.h"
 #include "CMaterial.h"
 #include "CCamera.h"
 
+//-------------------------------------------------------------------------------------------------
+// Déclarations avancées
+// Forward declarations
+
 class C3DScene;
+
+//-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CLight : public CCamera
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	CLight(C3DScene* pScene);
+    //! Retourne une nouvelle instance de cet objet
+    static CComponent* instanciator(C3DScene* pScene);
 
-	//!
-	CLight(const CLight&);
+    //!
+    CLight(C3DScene* pScene);
 
-	//!
-	virtual ~CLight();
+    //!
+    CLight(const CLight&);
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //!
+    virtual ~CLight();
 
-	//!
-	void setCastShadows(bool value) { m_bCastShadows = value; }
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	void setDistance(double value) { m_dDistance = value; }
+    //!
+    void setCastShadows(bool value) { m_bCastShadows = value; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //!
+    void setDistance(double value) { m_dDistance = value; }
 
-	//!
-	CMaterial* getMaterial() const { return m_pMaterial; }
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	bool castShadows() const { return m_bCastShadows; }
+    //!
+    CMaterial* getMaterial() const { return m_pMaterial; }
 
-	//!
-	double getDistance() const { return m_dDistance; }
+    //!
+    bool castShadows() const { return m_bCastShadows; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //!
+    double getDistance() const { return m_dDistance; }
 
-	//!
-	CLight& operator = (const CLight& target);
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes héritées
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //! Retourne le nom de classe de cet objet
+    virtual QString getClassName() const { return ClassName_CLight; }
+
+    //! Charge les paramètres de cet objet
+    virtual void loadParameters(CXMLNode xComponent);
+
+    //! Est-ce que l'objet est une lumière?
+    virtual bool isLight() const { return true; }
+
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
+
+    //!
+    CLight& operator = (const CLight& target);
+
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	double			m_dDistance;
-	bool			m_bCastShadows;
-	CMaterial*		m_pMaterial;
+    double          m_dDistance;
+    bool            m_bCastShadows;
+    CMaterial*      m_pMaterial;
 };

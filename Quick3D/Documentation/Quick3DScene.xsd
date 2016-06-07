@@ -103,6 +103,20 @@
   <xs:complexType name="ComponentGeneralType">
     <xs:simpleContent>
       <xs:extension base="xs:string">
+        <xs:attribute type="xs:float" name="Distance" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              Used by lights: defines maximum distance of light.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:bool" name="CastShadows" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              Used by lights: tells whether the light casts shadows.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
         <xs:attribute type="xs:bool" name="Closed" use="optional">
           <xs:annotation>
             <xs:documentation>

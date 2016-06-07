@@ -106,6 +106,8 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
 
     //-------------------------------------------------------------------------------------------------
 
+    QVector<CLight*> vSuns = pScene->getLightsByTag("SUN");
+
     QMatrix4x4 mShadowProjectionMatrix;
     QMatrix4x4 mShadowMatrix;
 
@@ -113,9 +115,9 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     {
         pScene->setRenderingShadows(true);
 
-        if (pScene->getLights().count() > 0 && pScene->getLights()[0]->castShadows())
+        if (vSuns.count() > 0 && vSuns[0]->castShadows())
         {
-            CLight* pLight = pScene->getLights()[0].data();
+            CLight* pLight = vSuns[0];
 
             pLight->setMinDistance(1.0);
             pLight->setMaxDistance(2000.0);
@@ -200,9 +202,9 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
 
     if (pScene->getShaderQuality() >= 0.90)
     {
-        if (pScene->getLights().count() > 0 && pScene->getLights()[0]->castShadows())
+        if (vSuns.count() > 0 && vSuns[0]->castShadows())
         {
-            CLight* pLight = pScene->getLights()[0].data();
+            CLight* pLight = vSuns[0];
 
             pLight->saveTransform();
 

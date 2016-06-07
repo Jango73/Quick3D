@@ -4,45 +4,103 @@
 
 //-------------------------------------------------------------------------------------------------
 
-CLight::CLight(C3DScene* pScene)
-: CCamera(pScene)
-, m_dDistance(0.0)
-, m_bCastShadows(false)
-, m_pMaterial(NULL)
-{
-	setRaytracable(false);
+/*!
+    \class CLight
+    \brief The base class for all lights existing in the Quick3D engine.
+    \inmodule Quick3D
+    \sa C3DScene
+*/
 
-	m_pMaterial = new CMaterial(pScene);
-	m_pMaterial->createShadowTexture();
+//-------------------------------------------------------------------------------------------------
+
+CComponent* CLight::instanciator(C3DScene* pScene)
+{
+    return new CLight(pScene);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+CLight::CLight(C3DScene* pScene)
+    : CCamera(pScene)
+    , m_dDistance(0.0)
+    , m_bCastShadows(false)
+    , m_pMaterial(NULL)
+{
+    setRaytracable(false);
+
+    m_pMaterial = new CMaterial(pScene);
+    m_pMaterial->createShadowTexture();
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CLight::CLight(const CLight& target)
-: CCamera(target)
-, m_pMaterial(NULL)
+    : CCamera(target)
+    , m_pMaterial(NULL)
 {
-	*this = target;
+    *this = target;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CLight::~CLight()
 {
-	if (m_pMaterial != NULL)
-	{
-		delete m_pMaterial;
-	}
+    if (m_pMaterial != NULL)
+    {
+        delete m_pMaterial;
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CLight& CLight::operator = (const CLight& target)
 {
-	CCamera::operator = (target);
+    CCamera::operator = (target);
 
-	m_dDistance			= target.m_dDistance;
-	m_bCastShadows		= target.m_bCastShadows;
+    m_dDistance         = target.m_dDistance;
+    m_bCastShadows      = target.m_bCastShadows;
 
-	return *this;
+    if (m_pMaterial != NULL && target.m_pMaterial != NULL)
+    {
+        // *m_pMaterial = *target.m_pMaterial;
+    }
+
+    return *this;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Loads the properties of this light from \a xComponent.
+*/
+void CLight::loadParameters(CXMLNode xComponent)
+{
+    CCamera::loadParameters(xComponent);
+
+    CXMLNode tColorNode = xComponent.getNodeByTagName(ParamName_Color);
+
+    if (m_pMaterial != NULL)
+    {
+        if (tColorNode.isEmpty() == false)
+        {
+            m_pMaterial->getDiffuse().X = tColorNode.m_vAttributes[ParamName_r].toDouble();
+            m_pMaterial->getDiffuse().Y = tColorNode.m_vAttributes[ParamName_g].toDouble();
+            m_pMaterial->getDiffuse().Z = tColorNode.m_vAttributes[ParamName_b].toDouble();
+        }
+    }
+
+    CXMLNode xGeneralNode = xComponent.getNodeByTagName(ParamName_General);
+
+    if (xGeneralNode.isEmpty() == false)
+    {
+        if (xGeneralNode.m_vAttributes[ParamName_Distance].isEmpty() == false)
+        {
+            m_dDistance = xGeneralNode.m_vAttributes[ParamName_Distance].toDouble();
+        }
+
+        if (xGeneralNode.m_vAttributes[ParamName_Cast_Shadows].isEmpty() == false)
+        {
+            m_bCastShadows = (bool) xGeneralNode.m_vAttributes[ParamName_Cast_Shadows].toInt();
+        }
+    }
 }

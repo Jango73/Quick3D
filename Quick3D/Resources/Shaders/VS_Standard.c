@@ -76,6 +76,7 @@ uniform float			u_wave_amplitude;
 uniform int				u_fog_enable;
 uniform float			u_fog_distance;
 uniform vec3			u_fog_color;
+uniform vec3			u_sun_color;
 
 uniform int				u_IR_enable;
 uniform float			u_IR_factor;

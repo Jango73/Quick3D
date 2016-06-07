@@ -44,6 +44,7 @@ uniform vec3			u_light_position[8];
 uniform vec3			u_light_screen_position[8];
 uniform vec3			u_light_direction[8];
 uniform vec3			u_light_color[8];
+uniform float			u_light_distance_to_camera[8];
 uniform float			u_light_distance[8];
 uniform float			u_light_spot_angle[8];
 
@@ -333,18 +334,20 @@ vec3 lightGlows(vec3 origin, vec3 direction, vec2 xy)
     {
         vec3 lightDirection = normalize(u_light_position[index] - origin);
 
+        float distanceFactor = clamp(u_light_distance_to_camera[index] / u_light_distance[index], 0.0, 1.0);
+
         // Large glow
-        float amount = max(dot(direction, lightDirection), 0.0);
+        float amount = max(dot(direction, lightDirection), 0.0) * distanceFactor;
         color += (u_light_color[index] * amount * amount * 0.25) * gAtmosphereFactor;
         color += (u_light_color[index] * min(pow(amount, 1000.0), 1.0));
 
         // Ray
         float diffX = abs(xy.x - u_light_screen_position[index].x);
         float mixX = mix(1.0, 0.90, diffX);
-        float rayAmountX = clamp(mixX, 0.0, 1.0);
+        float rayAmountX = clamp(mixX, 0.0, 1.0) * distanceFactor;
         float diffY = abs(xy.y - u_light_screen_position[index].y);
         float mixY = mix(0.9, 0.00, diffY);
-        float rayAmountY = clamp(mixY, 0.0, 1.0);
+        float rayAmountY = clamp(mixY, 0.0, 1.0) * distanceFactor;
         float final = pow(rayAmountX * rayAmountY, 10.0);
         color += u_light_color[index] * final;
     }

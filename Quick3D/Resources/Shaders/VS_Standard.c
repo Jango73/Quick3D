@@ -39,6 +39,7 @@ uniform vec3			u_light_position[8];
 uniform vec3			u_light_screen_position[8];
 uniform vec3			u_light_direction[8];
 uniform vec3			u_light_color[8];
+uniform float			u_light_distance_to_camera[8];
 uniform float			u_light_distance[8];
 uniform float			u_light_spot_angle[8];
 

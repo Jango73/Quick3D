@@ -13,7 +13,8 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-#define ATMOSPHERE_ALTITUDE 100000.0
+#define ATMOSPHERE_ALTITUDE     100000.0
+#define MAX_GL_LIGHTS           8
 
 //-------------------------------------------------------------------------------------------------
 
@@ -213,16 +214,17 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
             pProgram->setUniformValue("u_shadow_enable", 0);
         }
 
-        QVector3D u_light_position [8];
-        QVector3D u_light_screen_position [8];
-        QVector3D u_light_direction [8];
-        QVector3D u_light_color [8];
-        float u_light_distance [8];
-        float u_light_spot_angle [8];
+        QVector3D u_light_position [MAX_GL_LIGHTS];
+        QVector3D u_light_screen_position [MAX_GL_LIGHTS];
+        QVector3D u_light_direction [MAX_GL_LIGHTS];
+        QVector3D u_light_color [MAX_GL_LIGHTS];
+        GLfloat u_light_distance_to_camera [MAX_GL_LIGHTS];
+        GLfloat u_light_distance [MAX_GL_LIGHTS];
+        GLfloat u_light_spot_angle [MAX_GL_LIGHTS];
 
         int iOpenGLLightIndex = 0;
 
-        for (int iLightIndex = 0; iLightIndex < m_vLights.count() && iOpenGLLightIndex < 8; iLightIndex++)
+        for (int iLightIndex = 0; iLightIndex < m_vLights.count() && iOpenGLLightIndex < MAX_GL_LIGHTS; iLightIndex++)
         {
             Vector4 vColor = m_vLights[iLightIndex]->getMaterial()->getDiffuse();
 
@@ -234,14 +236,14 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
 
                 QVector4D vRelativePosition(vWorldPosition.X, vWorldPosition.Y, vWorldPosition.Z, 1.0);
                 vRelativePosition = pContext->cameraMatrix() * vRelativePosition;
-                vRelativePosition = pContext->cameraProjectionMatrix() * vRelativePosition;
-                if (vRelativePosition.w() != 0.0)
+                QVector4D vProjectedPosition = pContext->cameraProjectionMatrix() * vRelativePosition;
+                if (vProjectedPosition.w() != 0.0)
                 {
-                    vRelativePosition.setX(vRelativePosition.x() / (vRelativePosition.w() * 2.0) + 0.5);
-                    vRelativePosition.setY(vRelativePosition.y() / (vRelativePosition.w() * 2.0) + 0.5);
-                    vRelativePosition.setZ(vRelativePosition.z() / (vRelativePosition.w() * 2.0));
+                    vProjectedPosition.setX(vProjectedPosition.x() / (vProjectedPosition.w() * 2.0) + 0.5);
+                    vProjectedPosition.setY(vProjectedPosition.y() / (vProjectedPosition.w() * 2.0) + 0.5);
+                    vProjectedPosition.setZ(vProjectedPosition.z() / (vProjectedPosition.w() * 2.0));
                 }
-                CVector3 vScreenPosition(vRelativePosition.x(), vRelativePosition.y(), vRelativePosition.z());
+                CVector3 vScreenPosition(vProjectedPosition.x(), vProjectedPosition.y(), vProjectedPosition.z());
 
                 if (iLightIndex == 0)
                 {
@@ -252,20 +254,22 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
                 u_light_screen_position[iOpenGLLightIndex]      = QVector3D(vScreenPosition.X, vScreenPosition.Y, vScreenPosition.Z);
                 u_light_direction[iOpenGLLightIndex]            = QVector3D(vWorldDirection.X, vWorldDirection.Y, vWorldDirection.Z);
                 u_light_color[iOpenGLLightIndex]                = QVector3D(vColor.X, vColor.Y, vColor.Z);
-                u_light_distance[iOpenGLLightIndex]             = (float) m_vLights[iLightIndex]->getDistance();
-                u_light_spot_angle[iOpenGLLightIndex]           = (float) Math::Angles::toRad(m_vLights[iLightIndex]->getFOV());
+                u_light_distance_to_camera[iOpenGLLightIndex]   = (GLfloat) vRelativePosition.length();
+                u_light_distance[iOpenGLLightIndex]             = (GLfloat) m_vLights[iLightIndex]->getDistance();
+                u_light_spot_angle[iOpenGLLightIndex]           = (GLfloat) Math::Angles::toRad(m_vLights[iLightIndex]->getFOV());
 
                 iOpenGLLightIndex++;
             }
         }
 
         pProgram->setUniformValue("u_num_lights", (GLint) iOpenGLLightIndex);
-        pProgram->setUniformValueArray("u_light_position", u_light_position, 8);
-        pProgram->setUniformValueArray("u_light_screen_position", u_light_screen_position, 8);
-        pProgram->setUniformValueArray("u_light_direction", u_light_direction, 8);
-        pProgram->setUniformValueArray("u_light_color", u_light_color, 8);
-        pProgram->setUniformValueArray("u_light_distance", (GLfloat*) u_light_distance, 8, 1);
-        pProgram->setUniformValueArray("u_light_spot_angle", (GLfloat*) u_light_spot_angle, 8, 1);
+        pProgram->setUniformValueArray("u_light_position", u_light_position, MAX_GL_LIGHTS);
+        pProgram->setUniformValueArray("u_light_screen_position", u_light_screen_position, MAX_GL_LIGHTS);
+        pProgram->setUniformValueArray("u_light_direction", u_light_direction, MAX_GL_LIGHTS);
+        pProgram->setUniformValueArray("u_light_color", u_light_color, MAX_GL_LIGHTS);
+        pProgram->setUniformValueArray("u_light_distance_to_camera", u_light_distance_to_camera, MAX_GL_LIGHTS, 1);
+        pProgram->setUniformValueArray("u_light_distance", u_light_distance, MAX_GL_LIGHTS, 1);
+        pProgram->setUniformValueArray("u_light_spot_angle", u_light_spot_angle, MAX_GL_LIGHTS, 1);
 
         if (m_vLights.count() > 0 && m_vLights[0]->castShadows())
         {

@@ -384,10 +384,6 @@
 			<Component Name="Head" Class="CCamera">
 				<Position x="0.0" y="1.8" z="0.0"/>
 				<Rotation x="0.0" y="0.0" z="0.0"/>
-				<Component Name="Light1" Class="CLight">
-					<General Distance="20.0" CastShadows="0"/>
-					<Color r="1.0" g="1.0" b="0.0"/>
-				</Component>
 			</Component>
 			<Controller Class="CCartoController"/>
 		</Component>
@@ -433,6 +429,18 @@
 						<Rotation x="0.0" y="0.0" z="0.0"/>
 					</Component>
 				</Component>
+			</Component>
+			<Component Name="Light1" Class="CLight">
+				<Position x="0.8" y="1.0" z="4.0"/>
+				<Rotation x="3.0" y="0.0" z="0.0"/>
+				<General FOV="10.0" Distance="100.0" CastShadows="0"/>
+				<Color r="1.0" g="1.0" b="0.8"/>
+			</Component>
+			<Component Name="Light2" Class="CLight">
+				<Position x="-0.8" y="1.0" z="4.0"/>
+				<Rotation x="3.0" y="0.0" z="0.0"/>
+				<General FOV="10.0" Distance="100.0" CastShadows="0"/>
+				<Color r="1.0" g="1.0" b="0.8"/>
 			</Component>
 			<!--
 			<Component Class="CBasicAnimator" PositionTarget=".Turret" RotationTarget=".Turret" Playing="1">

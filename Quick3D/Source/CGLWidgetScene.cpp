@@ -255,7 +255,7 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
                 }
                 CVector3 vScreenPosition(vProjectedPosition.x(), vProjectedPosition.y(), vProjectedPosition.z());
 
-                // if (vLights[iLightIndex]->getTag() == "SUN")
+                if (vLights[iLightIndex]->getTag() == "SUN")
                 {
                     vWorldDirection = CVector3();
                 }

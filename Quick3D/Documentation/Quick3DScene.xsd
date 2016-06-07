@@ -103,6 +103,13 @@
   <xs:complexType name="ComponentGeneralType">
     <xs:simpleContent>
       <xs:extension base="xs:string">
+        <xs:attribute type="xs:float" name="FOV" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              Used by cameras and lights: defines the field of view.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
         <xs:attribute type="xs:float" name="Distance" use="optional">
           <xs:annotation>
             <xs:documentation>

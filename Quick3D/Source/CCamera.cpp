@@ -47,7 +47,6 @@ CComponent* CCamera::instanciator(C3DScene* pScene)
 CCamera::CCamera(C3DScene* pScene)
     : CPhysicalComponent(pScene)
     , m_dFOV(DEFAULT_FOV)
-    , m_dZoom(1.0)
     , m_dFocus(0.5)
     , m_dGain(0.5)
 {
@@ -76,7 +75,6 @@ CCamera& CCamera::operator = (const CCamera& target)
     CPhysicalComponent::operator =(target);
 
     m_dFOV              = target.m_dFOV;
-    m_dZoom             = target.m_dZoom;
     m_dFocus            = target.m_dFocus;
     m_dGain             = target.m_dGain;
     m_dMinDistance      = target.m_dMinDistance;
@@ -91,6 +89,16 @@ CCamera& CCamera::operator = (const CCamera& target)
 void CCamera::loadParameters(CXMLNode xComponent)
 {
     CPhysicalComponent::loadParameters(xComponent);
+
+    CXMLNode xGeneralNode = xComponent.getNodeByTagName(ParamName_General);
+
+    if (xGeneralNode.isEmpty() == false)
+    {
+        if (xGeneralNode.m_vAttributes[ParamName_FOV].isEmpty() == false)
+        {
+            m_dFOV = xGeneralNode.m_vAttributes[ParamName_FOV].toDouble();
+        }
+    }
 }
 
 //-------------------------------------------------------------------------------------------------

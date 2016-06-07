@@ -102,9 +102,6 @@ public:
     //! Règle le champ de vision
     virtual void setFOV(double dValue) { m_dFOV = dValue; }
 
-    //! Régle le niveau de zoom normalisé (0.0 -> 1.0)
-    virtual void setZoom(double dValue) { m_dZoom = dValue; }
-
     //! Régle le niveau de focalisation normalisé (0.0 -> 1.0)
     virtual void setFocus(double dValue) { m_dFocus = dValue; }
 
@@ -123,9 +120,6 @@ public:
 
     //! Retourne le champ de vision
     virtual double getFOV() const { return m_dFOV; }
-
-    //! Retourne le niveau de zoom
-    virtual double getZoom() const { return m_dZoom; }
 
     //! Retourne le niveau de focalisation normalisé (0.0 -> 1.0)
     virtual double getFocus() const { return m_dFocus; }
@@ -210,7 +204,6 @@ public:
 protected:
 
     double                  m_dFOV;
-    double                  m_dZoom;
     double                  m_dFocus;
     double                  m_dGain;
     double                  m_dMinDistance;

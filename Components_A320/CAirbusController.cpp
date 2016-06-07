@@ -170,7 +170,7 @@ void CAirbusController::wheelEvent(QWheelEvent *event)
 	{
 		CCamera* pCamera = dynamic_cast<CCamera*>(m_rPositionTarget.component());
 
-		double dFOV = Math::Angles::clipDouble(pCamera->getFOV() + dDelta, 5.0, 80.0);
+        double dFOV = Math::Angles::clipDouble(pCamera->getFOV() + dDelta, 5.0, 120.0);
 
 		pCamera->setFOV(dFOV);
 	}

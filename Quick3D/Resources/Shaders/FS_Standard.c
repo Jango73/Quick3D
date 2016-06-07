@@ -525,15 +525,16 @@ vec3 doLighting(vec3 position, vec3 normal, vec3 eye, vec2 xy)
 
             if (u_light_distance[index] > 0.0)
             {
-                attenuation = 1.0 - (dist / u_light_distance[index]);
+                attenuation = clamp(1.0 - (dist / u_light_distance[index]), 0.0, 1.0);
             }
 
             // Compute spot attenuation
             if (u_light_direction[index] != vec3(0.0, 0.0, 0.0))
             {
-                float spotcutoff = cos(u_light_spot_angle[index]);
+                float spotCutoff = cos(u_light_spot_angle[index]);
+                float dotDirectionRay = dot(-u_light_direction[index], ray);
 
-                if (dot(-u_light_direction[index], ray) < spotcutoff)
+                if (dotDirectionRay < spotCutoff)
                 {
                     attenuation = 0.0;
                 }
@@ -569,6 +570,7 @@ vec3 doLighting(vec3 position, vec3 normal, vec3 eye, vec2 xy)
                 // Reflected light
                 vec3 reflection;
 
+                /*
                 if (u_shaderQuality >= 0.75 && u_material_reflection > 0.0)
                 {
                     reflection = getSkyAt(position, reflect(eye, normal), xy) * u_material_reflection;
@@ -582,6 +584,7 @@ vec3 doLighting(vec3 position, vec3 normal, vec3 eye, vec2 xy)
                     }
                 }
                 else
+                */
                 {
                     reflection = vec3(0.0, 0.0, 0.0);
                 }

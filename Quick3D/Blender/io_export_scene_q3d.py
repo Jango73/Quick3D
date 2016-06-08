@@ -174,6 +174,7 @@ def writeMesh(file, object, materials, scene, props):
 
     openNode(file, 'Vertices', 0)
 
+    # Write vertices
     vertex_index = 0
     uvs = getVertexUVs(mesh)
 
@@ -202,6 +203,7 @@ def writeMesh(file, object, materials, scene, props):
 
     openNode(file, 'Faces', 0)
 
+    # Write faces
     for face in mesh.polygons:
 
         # Vertices
@@ -223,17 +225,128 @@ def writeMesh(file, object, materials, scene, props):
 
     closeNode(file, 'Faces')
 
+    # Write vertex groups
+    vertex_index = 0
+    weight = 0
+    weight_list = ''
+
+    for group in object.vertex_groups:
+
+        for vertex in mesh.vertices:
+            try:
+                weight = group.weight(vertex_index)
+            except:
+                weight = 0.0
+
+            if (len(weight_list) > 0):
+                weight_list = weight_list + ', '
+            weight_list = weight_list + "{0:.4f}".format(weight)
+            vertex_index = vertex_index + 1
+
+        openNode(file, 'VertexGroup', 1, Name=group.name, Weights=weight_list)
+
+    # Write child objects
     for child in object.children:
-        writeMesh(file, child, materials, scene, props)
+        writeSingleObject(file, child, materials, scene, props)
 
     closeNode(file, 'Component')
+
+#--------------------------------------------------------------------------------------------------
+
+def writeBone(file, bone, materials, scene, props):
+    openNode(file, 'Bone', 0, Name=bone.name)
+
+    # Write head
+    head_x = bone.head[0]
+    head_y = bone.head[2]
+    head_z = bone.head[1]
+
+    openNode(file, 'Head', 1,
+        x = '{0:.4f}'.format(head_x),
+        y = '{0:.4f}'.format(head_y),
+        z = '{0:.4f}'.format(head_z)
+        )
+
+    # Write tail
+    tail_x = bone.tail[0]
+    tail_y = bone.tail[2]
+    tail_z = bone.tail[1]
+
+    openNode(file, 'Tail', 1,
+        x = '{0:.4f}'.format(tail_x),
+        y = '{0:.4f}'.format(tail_y),
+        z = '{0:.4f}'.format(tail_z)
+        )
+
+    # Write X axis
+    axis_x = bone.x_axis[0]
+    axis_y = bone.x_axis[2]
+    axis_z = bone.x_axis[1]
+
+    openNode(file, 'XAxis', 1,
+        x = '{0:.4f}'.format(axis_x),
+        y = '{0:.4f}'.format(axis_y),
+        z = '{0:.4f}'.format(axis_z)
+        )
+
+    # Write Y axis
+    axis_x = bone.z_axis[0]
+    axis_y = bone.z_axis[2]
+    axis_z = bone.z_axis[1]
+
+    openNode(file, 'YAxis', 1,
+        x = '{0:.4f}'.format(axis_x),
+        y = '{0:.4f}'.format(axis_y),
+        z = '{0:.4f}'.format(axis_z)
+        )
+
+    # Write Z axis
+    axis_x = bone.y_axis[0]
+    axis_y = bone.y_axis[2]
+    axis_z = bone.y_axis[1]
+
+    openNode(file, 'ZAxis', 1,
+        x = '{0:.4f}'.format(axis_x),
+        y = '{0:.4f}'.format(axis_y),
+        z = '{0:.4f}'.format(axis_z)
+        )
+
+    for child in bone.children:
+        writeBone(file, child, materials, scene, props)
+
+    closeNode(file, 'Bone')
+
+#--------------------------------------------------------------------------------------------------
+
+def writeArmature(file, object, materials, scene, props):
+    openNode(file, 'Component', 0, Name=object.name, Class="CArmature")
+
+    armature = object.data
+
+    for bone in armature.bones:
+        if bone.parent is None:
+            writeBone(file, bone, materials, scene, props)
+
+    # Write child objects
+    for child in object.children:
+        writeSingleObject(file, child, materials, scene, props)
+
+    closeNode(file, 'Component')
+
+#--------------------------------------------------------------------------------------------------
+
+def writeSingleObject(file, object, materials, scene, props):
+    if object.type == 'ARMATURE':
+        writeArmature(file, object, materials, scene, props)
+    else:
+        writeMesh(file, object, materials, scene, props)
 
 #--------------------------------------------------------------------------------------------------
 
 def writeTopLevelObjects(file, objects, materials, scene, props):
     for object in objects:
         if object.parent is None:
-            writeMesh(file, object, materials, scene, props)
+            writeSingleObject(file, object, materials, scene, props)
 
 #--------------------------------------------------------------------------------------------------
 
@@ -341,7 +454,7 @@ class Export_q3d(bpy.types.Operator, ExportHelper):
 
     @classmethod
     def poll(cls, context):
-        return context.active_object.type in {'MESH', 'CURVE', 'SURFACE', 'FONT'}
+        return context.active_object.type in {'MESH', 'CURVE', 'SURFACE', 'FONT', 'ARMATURE'}
 
     def execute(self, context):
         start_time = time.time()

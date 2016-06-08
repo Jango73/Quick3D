@@ -368,6 +368,24 @@
 						</Coverage>
 					</Tree>
 				</Vegetation>
+				<Buildings>
+					<Building>
+						<MeshList>
+						</MeshList>
+						<Coverage>
+							<Value Type="Mul">
+								<Operand>
+									<!-- Coverage -->
+									<Value Type="Perlin" InputScale="0.0001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="1.0"/>
+								</Operand>
+								<Operand>
+									<!-- Probability -->
+									<Value Type="Turbulence" InputScale="0.001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="10.0"/>
+								</Operand>
+							</Value>
+						</Coverage>
+					</Building>
+				</Buildings>
 			</Parameters>
 		</Component>
 

@@ -164,6 +164,13 @@
           </xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element type="BuildingsType" name="Buildings" maxOccurs="1" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>
+            Defines the buildings for the terrain. Includes every human-made buildings like roads, houses, skyscrapers, etc...
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="GeneralType">
@@ -353,6 +360,19 @@
     <xs:sequence>
       <xs:element type="PointType" name="Point" maxOccurs="7" minOccurs="7"/>
     </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="BuildingsType">
+    <xs:sequence>
+      <xs:element type="BuildingType" name="Building" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="BuildingType">
+    <xs:sequence>
+      <xs:element type="MeshListType" name="MeshList" maxOccurs="1" minOccurs="1"/>
+      <xs:element type="CoverageType" name="Coverage" maxOccurs="1" minOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="MeshListType">
   </xs:complexType>
   <xs:complexType name="CoverageType">
     <xs:sequence>

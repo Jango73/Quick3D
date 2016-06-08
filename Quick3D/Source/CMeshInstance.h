@@ -22,54 +22,54 @@ class QUICK3D_EXPORT CMeshInstance : public CComponent
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//! Constructeur avec un mesh cible
-	CMeshInstance(QSharedPointer<CMesh> pMesh);
+    //! Constructeur avec un mesh cible
+    CMeshInstance(QSharedPointer<CMesh> pMesh);
 
-	//! Constructeur avec une liste de meshs cibles
-	CMeshInstance(const QVector<QSharedPointer<CMesh> >& vMeshes);
+    //! Constructeur avec une liste de meshs cibles
+    CMeshInstance(const QVector<QSharedPointer<CMesh> >& vMeshes);
 
-	//! Destructeur
-	virtual ~CMeshInstance();
+    //! Destructeur
+    virtual ~CMeshInstance();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	void addMesh(QSharedPointer<CMesh> pMesh);
+    //!
+    void addMesh(QSharedPointer<CMesh> pMesh);
 
-	//!
-	CMeshInstance* clone();
+    //!
+    CMeshInstance* clone();
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes héritées
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes héritées
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual QString getClassName() const { return ClassName_CMeshInstance; }
+    //!
+    virtual QString getClassName() const { return ClassName_CMeshInstance; }
 
-	//!
-	virtual CBoundingBox getBounds() const;
+    //!
+    virtual CBoundingBox getBounds() const;
 
-	//!
-	virtual CBoundingBox getWorldBounds() const;
+    //!
+    virtual CBoundingBox getWorldBounds() const;
 
-	//! Renders the mesh
-	virtual void paint(CRenderContext* pContext);
+    //! Renders the mesh
+    virtual void paint(CRenderContext* pContext);
 
 protected:
 
-	QVector<QSharedPointer<CMesh> >	m_vMeshes;
+    QVector<QSharedPointer<CMesh> >	m_vMeshes;
 };

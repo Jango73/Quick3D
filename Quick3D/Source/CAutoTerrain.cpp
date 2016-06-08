@@ -155,6 +155,7 @@ void CAutoTerrain::loadParameters(CXMLNode xComponent)
     }
 
     readVegetationParameters();
+    readBuildingParameters();
 
     CXMLNode xMaterialNode = m_xParameters.getNodeByTagName(ParamName_Material);
 
@@ -752,6 +753,24 @@ void CAutoTerrain::readVegetationParameters()
         }
 
         m_vVegetation.append(new CVegetation(dSpread, pFunction, new CMeshInstance(vMeshes)));
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Reads parameters for buildings.
+*/
+void CAutoTerrain::readBuildingParameters()
+{
+    CXMLNode xBuildingsNode = m_xParameters.getNodeByTagName(ParamName_Buildings);
+
+    QVector<CXMLNode> xBuildings = xBuildingsNode.getNodesByTagName(ParamName_Building);
+
+    foreach (CXMLNode xBuilding, xBuildings)
+    {
+        CXMLNode xMeshList = xBuilding.getNodeByTagName(ParamName_MeshList);
+        CXMLNode xCoverage = xBuilding.getNodeByTagName(ParamName_Coverage);
     }
 }
 

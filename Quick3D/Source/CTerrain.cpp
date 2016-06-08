@@ -177,7 +177,10 @@ int CTerrain::getFaceIndexForVertices(int v1, int v2, int v3, int v4) const
                 .arg(v4)
                 ;
 
-        return m_mVerticesToFace[sKey];
+        if (m_mVerticesToFace.contains(sKey))
+        {
+            return m_mVerticesToFace[sKey];
+        }
     }
 
     return -1;

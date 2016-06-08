@@ -35,7 +35,6 @@
 #define ClassName_CArmature					"CArmature"
 
 #define ClassName_CMaterial					"CMaterial"
-#define ClassName_CMaterialInstance			"CMaterialInstance"
 #define ClassName_CTiledMaterial			"CTiledMaterial"
 #define ClassName_CWaterMaterial			"CWaterMaterial"
 

@@ -21,12 +21,12 @@ CNamed::~CNamed()
 
 void CNamed::setName(const QString& sName)
 {
-	m_sName = sName;
+    m_sName = sName;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 const QString& CNamed::getName() const
 {
-	return m_sName;
+    return m_sName;
 }

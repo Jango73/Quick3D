@@ -87,7 +87,6 @@ SOURCES += \
     Source/CLogManager.cpp \
     Source/CMan.cpp \
     Source/CMaterial.cpp \
-    Source/CMaterialInstance.cpp \
     Source/CMesh.cpp \
     Source/CMeshInstance.cpp \
     Source/CMJPEGServer.cpp \
@@ -265,7 +264,6 @@ HEADERS  += \
     Source/CLogManager.h \
     Source/CMan.h \
     Source/CMaterial.h \
-    Source/CMaterialInstance.h \
     Source/CMesh.h \
     Source/CMeshInstance.h \
     Source/CMJPEGServer.h \

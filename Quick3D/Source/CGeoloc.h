@@ -1,6 +1,5 @@
 
-#ifndef GEOLOC_H
-#define GEOLOC_H
+#pragma once
 
 #include "quick3d_global.h"
 
@@ -128,5 +127,3 @@ QUICK3D_EXPORT QDataStream& operator << (QDataStream& out, const CGeoloc&);
 QUICK3D_EXPORT QDataStream& operator >> (QDataStream& in, CGeoloc&);
 
 Q_DECLARE_METATYPE(CGeoloc)
-
-#endif // GEOLOC_H

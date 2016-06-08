@@ -14,7 +14,15 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-CBone::CBone()
+CComponent* CBone::instanciator(C3DScene* pScene)
+{
+    return new CBone(pScene);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+CBone::CBone(C3DScene *pScene)
+    : CComponent(pScene)
 {
 }
 
@@ -26,6 +34,6 @@ CBone::~CBone()
 
 //-------------------------------------------------------------------------------------------------
 
-void CBone::solveLinks(CArmature* pArmature)
+void CBone::loadParameters(CXMLNode xComponent)
 {
 }

@@ -24,6 +24,8 @@
 #include "CSkyBox.h"
 #include "CAutoTerrain.h"
 #include "CMesh.h"
+#include "CArmature.h"
+#include "CBone.h"
 
 #include "CVehicle.h"
 #include "CTerrestrialVehicle.h"
@@ -82,6 +84,9 @@ void CComponentFactory::registerCoreComponents()
     registerComponent(ClassName_CSkyBox, CSkyBox::instanciator);
     registerComponent(ClassName_CAutoTerrain, CAutoTerrain::instanciator);
     registerComponent(ClassName_CMesh, CMesh::instanciator);
+    registerComponent(ClassName_CArmature, CArmature::instanciator);
+    registerComponent(ClassName_CBone, CBone::instanciator);
+
     registerComponent(ClassName_CVehicle, CVehicle::instanciator);
     registerComponent(ClassName_CTerrestrialVehicle, CTerrestrialVehicle::instanciator);
     registerComponent(ClassName_CSeaVehicle, CSeaVehicle::instanciator);

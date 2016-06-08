@@ -32,7 +32,8 @@
 #define ClassName_CTerrain					"CTerrain"
 #define ClassName_CWorldChunk				"CWorldChunk"
 
-#define ClassName_CArmature					"CArmature"
+#define ClassName_CArmature                 "CArmature"
+#define ClassName_CBone                     "CBone"
 
 #define ClassName_CMaterial					"CMaterial"
 #define ClassName_CTiledMaterial			"CTiledMaterial"

@@ -254,7 +254,7 @@ def writeMesh(file, object, materials, scene, props):
 #--------------------------------------------------------------------------------------------------
 
 def writeBone(file, bone, materials, scene, props):
-    openNode(file, 'Bone', 0, Name=bone.name)
+    openNode(file, 'Component', 0, Name=bone.name, Class='CBone')
 
     # Write head
     head_x = bone.head[0]
@@ -314,7 +314,7 @@ def writeBone(file, bone, materials, scene, props):
     for child in bone.children:
         writeBone(file, child, materials, scene, props)
 
-    closeNode(file, 'Bone')
+    closeNode(file, 'Component')
 
 #--------------------------------------------------------------------------------------------------
 

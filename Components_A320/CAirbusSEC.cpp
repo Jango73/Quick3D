@@ -14,27 +14,27 @@ using namespace Math;
 
 CComponent* CAirbusSEC::instanciator(C3DScene* pScene)
 {
-	return new CAirbusSEC(pScene);
+    return new CAirbusSEC(pScene);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CAirbusSEC::CAirbusSEC(C3DScene* pScene)
-: CAirbusFlightComputer(pScene)
+    : CAirbusFlightComputer(pScene)
 {
-	LOG_DEBUG("CAirbusSEC::CAirbusSEC()");
+    LOG_DEBUG("CAirbusSEC::CAirbusSEC()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CAirbusSEC::~CAirbusSEC()
 {
-	LOG_DEBUG("CAirbusSEC::~CAirbusSEC()");
+    LOG_DEBUG("CAirbusSEC::~CAirbusSEC()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CAirbusSEC::update(double dDeltaTime)
 {
-	CAirbusFlightComputer::update(dDeltaTime);
+    CAirbusFlightComputer::update(dDeltaTime);
 }

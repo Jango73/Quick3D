@@ -38,92 +38,92 @@
 
 enum EAirbusData
 {
-	adNone,
+    adNone,
 
-	// Data coming from static ports
-	adStatic_Pressure_kgm2,
+    // Data coming from static ports
+    adStatic_Pressure_kgm2,
 
-	// Data coming from ADIRU
-	adAir_Altitude_m,
-	adAir_AngleOfAttack_rad,
-	adAir_TrueAirspeed_ms,
-	adAir_IndicatedAirspeed_ms,
-	adAir_IndicatedAcceleration_ms,
-	adAir_IndicatedAirspeedVMax_ms,
-	adAir_Mach,
-	adAir_VerticalSpeed_ms,
-	adInertial_Pitch_deg,
-	adInertial_Roll_deg,
-	adInertial_PitchVelocity_ds,
-	adInertial_RollVelocity_ds,
-	adGeoLoc_Latitude_deg,
-	adGeoLoc_Longitude_deg,
-	adGeoLoc_Altitude_m,
-	adGeoLoc_GroundSpeed_ms,
-	adGeoLoc_TrueHeading_deg,
-	adGeoLoc_TrueTrack_deg,
+    // Data coming from ADIRU
+    adAir_Altitude_m,
+    adAir_AngleOfAttack_rad,
+    adAir_TrueAirspeed_ms,
+    adAir_IndicatedAirspeed_ms,
+    adAir_IndicatedAcceleration_ms,
+    adAir_IndicatedAirspeedVMax_ms,
+    adAir_Mach,
+    adAir_VerticalSpeed_ms,
+    adInertial_Pitch_deg,
+    adInertial_Roll_deg,
+    adInertial_PitchVelocity_ds,
+    adInertial_RollVelocity_ds,
+    adGeoLoc_Latitude_deg,
+    adGeoLoc_Longitude_deg,
+    adGeoLoc_Altitude_m,
+    adGeoLoc_GroundSpeed_ms,
+    adGeoLoc_TrueHeading_deg,
+    adGeoLoc_TrueTrack_deg,
 
-	// Data coming from ?
-	adFuel_TotalFuel_l,
+    // Data coming from ?
+    adFuel_TotalFuel_l,
 
-	// Data coming from side sticks and throttle
-	adStick_CAPT_x,
-	adStick_CAPT_y,
-	adStick_FO_x,
-	adStick_FO_y,
-	adRudder_CAPT,
-	adRudder_FO,
-	adThrottle_1_norm,
-	adThrottle_2_norm,
+    // Data coming from side sticks and throttle
+    adStick_CAPT_x,
+    adStick_CAPT_y,
+    adStick_FO_x,
+    adStick_FO_y,
+    adRudder_CAPT,
+    adRudder_FO,
+    adThrottle_1_norm,
+    adThrottle_2_norm,
 
-	// Data coming from FADEC
-	adFADEC_Engine1_N1_norm,
-	adFADEC_Engine1_N2_norm,
-	adFADEC_Engine2_N1_norm,
-	adFADEC_Engine2_N2_norm,
+    // Data coming from FADEC
+    adFADEC_Engine1_N1_norm,
+    adFADEC_Engine1_N2_norm,
+    adFADEC_Engine2_N1_norm,
+    adFADEC_Engine2_N2_norm,
 
-	// Data coming from FMGS
-	adFG_LateralMode_alm,
-	adFG_VerticalMode_avm,
-	adFG_CommandedRollVelocity_ds,
-	adFG_CommandedPitchVelocity_ds,
-	adFG_CommandedThrust_norm,
-	adFG_FlightPlan_ptr,
+    // Data coming from FMGS
+    adFG_LateralMode_alm,
+    adFG_VerticalMode_avm,
+    adFG_CommandedRollVelocity_ds,
+    adFG_CommandedPitchVelocity_ds,
+    adFG_CommandedThrust_norm,
+    adFG_FlightPlan_ptr,
 
-	// Data coming from FCU
-	adFCU_AutoPilot1_Engaged,
-	adFCU_AutoPilot2_Engaged,
-	adFCU_AutoThrust_Engaged,
-	adFCU_VerticalSpeed_fs,
-	adFCU_Altitude_f,
-	adFCU_VelocityType_idx,
-	adFCU_Velocity_kts,
-	adFCU_Velocity_mach,
-	adFCU_HeadingType_idx,
-	adFCU_Heading_deg
+    // Data coming from FCU
+    adFCU_AutoPilot1_Engaged,
+    adFCU_AutoPilot2_Engaged,
+    adFCU_AutoThrust_Engaged,
+    adFCU_VerticalSpeed_fs,
+    adFCU_Altitude_f,
+    adFCU_VelocityType_idx,
+    adFCU_Velocity_kts,
+    adFCU_Velocity_mach,
+    adFCU_HeadingType_idx,
+    adFCU_Heading_deg
 };
 
 //-------------------------------------------------------------------------------------------------
 
 enum EAirbusLateralMode
 {
-	almNone,
-	almHeading,
-	almNav
+    almNone,
+    almHeading,
+    almNav
 };
 
 //-------------------------------------------------------------------------------------------------
 
 enum EAirbusVerticalMode
 {
-	avmNone,
-	avmVerticalSpeedHold,
-	avmAltitudeHold,
-	avmNav,
-	avmOpenClimb,
-	avmOpenDescent,
-	avmClimb,
-	avmDescent
+    avmNone,
+    avmVerticalSpeedHold,
+    avmAltitudeHold,
+    avmNav,
+    avmOpenClimb,
+    avmOpenDescent,
+    avmClimb,
+    avmDescent
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -132,60 +132,60 @@ class CAirbusData
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	CAirbusData();
+    //!
+    CAirbusData();
 
-	//!
-	CAirbusData(const QString& sSource, EAirbusData eID, QVariant vData);
+    //!
+    CAirbusData(const QString& sSource, EAirbusData eID, QVariant vData);
 
-	//!
-	virtual ~CAirbusData();
+    //!
+    virtual ~CAirbusData();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	void setSource(QString sText) { m_sSource = sText; }
+    //!
+    void setSource(QString sText) { m_sSource = sText; }
 
-	//!
-	void setID(EAirbusData eID) { m_eID = eID; }
+    //!
+    void setID(EAirbusData eID) { m_eID = eID; }
 
-	//!
-	void setData(QVariant vData) { m_vData = vData; }
+    //!
+    void setData(QVariant vData) { m_vData = vData; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	QString getSource() const { return m_sSource; }
+    //!
+    QString getSource() const { return m_sSource; }
 
-	//!
-	EAirbusData getID() const { return m_eID; }
+    //!
+    EAirbusData getID() const { return m_eID; }
 
-	//!
-	QVariant getData() const { return m_vData; }
+    //!
+    QVariant getData() const { return m_vData; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes héritées
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes héritées
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	QString				m_sSource;
-	EAirbusData			m_eID;
-	QVariant			m_vData;
+    QString				m_sSource;
+    EAirbusData			m_eID;
+    QVariant			m_vData;
 };

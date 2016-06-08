@@ -8,16 +8,16 @@
 //-------------------------------------------------------------------------------------------------
 
 CAirbusData::CAirbusData()
-: m_eID(adNone)
+    : m_eID(adNone)
 {
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CAirbusData::CAirbusData(const QString& sSource, EAirbusData eID, QVariant vData)
-: m_sSource(sSource)
-, m_eID(eID)
-, m_vData(vData)
+    : m_sSource(sSource)
+    , m_eID(eID)
+    , m_vData(vData)
 {
 }
 

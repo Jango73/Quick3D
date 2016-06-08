@@ -11,22 +11,22 @@ using namespace Math;
 
 CComponent* CAirbusPitotPort::instanciator(C3DScene* pScene)
 {
-	return new CAirbusPitotPort(pScene);
+    return new CAirbusPitotPort(pScene);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CAirbusPitotPort::CAirbusPitotPort(C3DScene* pScene)
-: CComponent(pScene)
+    : CComponent(pScene)
 {
-	LOG_DEBUG("CAirbusPitotPort::CAirbusPitotPort()");
+    LOG_DEBUG("CAirbusPitotPort::CAirbusPitotPort()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CAirbusPitotPort::~CAirbusPitotPort()
 {
-	LOG_DEBUG("CAirbusPitotPort::~CAirbusPitotPort()");
+    LOG_DEBUG("CAirbusPitotPort::~CAirbusPitotPort()");
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -27,64 +27,64 @@ class COMPONENTS_A320_EXPORT CAirbusController : public CAircraftController, pub
 
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	static CComponent* instanciator(C3DScene* pScene);
+    //!
+    static CComponent* instanciator(C3DScene* pScene);
 
-	//!
-	CAirbusController(C3DScene* pScene);
+    //!
+    CAirbusController(C3DScene* pScene);
 
-	//!
-	virtual ~CAirbusController();
+    //!
+    virtual ~CAirbusController();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes héritées
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes héritées
+    //-------------------------------------------------------------------------------------------------
 
-	//! Retourne le nom de classe de l'objet
-	virtual QString getClassName() const { return ClassName_CAirbusController; }
+    //! Retourne le nom de classe de l'objet
+    virtual QString getClassName() const { return ClassName_CAirbusController; }
 
-	//! Charge les paramètres de cet objet
-	virtual void loadParameters(CXMLNode xComponent);
+    //! Charge les paramètres de cet objet
+    virtual void loadParameters(CXMLNode xComponent);
 
-	//! Recherche les liens de cet objet
-	virtual void solveLinks(C3DScene* pScene);
+    //! Recherche les liens de cet objet
+    virtual void solveLinks(C3DScene* pScene);
 
-	//!
-	virtual void update(double dDeltaTime);
+    //!
+    virtual void update(double dDeltaTime);
 
-	//!
-	virtual void keyPressEvent(QKeyEvent* event);
+    //!
+    virtual void keyPressEvent(QKeyEvent* event);
 
-	//!
-	virtual void keyReleaseEvent(QKeyEvent *event);
+    //!
+    virtual void keyReleaseEvent(QKeyEvent *event);
 
-	//!
-	virtual void wheelEvent(QWheelEvent *event);
+    //!
+    virtual void wheelEvent(QWheelEvent *event);
 
-	//!
-	virtual void q3dEvent(CQ3DEvent* event);
+    //!
+    virtual void q3dEvent(CQ3DEvent* event);
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	CComponentReference<CAirbusFCU>		m_rFCU;
+    CComponentReference<CAirbusFCU>		m_rFCU;
 };

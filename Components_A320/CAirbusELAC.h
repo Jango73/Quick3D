@@ -26,65 +26,65 @@ class COMPONENTS_A320_EXPORT CAirbusELAC : public CAirbusFlightComputer
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	static CComponent* instanciator(C3DScene* pScene);
+    //!
+    static CComponent* instanciator(C3DScene* pScene);
 
-	//!
-	CAirbusELAC(C3DScene* pScene);
+    //!
+    CAirbusELAC(C3DScene* pScene);
 
-	//!
-	virtual ~CAirbusELAC();
+    //!
+    virtual ~CAirbusELAC();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes héritées
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes héritées
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual QString getClassName() const { return ClassName_CAirbusELAC; }
+    //!
+    virtual QString getClassName() const { return ClassName_CAirbusELAC; }
 
-	//! Charge les paramètres de cet objet
-	virtual void loadParameters(CXMLNode xComponent);
+    //! Charge les paramètres de cet objet
+    virtual void loadParameters(CXMLNode xComponent);
 
-	//! Recherche les liens de cet objet
-	virtual void solveLinks(C3DScene* pScene);
+    //! Recherche les liens de cet objet
+    virtual void solveLinks(C3DScene* pScene);
 
-	//!
-	virtual void update(double dDeltaTime);
+    //!
+    virtual void update(double dDeltaTime);
 
-	//!
-	virtual void work(double dDeltaTime);
+    //!
+    virtual void work(double dDeltaTime);
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	CComponentReference<CWing>		m_rLeftWingTarget;
-	CComponentReference<CWing>		m_rRightWingTarget;
-	CComponentReference<CElevator>	m_rElevatorTarget;
+    CComponentReference<CWing>		m_rLeftWingTarget;
+    CComponentReference<CWing>		m_rRightWingTarget;
+    CComponentReference<CElevator>	m_rElevatorTarget;
 
-	CPIDController					m_pidYaw;
-	CPIDController					m_pidPitch;
-	CPIDController					m_pidRoll;
+    CPIDController					m_pidYaw;
+    CPIDController					m_pidPitch;
+    CPIDController					m_pidRoll;
 
-	Math::CVector2					m_vStick;
-	Math::CVector2					m_vStickPrevious;
-	Math::CVector3					m_vCommandedAttitude;
+    Math::CVector2					m_vStick;
+    Math::CVector2					m_vStickPrevious;
+    Math::CVector3					m_vCommandedAttitude;
 };

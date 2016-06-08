@@ -21,10 +21,10 @@ CVertexGroup::~CVertexGroup()
 
 double CVertexGroup::vertexWeight(int iIndex) const
 {
-	if (m_vWeights.contains(iIndex))
-	{
-		return m_vWeights[iIndex];
-	}
+    if (m_vWeights.contains(iIndex))
+    {
+        return m_vWeights[iIndex];
+    }
 
-	return 0.0;
+    return 0.0;
 }

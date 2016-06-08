@@ -25,57 +25,57 @@ class QUICK3D_EXPORT CBone
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	CBone();
+    //!
+    CBone();
 
-	//!
-	virtual ~CBone();
+    //!
+    virtual ~CBone();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	void setName(const QString& sName) { m_sName = sName; }
+    //!
+    void setName(const QString& sName) { m_sName = sName; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	const QString& getName() const { return m_sName; }
+    //!
+    const QString& getName() const { return m_sName; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//! Recherche les liens de cet objet
-	void solveLinks(CArmature* pArmature);
+    //! Recherche les liens de cet objet
+    void solveLinks(CArmature* pArmature);
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes protégés
-	//-------------------------------------------------------------------------------------------------
-
-protected:
-
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes protégés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	QString					m_sName;
-	QString					m_sParentName;
-	CBone*					m_pParent;
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
-	Math::CVector3			m_vOriginPosition;				// Position de l'objet dans le repère affine de son parent
-	Math::CVector3			m_vOriginRotation;				// Rotation de l'objet (euleur) dans le repère affine de son parent
-	Math::CVector3			m_vOriginScale;					// Echelle de l'objet dans le repère affine de son parent
-	Math::CVector3			m_vPosition;					// Position animée de l'objet dans son repère local
-	Math::CVector3			m_vRotation;					// Rotation animée de l'objet (euleur) dans son repère local
-	Math::CVector3			m_vScale;						// Echelle animée de l'objet dans son repère local
+protected:
+
+    QString					m_sName;
+    QString					m_sParentName;
+    CBone*					m_pParent;
+
+    Math::CVector3			m_vOriginPosition;				// Position de l'objet dans le repère affine de son parent
+    Math::CVector3			m_vOriginRotation;				// Rotation de l'objet (euleur) dans le repère affine de son parent
+    Math::CVector3			m_vOriginScale;					// Echelle de l'objet dans le repère affine de son parent
+    Math::CVector3			m_vPosition;					// Position animée de l'objet dans son repère local
+    Math::CVector3			m_vRotation;					// Rotation animée de l'objet (euleur) dans son repère local
+    Math::CVector3			m_vScale;						// Echelle animée de l'objet dans son repère local
 };

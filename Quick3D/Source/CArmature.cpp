@@ -15,15 +15,15 @@ using namespace Math;
 
 CComponent* CArmature::instanciator(C3DScene* pScene)
 {
-	return new CArmature(pScene);
+    return new CArmature(pScene);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CArmature::CArmature(C3DScene* pScene)
-: CPhysicalComponent(pScene)
+    : CPhysicalComponent(pScene)
 {
-	setName("Armature");
+    setName("Armature");
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -36,9 +36,9 @@ CArmature::~CArmature()
 
 void CArmature::loadParameters(CXMLNode xComponent)
 {
-	CPhysicalComponent::loadParameters(xComponent);
+    CPhysicalComponent::loadParameters(xComponent);
 
-	CXMLNode xParameters = xComponent.getNodeByTagName(ParamName_Parameters);
+    CXMLNode xParameters = xComponent.getNodeByTagName(ParamName_Parameters);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -51,14 +51,14 @@ void CArmature::paint(CRenderContext* pContext)
 
 RayTracingResult CArmature::intersect(Math::CRay3 ray) const
 {
-	return RayTracingResult(Q3D_INFINITY);
+    return RayTracingResult(Q3D_INFINITY);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CArmature::dump(QTextStream& stream, int iIdent)
 {
-	dumpIdent(stream, iIdent, QString("[CArmature]"));
+    dumpIdent(stream, iIdent, QString("[CArmature]"));
 
-	CPhysicalComponent::dump(stream, iIdent);
+    CPhysicalComponent::dump(stream, iIdent);
 }

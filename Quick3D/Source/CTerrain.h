@@ -3,6 +3,8 @@
 
 #include "quick3d_global.h"
 
+//-------------------------------------------------------------------------------------------------
+
 // Fondations
 #include "CXMLNode.h"
 #include "Interpolator.h"
@@ -28,7 +30,7 @@ class C3DScene;
     Description du référentiel de la tuile
 
     m_gSize.Longitude
-	<-------------->
+    <-------------->
 
     ----------------  ^
     |              |  |
@@ -45,125 +47,135 @@ class C3DScene;
 //! Classe de stockage d'un mesh de terrain
 class QUICK3D_EXPORT CTerrain : public CWorker, public CComponent, public CHeightField
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	CTerrain(
-		C3DScene* pScene,
-		CHeightField* pHeights,
-		CGeoloc gOriginalGeoloc,
-		CGeoloc gOriginalSize,
-		CGeoloc gGeoloc,
-		CGeoloc gSize,
-		int iPoints,
-		int iLevel,
-		int iMaxLevel,
-		bool bIsWater,
-		bool bGenerateNow = false
-		);
+    //!
+    CTerrain(
+            C3DScene* pScene,
+            CHeightField* pHeights,
+            CGeoloc gOriginalGeoloc,
+            CGeoloc gOriginalSize,
+            CGeoloc gGeoloc,
+            CGeoloc gSize,
+            int iPoints,
+            int iLevel,
+            int iMaxLevel,
+            bool bIsWater,
+            bool bGenerateNow = false
+            );
 
-	//!
-	virtual ~CTerrain();
+    //!
+    virtual ~CTerrain();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	bool isOK() const { return m_bOK; }
+    //!
+    bool isOK() const { return m_bOK; }
 
-	//!
-	bool getAllHeightsOverSea() const { return m_bAllHeightsOverSea; }
+    //!
+    bool getAllHeightsOverSea() const { return m_bAllHeightsOverSea; }
 
-	//!
-	int getLevel() { return m_iLevel; }
+    //!
+    int getLevel() { return m_iLevel; }
 
-	//!
-	CMesh* getMesh () { return m_pMesh; }
+    //!
+    CMesh* getMesh () { return m_pMesh; }
 
-	//!
-	const CMesh* getMesh () const { return m_pMesh; }
+    //!
+    const CMesh* getMesh () const { return m_pMesh; }
 
-	//!
-	static int getNumTerrains() { return m_iNumTerrains; }
+    //!
+    static int getNumTerrains() { return m_iNumTerrains; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes héritées
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes héritées
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual QString getClassName() const { return ClassName_CTerrain; }
+    //!
+    virtual QString getClassName() const { return ClassName_CTerrain; }
 
-	//!
-	virtual CBoundingBox getBounds() const;
+    //!
+    virtual CBoundingBox getBounds() const;
 
-	//!
-	virtual CBoundingBox getWorldBounds() const;
+    //!
+    virtual CBoundingBox getWorldBounds() const;
 
-	//!
-	virtual void paint(CRenderContext* pContext);
+    //!
+    virtual void paint(CRenderContext* pContext);
 
-	//!
-	virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);
+    //!
+    virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);
 
-	//!
-	virtual void flatten(const CGeoloc& gPosition, double dRadius);
+    //!
+    virtual void flatten(const CGeoloc& gPosition, double dRadius);
 
-	//! Calcul d'intersection avec un rayon
-	virtual Math::RayTracingResult intersect(Math::CRay3 ray) const;
+    //! Calcul d'intersection avec un rayon
+    virtual Math::RayTracingResult intersect(Math::CRay3 ray) const;
 
-	//!
-	virtual void work();
+    //!
+    virtual void work();
 
-	//! Dump du contenu dans un flux
-	virtual void dump(QTextStream& stream, int iIdent);
+    //! Dump du contenu dans un flux
+    virtual void dump(QTextStream& stream, int iIdent);
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	void setMaterial(QSharedPointer<CMaterial> pMaterial);
+    //!
+    void setMaterial(QSharedPointer<CMaterial> pMaterial);
 
-	//!
-	int getPointIndexForXZ(int X, int Z) const;
+    //!
+    int getPointIndexForXZ(int X, int Z) const;
 
-	//!
-	int getFaceIndexForVertices(int v1, int v2, int v3, int v4) const;
+    //!
+    int getFaceIndexForVertices(int v1, int v2, int v3, int v4) const;
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes protégées
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	CHeightField*						m_pHeights;
-	CGeoloc						m_gOriginalGeoloc;
-	CGeoloc						m_gOriginalSize;
-	CGeoloc						m_gSize;
-	CMesh*								m_pMesh;
-	QVector<CMesh*>						m_vSeams;
-	int									m_iNumPoints;
-	int									m_iLevel;
-	int									m_iMaxLevel;
-	bool								m_bAllHeightsOverSea;
-	bool								m_bIsWater;
-	bool								m_bOK;
+    //!
+    void buildVerticesToFaceMap();
 
-	static int							m_iNumTerrains;
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
-	static Math::Interpolator<double>	m_iAltitudes_Sand;
-	static Math::Interpolator<double>	m_iAltitudes_Dirt;
-	static Math::Interpolator<double>	m_iAltitudes_Grass;
-	static Math::Interpolator<double>	m_iAltitudes_Snow;
+protected:
+
+    CHeightField*                       m_pHeights;
+    CGeoloc                             m_gOriginalGeoloc;
+    CGeoloc                             m_gOriginalSize;
+    CGeoloc                             m_gSize;
+    CMesh*                              m_pMesh;
+    QVector<CMesh*>                     m_vSeams;
+    QMap<QString, int>                  m_mVerticesToFace;
+    int                                 m_iNumPoints;
+    int                                 m_iLevel;
+    int                                 m_iMaxLevel;
+    bool                                m_bAllHeightsOverSea;
+    bool                                m_bIsWater;
+    bool                                m_bOK;
+
+    static int                          m_iNumTerrains;
+
+    static Math::Interpolator<double>   m_iAltitudes_Sand;
+    static Math::Interpolator<double>   m_iAltitudes_Dirt;
+    static Math::Interpolator<double>   m_iAltitudes_Grass;
+    static Math::Interpolator<double>   m_iAltitudes_Snow;
 };

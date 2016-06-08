@@ -170,21 +170,14 @@ int CTerrain::getFaceIndexForVertices(int v1, int v2, int v3, int v4) const
 {
     if (m_pMesh != NULL)
     {
-        for (int iIndex = 0; iIndex < m_pMesh->getFaces().count(); iIndex++)
-        {
-            if (m_pMesh->getFaces()[iIndex].getIndices().count() == 4)
-            {
-                if (
-                        m_pMesh->getFaces()[iIndex].getIndices()[0] == v1 &&
-                        m_pMesh->getFaces()[iIndex].getIndices()[1] == v2 &&
-                        m_pMesh->getFaces()[iIndex].getIndices()[2] == v3 &&
-                        m_pMesh->getFaces()[iIndex].getIndices()[3] == v4
-                        )
-                {
-                    return iIndex;
-                }
-            }
-        }
+        QString sKey = QString("%1%2%3%4")
+                .arg(v1)
+                .arg(v2)
+                .arg(v3)
+                .arg(v4)
+                ;
+
+        return m_mVerticesToFace[sKey];
     }
 
     return -1;
@@ -329,6 +322,8 @@ void CTerrain::work()
     {
         m_pMesh->createQuadPatch(m_iNumPoints, 0);
     }
+
+    buildVerticesToFaceMap();
 
     CVector3 vFinalCenter = getGeoloc().toVector3();
 
@@ -584,6 +579,31 @@ RayTracingResult CTerrain::intersect(Math::CRay3 ray) const
     }
 
     return RayTracingResult(Q3D_INFINITY);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CTerrain::buildVerticesToFaceMap()
+{
+    m_mVerticesToFace.clear();
+
+    if (m_pMesh != NULL)
+    {
+        for (int iIndex = 0; iIndex < m_pMesh->getFaces().count(); iIndex++)
+        {
+            if (m_pMesh->getFaces()[iIndex].getIndices().count() == 4)
+            {
+                QString sKey = QString("%1%2%3%4")
+                        .arg(m_pMesh->getFaces()[iIndex].getIndices()[0])
+                        .arg(m_pMesh->getFaces()[iIndex].getIndices()[1])
+                        .arg(m_pMesh->getFaces()[iIndex].getIndices()[2])
+                        .arg(m_pMesh->getFaces()[iIndex].getIndices()[3])
+                        ;
+
+                m_mVerticesToFace[sKey] = iIndex;
+            }
+        }
+    }
 }
 
 //-------------------------------------------------------------------------------------------------

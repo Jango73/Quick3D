@@ -19,22 +19,22 @@ class QUICK3D_EXPORT CShaderCollection
 {
 public:
 
-	//!
-	CShaderCollection();
+    //!
+    CShaderCollection();
 
-	//!
-	~CShaderCollection();
+    //!
+    ~CShaderCollection();
 
-	//!
-	void clear();
+    //!
+    void clear();
 
-	//!
-	void addShader(QString sName, QGLShaderProgram* value);
+    //!
+    void addShader(QString sName, QGLShaderProgram* value);
 
-	//!
-	QGLShaderProgram* getShader(QString sName);
+    //!
+    QGLShaderProgram* getShader(QString sName);
 
 protected:
 
-	QMap<QString, QGLShaderProgram*> m_vShaders;
+    QMap<QString, QGLShaderProgram*> m_vShaders;
 };

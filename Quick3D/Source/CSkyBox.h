@@ -5,11 +5,11 @@
 
 // Application
 #include "CQ3DConstants.h"
-#include "CMesh.h"
+#include "CBox.h"
 
 class C3DScene;
 
-class QUICK3D_EXPORT CSkyBox : public CMesh
+class QUICK3D_EXPORT CSkyBox : public CBox
 {
 public:
 

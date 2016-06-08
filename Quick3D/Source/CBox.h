@@ -17,7 +17,7 @@ public:
 	//-------------------------------------------------------------------------------------------------
 
 	//! Constructeur d'après une scène
-	CBox(C3DScene* pScene, double dMaxDistance);
+    CBox(C3DScene* pScene, double dMaxDistance = 10000.0);
 
 	//! Destructeur
 	virtual ~CBox();

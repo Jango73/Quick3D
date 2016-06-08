@@ -41,8 +41,8 @@ void CTankController::loadParameters(CXMLNode xNode)
 {
 	CForceController::loadParameters(xNode);
 
-	m_rTurretYawTarget.setName(xNode.m_vAttributes["TurretYawTarget"]);
-	m_rTurretPitchTarget.setName(xNode.m_vAttributes["TurretPitchTarget"]);
+    m_rTurretYawTarget.setName(xNode.attributes()["TurretYawTarget"]);
+    m_rTurretPitchTarget.setName(xNode.attributes()["TurretPitchTarget"]);
 }
 
 //-------------------------------------------------------------------------------------------------

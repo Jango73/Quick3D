@@ -79,9 +79,9 @@ void VirtualPilot::readPreferences()
 {
     CXMLNode xVehicle = CPreferencesManager::getInstance()->getPreferences().getNodeByTagName("Vehicle");
 
-    if (xVehicle.m_vAttributes["Default"].isEmpty() == false)
+    if (xVehicle.attributes()["Default"].isEmpty() == false)
     {
-        QString sFullName = m_sPathVehicles + "/" + xVehicle.m_vAttributes["Default"] + ".xml";
+        QString sFullName = m_sPathVehicles + "/" + xVehicle.attributes()["Default"] + ".xml";
 
         loadVehicle(sFullName);
     }

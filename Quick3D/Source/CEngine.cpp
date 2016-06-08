@@ -68,9 +68,9 @@ void CEngine::loadParameters(CXMLNode xComponent)
 
 	CXMLNode xThrustNode = xComponent.getNodeByTagName(ParamName_Thrust);
 
-	if (xThrustNode.m_vAttributes[ParamName_MaxThrustKG].isEmpty() == false)
+    if (xThrustNode.attributes()[ParamName_MaxThrustKG].isEmpty() == false)
 	{
-		m_dMaxThrust_kg = xThrustNode.m_vAttributes[ParamName_MaxThrustKG].toDouble();
+        m_dMaxThrust_kg = xThrustNode.attributes()[ParamName_MaxThrustKG].toDouble();
 	}
 }
 

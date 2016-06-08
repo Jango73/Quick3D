@@ -33,7 +33,7 @@ void CAirbusController::loadParameters(CXMLNode xNode)
 {
 	CAircraftController::loadParameters(xNode);
 
-	m_rFCU.setName(xNode.m_vAttributes["FCU"]);
+    m_rFCU.setName(xNode.attributes()["FCU"]);
 }
 
 //-------------------------------------------------------------------------------------------------

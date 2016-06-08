@@ -52,12 +52,12 @@ void CController::loadParameters(CXMLNode xComponent)
 {
     CComponent::loadParameters(xComponent);
 
-    m_rPositionTarget.setName(xComponent.m_vAttributes[ParamName_PositionTarget]);
-    m_rRotationTarget.setName(xComponent.m_vAttributes[ParamName_RotationTarget]);
+    m_rPositionTarget.setName(xComponent.attributes()[ParamName_PositionTarget]);
+    m_rRotationTarget.setName(xComponent.attributes()[ParamName_RotationTarget]);
 
-    if (xComponent.m_vAttributes[ParamName_ForceFactor].isEmpty() == false)
+    if (xComponent.attributes()[ParamName_ForceFactor].isEmpty() == false)
     {
-        m_dForceFactor = xComponent.m_vAttributes[ParamName_ForceFactor].toDouble();
+        m_dForceFactor = xComponent.attributes()[ParamName_ForceFactor].toDouble();
     }
 }
 

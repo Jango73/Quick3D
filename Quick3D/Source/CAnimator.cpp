@@ -45,9 +45,9 @@ void CAnimator::loadParameters(CXMLNode xNode)
 {
 	CController::loadParameters(xNode);
 
-	if (xNode.m_vAttributes[ParamName_Playing].isEmpty() == false)
+    if (xNode.attributes()[ParamName_Playing].isEmpty() == false)
 	{
-		m_bIsPlaying = (bool) xNode.m_vAttributes[ParamName_Playing].toInt();
+        m_bIsPlaying = (bool) xNode.attributes()[ParamName_Playing].toInt();
 	}
 }
 

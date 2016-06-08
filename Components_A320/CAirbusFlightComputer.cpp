@@ -47,9 +47,9 @@ void CAirbusFlightComputer::loadParameters(CXMLNode xComponent)
 
 	CXMLNode xGeneralNode = xComponent.getNodeByTagName(ParamName_General);
 
-	if (xGeneralNode.m_vAttributes[ParamName_UnitIndex].isEmpty() == false)
+    if (xGeneralNode.attributes()[ParamName_UnitIndex].isEmpty() == false)
 	{
-		m_iUnitIndex = xGeneralNode.m_vAttributes[ParamName_UnitIndex].toInt();
+        m_iUnitIndex = xGeneralNode.attributes()[ParamName_UnitIndex].toInt();
 	}
 }
 

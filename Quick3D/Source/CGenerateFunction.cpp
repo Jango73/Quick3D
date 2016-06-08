@@ -20,12 +20,12 @@ CGenerateFunction::CGenerateFunction(CXMLNode xNode)
     , m_dInputScaleFactor(10.0)
     , m_dOutputScaleFactor(0.25)
 {
-    const QString& sType = xNode.m_vAttributes[ParamName_Type];
+    const QString& sType = xNode.attributes()[ParamName_Type];
 
     if (sType.toLower() == "constant")
     {
         m_eType = toConstant;
-        m_dConstant = xNode.m_vAttributes[ParamName_Value].toDouble();
+        m_dConstant = xNode.attributes()[ParamName_Value].toDouble();
     }
     else if (sType.toLower() == "add")
     {
@@ -66,7 +66,7 @@ CGenerateFunction::CGenerateFunction(CXMLNode xNode)
     else if (sType.toLower() == "pow")
     {
         m_eType = toPow;
-        m_dConstant = xNode.m_vAttributes[ParamName_Value].toDouble();
+        m_dConstant = xNode.attributes()[ParamName_Value].toDouble();
         m_vOperands.append(new CGenerateFunction(xNode.getNodeByTagName(ParamName_Operand).getNodeByTagName(ParamName_Value)));
     }
     else if (sType.toLower() == "perlin")
@@ -105,47 +105,47 @@ CGenerateFunction::~CGenerateFunction()
 
 void CGenerateFunction::getProceduralParameters(CXMLNode xParams)
 {
-    if (xParams.m_vAttributes[ParamName_InputScale].isEmpty() == false)
+    if (xParams.attributes()[ParamName_InputScale].isEmpty() == false)
     {
-        m_dInputScale = xParams.m_vAttributes[ParamName_InputScale].toDouble();
+        m_dInputScale = xParams.attributes()[ParamName_InputScale].toDouble();
     }
 
-    if (xParams.m_vAttributes[ParamName_OutputScale].isEmpty() == false)
+    if (xParams.attributes()[ParamName_OutputScale].isEmpty() == false)
     {
-        m_dOutputScale = xParams.m_vAttributes[ParamName_OutputScale].toDouble();
+        m_dOutputScale = xParams.attributes()[ParamName_OutputScale].toDouble();
     }
 
-    if (xParams.m_vAttributes[ParamName_MinClamp].isEmpty() == false)
+    if (xParams.attributes()[ParamName_MinClamp].isEmpty() == false)
     {
-        m_dMinClamp = xParams.m_vAttributes[ParamName_MinClamp].toDouble();
+        m_dMinClamp = xParams.attributes()[ParamName_MinClamp].toDouble();
     }
 
-    if (xParams.m_vAttributes[ParamName_MaxClamp].isEmpty() == false)
+    if (xParams.attributes()[ParamName_MaxClamp].isEmpty() == false)
     {
-        m_dMaxClamp = xParams.m_vAttributes[ParamName_MaxClamp].toDouble();
+        m_dMaxClamp = xParams.attributes()[ParamName_MaxClamp].toDouble();
     }
 
-    if (xParams.m_vAttributes[ParamName_Displace].isEmpty() == false)
+    if (xParams.attributes()[ParamName_Displace].isEmpty() == false)
     {
-        m_dDisplace = xParams.m_vAttributes[ParamName_Displace].toDouble();
+        m_dDisplace = xParams.attributes()[ParamName_Displace].toDouble();
     }
 
-    if (xParams.m_vAttributes[ParamName_Iterations].isEmpty() == false)
+    if (xParams.attributes()[ParamName_Iterations].isEmpty() == false)
     {
-        m_dIterations = xParams.m_vAttributes[ParamName_Iterations].toInt();
+        m_dIterations = xParams.attributes()[ParamName_Iterations].toInt();
 
         if (m_dIterations <  1) m_dIterations =  1;
         if (m_dIterations > 50) m_dIterations = 50;
     }
 
-    if (xParams.m_vAttributes["InputScaleFactor"].isEmpty() == false)
+    if (xParams.attributes()["InputScaleFactor"].isEmpty() == false)
     {
-        m_dInputScaleFactor = xParams.m_vAttributes["InputScaleFactor"].toDouble();
+        m_dInputScaleFactor = xParams.attributes()["InputScaleFactor"].toDouble();
     }
 
-    if (xParams.m_vAttributes["OutputScaleFactor"].isEmpty() == false)
+    if (xParams.attributes()["OutputScaleFactor"].isEmpty() == false)
     {
-        m_dOutputScaleFactor = xParams.m_vAttributes["OutputScaleFactor"].toDouble();
+        m_dOutputScaleFactor = xParams.attributes()["OutputScaleFactor"].toDouble();
     }
 }
 

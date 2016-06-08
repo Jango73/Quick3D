@@ -6,155 +6,157 @@
 //-------------------------------------------------------------------------------------------------
 
 CHTTPMapClient::CHTTPMapClient()
-: m_pReply(NULL)
+    : m_pReply(NULL)
 {
-	LOG_DEBUG("CHTTPMapClient::CHTTPMapClient()");
+    LOG_DEBUG("CHTTPMapClient::CHTTPMapClient()");
 
-	m_sTilePath = QCoreApplication::applicationDirPath() + "/Tiles";
+    m_sTilePath = QCoreApplication::applicationDirPath() + "/Tiles";
 
-	if (!QDir().exists(m_sTilePath))
-	{
-		QDir().mkpath(m_sTilePath);
-	}
+    if (!QDir().exists(m_sTilePath))
+    {
+        QDir().mkpath(m_sTilePath);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CHTTPMapClient::~CHTTPMapClient()
 {
-	LOG_DEBUG("CHTTPMapClient::~CHTTPMapClient()");
+    LOG_DEBUG("CHTTPMapClient::~CHTTPMapClient()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CHTTPMapClient::loadTile(QString sTileName)
 {
-	if (m_vRequestedTiles.contains(sTileName) == false)
-	{
-		m_vRequestedTiles.insert(0, sTileName);
+    if (m_vRequestedTiles.contains(sTileName) == false)
+    {
+        m_vRequestedTiles.insert(0, sTileName);
 
-		loadNextTile();
-	}
+        loadNextTile();
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
 QImage CHTTPMapClient::getTile(QString sTileName)
 {
-	if (m_vLoadedTiles.contains(sTileName))
-	{
-		QImage imgReturnValue = m_vLoadedTiles[sTileName];
+    if (m_vLoadedTiles.contains(sTileName))
+    {
+        QImage imgReturnValue = m_vLoadedTiles[sTileName];
 
-		m_vLoadedTiles.remove(sTileName);
+        m_vLoadedTiles.remove(sTileName);
 
-		return imgReturnValue;
-	}
+        return imgReturnValue;
+    }
 
-	return QImage();
+    return QImage();
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CHTTPMapClient::loadNextTile()
 {
-	if (m_pReply == NULL)
-	{
-		if (m_vRequestedTiles.count() > 0)
-		{
-			m_sCurrentTileName = m_vRequestedTiles[0];
-			m_vRequestedTiles.remove(0);
+    if (m_pReply == NULL)
+    {
+        if (m_vRequestedTiles.count() > 0)
+        {
+            m_sCurrentTileName = m_vRequestedTiles[0];
+            m_vRequestedTiles.remove(0);
 
-			QString sFileName = m_sTilePath + "/" + m_sCurrentTileName + ".jpg";
+            QString sFileName = m_sTilePath + "/" + m_sCurrentTileName + ".jpg";
 
-			if (QFile::exists(sFileName))
-			{
-				QImage img;
+            if (QFile::exists(sFileName))
+            {
+                QImage img;
 
-				if (img.load(sFileName, "JPG"))
-				{
-					m_vLoadedTiles[m_sCurrentTileName] = img;
-				}
+                if (img.load(sFileName, "JPG"))
+                {
+                    m_vLoadedTiles[m_sCurrentTileName] = img;
+                }
 
-				emit tileReady(m_sCurrentTileName);
+                emit tileReady(m_sCurrentTileName);
 
-				loadNextTile();
-			}
-			else
-			{
-				m_uURL = QString("http://t0.tiles.virtualearth.net/tiles/%1.jpeg?g=1963&mkt={culture}&token={token}").arg(m_sCurrentTileName);
+                loadNextTile();
+            }
+            else
+            {
+                m_uURL = QString("http://t0.tiles.virtualearth.net/tiles/%1.jpeg?g=1963&mkt={culture}&token={token}").arg(m_sCurrentTileName);
 
-				m_pReply = m_tNetMan.get(QNetworkRequest(m_uURL));
+                m_pReply = m_tNetMan.get(QNetworkRequest(m_uURL));
 
-				LOG_DEBUG(QString("CHTTPMapClient::loadNextTile() : requested tile %1").arg(m_sCurrentTileName));
+                LOG_DEBUG(QString("CHTTPMapClient::loadNextTile() : requested tile %1").arg(m_sCurrentTileName));
 
-				connect(m_pReply, SIGNAL(finished()), this, SLOT(httpFinished()));
-				connect(m_pReply, SIGNAL(error()), this, SLOT(httpError()));
-				connect(m_pReply, SIGNAL(readyRead()), this, SLOT(httpReadyRead()));
-			}
-		}
-	}
+                connect(m_pReply, SIGNAL(finished()), this, SLOT(httpFinished()));
+                connect(m_pReply, SIGNAL(error()), this, SLOT(httpError()));
+                connect(m_pReply, SIGNAL(readyRead()), this, SLOT(httpReadyRead()));
+            }
+        }
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CHTTPMapClient::httpFinished()
 {
-	if (m_pReply->error() == QNetworkReply::NoError)
-	{
-		if (m_baIncomingData.count() > 0)
-		{
-			QString sFileName = m_sTilePath + "/" + m_sCurrentTileName + ".jpg";
+    if (m_pReply->error() == QNetworkReply::NoError)
+    {
+        if (m_baIncomingData.count() > 0)
+        {
+            QString sFileName = m_sTilePath + "/" + m_sCurrentTileName + ".jpg";
 
-			QFile fImageFile(sFileName);
+            QFile fImageFile(sFileName);
 
-			if (fImageFile.open(QIODevice::WriteOnly))
-			{
-				fImageFile.write(m_baIncomingData);
-				fImageFile.close();
-			}
+            if (fImageFile.open(QIODevice::WriteOnly))
+            {
+                fImageFile.write(m_baIncomingData);
+                fImageFile.close();
+            }
 
-			LOG_DEBUG(QString("CHTTPMapClient::httpFinished() : downloaded tile %1").arg(m_sCurrentTileName));
+            LOG_DEBUG(QString("CHTTPMapClient::httpFinished() : downloaded tile %1").arg(m_sCurrentTileName));
 
-			QImage image;
+            QImage image;
 
-			if (image.loadFromData(m_baIncomingData, "JPG"))
-			{
-				m_vLoadedTiles[m_sCurrentTileName] = image.convertToFormat(QImage::Format_RGB888);
-			}
+            if (image.loadFromData(m_baIncomingData, "JPG"))
+            {
+                m_vLoadedTiles[m_sCurrentTileName] = image.convertToFormat(QImage::Format_RGB888);
+            }
 
-			emit tileReady(m_sCurrentTileName);
-		}
-	}
-	else
-	{
-		QNetworkReply::NetworkError err = m_pReply->error();
-	}
+            emit tileReady(m_sCurrentTileName);
+        }
+    }
+    else
+    {
+        QNetworkReply::NetworkError err = m_pReply->error();
 
-	m_baIncomingData.clear();
+        Q_UNUSED(err);
+    }
 
-	m_pReply->deleteLater();
-	m_pReply = NULL;
+    m_baIncomingData.clear();
 
-	loadNextTile();
+    m_pReply->deleteLater();
+    m_pReply = NULL;
+
+    loadNextTile();
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CHTTPMapClient::httpError()
 {
-	LOG_ERROR(QString("CHTTPMapClient::httpError() : tile %1").arg(m_sCurrentTileName));
+    LOG_ERROR(QString("CHTTPMapClient::httpError() : tile %1").arg(m_sCurrentTileName));
 
-	m_baIncomingData.clear();
+    m_baIncomingData.clear();
 
-	m_pReply->deleteLater();
-	m_pReply = NULL;
+    m_pReply->deleteLater();
+    m_pReply = NULL;
 
-	loadNextTile();
+    loadNextTile();
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CHTTPMapClient::httpReadyRead()
 {
-	m_baIncomingData.append(m_pReply->readAll());
+    m_baIncomingData.append(m_pReply->readAll());
 }

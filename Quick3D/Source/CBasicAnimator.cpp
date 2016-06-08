@@ -69,24 +69,24 @@ void CBasicAnimator::loadParameters(CXMLNode xNode)
 
     if (xGeneralNode.isEmpty() == false)
     {
-        if (xGeneralNode.m_vAttributes[ParamName_Type].isEmpty() == false)
+        if (xGeneralNode.attributes()[ParamName_Type].isEmpty() == false)
         {
-            if (xGeneralNode.m_vAttributes[ParamName_Type] == ParamName_Servo)
+            if (xGeneralNode.attributes()[ParamName_Type] == ParamName_Servo)
             {
                 m_pTranslationFrame = new CServoAnimatorFrame();
                 m_pRotationFrame = new CServoAnimatorFrame();
 
-                if (xGeneralNode.m_vAttributes[ParamName_AccelerationFactor].isEmpty() == false)
+                if (xGeneralNode.attributes()[ParamName_AccelerationFactor].isEmpty() == false)
                 {
-                    double dAccelerationFactor = xGeneralNode.m_vAttributes[ParamName_AccelerationFactor].toDouble();
+                    double dAccelerationFactor = xGeneralNode.attributes()[ParamName_AccelerationFactor].toDouble();
 
                     ((CServoAnimatorFrame*)m_pTranslationFrame)->setAccelerationFactor(dAccelerationFactor);
                     ((CServoAnimatorFrame*)m_pRotationFrame)->setAccelerationFactor(dAccelerationFactor);
                 }
 
-                if (xGeneralNode.m_vAttributes[ParamName_VelocityFactor].isEmpty() == false)
+                if (xGeneralNode.attributes()[ParamName_VelocityFactor].isEmpty() == false)
                 {
-                    double dVelocityFactor = xGeneralNode.m_vAttributes[ParamName_VelocityFactor].toDouble();
+                    double dVelocityFactor = xGeneralNode.attributes()[ParamName_VelocityFactor].toDouble();
 
                     ((CServoAnimatorFrame*)m_pTranslationFrame)->setVelocityFactor(dVelocityFactor);
                     ((CServoAnimatorFrame*)m_pRotationFrame)->setVelocityFactor(dVelocityFactor);
@@ -117,24 +117,24 @@ void CBasicAnimator::loadParameters(CXMLNode xNode)
                 CXMLNode xTargetNode = xStep.getNodeByTagName(ParamName_Target);
                 CXMLNode xSpeedNode = xStep.getNodeByTagName(ParamName_Velocity);
                 CXMLNode xAccelerationNode = xStep.getNodeByTagName(ParamName_Acceleration);
-                double dDuration = xStep.m_vAttributes[ParamName_Pause].toDouble();
+                double dDuration = xStep.attributes()[ParamName_Pause].toDouble();
 
                 CVector3 vTarget = CVector3(
-                            xTargetNode.m_vAttributes[ParamName_x].toDouble(),
-                            xTargetNode.m_vAttributes[ParamName_y].toDouble(),
-                            xTargetNode.m_vAttributes[ParamName_z].toDouble()
+                            xTargetNode.attributes()[ParamName_x].toDouble(),
+                            xTargetNode.attributes()[ParamName_y].toDouble(),
+                            xTargetNode.attributes()[ParamName_z].toDouble()
                             );
 
                 CVector3 vSpeed = CVector3(
-                            xSpeedNode.m_vAttributes[ParamName_x].toDouble(),
-                            xSpeedNode.m_vAttributes[ParamName_y].toDouble(),
-                            xSpeedNode.m_vAttributes[ParamName_z].toDouble()
+                            xSpeedNode.attributes()[ParamName_x].toDouble(),
+                            xSpeedNode.attributes()[ParamName_y].toDouble(),
+                            xSpeedNode.attributes()[ParamName_z].toDouble()
                             );
 
                 CVector3 vAcceleration = CVector3(
-                            xAccelerationNode.m_vAttributes[ParamName_x].toDouble(),
-                            xAccelerationNode.m_vAttributes[ParamName_y].toDouble(),
-                            xAccelerationNode.m_vAttributes[ParamName_z].toDouble()
+                            xAccelerationNode.attributes()[ParamName_x].toDouble(),
+                            xAccelerationNode.attributes()[ParamName_y].toDouble(),
+                            xAccelerationNode.attributes()[ParamName_z].toDouble()
                             );
 
                 addTranslationStep(CBasicAnimationStep(vTarget, vSpeed, vAcceleration, dDuration));
@@ -154,24 +154,24 @@ void CBasicAnimator::loadParameters(CXMLNode xNode)
                 CXMLNode xTargetNode = xStep.getNodeByTagName("Target");
                 CXMLNode xSpeedNode = xStep.getNodeByTagName("Speed");
                 CXMLNode xAccelerationNode = xStep.getNodeByTagName("Acceleration");
-                double dDuration = xStep.m_vAttributes["Pause"].toDouble();
+                double dDuration = xStep.attributes()["Pause"].toDouble();
 
                 CVector3 vTarget = CVector3(
-                            Math::Angles::toRad(xTargetNode.m_vAttributes[ParamName_x].toDouble()),
-                            Math::Angles::toRad(xTargetNode.m_vAttributes[ParamName_y].toDouble()),
-                            Math::Angles::toRad(xTargetNode.m_vAttributes[ParamName_z].toDouble())
+                            Math::Angles::toRad(xTargetNode.attributes()[ParamName_x].toDouble()),
+                            Math::Angles::toRad(xTargetNode.attributes()[ParamName_y].toDouble()),
+                            Math::Angles::toRad(xTargetNode.attributes()[ParamName_z].toDouble())
                             );
 
                 CVector3 vSpeed = CVector3(
-                            Math::Angles::toRad(xSpeedNode.m_vAttributes[ParamName_x].toDouble()),
-                            Math::Angles::toRad(xSpeedNode.m_vAttributes[ParamName_y].toDouble()),
-                            Math::Angles::toRad(xSpeedNode.m_vAttributes[ParamName_z].toDouble())
+                            Math::Angles::toRad(xSpeedNode.attributes()[ParamName_x].toDouble()),
+                            Math::Angles::toRad(xSpeedNode.attributes()[ParamName_y].toDouble()),
+                            Math::Angles::toRad(xSpeedNode.attributes()[ParamName_z].toDouble())
                             );
 
                 CVector3 vAcceleration = CVector3(
-                            Math::Angles::toRad(xAccelerationNode.m_vAttributes[ParamName_x].toDouble()),
-                            Math::Angles::toRad(xAccelerationNode.m_vAttributes[ParamName_y].toDouble()),
-                            Math::Angles::toRad(xAccelerationNode.m_vAttributes[ParamName_z].toDouble())
+                            Math::Angles::toRad(xAccelerationNode.attributes()[ParamName_x].toDouble()),
+                            Math::Angles::toRad(xAccelerationNode.attributes()[ParamName_y].toDouble()),
+                            Math::Angles::toRad(xAccelerationNode.attributes()[ParamName_z].toDouble())
                             );
 
                 addRotationStep(CBasicAnimationStep(vTarget, vSpeed, vAcceleration, dDuration));

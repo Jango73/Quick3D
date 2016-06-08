@@ -542,9 +542,9 @@ void CComponent::loadParameters(CXMLNode xComponent)
 
     // Nom du composant
 
-    if (xComponent.m_vAttributes[ParamName_Name].isEmpty() == false)
+    if (xComponent.attributes()[ParamName_Name].isEmpty() == false)
     {
-        m_sName = xComponent.m_vAttributes[ParamName_Name];
+        m_sName = xComponent.attributes()[ParamName_Name];
     }
 
     // Position d'origine
@@ -552,9 +552,9 @@ void CComponent::loadParameters(CXMLNode xComponent)
     if (tPositionNode.isEmpty() == false)
     {
         setOriginPosition(CVector3(
-                              tPositionNode.m_vAttributes[ParamName_x].toDouble(),
-                              tPositionNode.m_vAttributes[ParamName_y].toDouble(),
-                              tPositionNode.m_vAttributes[ParamName_z].toDouble()
+                              tPositionNode.attributes()[ParamName_x].toDouble(),
+                              tPositionNode.attributes()[ParamName_y].toDouble(),
+                              tPositionNode.attributes()[ParamName_z].toDouble()
                               ));
     }
 
@@ -563,9 +563,9 @@ void CComponent::loadParameters(CXMLNode xComponent)
     if (tGeolocNode.isEmpty() == false)
     {
         setGeoloc(CGeoloc(
-                      tGeolocNode.m_vAttributes[ParamName_Latitude].toDouble(),
-                      tGeolocNode.m_vAttributes[ParamName_Longitude].toDouble(),
-                      tGeolocNode.m_vAttributes[ParamName_Altitude].toDouble()
+                      tGeolocNode.attributes()[ParamName_Latitude].toDouble(),
+                      tGeolocNode.attributes()[ParamName_Longitude].toDouble(),
+                      tGeolocNode.attributes()[ParamName_Altitude].toDouble()
                       ));
     }
 
@@ -574,9 +574,9 @@ void CComponent::loadParameters(CXMLNode xComponent)
     if (tRotationNode.isEmpty() == false)
     {
         setOriginRotation(CVector3(
-                              Angles::toRad(tRotationNode.m_vAttributes[ParamName_x].toDouble()),
-                              Angles::toRad(tRotationNode.m_vAttributes[ParamName_y].toDouble()),
-                              Angles::toRad(tRotationNode.m_vAttributes[ParamName_z].toDouble())
+                              Angles::toRad(tRotationNode.attributes()[ParamName_x].toDouble()),
+                              Angles::toRad(tRotationNode.attributes()[ParamName_y].toDouble()),
+                              Angles::toRad(tRotationNode.attributes()[ParamName_z].toDouble())
                               ));
     }
 
@@ -585,9 +585,9 @@ void CComponent::loadParameters(CXMLNode xComponent)
     if (tRotationFactorNode.isEmpty() == false)
     {
         m_vRotationFactor = CVector3(
-                    tRotationFactorNode.m_vAttributes[ParamName_x].toDouble(),
-                    tRotationFactorNode.m_vAttributes[ParamName_y].toDouble(),
-                    tRotationFactorNode.m_vAttributes[ParamName_z].toDouble()
+                    tRotationFactorNode.attributes()[ParamName_x].toDouble(),
+                    tRotationFactorNode.attributes()[ParamName_y].toDouble(),
+                    tRotationFactorNode.attributes()[ParamName_z].toDouble()
                     );
     }
 
@@ -596,9 +596,9 @@ void CComponent::loadParameters(CXMLNode xComponent)
     if (tScaleNode.isEmpty() == false)
     {
         CVector3 vScale = CVector3(
-                    tScaleNode.m_vAttributes[ParamName_x].toDouble(),
-                    tScaleNode.m_vAttributes[ParamName_y].toDouble(),
-                    tScaleNode.m_vAttributes[ParamName_z].toDouble()
+                    tScaleNode.attributes()[ParamName_x].toDouble(),
+                    tScaleNode.attributes()[ParamName_y].toDouble(),
+                    tScaleNode.attributes()[ParamName_z].toDouble()
                     );
 
         if (vScale.X != 0.0 && vScale.Y != 0.0 && vScale.Z != 0.0)

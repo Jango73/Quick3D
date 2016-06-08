@@ -44,8 +44,8 @@ void CAirbusFADEC::loadParameters(CXMLNode xComponent)
 
 	CXMLNode xNode = xComponent.getNodeByTagName(ParamName_Engines);
 
-	m_rEngine1Target.setName(xNode.m_vAttributes["Engine1Target"]);
-	m_rEngine2Target.setName(xNode.m_vAttributes["Engine2Target"]);
+    m_rEngine1Target.setName(xNode.attributes()["Engine1Target"]);
+    m_rEngine2Target.setName(xNode.attributes()["Engine2Target"]);
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -94,9 +94,9 @@ void CCamera::loadParameters(CXMLNode xComponent)
 
     if (xGeneralNode.isEmpty() == false)
     {
-        if (xGeneralNode.m_vAttributes[ParamName_FOV].isEmpty() == false)
+        if (xGeneralNode.attributes()[ParamName_FOV].isEmpty() == false)
         {
-            m_dFOV = xGeneralNode.m_vAttributes[ParamName_FOV].toDouble();
+            m_dFOV = xGeneralNode.attributes()[ParamName_FOV].toDouble();
         }
     }
 }

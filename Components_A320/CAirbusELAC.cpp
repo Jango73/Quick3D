@@ -46,9 +46,9 @@ void CAirbusELAC::loadParameters(CXMLNode xComponent)
 
 	CXMLNode xNode = xComponent.getNodeByTagName(ParamName_ControlSurfaces);
 
-	m_rLeftWingTarget.setName(xNode.m_vAttributes["LeftWingTarget"]);
-	m_rRightWingTarget.setName(xNode.m_vAttributes["RightWingTarget"]);
-	m_rElevatorTarget.setName(xNode.m_vAttributes["ElevatorTarget"]);
+    m_rLeftWingTarget.setName(xNode.attributes()["LeftWingTarget"]);
+    m_rRightWingTarget.setName(xNode.attributes()["RightWingTarget"]);
+    m_rElevatorTarget.setName(xNode.attributes()["ElevatorTarget"]);
 }
 
 //-------------------------------------------------------------------------------------------------

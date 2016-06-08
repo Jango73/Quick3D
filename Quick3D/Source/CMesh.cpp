@@ -160,24 +160,24 @@ void CMesh::loadParameters(CXMLNode xComponent)
 
     if (xMeshNode.isEmpty() == false)
     {
-        QString sName = xMeshNode.m_vAttributes[ParamName_Name];
+        QString sName = xMeshNode.attributes()[ParamName_Name];
 
         if (sName != "")
         {
             m_pScene->getRessourcesManager()->loadMesh(this, sName);
 
-            if (xIRNode.m_vAttributes[ParamName_Factor].isEmpty() == false)
+            if (xIRNode.attributes()[ParamName_Factor].isEmpty() == false)
             {
                 if (m_vMaterials.count() > 0)
                 {
-                    m_vMaterials[0]->setIRFactor(xIRNode.m_vAttributes[ParamName_Factor].toDouble());
+                    m_vMaterials[0]->setIRFactor(xIRNode.attributes()[ParamName_Factor].toDouble());
                 }
             }
 
             foreach (CXMLNode xDynTexNode, xDynTexNodes)
             {
-                QString sTextureName = xDynTexNode.m_vAttributes[ParamName_Name];
-                QString sUpdaterName = xDynTexNode.m_vAttributes[ParamName_Updater];
+                QString sTextureName = xDynTexNode.attributes()[ParamName_Name];
+                QString sUpdaterName = xDynTexNode.attributes()[ParamName_Updater];
 
                 m_mDynTexUpdaters[sTextureName] = sUpdaterName;
             }
@@ -185,7 +185,7 @@ void CMesh::loadParameters(CXMLNode xComponent)
     }
     else if (xProceduralMeshNode.isEmpty() == false)
     {
-        QString sName = xProceduralMeshNode.m_vAttributes[ParamName_Name];
+        QString sName = xProceduralMeshNode.attributes()[ParamName_Name];
 
         if (sName == ParamName_Sphere)
         {

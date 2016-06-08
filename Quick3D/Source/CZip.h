@@ -1,9 +1,11 @@
 
-#ifndef CZIP_H
-#define CZIP_H
+#pragma once
 
 #include "quick3d_global.h"
 
+//-------------------------------------------------------------------------------------------------
+
+// Qt
 #include <QFile>
 #include <QFileInfo>
 
@@ -20,35 +22,32 @@ class QUICK3D_EXPORT CZip
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//! Constructeur par défaut
-	CZip(const QString& sFileName);
+    //! Constructeur par défaut
+    CZip(const QString& sFileName);
 
-	//! Destructeur
-	virtual ~CZip();
+    //! Destructeur
+    virtual ~CZip();
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	int zipFiles(QStringList sFiles);
+    //!
+    int zipFiles(QStringList sFiles);
 
-	//!
-	QStringList getZipFileList();
+    //!
+    QStringList getZipFileList();
 
-	//! Get file content
-	QByteArray getZipFileContent(QString& sFile);
+    //! Get file content
+    QByteArray getZipFileContent(QString& sFile);
 
 protected:
-	QString m_sFileName;
+    QString m_sFileName;
 };
 
 bool QUICK3D_EXPORT gzipCompress(QByteArray input, QByteArray &output, int level = -1);
 bool QUICK3D_EXPORT gzipDecompress(QByteArray input, QByteArray &output);
-
-
-#endif // CZIP_H

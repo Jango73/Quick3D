@@ -126,16 +126,16 @@ void CAutoTerrain::loadParameters(CXMLNode xComponent)
 
     CXMLNode xGeneralNode = m_xParameters.getNodeByTagName(ParamName_General);
 
-    m_iLevels = xGeneralNode.m_vAttributes[ParamName_Levels].toInt();
+    m_iLevels = xGeneralNode.attributes()[ParamName_Levels].toInt();
     m_iLevels = Angles::clipInt(m_iLevels, 2, 20);
 
-    m_iTerrainResolution = xGeneralNode.m_vAttributes[ParamName_Resolution].toInt();
+    m_iTerrainResolution = xGeneralNode.attributes()[ParamName_Resolution].toInt();
     m_iTerrainResolution = Angles::clipInt(m_iTerrainResolution, 3, 81);
 
     CXMLNode xHeightNode = m_xParameters.getNodeByTagName(ParamName_Height);
 
-    QString sType = xHeightNode.m_vAttributes[ParamName_Type];
-    QString sPath = xHeightNode.m_vAttributes[ParamName_Path];
+    QString sType = xHeightNode.attributes()[ParamName_Type];
+    QString sPath = xHeightNode.attributes()[ParamName_Path];
 
     if (sType.toLower() == "srtm")
     {
@@ -158,7 +158,7 @@ void CAutoTerrain::loadParameters(CXMLNode xComponent)
 
     CXMLNode xMaterialNode = m_xParameters.getNodeByTagName(ParamName_Material);
 
-    QString sMaterialType = xMaterialNode.m_vAttributes[ParamName_Type];
+    QString sMaterialType = xMaterialNode.attributes()[ParamName_Type];
 
     if (sMaterialType.toLower() == "bing")
     {
@@ -694,14 +694,14 @@ void CAutoTerrain::readVegetationParameters()
 
         CGenerateFunction* pFunction = new CGenerateFunction(xCoverage.getNodeByTagName(ParamName_Value));
 
-        int iLevels = xDNA.m_vAttributes[ParamName_Levels].toDouble();
-        double dTrunkLength = xDNA.m_vAttributes[ParamName_TrunkLength].toDouble();
-        double dTrunkRadius = xDNA.m_vAttributes[ParamName_TrunkRadius].toDouble();
-        double dBranchLengthScale = xDNA.m_vAttributes[ParamName_BranchLengthScale].toDouble();
-        double dBranchRadiusScale = xDNA.m_vAttributes[ParamName_BranchRadiusScale].toDouble();
-        double dLeafScale = xDNA.m_vAttributes[ParamName_LeafScale].toDouble();
-        double dGravityFactor = xDNA.m_vAttributes[ParamName_GravityFactor].toDouble();
-        double dSpread = xDNA.m_vAttributes[ParamName_Spread].toDouble();
+        int iLevels = xDNA.attributes()[ParamName_Levels].toDouble();
+        double dTrunkLength = xDNA.attributes()[ParamName_TrunkLength].toDouble();
+        double dTrunkRadius = xDNA.attributes()[ParamName_TrunkRadius].toDouble();
+        double dBranchLengthScale = xDNA.attributes()[ParamName_BranchLengthScale].toDouble();
+        double dBranchRadiusScale = xDNA.attributes()[ParamName_BranchRadiusScale].toDouble();
+        double dLeafScale = xDNA.attributes()[ParamName_LeafScale].toDouble();
+        double dGravityFactor = xDNA.attributes()[ParamName_GravityFactor].toDouble();
+        double dSpread = xDNA.attributes()[ParamName_Spread].toDouble();
 
         CXMLNode xLeaf = xDNA.getNodeByTagName(ParamName_Leaf);
         CXMLNode xFFD = xLeaf.getNodeByTagName(ParamName_FFD);
@@ -714,15 +714,15 @@ void CAutoTerrain::readVegetationParameters()
         foreach (CXMLNode xPoint, xPoints)
         {
             vFFDFrom.append(CVector3(
-                                xPoint.m_vAttributes["fx"].toDouble(),
-                            xPoint.m_vAttributes["fy"].toDouble(),
-                    xPoint.m_vAttributes["fz"].toDouble()
+                                xPoint.attributes()["fx"].toDouble(),
+                            xPoint.attributes()["fy"].toDouble(),
+                    xPoint.attributes()["fz"].toDouble()
                     ));
 
             vFFDTo.append(CVector3(
-                              xPoint.m_vAttributes["tx"].toDouble(),
-                          xPoint.m_vAttributes["ty"].toDouble(),
-                    xPoint.m_vAttributes["tz"].toDouble()
+                              xPoint.attributes()["tx"].toDouble(),
+                          xPoint.attributes()["ty"].toDouble(),
+                    xPoint.attributes()["tz"].toDouble()
                     ));
         }
 

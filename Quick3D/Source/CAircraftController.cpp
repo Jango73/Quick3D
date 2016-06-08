@@ -40,12 +40,12 @@ void CAircraftController::loadParameters(CXMLNode xNode)
 {
 	CStandardController::loadParameters(xNode);
 
-	m_rLeftWingTarget.setName(xNode.m_vAttributes["LeftWingTarget"]);
-	m_rRightWingTarget.setName(xNode.m_vAttributes["RightWingTarget"]);
-	m_rElevatorTarget.setName(xNode.m_vAttributes["ElevatorTarget"]);
-	m_rRudderTarget.setName(xNode.m_vAttributes["RudderTarget"]);
-	m_rEngine1Target.setName(xNode.m_vAttributes["Engine1Target"]);
-	m_rEngine2Target.setName(xNode.m_vAttributes["Engine2Target"]);
+    m_rLeftWingTarget.setName(xNode.attributes()["LeftWingTarget"]);
+    m_rRightWingTarget.setName(xNode.attributes()["RightWingTarget"]);
+    m_rElevatorTarget.setName(xNode.attributes()["ElevatorTarget"]);
+    m_rRudderTarget.setName(xNode.attributes()["RudderTarget"]);
+    m_rEngine1Target.setName(xNode.attributes()["Engine1Target"]);
+    m_rEngine2Target.setName(xNode.attributes()["Engine2Target"]);
 }
 
 //-------------------------------------------------------------------------------------------------

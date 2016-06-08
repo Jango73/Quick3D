@@ -37,9 +37,9 @@ void CElectricalContactor::loadParameters(CXMLNode xComponent)
 
 	CXMLNode xGeneralNode = xComponent.getNodeByTagName(ParamName_General);
 
-	if (xGeneralNode.m_vAttributes[ParamName_Closed].isEmpty() == false)
+    if (xGeneralNode.attributes()[ParamName_Closed].isEmpty() == false)
 	{
-		m_bClosed = (bool) xGeneralNode.m_vAttributes[ParamName_Closed].toInt();
+        m_bClosed = (bool) xGeneralNode.attributes()[ParamName_Closed].toInt();
 	}
 }
 

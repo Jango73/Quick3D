@@ -28,9 +28,9 @@ void CAirbusDataSupplier::loadParameters(CXMLNode xComponent)
 
 	foreach (CXMLNode xInput, vInputsNodes)
 	{
-		if (xInput.m_vAttributes[ParamName_Name].isEmpty() == false)
+        if (xInput.attributes()[ParamName_Name].isEmpty() == false)
 		{
-			m_vDataInputNames.append(xInput.m_vAttributes[ParamName_Name]);
+            m_vDataInputNames.append(xInput.attributes()[ParamName_Name]);
 		}
 	}
 }

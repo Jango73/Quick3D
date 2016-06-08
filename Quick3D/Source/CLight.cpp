@@ -83,9 +83,9 @@ void CLight::loadParameters(CXMLNode xComponent)
     {
         if (tColorNode.isEmpty() == false)
         {
-            m_pMaterial->getDiffuse().X = tColorNode.m_vAttributes[ParamName_r].toDouble();
-            m_pMaterial->getDiffuse().Y = tColorNode.m_vAttributes[ParamName_g].toDouble();
-            m_pMaterial->getDiffuse().Z = tColorNode.m_vAttributes[ParamName_b].toDouble();
+            m_pMaterial->getDiffuse().X = tColorNode.attributes()[ParamName_r].toDouble();
+            m_pMaterial->getDiffuse().Y = tColorNode.attributes()[ParamName_g].toDouble();
+            m_pMaterial->getDiffuse().Z = tColorNode.attributes()[ParamName_b].toDouble();
         }
     }
 
@@ -93,14 +93,14 @@ void CLight::loadParameters(CXMLNode xComponent)
 
     if (xGeneralNode.isEmpty() == false)
     {
-        if (xGeneralNode.m_vAttributes[ParamName_Distance].isEmpty() == false)
+        if (xGeneralNode.attributes()[ParamName_Distance].isEmpty() == false)
         {
-            m_dDistance = xGeneralNode.m_vAttributes[ParamName_Distance].toDouble();
+            m_dDistance = xGeneralNode.attributes()[ParamName_Distance].toDouble();
         }
 
-        if (xGeneralNode.m_vAttributes[ParamName_Cast_Shadows].isEmpty() == false)
+        if (xGeneralNode.attributes()[ParamName_Cast_Shadows].isEmpty() == false)
         {
-            m_bCastShadows = (bool) xGeneralNode.m_vAttributes[ParamName_Cast_Shadows].toInt();
+            m_bCastShadows = (bool) xGeneralNode.attributes()[ParamName_Cast_Shadows].toInt();
         }
     }
 }

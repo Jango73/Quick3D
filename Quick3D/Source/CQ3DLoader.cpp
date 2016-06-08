@@ -57,18 +57,18 @@ void CQ3DLoader::loadComponent(
     }
 
     // Assignation du nom
-    if (xComponent.m_vAttributes[ParamName_Name].isEmpty() == false)
+    if (xComponent.attributes()[ParamName_Name].isEmpty() == false)
     {
-        pMesh->setName(xComponent.m_vAttributes[ParamName_Name]);
+        pMesh->setName(xComponent.attributes()[ParamName_Name]);
     }
 
     // Position d'origine
     if (xPositionNode.isEmpty() == false)
     {
         pMesh->setOriginPosition(CVector3(
-                                     xPositionNode.m_vAttributes[ParamName_x].toDouble(),
-                                     xPositionNode.m_vAttributes[ParamName_y].toDouble(),
-                                     xPositionNode.m_vAttributes[ParamName_z].toDouble()
+                                     xPositionNode.attributes()[ParamName_x].toDouble(),
+                                     xPositionNode.attributes()[ParamName_y].toDouble(),
+                                     xPositionNode.attributes()[ParamName_z].toDouble()
                                      ));
     }
 
@@ -76,9 +76,9 @@ void CQ3DLoader::loadComponent(
     if (xRotationNode.isEmpty() == false)
     {
         pMesh->setOriginRotation(CVector3(
-                                     xRotationNode.m_vAttributes[ParamName_x].toDouble(),
-                                     xRotationNode.m_vAttributes[ParamName_y].toDouble(),
-                                     xRotationNode.m_vAttributes[ParamName_z].toDouble()
+                                     xRotationNode.attributes()[ParamName_x].toDouble(),
+                                     xRotationNode.attributes()[ParamName_y].toDouble(),
+                                     xRotationNode.attributes()[ParamName_z].toDouble()
                                      ));
     }
 
@@ -87,7 +87,7 @@ void CQ3DLoader::loadComponent(
 
     foreach (CXMLNode xMaterial, vxMaterials)
     {
-        QString sMaterialName = xMaterial.m_vAttributes[ParamName_Name];
+        QString sMaterialName = xMaterial.attributes()[ParamName_Name];
 
         CMaterial* pNewMaterial = new CMaterial(pScene, sMaterialName);
 
@@ -102,15 +102,15 @@ void CQ3DLoader::loadComponent(
 
         if (xDiffuse.isEmpty() == false)
         {
-            pNewMaterial->getAmbient().X = xAmbient.m_vAttributes[ParamName_r].toDouble();
-            pNewMaterial->getAmbient().Y = xAmbient.m_vAttributes[ParamName_g].toDouble();
-            pNewMaterial->getAmbient().Z = xAmbient.m_vAttributes[ParamName_b].toDouble();
+            pNewMaterial->getAmbient().X = xAmbient.attributes()[ParamName_r].toDouble();
+            pNewMaterial->getAmbient().Y = xAmbient.attributes()[ParamName_g].toDouble();
+            pNewMaterial->getAmbient().Z = xAmbient.attributes()[ParamName_b].toDouble();
 
-            pNewMaterial->getDiffuse().X = xDiffuse.m_vAttributes[ParamName_r].toDouble();
-            pNewMaterial->getDiffuse().Y = xDiffuse.m_vAttributes[ParamName_g].toDouble();
-            pNewMaterial->getDiffuse().Z = xDiffuse.m_vAttributes[ParamName_b].toDouble();
+            pNewMaterial->getDiffuse().X = xDiffuse.attributes()[ParamName_r].toDouble();
+            pNewMaterial->getDiffuse().Y = xDiffuse.attributes()[ParamName_g].toDouble();
+            pNewMaterial->getDiffuse().Z = xDiffuse.attributes()[ParamName_b].toDouble();
 
-            QString sTextureName = xDiffuse.m_vAttributes[ParamName_Map];
+            QString sTextureName = xDiffuse.attributes()[ParamName_Map];
 
             if (sTextureName.isEmpty() == false)
             {
@@ -129,11 +129,11 @@ void CQ3DLoader::loadComponent(
 
         if (xSpecular.isEmpty() == false)
         {
-            double dIntensity = xSpecular.m_vAttributes[ParamName_Intensity].toDouble();
-            pNewMaterial->getSpecular().X = xSpecular.m_vAttributes[ParamName_r].toDouble() * dIntensity;
-            pNewMaterial->getSpecular().Y = xSpecular.m_vAttributes[ParamName_g].toDouble() * dIntensity;
-            pNewMaterial->getSpecular().Z = xSpecular.m_vAttributes[ParamName_b].toDouble() * dIntensity;
-            pNewMaterial->setShininess(xSpecular.m_vAttributes[ParamName_Hardness].toDouble());
+            double dIntensity = xSpecular.attributes()[ParamName_Intensity].toDouble();
+            pNewMaterial->getSpecular().X = xSpecular.attributes()[ParamName_r].toDouble() * dIntensity;
+            pNewMaterial->getSpecular().Y = xSpecular.attributes()[ParamName_g].toDouble() * dIntensity;
+            pNewMaterial->getSpecular().Z = xSpecular.attributes()[ParamName_b].toDouble() * dIntensity;
+            pNewMaterial->setShininess(xSpecular.attributes()[ParamName_Hardness].toDouble());
         }
 
         vMaterials.append(QSharedPointer<CMaterial>(pNewMaterial));
@@ -146,11 +146,11 @@ void CQ3DLoader::loadComponent(
 
     foreach (CXMLNode xVertex, vxVertices)
     {
-        double x = xVertex.m_vAttributes[ParamName_x].toDouble();
-        double y = xVertex.m_vAttributes[ParamName_y].toDouble();
-        double z = xVertex.m_vAttributes[ParamName_z].toDouble();
-        double u = xVertex.m_vAttributes[ParamName_u].toDouble();
-        double v = xVertex.m_vAttributes[ParamName_v].toDouble();
+        double x = xVertex.attributes()[ParamName_x].toDouble();
+        double y = xVertex.attributes()[ParamName_y].toDouble();
+        double z = xVertex.attributes()[ParamName_z].toDouble();
+        double u = xVertex.attributes()[ParamName_u].toDouble();
+        double v = xVertex.attributes()[ParamName_v].toDouble();
 
         pMesh->getVertices().append(CVertex(CVector3(x, y, z), CVector2(u, v)));
     }
@@ -178,14 +178,14 @@ void CQ3DLoader::loadComponent(
     {
         CFace NewFace(pMesh);
 
-        QStringList lVertices = xFace.m_vAttributes[ParamName_Vertices].split(",");
+        QStringList lVertices = xFace.attributes()[ParamName_Vertices].split(",");
 
         foreach (QString sVertex, lVertices)
         {
             NewFace.getIndices().append(sVertex.toInt());
         }
 
-        int iMaterialIndex = xFace.m_vAttributes[ParamName_Material].toInt();
+        int iMaterialIndex = xFace.attributes()[ParamName_Material].toInt();
 
         if (iMaterialIndex < vMaterials.count())
         {

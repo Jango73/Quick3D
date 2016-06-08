@@ -8,7 +8,7 @@ CPreferencesManager::CPreferencesManager()
 {
 	QString sFileName = QCoreApplication::applicationDirPath() + "/" + "Preferences.xml";
 
-	xPreferences = CXMLNode::loadFromFile(sFileName);
+    xPreferences = CXMLNode::loadXMLFromFile(sFileName);
 }
 
 //-------------------------------------------------------------------------------------------------

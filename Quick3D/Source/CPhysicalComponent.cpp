@@ -95,48 +95,48 @@ void CPhysicalComponent::loadParameters(CXMLNode xComponent)
 
     if (xPhysicsNode.isEmpty() == false)
     {
-        if (xPhysicsNode.m_vAttributes["MassKG"].isEmpty() == false)
+        if (xPhysicsNode.attributes()["MassKG"].isEmpty() == false)
         {
-            m_dMass_kg = xPhysicsNode.m_vAttributes["MassKG"].toDouble();
+            m_dMass_kg = xPhysicsNode.attributes()["MassKG"].toDouble();
         }
 
-        if (xPhysicsNode.m_vAttributes["Drag"].isEmpty() == false)
+        if (xPhysicsNode.attributes()["Drag"].isEmpty() == false)
         {
-            m_dDrag_norm = xPhysicsNode.m_vAttributes["Drag"].toDouble();
+            m_dDrag_norm = xPhysicsNode.attributes()["Drag"].toDouble();
         }
 
-        if (xPhysicsNode.m_vAttributes["AngularDrag"].isEmpty() == false)
+        if (xPhysicsNode.attributes()["AngularDrag"].isEmpty() == false)
         {
-            m_dAngularDrag_norm = xPhysicsNode.m_vAttributes["AngularDrag"].toDouble();
+            m_dAngularDrag_norm = xPhysicsNode.attributes()["AngularDrag"].toDouble();
         }
 
-        if (xPhysicsNode.m_vAttributes["Friction"].isEmpty() == false)
+        if (xPhysicsNode.attributes()["Friction"].isEmpty() == false)
         {
-            m_dFriction_norm = xPhysicsNode.m_vAttributes["Friction"].toDouble();
+            m_dFriction_norm = xPhysicsNode.attributes()["Friction"].toDouble();
         }
 
-        if (xPhysicsNode.m_vAttributes["StickToNOLL"].isEmpty() == false)
+        if (xPhysicsNode.attributes()["StickToNOLL"].isEmpty() == false)
         {
-            m_dStickToNOLL = xPhysicsNode.m_vAttributes["StickToNOLL"].toDouble();
+            m_dStickToNOLL = xPhysicsNode.attributes()["StickToNOLL"].toDouble();
         }
 
-        if (xPhysicsNode.m_vAttributes[ParamName_PhysicsActive].isEmpty() == false)
+        if (xPhysicsNode.attributes()[ParamName_PhysicsActive].isEmpty() == false)
         {
-            m_bPhysicsActive = (bool) xPhysicsNode.m_vAttributes[ParamName_PhysicsActive].toInt();
+            m_bPhysicsActive = (bool) xPhysicsNode.attributes()[ParamName_PhysicsActive].toInt();
         }
 
-        if (xPhysicsNode.m_vAttributes[ParamName_CollisionsActive].isEmpty() == false)
+        if (xPhysicsNode.attributes()[ParamName_CollisionsActive].isEmpty() == false)
         {
-            m_bCollisionsActive = (bool) xPhysicsNode.m_vAttributes[ParamName_CollisionsActive].toInt();
+            m_bCollisionsActive = (bool) xPhysicsNode.attributes()[ParamName_CollisionsActive].toInt();
         }
     }
 
     if (xCenterOfMassNode.isEmpty() == false)
     {
         m_vCenterOfMass = CVector3(
-                    xCenterOfMassNode.m_vAttributes[ParamName_x].toDouble(),
-                    xCenterOfMassNode.m_vAttributes[ParamName_y].toDouble(),
-                    xCenterOfMassNode.m_vAttributes[ParamName_z].toDouble()
+                    xCenterOfMassNode.attributes()[ParamName_x].toDouble(),
+                    xCenterOfMassNode.attributes()[ParamName_y].toDouble(),
+                    xCenterOfMassNode.attributes()[ParamName_z].toDouble()
                     );
     }
 }

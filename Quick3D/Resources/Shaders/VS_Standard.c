@@ -9,8 +9,6 @@ precision highp int;
 precision highp float;
 #endif
 
-#define pi 3.1415926535
-
 // Constant incoming data
 
 uniform vec2			u_resolution;
@@ -18,6 +16,7 @@ uniform float			u_time;
 uniform float			u_deltaTime;
 uniform float			u_shaderQuality;
 uniform int				u_rendering_shadows;
+uniform int				u_normals_only;
 
 uniform mat4			u_camera_projection_matrix;
 uniform mat4			u_camera_matrix;

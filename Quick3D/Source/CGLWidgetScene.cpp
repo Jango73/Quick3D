@@ -175,6 +175,7 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
         pProgram->setUniformValue("u_time", (GLfloat) m_dTime);
         pProgram->setUniformValue("u_shaderQuality", (GLfloat) m_dShaderQuality);
         pProgram->setUniformValue("u_rendering_shadows", (GLint) m_bRenderingShadows);
+        pProgram->setUniformValue("u_normals_only", (GLint) m_bNormalsOnly);
 
         CVector3 vCamTruePos = pContext->camera()->getWorldPosition();
         CVector3 vCamPos = pContext->camera()->getWorldPosition() - m_WorldOrigin;

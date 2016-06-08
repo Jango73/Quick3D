@@ -106,6 +106,9 @@ public:
     //!
     void setBoundsOnly(bool value) { m_bBoundsOnly = value; }
 
+    //!
+    void setNormalsOnly(bool value) { m_bNormalsOnly = value; }
+
     //-------------------------------------------------------------------------------------------------
     // Getters
     //-------------------------------------------------------------------------------------------------
@@ -188,6 +191,9 @@ public:
     //!
     bool getBoundsOnly() { return m_bBoundsOnly; }
 
+    //!
+    bool getNormalsOnly() { return m_bNormalsOnly; }
+
     //-------------------------------------------------------------------------------------------------
     // Méthodes de contrôle
     //-------------------------------------------------------------------------------------------------
@@ -269,34 +275,35 @@ public:
 
 protected:
 
-    QMap<int, CViewport*>					m_pViewports;
-    CGLExtension*							m_pGLExtension;
-    CRessourcesManager*						m_pRessourcesManager;
-    CBuildingGenerator*						m_pBuildingGenerator;
-    CTreeGenerator*							m_pTreeGenerator;
-    CShaderCollection*						m_vShaders;
-    QVector<QSharedPointer<CComponent> >	m_vComponents;
-    CController*							m_pController;
-    CController*							m_pDefaultController;
-    Math::CVector3							m_WorldOrigin;
-    QTime									m_tTimeOfDay;
-    CFog									m_tFog;
-    Math::Interpolator<Math::Vector4>		m_vSunColor;
-    bool									m_bForDisplay;
-    bool									m_bEditMode;
-    bool									m_DebugMode;
-    bool									m_bBoundsOnly;
-    double									m_dShaderQuality;
-    double									m_dWindLevel;
-    bool									m_bRenderingShadows;
-    bool									m_bforceWideFOV;
-    bool									m_bforceSmallFOV;
-    bool									m_bForceIR;
-    bool									m_bStreamView;
-    bool									m_bDepthComputing;
-    double									m_dTime;
-    double									m_dSunIntensity;
-    QImage									m_imgFrameBuffer;
+    QMap<int, CViewport*>                   m_pViewports;
+    CGLExtension*                           m_pGLExtension;
+    CRessourcesManager*                     m_pRessourcesManager;
+    CBuildingGenerator*                     m_pBuildingGenerator;
+    CTreeGenerator*                         m_pTreeGenerator;
+    CShaderCollection*                      m_vShaders;
+    QVector<QSharedPointer<CComponent> >    m_vComponents;
+    CController*                            m_pController;
+    CController*                            m_pDefaultController;
+    Math::CVector3                          m_WorldOrigin;
+    QTime                                   m_tTimeOfDay;
+    CFog                                    m_tFog;
+    Math::Interpolator<Math::Vector4>       m_vSunColor;
+    bool                                    m_bForDisplay;
+    bool                                    m_bEditMode;
+    bool                                    m_DebugMode;
+    bool                                    m_bBoundsOnly;
+    bool                                    m_bNormalsOnly;
+    double                                  m_dShaderQuality;
+    double                                  m_dWindLevel;
+    bool                                    m_bRenderingShadows;
+    bool                                    m_bforceWideFOV;
+    bool                                    m_bforceSmallFOV;
+    bool                                    m_bForceIR;
+    bool                                    m_bStreamView;
+    bool                                    m_bDepthComputing;
+    double                                  m_dTime;
+    double                                  m_dSunIntensity;
+    QImage                                  m_imgFrameBuffer;
 };
 
 #endif // C3DSCENE_H

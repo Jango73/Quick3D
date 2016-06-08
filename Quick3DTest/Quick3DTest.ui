@@ -438,6 +438,22 @@
             <string>Force narrow FOV</string>
            </property>
           </widget>
+          <widget class="QCheckBox" name="m_chkNormalsOnly">
+           <property name="geometry">
+            <rect>
+             <x>90</x>
+             <y>120</y>
+             <width>81</width>
+             <height>17</height>
+            </rect>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
+           <property name="text">
+            <string>Normals only</string>
+           </property>
+          </widget>
          </widget>
         </item>
         <item>

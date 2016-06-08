@@ -13,6 +13,7 @@
 //-------------------------------------------------------------------------------------------------
 
 class C3DScene;
+class CMesh;
 
 //-------------------------------------------------------------------------------------------------
 
@@ -55,6 +56,9 @@ public:
     //!
     virtual void loadParameters(CXMLNode xComponent);
 
+    //! Méthode de mise à jour avec temps delta depuis la dernière itération
+    virtual void update(double dDeltaTime);
+
     //!
     virtual void paint(CRenderContext* pContext);
 
@@ -69,6 +73,9 @@ public:
     //-------------------------------------------------------------------------------------------------
 
 protected:
+
+    //!
+    void updateSingleMesh(CMesh* pMesh, double dDeltaTime);
 
     //-------------------------------------------------------------------------------------------------
     // Propriétés

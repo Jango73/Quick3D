@@ -3,7 +3,6 @@
 #include "CLogManager.h"
 
 // Application
-#include "CRessourcesManager.h"
 #include "C3DScene.h"
 #include "CArmature.h"
 #include "CBone.h"
@@ -36,4 +35,11 @@ CBone::~CBone()
 
 void CBone::loadParameters(CXMLNode xComponent)
 {
+    CComponent::loadParameters(xComponent);
+
+    CXMLNode xHeadNode = xComponent.getNodeByTagName("Head");
+    CXMLNode xTailNode = xComponent.getNodeByTagName("Tail");
+    CXMLNode xXAxisNode = xComponent.getNodeByTagName("XAxis");
+    CXMLNode xYAxisNode = xComponent.getNodeByTagName("YAxis");
+    CXMLNode xZAxisNode = xComponent.getNodeByTagName("ZAxis");
 }

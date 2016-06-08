@@ -3,9 +3,9 @@
 #include "CLogManager.h"
 
 // Application
-#include "CRessourcesManager.h"
 #include "C3DScene.h"
 #include "CArmature.h"
+#include "CMesh.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -37,8 +37,27 @@ CArmature::~CArmature()
 void CArmature::loadParameters(CXMLNode xComponent)
 {
     CPhysicalComponent::loadParameters(xComponent);
+}
 
-    CXMLNode xParameters = xComponent.getNodeByTagName(ParamName_Parameters);
+//-------------------------------------------------------------------------------------------------
+
+void CArmature::update(double dDeltaTime)
+{
+    foreach (CComponent* pChild, m_vChildren)
+    {
+        CMesh* pMesh = dynamic_cast<CMesh*>(pChild);
+
+        if (pMesh != NULL)
+        {
+            updateSingleMesh(pMesh, dDeltaTime);
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CArmature::updateSingleMesh(CMesh* pMesh, double dDeltaTime)
+{
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -189,6 +189,9 @@ public:
     bool getDebugMode() { return m_DebugMode; }
 
     //!
+    bool getFrustumCheck() { return m_bFrustumCheck; }
+
+    //!
     bool getBoundsOnly() { return m_bBoundsOnly; }
 
     //!
@@ -289,6 +292,7 @@ protected:
     CFog                                    m_tFog;
     Math::Interpolator<Math::Vector4>       m_vSunColor;
     bool                                    m_bForDisplay;
+    bool                                    m_bFrustumCheck;
     bool                                    m_bEditMode;
     bool                                    m_DebugMode;
     bool                                    m_bBoundsOnly;

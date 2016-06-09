@@ -64,7 +64,7 @@ void CBoundedMeshInstances::paint(CRenderContext* pContext)
     CVector3 vPosition = pContext->internalCameraMatrix() * getWorldBounds().center();
     double dRadius = getWorldBounds().radius();
 
-    if (pContext->camera()->contains(vPosition, dRadius))
+    if (pContext->scene()->getFrustumCheck() == false || pContext->camera()->contains(vPosition, dRadius))
     {
         foreach (CMeshInstance* pMeshInstance, m_vMeshes)
         {

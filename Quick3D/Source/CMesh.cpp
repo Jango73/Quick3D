@@ -1585,7 +1585,7 @@ void CMesh::paint(CRenderContext* pContext)
     double dRadius = getWorldBounds().radius();
 
     if (
-            pContext->camera()->contains(vPosition, dRadius) &&
+            (pContext->scene()->getFrustumCheck() == false || pContext->camera()->contains(vPosition, dRadius)) &&
             vPosition.getMagnitude() < m_dMaxDistance &&
             m_vGLMeshData.count() > 0
             )

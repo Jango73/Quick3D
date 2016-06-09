@@ -245,7 +245,7 @@ void CWorldChunk::paint(CRenderContext* pContext, ETerrainType eType)
     }
 
     // Paint chunk if containing sphere is within the viewing frustum
-    if (pContext->camera()->contains(vPosition, dRadius))
+    if (pContext->scene()->getFrustumCheck() == false || pContext->camera()->contains(vPosition, dRadius))
     {
         switch (eType)
         {
@@ -498,6 +498,11 @@ void CWorldChunk::work()
                         CGeoloc gPosition(dLat, dLon, 0.0);
                         CVector3 vPosition = gPosition.toVector3();
 
+                        gPosition.Latitude += perlin->getNoise((vPosition + CVector3(iTreeIndex, iTreeIndex, iTreeIndex)) * 0.5) * (pVegetation->m_dSpread * 0.5);
+                        gPosition.Longitude += perlin->getNoise((vPosition + CVector3(iTreeIndex, iTreeIndex, iTreeIndex)) * 0.5) * (pVegetation->m_dSpread * 0.5);
+
+                        vPosition = gPosition.toVector3();
+
                         double dLandscapeValue = pVegetation->m_pFunction->process(perlin, vPosition, CAxis());
 
                         if (dLandscapeValue > 0.0)
@@ -507,16 +512,10 @@ void CWorldChunk::work()
 
                             if (dAltitude >= dAltitude_Trees)
                             {
-                                gPosition = CGeoloc(
-                                            dLat + perlin->getNoise((vPosition + CVector3(iTreeIndex, iTreeIndex, iTreeIndex)) * 0.5)
-                                            * (pVegetation->m_dSpread * 0.5),
-                                            dLon + perlin->getNoise((vPosition + CVector3(iTreeIndex, iTreeIndex, iTreeIndex)) * 0.5)
-                                            * (pVegetation->m_dSpread * 0.5),
-                                            dAltitude
-                                            );
+                                gPosition = CGeoloc(dLat, dLon, dAltitude);
 
                                 /*
-                                gPosition = Geoloc(
+                                gPosition = CGeoloc(
                                     gPosition.Latitude,
                                     gPosition.Longitude,
                                     dAltitude

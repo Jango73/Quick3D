@@ -86,7 +86,8 @@ uniform float			u_IR_factor;
 uniform int				u_inverse_polarity_enable;
 
 layout (triangles) in;
-layout (triangle_strip,  max_vertices=3) out;
+// layout (line_strip, max_vertices = 9) out;
+layout (triangle_strip, max_vertices = 9) out;
 
 varying in vec3			v_position[3];
 varying in vec4			v_color[3];
@@ -156,7 +157,7 @@ void main()
     EndPrimitive();
 
     /*
-    if (v_difftex_weight_6[0] > 0.2 && v_distance[0] < 500)
+    if ((v_difftex_weight_6[0] > 0.2 || v_difftex_weight_7[0] > 0.2) && v_distance[0] < 500)
     {
         vec3 center = (v_position[0] + v_position[1] + v_position[2]) / vec3(3.0);
         mat4 mvp = u_camera_projection_matrix * u_camera_matrix; // * u_model_matrix;
@@ -190,5 +191,33 @@ void main()
 
         EndPrimitive();
     }
+    */
+
+    /*
+    mat4 mvp = u_camera_projection_matrix * u_camera_matrix;
+
+    for (int i = 0; i < gl_in.length(); i++)
+    {
+        vo_position         = v_position[i] + (v_normal[i] * 0.1);
+        gl_Position         = mvp * vec4(vo_position, 1.0);
+        vo_color            = v_color[i];
+        vo_normal           = v_normal[i];
+        vo_tangent          = v_tangent[i];
+        vo_binormal         = v_binormal[i];
+        vo_texcoord         = v_texcoord[i];
+        vo_shadow_coord     = v_shadow_coord[i];
+        vo_distance         = v_distance[i];
+        vo_altitude         = v_altitude[i];
+        vo_difftex_weight_0 = v_difftex_weight_0[i];
+        vo_difftex_weight_1 = v_difftex_weight_1[i];
+        vo_difftex_weight_2 = v_difftex_weight_2[i];
+        vo_difftex_weight_3 = v_difftex_weight_3[i];
+        vo_difftex_weight_4 = v_difftex_weight_4[i];
+        vo_difftex_weight_5 = v_difftex_weight_5[i];
+        vo_difftex_weight_6 = v_difftex_weight_6[i];
+        vo_difftex_weight_7 = v_difftex_weight_7[i];
+        EmitVertex();
+    }
+    EndPrimitive();
     */
 }

@@ -1,3 +1,4 @@
+#version 430
 
 // Standard fragment shader
 
@@ -92,23 +93,23 @@ uniform int				u_inverse_polarity_enable;
 
 // Interpolated values
 
-varying vec4			v_color;
-varying vec3			v_position;
-varying vec3			v_normal;
-varying vec3			v_tangent;
-varying vec3			v_binormal;
-varying vec2			v_texcoord;
-varying vec4			v_shadow_coord;
-varying float			v_distance;
-varying float			v_altitude;
-varying float			v_difftex_weight_0;
-varying float			v_difftex_weight_1;
-varying float			v_difftex_weight_2;
-varying float			v_difftex_weight_3;
-varying float			v_difftex_weight_4;
-varying float			v_difftex_weight_5;
-varying float			v_difftex_weight_6;
-varying float			v_difftex_weight_7;
+varying vec3			vo_position;
+varying vec4			vo_color;
+varying vec3			vo_normal;
+varying vec3			vo_tangent;
+varying vec3			vo_binormal;
+varying vec2			vo_texcoord;
+varying vec4			vo_shadow_coord;
+varying float			vo_distance;
+varying float			vo_altitude;
+varying float			vo_difftex_weight_0;
+varying float			vo_difftex_weight_1;
+varying float			vo_difftex_weight_2;
+varying float			vo_difftex_weight_3;
+varying float			vo_difftex_weight_4;
+varying float			vo_difftex_weight_5;
+varying float			vo_difftex_weight_6;
+varying float			vo_difftex_weight_7;
 
 // Globals
 
@@ -650,7 +651,7 @@ vec4 computeLinearFog(vec4 color)
     if (bool(u_sky_enable)) fog_distance *= 4.0;
 
     // Compute fog factor based on distance and atmosphere
-    float fog_factor = clamp(((fog_distance - v_distance) / fog_distance), 0.0, 1.0);
+    float fog_factor = clamp(((fog_distance - vo_distance) / fog_distance), 0.0, 1.0);
     fog_factor = (1.0 - fog_factor) * gAtmosphereFactor;
 
     // Compute attenuated sun color
@@ -691,7 +692,7 @@ vec3 postEffects(vec3 rgb, vec2 xy)
 vec3 getNormal()
 {
     // Input normal
-    vec3 normal = v_normal;
+    vec3 normal = vo_normal;
 
     // In case of water, perturbate normal
     if (bool(u_wave_enable))
@@ -702,26 +703,26 @@ vec3 getNormal()
             float small_amplitude = large_amplitude * 2.0;
 
             mat3 toLocalTangent = inverse(mat3(
-                                              v_tangent.x, v_normal.x, v_binormal.x,
-                                              v_tangent.y, v_normal.y, v_binormal.y,
-                                              v_tangent.z, v_normal.z, v_binormal.z
+                                              vo_tangent.x, vo_normal.x, vo_binormal.x,
+                                              vo_tangent.y, vo_normal.y, vo_binormal.y,
+                                              vo_tangent.z, vo_normal.z, vo_binormal.z
                                               ));
 
             // Perturbate normal
-            vec3 normal_1 = oceanNormal(v_position, 0.005, 0.1, large_amplitude).xyz;
+            vec3 normal_1 = oceanNormal(vo_position, 0.005, 0.1, large_amplitude).xyz;
             vec3 normal_2 = vec3(0.0, 0.0, 0.0);
             vec3 normal_3 = vec3(0.0, 0.0, 0.0);
 
-            if (v_distance < 1000.0)
+            if (vo_distance < 1000.0)
             {
-                float factor = (1000.0 - v_distance) / 1000.0;
-                normal_2 = oceanNormal(v_position, 0.3, 0.5, small_amplitude).xyz * factor;
+                float factor = (1000.0 - vo_distance) / 1000.0;
+                normal_2 = oceanNormal(vo_position, 0.3, 0.5, small_amplitude).xyz * factor;
             }
 
-            if (v_distance < 500.0)
+            if (vo_distance < 500.0)
             {
-                float factor = (500.0 - v_distance) / 500.0;
-                normal_3 = oceanNormal(v_position * -1.0, 1.0, 2.0, small_amplitude).xyz * factor;
+                float factor = (500.0 - vo_distance) / 500.0;
+                normal_3 = oceanNormal(vo_position * -1.0, 1.0, 2.0, small_amplitude).xyz * factor;
             }
 
             normal = normalize(toLocalTangent * (normal_1 + normal_2 + normal_3));
@@ -757,14 +758,14 @@ vec3 getTexture()
 
     if (bool(u_texture_diffuse_enable) && u_shaderQuality >= 0.20)
     {
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_0, v_texcoord).xyz, v_difftex_weight_0);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_1, v_texcoord).xyz, v_difftex_weight_1);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_2, v_texcoord).xyz, v_difftex_weight_2);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_3, v_texcoord).xyz, v_difftex_weight_3);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_4, v_texcoord).xyz, v_difftex_weight_4);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_5, v_texcoord).xyz, v_difftex_weight_5);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_6, v_texcoord).xyz, v_difftex_weight_6);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_7, v_texcoord).xyz, v_difftex_weight_7);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_0, vo_texcoord).xyz, vo_difftex_weight_0);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_1, vo_texcoord).xyz, vo_difftex_weight_1);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_2, vo_texcoord).xyz, vo_difftex_weight_2);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_3, vo_texcoord).xyz, vo_difftex_weight_3);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_4, vo_texcoord).xyz, vo_difftex_weight_4);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_5, vo_texcoord).xyz, vo_difftex_weight_5);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_6, vo_texcoord).xyz, vo_difftex_weight_6);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_7, vo_texcoord).xyz, vo_difftex_weight_7);
     }
     else
     {
@@ -783,9 +784,9 @@ vec3 getShadow()
 
     if (bool(u_shadow_enable) && u_num_lights > 0)
     {
-        vec3 sc = v_shadow_coord.xyz;
+        vec3 sc = vo_shadow_coord.xyz;
 
-        sc /= v_shadow_coord.w;
+        sc /= vo_shadow_coord.w;
         sc += 1.0;
         sc *= 0.5;
 
@@ -818,16 +819,16 @@ void main()
         float pixel_distance = 1.0;
         float pixel_incidence = 0.0;
 
-        if (v_distance > 0.0 && v_distance < 10000.0)
+        if (vo_distance > 0.0 && vo_distance < 10000.0)
         {
             // The normalized distance
-            pixel_distance = v_distance / 10000.0;
+            pixel_distance = vo_distance / 10000.0;
 
             // The eye-to-vertex vector
-            vec3 eye_to_vertex = normalize(v_position - u_camera_position);
+            vec3 eye_to_vertex = normalize(vo_position - u_camera_position);
 
             // Angle d'incidence entre vecteur de vidée et vecteur normal du vertex
-            pixel_incidence = clamp(dot(v_normal * -1.0, eye_to_vertex), 0.0, 1.0);
+            pixel_incidence = clamp(dot(vo_normal * -1.0, eye_to_vertex), 0.0, 1.0);
         }
 
         // Red = distance, green = incidence, blue = 0
@@ -837,9 +838,9 @@ void main()
     {
         if (bool(u_rendering_shadows))
         {
-            if (v_distance >= 1.0 && v_distance < 2000.0)
+            if (vo_distance >= 1.0 && vo_distance < 2000.0)
             {
-                float d = (v_distance - 1.0) / 1999.0;
+                float d = (vo_distance - 1.0) / 1999.0;
 
                 gl_FragColor = vec4(d, d, d, 1.0);
             }
@@ -852,7 +853,7 @@ void main()
         {
             if (bool(u_normals_only))
             {
-                gl_FragColor = vec4(v_normal, 1.0);
+                gl_FragColor = vec4(vo_normal, 1.0);
             }
             else
             {
@@ -860,20 +861,20 @@ void main()
                 gAtmosphereFactor = clamp((u_atmosphere_altitude - u_camera_altitude) / u_atmosphere_altitude, 0.0, 1.0);
 
                 // Altitude factors for sea
-                gSeaAltitudeFactor_1 = clamp((v_altitude * -1.0) / 2.0, 0.0, 1.0);
-                gSeaAltitudeFactor_2 = clamp((v_altitude * -1.0) / 10.0, 0.0, 1.0);
+                gSeaAltitudeFactor_1 = clamp((vo_altitude * -1.0) / 2.0, 0.0, 1.0);
+                gSeaAltitudeFactor_2 = clamp((vo_altitude * -1.0) / 10.0, 0.0, 1.0);
 
                 // Fragment normal
                 vec3 normal = getNormal();
 
                 // Eye-to-vertex vector
-                vec3 eye_to_vertex = normalize(v_position - u_camera_position);
+                vec3 eye_to_vertex = normalize(vo_position - u_camera_position);
 
                 // Screen coordinates
                 vec2 xy = gl_FragCoord.xy / u_resolution.xy;
 
                 // Input color
-                vec4 color = vec4(doLighting(v_position, normal, eye_to_vertex, xy), 1.0);
+                vec4 color = vec4(doLighting(vo_position, normal, eye_to_vertex, xy), 1.0);
 
                 // vec3 normal_eye_space = (u_camera_matrix * normal) - (u_camera_matrix * vec3(0.0, 0.0, 0.0));
                 // vec3 tangent_eye_space = (u_camera_matrix * v_tangent) - (u_camera_matrix * vec3(0.0, 0.0, 0.0));
@@ -901,13 +902,13 @@ void main()
                         float large_amplitude = 2.0;
                         float small_amplitude = large_amplitude * 2.0;
 
-                        float v1 = movingTurbulence(v_position * 0.005, 0.1) * large_amplitude;
-                        float v2 = movingTurbulence(v_position * 0.3, 0.5) * large_amplitude;
+                        float v1 = movingTurbulence(vo_position * 0.005, 0.1) * large_amplitude;
+                        float v2 = movingTurbulence(vo_position * 0.3, 0.5) * large_amplitude;
                         float v3 = 0.0;
 
-                        if (v_distance < 500.0)
+                        if (vo_distance < 500.0)
                         {
-                            v3 = movingTurbulence(v_position * 2.0, 0.7) * small_amplitude;
+                            v3 = movingTurbulence(vo_position * 2.0, 0.7) * small_amplitude;
                         }
 
                         float turb = clamp((v1 + v2 + v3) * 0.5, 1.0, 100.0);

@@ -341,7 +341,8 @@ bool CWorldChunk::drawable()
 
 bool CWorldChunk::isEmpty()
 {
-    bool bSelfEmpty = (m_pTerrain == NULL);
+    bool bWaitingForBuild = CWorkerManager::getInstance()->containsWorker(this);
+    bool bSelfEmpty = (bWaitingForBuild == false && m_pTerrain == NULL);
     bool bChildrenEmpty = true;
 
     foreach (CComponent* pChildComponent, m_vChildren)

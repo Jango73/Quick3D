@@ -151,9 +151,16 @@ void CGLWidgetScene::initShaders()
 
         pProgram->addShaderFromSourceCode(QGLShader::Vertex, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/VS_Standard.c"));
         pProgram->addShaderFromSourceCode(QGLShader::Fragment, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/FS_Standard.c"));
-        pProgram->link();
+        pProgram->addShaderFromSourceCode(QGLShader::Geometry, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/GS_Standard.c"));
 
-        m_vShaders->addShader(SP_Standard, pProgram);
+        if (pProgram->link())
+        {
+            m_vShaders->addShader(SP_Standard, pProgram);
+        }
+        else
+        {
+            delete pProgram;
+        }
 
         //-----------------------------------------------
 

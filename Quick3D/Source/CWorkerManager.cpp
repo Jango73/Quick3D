@@ -15,90 +15,100 @@
 //-------------------------------------------------------------------------------------------------
 
 CWorkerManager::CWorkerManager()
-: m_mMutex(QMutex::Recursive)
-, m_bStopRequested(false)
+    : m_mMutex(QMutex::Recursive)
+    , m_bStopRequested(false)
 {
-	start();
+    start();
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CWorkerManager::~CWorkerManager()
 {
-	QMutexLocker locker(&m_mMutex);
+    QMutexLocker locker(&m_mMutex);
 
-	m_bStopRequested = true;
-	wait();
+    m_bStopRequested = true;
+    wait();
 
-	foreach (CWorker* pWorker, m_vWorkers)
-	{
-		if (pWorker->isStarted())
-		{
-			pWorker->abort();
-		}
-	}
+    foreach (CWorker* pWorker, m_vWorkers)
+    {
+        if (pWorker->isStarted())
+        {
+            pWorker->abort();
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool CWorkerManager::containsWorker(CWorker* pWorker)
+{
+    return m_vWorkers.contains(pWorker);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CWorkerManager::addWorker(CWorker* pWorker)
 {
-	QMutexLocker locker(&m_mMutex);
+    QMutexLocker locker(&m_mMutex);
 
-	m_vWorkers.append(pWorker);
+    if (m_vWorkers.contains(pWorker) == false)
+    {
+        m_vWorkers.append(pWorker);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CWorkerManager::removeWorker(CWorker* pWorker)
 {
-	QMutexLocker locker(&m_mMutex);
+    QMutexLocker locker(&m_mMutex);
 
-	for (int iIndex = 0; iIndex < m_vWorkers.count(); iIndex++)
-	{
-		if (m_vWorkers[iIndex] == pWorker)
-		{
-			if (pWorker->isStarted() == true && pWorker->isFinished() == false)
-			{
-				pWorker->abort();
-			}
+    for (int iIndex = 0; iIndex < m_vWorkers.count(); iIndex++)
+    {
+        if (m_vWorkers[iIndex] == pWorker)
+        {
+            if (pWorker->isStarted() == true && pWorker->isFinished() == false)
+            {
+                pWorker->abort();
+            }
 
-			m_vWorkers.remove(iIndex);
-			return;
-		}
-	}
+            m_vWorkers.remove(iIndex);
+            return;
+        }
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CWorkerManager::run()
 {
-	while (m_bStopRequested == false)
-	{
-		{
-			QMutexLocker locker(&m_mMutex);
+    while (m_bStopRequested == false)
+    {
+        {
+            QMutexLocker locker(&m_mMutex);
 
-			for (int iIndex = 0; iIndex < MAX_WORKERS_RUNNING; iIndex++)
-			{
-				if (m_vWorkers.count() > iIndex)
-				{
-					if (m_vWorkers[iIndex]->isStarted() == false)
-					{
-						m_vWorkers[iIndex]->start();
-						m_vWorkers[iIndex]->setPriority(QThread::HighestPriority);
-					}
-					else
-					{
-						if (m_vWorkers[iIndex]->isFinished())
-						{
-							m_vWorkers.remove(iIndex);
-							iIndex--;
-						}
-					}
-				}
-			}
-		}
+            for (int iIndex = 0; iIndex < MAX_WORKERS_RUNNING; iIndex++)
+            {
+                if (m_vWorkers.count() > iIndex)
+                {
+                    if (m_vWorkers[iIndex]->isStarted() == false)
+                    {
+                        m_vWorkers[iIndex]->start();
+                        m_vWorkers[iIndex]->setPriority(QThread::HighPriority);
+                    }
+                    else
+                    {
+                        if (m_vWorkers[iIndex]->isFinished())
+                        {
+                            m_vWorkers.remove(iIndex);
+                            iIndex--;
+                        }
+                    }
+                }
+            }
+        }
 
-		msleep(100);
-	}
+        msleep(50);
+    }
 }

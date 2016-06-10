@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
-        <file>Resources/Shaders/FS_Standard.c</file>
         <file>Resources/Shaders/VS_Standard.c</file>
+        <file>Resources/Shaders/GS_Standard.c</file>
+        <file>Resources/Shaders/FS_Standard.c</file>
     </qresource>
 </RCC>

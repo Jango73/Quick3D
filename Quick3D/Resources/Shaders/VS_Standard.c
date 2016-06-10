@@ -1,3 +1,4 @@
+#version 430
 
 // Standard vertex shader
 
@@ -85,8 +86,8 @@ uniform int				u_inverse_polarity_enable;
 
 // Interpolated values
 
-varying vec4			v_color;
 varying vec3			v_position;
+varying vec4			v_color;
 varying vec3			v_normal;
 varying vec3			v_tangent;
 varying vec3			v_binormal;
@@ -107,10 +108,10 @@ varying float			v_difftex_weight_7;
 
 attribute vec3			a_position;
 attribute vec2			a_texcoord;
+attribute vec3			a_normal;
 attribute vec3			a_difftext_weight_0_1_2;
 attribute vec3			a_difftext_weight_3_4_5;
 attribute vec3			a_difftext_weight_6_7_8;
-attribute vec3			a_normal;
 attribute vec3			a_tangent;
 attribute float			a_altitude;
 
@@ -204,6 +205,7 @@ void main()
     vec4 tangent = u_model_matrix * vec4(a_tangent, 0.0);
     vec3 binormal = normalize(cross(normal.xyz, tangent.xyz));
     vec4 shadow_coord = u_shadow_projection_matrix * (u_shadow_matrix * vertex_pos);
+    mat4 mvp = u_camera_projection_matrix * u_camera_matrix * u_model_matrix;
 
     // Distance
     float distance = length((u_camera_matrix * vertex_pos).xyz);
@@ -240,5 +242,6 @@ void main()
     }
 
     // Vertex screen position
-    gl_Position = u_camera_projection_matrix * (u_camera_matrix * vertex_pos);
+    // gl_Position = u_camera_projection_matrix * (u_camera_matrix * vertex_pos);
+    gl_Position = mvp * vec4(a_position, 1.0);
 }

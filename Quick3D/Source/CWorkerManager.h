@@ -17,44 +17,51 @@
 
 class QUICK3D_EXPORT CWorkerManager : public QThread, public CSingleton<CWorkerManager>
 {
-	Q_OBJECT
+    Q_OBJECT
 
-	friend class CSingleton<CWorkerManager>;
-
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    friend class CSingleton<CWorkerManager>;
 
 public:
 
-	//! Ajoute un travailleur au pool
-	void addWorker(CWorker* pWorker);
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//! Retire un travailleur du pool
-	void removeWorker(CWorker* pWorker);
+    //! Retire un travailleur du pool
+    bool containsWorker(CWorker* pWorker);
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-protected:
+    //! Ajoute un travailleur au pool
+    void addWorker(CWorker* pWorker);
 
-	//! Conctructeur par défaut
-	CWorkerManager();
+    //! Retire un travailleur du pool
+    void removeWorker(CWorker* pWorker);
 
-	//! Destructeur
-	virtual ~CWorkerManager();
-
-	//! Implémentation de la méthode run() de QThread
-	virtual void run();
-
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	QMutex				m_mMutex;			// Mutex de protection des accès concurrents
-	QVector<CWorker*>	m_vWorkers;			// Pool de travailleurs
-	bool				m_bStopRequested;	// Indique si un arrêt du travail est demandé
+    //! Conctructeur par défaut
+    CWorkerManager();
+
+    //! Destructeur
+    virtual ~CWorkerManager();
+
+    //! Implémentation de la méthode run() de QThread
+    virtual void run();
+
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
+
+protected:
+
+    QMutex              m_mMutex;			// Mutex de protection des accès concurrents
+    QVector<CWorker*>   m_vWorkers;			// Pool de travailleurs
+    bool                m_bStopRequested;	// Indique si un arrêt du travail est demandé
 };

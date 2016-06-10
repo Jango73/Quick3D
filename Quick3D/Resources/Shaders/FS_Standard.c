@@ -235,7 +235,11 @@ float movingTurbulence(vec3 ipos, float timeScale)
     float time = u_time * timeScale;
 
     return pow(turbulence_0_1(ipos + vec3(1.0, 1.0, 1.0) * time), 2.0);
-    // return wavelet_pattern(ipos + vec3(1.0, 1.0, 1.0) * time);
+}
+
+float staticTurbulence(vec3 ipos)
+{
+    return pow(turbulence_0_1(ipos), 2.0);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -418,6 +422,28 @@ vec3 oceanNormal(vec3 inputPosition, float scale, float timeScale, float amplitu
     norm.x = oceanDistanceFieldDetail(pos + d.xyy, scale, timeScale, amplitude) - oceanDistanceFieldDetail(pos - d.xyy, scale, timeScale, amplitude);
     norm.y = oceanDistanceFieldDetail(pos + d.yxy, scale, timeScale, amplitude) - oceanDistanceFieldDetail(pos - d.yxy, scale, timeScale, amplitude);
     norm.z = oceanDistanceFieldDetail(pos + d.yyx, scale, timeScale, amplitude) - oceanDistanceFieldDetail(pos - d.yyx, scale, timeScale, amplitude);
+
+    return normalize(norm);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Terrain noise
+
+float terrainDistanceFieldDetail(vec3 pos, float scale, float amplitude)
+{
+    float v1 = staticTurbulence(pos * scale) * amplitude * 1.0;
+    return pos.y + v1;
+}
+
+vec3 terrainNormal(vec3 inputPosition, float scale, float amplitude)
+{
+    vec3 pos = inputPosition;
+    vec3 norm;
+    vec2 d = vec2(length(pos) * 0.01, 0.0);
+
+    norm.x = terrainDistanceFieldDetail(pos + d.xyy, scale, amplitude) - terrainDistanceFieldDetail(pos - d.xyy, scale, amplitude);
+    norm.y = terrainDistanceFieldDetail(pos + d.yxy, scale, amplitude) - terrainDistanceFieldDetail(pos - d.yxy, scale, amplitude);
+    norm.z = terrainDistanceFieldDetail(pos + d.yyx, scale, amplitude) - terrainDistanceFieldDetail(pos - d.yyx, scale, amplitude);
 
     return normalize(norm);
 }
@@ -660,6 +686,130 @@ vec3 postEffects(vec3 rgb, vec2 xy)
 }
 
 //-------------------------------------------------------------------------------------------------
+// Compute normal
+
+vec3 getNormal()
+{
+    // Input normal
+    vec3 normal = v_normal;
+
+    // In case of water, perturbate normal
+    if (bool(u_wave_enable))
+    {
+        if (u_shaderQuality >= 0.75)
+        {
+            float large_amplitude = u_wave_amplitude * 3.0;
+            float small_amplitude = large_amplitude * 2.0;
+
+            mat3 toLocalTangent = inverse(mat3(
+                                              v_tangent.x, v_normal.x, v_binormal.x,
+                                              v_tangent.y, v_normal.y, v_binormal.y,
+                                              v_tangent.z, v_normal.z, v_binormal.z
+                                              ));
+
+            // Perturbate normal
+            vec3 normal_1 = oceanNormal(v_position, 0.005, 0.1, large_amplitude).xyz;
+            vec3 normal_2 = vec3(0.0, 0.0, 0.0);
+            vec3 normal_3 = vec3(0.0, 0.0, 0.0);
+
+            if (v_distance < 1000.0)
+            {
+                float factor = (1000.0 - v_distance) / 1000.0;
+                normal_2 = oceanNormal(v_position, 0.3, 0.5, small_amplitude).xyz * factor;
+            }
+
+            if (v_distance < 500.0)
+            {
+                float factor = (500.0 - v_distance) / 500.0;
+                normal_3 = oceanNormal(v_position * -1.0, 1.0, 2.0, small_amplitude).xyz * factor;
+            }
+
+            normal = normalize(toLocalTangent * (normal_1 + normal_2 + normal_3));
+            normal = (u_model_matrix * vec4(normal, 0.0)).xyz;
+        }
+    }
+    /*
+    else
+    {
+        mat3 toLocalTangent = inverse(mat3(
+                                          v_tangent.x, v_normal.x, v_binormal.x,
+                                          v_tangent.y, v_normal.y, v_binormal.y,
+                                          v_tangent.z, v_normal.z, v_binormal.z
+                                          ));
+
+        // Perturbate normal
+        vec3 normal_1 = terrainNormal(v_position, 0.005, 2.0).xyz;
+
+        normal = normalize(toLocalTangent * normal_1);
+        normal = (u_model_matrix * vec4(normal, 0.0)).xyz;
+    }
+    */
+
+    return normal;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Get texture
+
+vec3 getTexture()
+{
+    vec3 texture_color = vec3(0.0, 0.0, 0.0);
+
+    if (bool(u_texture_diffuse_enable) && u_shaderQuality >= 0.20)
+    {
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_0, v_texcoord).xyz, v_difftex_weight_0);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_1, v_texcoord).xyz, v_difftex_weight_1);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_2, v_texcoord).xyz, v_difftex_weight_2);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_3, v_texcoord).xyz, v_difftex_weight_3);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_4, v_texcoord).xyz, v_difftex_weight_4);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_5, v_texcoord).xyz, v_difftex_weight_5);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_6, v_texcoord).xyz, v_difftex_weight_6);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_7, v_texcoord).xyz, v_difftex_weight_7);
+    }
+    else
+    {
+        return vec3(1.0, 1.0, 1.0);
+    }
+
+    return texture_color;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Get shadow
+
+vec3 getShadow()
+{
+    vec3 color = vec3(1.0, 1.0, 1.0);
+
+    if (bool(u_shadow_enable) && u_num_lights > 0)
+    {
+        vec3 sc = v_shadow_coord.xyz;
+
+        sc /= v_shadow_coord.w;
+        sc += 1.0;
+        sc *= 0.5;
+
+        // Get shadow
+
+        if (
+                sc.x > 0.0 && sc.x < 1.0 &&
+                sc.y > 0.0 && sc.y < 1.0 &&
+                sc.z > 0.0 && sc.z < 1.0
+                )
+        {
+            float shadow_depth = texture2D(u_shadow_texture, sc.xy).r;
+
+            if (shadow_depth + 0.005 < sc.z)
+            {
+                color = vec3(0.25, 0.25, 0.25);
+            }
+        }
+    }
+
+    return color;
+}
+
+//-------------------------------------------------------------------------------------------------
 
 void main()
 {
@@ -706,46 +856,10 @@ void main()
             }
             else
             {
-                // Input normal
-                vec3 normal = v_normal;
+                // Fragment normal
+                vec3 normal = getNormal();
 
-                // In case of water, perturbate normal
-                if (bool(u_wave_enable))
-                {
-                    if (u_shaderQuality >= 0.75)
-                    {
-                        float large_amplitude = u_wave_amplitude * 3.0;
-                        float small_amplitude = large_amplitude * 2.0;
-
-                        mat3 toLocalTangent = inverse(mat3(
-                                                          v_tangent.x, v_normal.x, v_binormal.x,
-                                                          v_tangent.y, v_normal.y, v_binormal.y,
-                                                          v_tangent.z, v_normal.z, v_binormal.z
-                                                          ));
-
-                        // Perturbate normal
-                        vec3 normal_1 = oceanNormal(v_position, 0.005, 0.1, large_amplitude).xyz;
-                        vec3 normal_2 = vec3(0.0, 0.0, 0.0);
-                        vec3 normal_3 = vec3(0.0, 0.0, 0.0);
-
-                        if (v_distance < 1000.0)
-                        {
-                            float factor = (1000.0 - v_distance) / 1000.0;
-                            normal_2 = oceanNormal(v_position, 0.3, 0.5, small_amplitude).xyz * factor;
-                        }
-
-                        if (v_distance < 500.0)
-                        {
-                            float factor = (500.0 - v_distance) / 500.0;
-                            normal_3 = oceanNormal(v_position * -1.0, 1.0, 2.0, small_amplitude).xyz * factor;
-                        }
-
-                        normal = normalize(toLocalTangent * (normal_1 + normal_2 + normal_3));
-                        normal = (u_model_matrix * vec4(normal, 0.0)).xyz;
-                    }
-                }
-
-                // The eye-to-vertex vector
+                // Eye-to-vertex vector
                 vec3 eye_to_vertex = normalize(v_position - u_camera_position);
 
                 // Screen coordinates
@@ -761,50 +875,14 @@ void main()
                 gSeaAltitudeFactor_1 = clamp((v_altitude * -1.0) / 2.0, 0.0, 1.0);
                 gSeaAltitudeFactor_2 = clamp((v_altitude * -1.0) / 10.0, 0.0, 1.0);
 
-                if (bool(u_shadow_enable) && u_num_lights > 0)
-                {
-                    vec3 sc = v_shadow_coord.xyz;
-
-                    sc /= v_shadow_coord.w;
-                    sc += 1.0;
-                    sc *= 0.5;
-
-                    // Get shadow
-
-                    if (
-                            sc.x > 0.0 && sc.x < 1.0 &&
-                            sc.y > 0.0 && sc.y < 1.0 &&
-                            sc.z > 0.0 && sc.z < 1.0
-                            )
-                    {
-                        float shadow_depth = texture2D(u_shadow_texture, sc.xy).r;
-
-                        if (shadow_depth + 0.005 < sc.z)
-                        {
-                            color *= vec4(0.25, 0.25, 0.25, 1.0);
-                        }
-                    }
-                }
-
                 // vec3 normal_eye_space = (u_camera_matrix * normal) - (u_camera_matrix * vec3(0.0, 0.0, 0.0));
                 // vec3 tangent_eye_space = (u_camera_matrix * v_tangent) - (u_camera_matrix * vec3(0.0, 0.0, 0.0));
 
-                // Apply texture if asked
-                if (bool(u_texture_diffuse_enable) && u_shaderQuality >= 0.20)
-                {
-                    vec3 texture_color = vec3(0.0, 0.0, 0.0);
+                // Apply texture
+                color *= vec4(getTexture(), 1.0);
 
-                    texture_color = mix(texture_color, texture2D(u_texture_diffuse_0, v_texcoord).xyz, v_difftex_weight_0);
-                    texture_color = mix(texture_color, texture2D(u_texture_diffuse_1, v_texcoord).xyz, v_difftex_weight_1);
-                    texture_color = mix(texture_color, texture2D(u_texture_diffuse_2, v_texcoord).xyz, v_difftex_weight_2);
-                    texture_color = mix(texture_color, texture2D(u_texture_diffuse_3, v_texcoord).xyz, v_difftex_weight_3);
-                    texture_color = mix(texture_color, texture2D(u_texture_diffuse_4, v_texcoord).xyz, v_difftex_weight_4);
-                    texture_color = mix(texture_color, texture2D(u_texture_diffuse_5, v_texcoord).xyz, v_difftex_weight_5);
-                    texture_color = mix(texture_color, texture2D(u_texture_diffuse_6, v_texcoord).xyz, v_difftex_weight_6);
-                    texture_color = mix(texture_color, texture2D(u_texture_diffuse_7, v_texcoord).xyz, v_difftex_weight_7);
-
-                    color *= vec4(texture_color, color.a);
-                }
+                // Apply shadow
+                color *= vec4(getShadow(), 1.0);
 
                 // Apply sky if asked
                 if (bool(u_sky_enable))

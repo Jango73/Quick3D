@@ -4,6 +4,7 @@
 
 #extension GL_EXT_gpu_shader4 : enable
 #extension GL_ARB_gpu_shader5 : enable
+#extension GL_EXT_geometry_shader4 : enable
 
 #ifdef GL_ES
 precision highp int;
@@ -60,6 +61,8 @@ uniform sampler2D		u_texture_diffuse_4;
 uniform sampler2D		u_texture_diffuse_5;
 uniform sampler2D		u_texture_diffuse_6;
 uniform sampler2D		u_texture_diffuse_7;
+uniform sampler2D		u_texture_diffuse_8;
+uniform sampler2D		u_texture_diffuse_9;
 uniform sampler2D		u_shadow_texture;
 
 uniform vec4			u_material_ambient;
@@ -94,7 +97,6 @@ uniform int				u_inverse_polarity_enable;
 // Interpolated values
 
 varying vec3			vo_position;
-varying vec4			vo_color;
 varying vec3			vo_normal;
 varying vec3			vo_tangent;
 varying vec3			vo_binormal;
@@ -110,6 +112,8 @@ varying float			vo_difftex_weight_4;
 varying float			vo_difftex_weight_5;
 varying float			vo_difftex_weight_6;
 varying float			vo_difftex_weight_7;
+varying float			vo_difftex_weight_8;
+varying float			vo_difftex_weight_9;
 
 // Globals
 
@@ -752,24 +756,26 @@ vec3 getNormal()
 //-------------------------------------------------------------------------------------------------
 // Get texture
 
-vec3 getTexture()
+vec4 getTexture()
 {
-    vec3 texture_color = vec3(0.0, 0.0, 0.0);
+    vec4 texture_color = vec4(0.0, 0.0, 0.0, 1.0);
 
     if (bool(u_texture_diffuse_enable) && u_shaderQuality >= 0.20)
     {
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_0, vo_texcoord).xyz, vo_difftex_weight_0);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_1, vo_texcoord).xyz, vo_difftex_weight_1);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_2, vo_texcoord).xyz, vo_difftex_weight_2);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_3, vo_texcoord).xyz, vo_difftex_weight_3);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_4, vo_texcoord).xyz, vo_difftex_weight_4);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_5, vo_texcoord).xyz, vo_difftex_weight_5);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_6, vo_texcoord).xyz, vo_difftex_weight_6);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_7, vo_texcoord).xyz, vo_difftex_weight_7);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_0, vo_texcoord), vo_difftex_weight_0);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_1, vo_texcoord), vo_difftex_weight_1);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_2, vo_texcoord), vo_difftex_weight_2);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_3, vo_texcoord), vo_difftex_weight_3);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_4, vo_texcoord), vo_difftex_weight_4);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_5, vo_texcoord), vo_difftex_weight_5);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_6, vo_texcoord), vo_difftex_weight_6);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_7, vo_texcoord), vo_difftex_weight_7);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_8, vo_texcoord), vo_difftex_weight_8);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_9, vo_texcoord), vo_difftex_weight_9);
     }
     else
     {
-        return vec3(1.0, 1.0, 1.0);
+        return vec4(1.0, 1.0, 1.0, 1.0);
     }
 
     return texture_color;
@@ -880,7 +886,7 @@ void main()
                 // vec3 tangent_eye_space = (u_camera_matrix * v_tangent) - (u_camera_matrix * vec3(0.0, 0.0, 0.0));
 
                 // Apply texture
-                color *= vec4(getTexture(), 1.0);
+                color *= getTexture();
 
                 // Apply shadow
                 color *= vec4(getShadow(), 1.0);

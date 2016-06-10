@@ -16,5 +16,6 @@
         <file>Resources/Textures/Tree01.jpg</file>
         <file>Resources/Textures/Tree02.jpg</file>
         <file>Resources/Textures/WoodChips01.jpg</file>
+        <file>Resources/Textures/GrassDecal.png</file>
     </qresource>
 </RCC>

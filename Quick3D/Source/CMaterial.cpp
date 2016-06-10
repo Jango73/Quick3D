@@ -237,6 +237,8 @@ QGLShaderProgram* CMaterial::activate(CRenderContext* pContext)
                 pProgram->setUniformValue("u_texture_diffuse_5", (GLint) 6);
                 pProgram->setUniformValue("u_texture_diffuse_6", (GLint) 7);
                 pProgram->setUniformValue("u_texture_diffuse_7", (GLint) 8);
+                pProgram->setUniformValue("u_texture_diffuse_8", (GLint) 9);
+                pProgram->setUniformValue("u_texture_diffuse_9", (GLint) 10);
             }
             else
             {

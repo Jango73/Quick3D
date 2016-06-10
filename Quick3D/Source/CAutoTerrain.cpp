@@ -184,6 +184,7 @@ void CAutoTerrain::loadParameters(CXMLNode xComponent)
         m_pMaterial->addDiffuseTexture("Textures/Snow01.jpg");
         m_pMaterial->addDiffuseTexture("Textures/Grass01.jpg");
         m_pMaterial->addDiffuseTexture("Textures/Grass02.jpg");
+        m_pMaterial->addDiffuseTexture("Textures/GrassDecal.png");
     }
 }
 

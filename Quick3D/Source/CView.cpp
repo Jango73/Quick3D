@@ -33,6 +33,24 @@ CView::CView(QWidget *parent)
 
 //-------------------------------------------------------------------------------------------------
 
+CView::CView(CGLWidgetScene* pScene, QWidget *parent)
+    : QGraphicsView(parent)
+    , m_pScene(NULL)
+{
+    LOG_DEBUG("CView::CView()");
+
+    // setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+    setRenderHint(QPainter::Antialiasing, false);
+    setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    setScene(pScene);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 CView::~CView()
 {
 	LOG_DEBUG("CView::~CView()");

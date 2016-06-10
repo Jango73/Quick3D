@@ -799,7 +799,7 @@ vec3 getShadow()
         {
             float shadow_depth = texture2D(u_shadow_texture, sc.xy).r;
 
-            if (shadow_depth + 0.005 < sc.z)
+            if (shadow_depth < sc.z - 0.001)
             {
                 color = vec3(0.25, 0.25, 0.25);
             }

@@ -49,9 +49,8 @@ Quick3DTest::Quick3DTest(QString sSceneFileName, QWidget *parent, Qt::WFlags fla
 
     CComponentFactory::getInstance()->registerCoreComponents();
 
-    m_pView = new CView(ui.Render1);
     m_pScene = new CGLWidgetScene();
-    m_pView->setScene(m_pScene);
+    m_pView = new CView(m_pScene, ui.Render1);
 
     // Gestion des évènements
     connect(&m_tTimer, SIGNAL(timeout()), this, SLOT(onTimer()));

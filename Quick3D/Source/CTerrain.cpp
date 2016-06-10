@@ -494,7 +494,7 @@ void CTerrain::work()
         }
 
         // Remove underwater if terrain is large
-        if (m_bIsWater == false && m_iLevel > m_iMaxLevel / 2)
+        if (m_bIsWater == false && m_iLevel >= m_iMaxLevel / 2)
         {
             for (int iFaceIndex = 0; iFaceIndex < m_pMesh->getFaces().count(); iFaceIndex++)
             {
@@ -502,7 +502,7 @@ void CTerrain::work()
 
                 for (int iVertexIndex = 0; iVertexIndex < m_pMesh->getFaces()[iFaceIndex].getIndices().count(); iVertexIndex++)
                 {
-                    if (m_pMesh->getVertices()[m_pMesh->getFaces()[iFaceIndex].getIndices()[iVertexIndex]].altitude() > 0.0)
+                    if (m_pMesh->getVertices()[m_pMesh->getFaces()[iFaceIndex].getIndices()[iVertexIndex]].altitude() >= 0.0)
                     {
                         bIsOversea = true;
                     }

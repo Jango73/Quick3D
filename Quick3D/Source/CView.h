@@ -47,6 +47,9 @@ public:
 	//! Constructeur
 	CView(QWidget *parent = 0);
 
+    //! Constructeur
+    CView(CGLWidgetScene* pScene, QWidget *parent = 0);
+
 	//! Destructeur
 	virtual ~CView();
 

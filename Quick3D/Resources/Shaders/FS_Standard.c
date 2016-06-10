@@ -856,6 +856,13 @@ void main()
             }
             else
             {
+                // Atmosphere factor
+                gAtmosphereFactor = clamp((u_atmosphere_altitude - u_camera_altitude) / u_atmosphere_altitude, 0.0, 1.0);
+
+                // Altitude factors for sea
+                gSeaAltitudeFactor_1 = clamp((v_altitude * -1.0) / 2.0, 0.0, 1.0);
+                gSeaAltitudeFactor_2 = clamp((v_altitude * -1.0) / 10.0, 0.0, 1.0);
+
                 // Fragment normal
                 vec3 normal = getNormal();
 
@@ -867,13 +874,6 @@ void main()
 
                 // Input color
                 vec4 color = vec4(doLighting(v_position, normal, eye_to_vertex, xy), 1.0);
-
-                // Atmosphere factor
-                gAtmosphereFactor = clamp((u_atmosphere_altitude - u_camera_altitude) / u_atmosphere_altitude, 0.0, 1.0);
-
-                // Altitude factors for sea
-                gSeaAltitudeFactor_1 = clamp((v_altitude * -1.0) / 2.0, 0.0, 1.0);
-                gSeaAltitudeFactor_2 = clamp((v_altitude * -1.0) / 10.0, 0.0, 1.0);
 
                 // vec3 normal_eye_space = (u_camera_matrix * normal) - (u_camera_matrix * vec3(0.0, 0.0, 0.0));
                 // vec3 tangent_eye_space = (u_camera_matrix * v_tangent) - (u_camera_matrix * vec3(0.0, 0.0, 0.0));

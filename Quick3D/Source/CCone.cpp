@@ -21,7 +21,7 @@ CCone::CCone(
 {
     setName("Cone");
 
-    m_bAllQuads = true;
+    m_iGLType = GL_QUADS;
 
     if (iNumSegments < 2) iNumSegments = 2;
 

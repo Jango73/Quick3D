@@ -28,8 +28,7 @@ CMesh::CMesh(C3DScene* pScene, double dMaxDistance, bool bUseSpacePartitionning)
     : CPhysicalComponent(pScene)
     , m_mMutex(QMutex::Recursive)
     , m_dMaxDistance(dMaxDistance)
-    , m_bPointCloud(false)
-    , m_bAllQuads(false)
+    , m_iGLType(GL_TRIANGLES)
     , m_bUseSpacePartitionning(bUseSpacePartitionning)
 {
     m_vMaterials.append(m_pScene->getRessourcesManager()->getDefaultMaterial());
@@ -243,7 +242,7 @@ void CMesh::updateGeometry(bool bComputeNormals)
             // Les buffers doivent être retransmis à OpenGL
             pGLMeshData->m_bNeedTransferBuffers = true;
 
-            if (m_bPointCloud)
+            if (m_iGLType == GL_POINTS)
             {
                 if (iMaterialIndex == 0)
                 {
@@ -277,7 +276,7 @@ void CMesh::updateGeometry(bool bComputeNormals)
                     // Définition des quantités
                     pGLMeshData->m_iNumRenderPoints = m_vVertices.count();
 
-                    if (m_bAllQuads)
+                    if (m_iGLType == GL_QUADS)
                     {
                         pGLMeshData->m_iNumRenderIndices = vFaceIndices.count() * 4;
                     }
@@ -322,7 +321,7 @@ void CMesh::updateGeometry(bool bComputeNormals)
                         // Remplissage du buffer d'indices OpenGL
                         int iIndiceIndex = 0;
 
-                        if (m_bAllQuads)
+                        if (m_iGLType == GL_QUADS)
                         {
                             for (int iFaceIndex = 0; iFaceIndex < vFaceIndices.count(); iFaceIndex++)
                             {
@@ -975,7 +974,7 @@ void CMesh::createAdaptiveTriPatch(Math::CVector3 vCenter, int iNumIterations)
 
 void CMesh::createAdaptiveQuadPatch(Math::CVector3 vCenter, int iNumIterations)
 {
-    m_bAllQuads = true;
+    m_iGLType = GL_QUADS;
 
     m_vVertices.clear();
     m_vFaces.clear();
@@ -1093,7 +1092,7 @@ void CMesh::createAdaptiveQuadPatch(Math::CVector3 vCenter, int iNumIterations)
 
 void CMesh::createQuadPatch(int iNumVerts, int iNumSkirtVerts, bool bDoubleSided)
 {
-    m_bAllQuads = true;
+    m_iGLType = GL_QUADS;
 
     m_vVertices.clear();
     m_vFaces.clear();
@@ -1167,7 +1166,7 @@ void CMesh::createQuadPatch(int iNumVerts, int iNumSkirtVerts, bool bDoubleSided
 
 void CMesh::createCircularQuadPatch(Math::CVector3 vCenter, int iNumVerts)
 {
-    m_bAllQuads = true;
+    m_iGLType = GL_QUADS;
 
     m_vVertices.clear();
     m_vFaces.clear();
@@ -1597,7 +1596,7 @@ void CMesh::paint(CRenderContext* pContext)
                 // If program ok...
                 if (pProgram != NULL)
                 {
-                    pData->paint(pContext, mModelAbsolute, pProgram, m_bAllQuads, m_bPointCloud);
+                    pData->paint(pContext, mModelAbsolute, pProgram, m_iGLType);
                 }
             }
         }
@@ -1612,7 +1611,7 @@ void CMesh::dump(QTextStream& stream, int iIdent)
     dumpIdent(stream, iIdent, QString("Num vertices : %1").arg(m_vVertices.count()));
     dumpIdent(stream, iIdent, QString("Num faces : %1").arg(m_vFaces.count()));
     dumpIdent(stream, iIdent, QString("Max distance : %1").arg(m_dMaxDistance));
-    dumpIdent(stream, iIdent, QString("All quads : %1").arg(m_bAllQuads));
+    dumpIdent(stream, iIdent, QString("GL type : %1").arg(m_iGLType));
     dumpIdent(stream, iIdent, QString("Use partitioning : %1").arg(m_bUseSpacePartitionning));
     dumpIdent(stream, iIdent, QString("Bounds min : %1").arg(m_bBounds.minimum().toString()));
     dumpIdent(stream, iIdent, QString("Bounds max : %1").arg(m_bBounds.maximum().toString()));

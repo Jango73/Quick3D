@@ -20,7 +20,7 @@ CBox::CBox(C3DScene* pScene, double dMaxDistance)
 {
     setName("Box");
 
-    m_bAllQuads = true;
+    m_iGLType = GL_QUADS;
 
     getMaterials()[0]->setIRFactor(0.4);
 

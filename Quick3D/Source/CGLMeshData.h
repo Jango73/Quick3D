@@ -29,7 +29,7 @@ public:
 
     ~CGLMeshData();
 
-    void paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolute, QGLShaderProgram* pProgram, bool bAllQuads, bool bPointCloud);
+    void paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolute, QGLShaderProgram* pProgram, int iGLType);
 
     C3DScene*       m_pScene;
     GLuint          m_iNumRenderPoints;			// Nombre de sommets transférés à OpenGL

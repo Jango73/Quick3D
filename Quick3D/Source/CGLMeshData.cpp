@@ -56,7 +56,7 @@ CGLMeshData::~CGLMeshData()
 
 //-------------------------------------------------------------------------------------------------
 
-void CGLMeshData::paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolute, QGLShaderProgram* pProgram, bool bAllQuads, bool bPointCloud)
+void CGLMeshData::paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolute, QGLShaderProgram* pProgram, int iGLType)
 {
     // If at least one point to render
     if (m_iNumRenderPoints > 0 && m_iNumRenderIndices > 0 && m_iVBO[0] > 0 && m_iVBO[1] > 0)
@@ -147,37 +147,26 @@ void CGLMeshData::paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolu
                             );
             }
 
-            if (bPointCloud)
+            switch (iGLType)
             {
-                try
-                {
-                    // Draw quads
-                    glDrawElements(GL_POINTS, m_iNumRenderIndices, GL_UNSIGNED_INT, 0);
-                }
-                catch (...)
-                {
-                    // LOG_ERROR(QString("CMesh::paint() : Exception while rendering %1").arg(m_sName));
-                }
-
-                pContext->m_iNumPolysDrawn += (m_iNumRenderIndices);
-            }
-            else
-            {
-                if (bAllQuads)
+                case GL_POINTS:
                 {
                     try
                     {
                         // Draw quads
-                        glDrawElements(GL_QUADS, m_iNumRenderIndices, GL_UNSIGNED_INT, 0);
+                        glDrawElements(GL_POINTS, m_iNumRenderIndices, GL_UNSIGNED_INT, 0);
                     }
                     catch (...)
                     {
                         // LOG_ERROR(QString("CMesh::paint() : Exception while rendering %1").arg(m_sName));
                     }
 
-                    pContext->m_iNumPolysDrawn += (m_iNumRenderIndices / 4);
+                    pContext->m_iNumPolysDrawn += (m_iNumRenderIndices);
+
+                    break;
                 }
-                else
+
+                case GL_TRIANGLES:
                 {
                     try
                     {
@@ -190,7 +179,29 @@ void CGLMeshData::paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolu
                     }
 
                     pContext->m_iNumPolysDrawn += (m_iNumRenderIndices / 3);
+
+                    break;
                 }
+
+                case GL_QUADS:
+                {
+                    try
+                    {
+                        // Draw quads
+                        glDrawElements(GL_QUADS, m_iNumRenderIndices, GL_UNSIGNED_INT, 0);
+                    }
+                    catch (...)
+                    {
+                        // LOG_ERROR(QString("CMesh::paint() : Exception while rendering %1").arg(m_sName));
+                    }
+
+                    pContext->m_iNumPolysDrawn += (m_iNumRenderIndices / 4);
+
+                    break;
+                }
+
+                default:
+                    break;
             }
         }
     }

@@ -302,7 +302,6 @@ protected:
     QMap<QString, QString>                  m_mDynTexUpdaters;
     CMeshPartition                          m_mpPartitions;				// Partitions pour accélerer le ray-tracing
     double                                  m_dMaxDistance;				// Distance maximale à laquelle ce maillage est visible
-    bool                                    m_bPointCloud;
-    bool                                    m_bAllQuads;				// Si vrai, tous les polygones ont quatre côtés
+    int                                     m_iGLType;
     bool                                    m_bUseSpacePartitionning;	// Si vrai, le partionnement des polygones est utilisé via m_mpPartitions
 };

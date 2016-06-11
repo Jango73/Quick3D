@@ -28,6 +28,7 @@ CGLMeshData::CGLMeshData(C3DScene* pScene)
     , m_iNumRenderIndices(0)
     , m_vRenderPoints(NULL)
     , m_vRenderIndices(NULL)
+    , m_bNeedTransferBuffers(true)
 {
     m_iVBO[0] = 0;
     m_iVBO[1] = 0;
@@ -69,8 +70,8 @@ CMesh::CMesh(C3DScene* pScene, double dMaxDistance, bool bUseSpacePartitionning)
     : CPhysicalComponent(pScene)
     , m_mMutex(QMutex::Recursive)
     , m_dMaxDistance(dMaxDistance)
+    , m_bPointCloud(false)
     , m_bAllQuads(false)
-    , m_bNeedTransferBuffers(true)
     , m_bUseSpacePartitionning(bUseSpacePartitionning)
 {
     m_vMaterials.append(m_pScene->getRessourcesManager()->getDefaultMaterial());
@@ -281,110 +282,131 @@ void CMesh::updateGeometry(bool bComputeNormals)
 
             CGLMeshData* pGLMeshData = m_vGLMeshData[iMaterialIndex];
 
-            // Récupération des faces associées à ce matériau
-            for (int iFaceIndex = 0; iFaceIndex < m_vFaces.count(); iFaceIndex++)
+            // Les buffers doivent être retransmis à OpenGL
+            pGLMeshData->m_bNeedTransferBuffers = true;
+
+            if (m_bPointCloud)
             {
-                if (m_vFaces[iFaceIndex].getMaterialIndex() == iMaterialIndex)
+                if (iMaterialIndex == 0)
                 {
-                    vFaceIndices.append(iFaceIndex);
-                }
-            }
-
-            if (vFaceIndices.count() > 0)
-            {
-                // Définition des quantités
-                pGLMeshData->m_iNumRenderPoints = m_vVertices.count();
-
-                if (m_bAllQuads)
-                {
-                    pGLMeshData->m_iNumRenderIndices = vFaceIndices.count() * 4;
-                }
-                else
-                {
-                    pGLMeshData->m_iNumRenderIndices = getNumTriangleCountForFaces(vFaceIndices) * 3;
-                }
-
-                if (pGLMeshData->m_iNumRenderPoints > 0 && pGLMeshData->m_iNumRenderIndices > 0)
-                {
-                    /*
-                    LOG_DEBUG(QString("CMesh::updateGeometry() : Allocating %1 vertices and %2 indices for %3")
-                        .arg(pGLMeshData->m_iNumRenderPoints)
-                        .arg(pGLMeshData->m_iNumRenderIndices)
-                        .arg(m_sName)
-                        );
-                        */
+                    pGLMeshData->m_iNumRenderPoints = m_vVertices.count();
+                    pGLMeshData->m_iNumRenderIndices = m_vVertices.count();
 
                     // Création des buffers de géométrie OpenGL
                     pGLMeshData->m_vRenderPoints = new CVertex[pGLMeshData->m_iNumRenderPoints];
                     pGLMeshData->m_vRenderIndices = new GLuint[pGLMeshData->m_iNumRenderIndices];
 
-                    // Remise à zéro de la boite englobante
-                    m_bBounds.prepare();
-
-                    // Remplissage du buffer de vertex OpenGL
-                    for (int iVertex = 0; iVertex < m_vVertices.count(); iVertex++)
+                    for (int iVertexIndex = 0; iVertexIndex < m_vVertices.count(); iVertexIndex++)
                     {
-                        pGLMeshData->m_vRenderPoints[iVertex] = m_vVertices[iVertex];
-
-                        // Check bounding box limits
-                        if (m_vVertices[iVertex].position().X < m_bBounds.minimum().X) m_bBounds.minimum().X = m_vVertices[iVertex].position().X;
-                        if (m_vVertices[iVertex].position().Y < m_bBounds.minimum().Y) m_bBounds.minimum().Y = m_vVertices[iVertex].position().Y;
-                        if (m_vVertices[iVertex].position().Z < m_bBounds.minimum().Z) m_bBounds.minimum().Z = m_vVertices[iVertex].position().Z;
-                        if (m_vVertices[iVertex].position().X > m_bBounds.maximum().X) m_bBounds.maximum().X = m_vVertices[iVertex].position().X;
-                        if (m_vVertices[iVertex].position().Y > m_bBounds.maximum().Y) m_bBounds.maximum().Y = m_vVertices[iVertex].position().Y;
-                        if (m_vVertices[iVertex].position().Z > m_bBounds.maximum().Z) m_bBounds.maximum().Z = m_vVertices[iVertex].position().Z;
+                        pGLMeshData->m_vRenderPoints[iVertexIndex] = m_vVertices[iVertexIndex];
+                        pGLMeshData->m_vRenderIndices[iVertexIndex] = iVertexIndex;
                     }
+                }
+            }
+            else
+            {
+                // Récupération des faces associées à ce matériau
+                for (int iFaceIndex = 0; iFaceIndex < m_vFaces.count(); iFaceIndex++)
+                {
+                    if (m_vFaces[iFaceIndex].getMaterialIndex() == iMaterialIndex)
+                    {
+                        vFaceIndices.append(iFaceIndex);
+                    }
+                }
 
-                    m_bBounds.expand(CVector3(0.1, 0.1, 0.1));
-
-                    // Remplissage du buffer d'indices OpenGL
-                    int iIndiceIndex = 0;
+                if (vFaceIndices.count() > 0)
+                {
+                    // Définition des quantités
+                    pGLMeshData->m_iNumRenderPoints = m_vVertices.count();
 
                     if (m_bAllQuads)
                     {
-                        for (int iFaceIndex = 0; iFaceIndex < vFaceIndices.count(); iFaceIndex++)
-                        {
-                            CFace* pFace = &(m_vFaces[vFaceIndices[iFaceIndex]]);
-
-                            pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[0];
-                            pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[1];
-                            pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[2];
-                            pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[3];
-                        }
+                        pGLMeshData->m_iNumRenderIndices = vFaceIndices.count() * 4;
                     }
                     else
                     {
-                        for (int iFaceIndex = 0; iFaceIndex < vFaceIndices.count(); iFaceIndex++)
-                        {
-                            CFace* pFace = &(m_vFaces[vFaceIndices[iFaceIndex]]);
+                        pGLMeshData->m_iNumRenderIndices = getNumTriangleCountForFaces(vFaceIndices) * 3;
+                    }
 
-                            if (pFace->getIndices().count() > 2)
+                    if (pGLMeshData->m_iNumRenderPoints > 0 && pGLMeshData->m_iNumRenderIndices > 0)
+                    {
+                        /*
+                        LOG_DEBUG(QString("CMesh::updateGeometry() : Allocating %1 vertices and %2 indices for %3")
+                            .arg(pGLMeshData->m_iNumRenderPoints)
+                            .arg(pGLMeshData->m_iNumRenderIndices)
+                            .arg(m_sName)
+                            );
+                            */
+
+                        // Création des buffers de géométrie OpenGL
+                        pGLMeshData->m_vRenderPoints = new CVertex[pGLMeshData->m_iNumRenderPoints];
+                        pGLMeshData->m_vRenderIndices = new GLuint[pGLMeshData->m_iNumRenderIndices];
+
+                        // Remise à zéro de la boite englobante
+                        m_bBounds.prepare();
+
+                        // Remplissage du buffer de vertex OpenGL
+                        for (int iVertex = 0; iVertex < m_vVertices.count(); iVertex++)
+                        {
+                            pGLMeshData->m_vRenderPoints[iVertex] = m_vVertices[iVertex];
+
+                            // Check bounding box limits
+                            if (m_vVertices[iVertex].position().X < m_bBounds.minimum().X) m_bBounds.minimum().X = m_vVertices[iVertex].position().X;
+                            if (m_vVertices[iVertex].position().Y < m_bBounds.minimum().Y) m_bBounds.minimum().Y = m_vVertices[iVertex].position().Y;
+                            if (m_vVertices[iVertex].position().Z < m_bBounds.minimum().Z) m_bBounds.minimum().Z = m_vVertices[iVertex].position().Z;
+                            if (m_vVertices[iVertex].position().X > m_bBounds.maximum().X) m_bBounds.maximum().X = m_vVertices[iVertex].position().X;
+                            if (m_vVertices[iVertex].position().Y > m_bBounds.maximum().Y) m_bBounds.maximum().Y = m_vVertices[iVertex].position().Y;
+                            if (m_vVertices[iVertex].position().Z > m_bBounds.maximum().Z) m_bBounds.maximum().Z = m_vVertices[iVertex].position().Z;
+                        }
+
+                        m_bBounds.expand(CVector3(0.1, 0.1, 0.1));
+
+                        // Remplissage du buffer d'indices OpenGL
+                        int iIndiceIndex = 0;
+
+                        if (m_bAllQuads)
+                        {
+                            for (int iFaceIndex = 0; iFaceIndex < vFaceIndices.count(); iFaceIndex++)
                             {
-                                for (int iIndex = 2; iIndex < pFace->getIndices().count(); iIndex++)
+                                CFace* pFace = &(m_vFaces[vFaceIndices[iFaceIndex]]);
+
+                                pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[0];
+                                pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[1];
+                                pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[2];
+                                pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[3];
+                            }
+                        }
+                        else
+                        {
+                            for (int iFaceIndex = 0; iFaceIndex < vFaceIndices.count(); iFaceIndex++)
+                            {
+                                CFace* pFace = &(m_vFaces[vFaceIndices[iFaceIndex]]);
+
+                                if (pFace->getIndices().count() > 2)
                                 {
-                                    pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[0];
-                                    pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[iIndex - 1];
-                                    pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[iIndex];
+                                    for (int iIndex = 2; iIndex < pFace->getIndices().count(); iIndex++)
+                                    {
+                                        pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[0];
+                                        pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[iIndex - 1];
+                                        pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[iIndex];
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
+        }
 
-            // Partitionnement spatial
-            if (m_bUseSpacePartitionning)
-            {
-                // Effacement des partitions
-                m_mpPartitions.clear();
-                m_mpPartitions = CMeshPartition(m_bBounds);
+        // Partitionnement spatial
+        if (m_bUseSpacePartitionning)
+        {
+            // Effacement des partitions
+            m_mpPartitions.clear();
+            m_mpPartitions = CMeshPartition(m_bBounds);
 
-                // Création des partitions
-                createPartition(m_mpPartitions, 0);
-            }
-
-            // Les buffers doivent être retransmis à OpenGL
-            m_bNeedTransferBuffers = true;
+            // Création des partitions
+            createPartition(m_mpPartitions, 0);
         }
     }
 }
@@ -1635,13 +1657,15 @@ void CMesh::paint(CRenderContext* pContext)
                             GL_glBindBuffer(GL_ARRAY_BUFFER, pData->m_iVBO[0]);
                             GL_glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pData->m_iVBO[1]);
 
-                            if (m_bNeedTransferBuffers)
+                            if (pData->m_bNeedTransferBuffers)
                             {
                                 // Transfer vertex data to VBO 0
                                 GL_glBufferData(GL_ARRAY_BUFFER, pData->m_iNumRenderPoints * sizeof(CVertex), pData->m_vRenderPoints, GL_STATIC_DRAW);
 
                                 // Transfer index data to VBO 1
                                 GL_glBufferData(GL_ELEMENT_ARRAY_BUFFER, pData->m_iNumRenderIndices * sizeof(GLuint), pData->m_vRenderIndices, GL_STATIC_DRAW);
+
+                                pData->m_bNeedTransferBuffers = false;
                             }
 
                             // Tell OpenGL how to locate vertex position data
@@ -1701,20 +1725,23 @@ void CMesh::paint(CRenderContext* pContext)
                                         );
                         }
 
-                        if (m_bAllQuads)
+                        if (m_bPointCloud)
                         {
-                            if (pContext->scene()->getDebugMode())
+                            try
                             {
-                                try
-                                {
-                                    glDrawElements(GL_LINES, pData->m_iNumRenderIndices, GL_UNSIGNED_INT, 0);
-                                }
-                                catch (...)
-                                {
-                                    LOG_ERROR(QString("CMesh::paint() : Exception while rendering %1").arg(m_sName));
-                                }
+                                // Draw quads
+                                glDrawElements(GL_POINTS, pData->m_iNumRenderIndices, GL_UNSIGNED_INT, 0);
                             }
-                            else
+                            catch (...)
+                            {
+                                LOG_ERROR(QString("CMesh::paint() : Exception while rendering %1").arg(m_sName));
+                            }
+
+                            pContext->m_iNumPolysDrawn += (pData->m_iNumRenderIndices);
+                        }
+                        else
+                        {
+                            if (m_bAllQuads)
                             {
                                 try
                                 {
@@ -1725,22 +1752,8 @@ void CMesh::paint(CRenderContext* pContext)
                                 {
                                     LOG_ERROR(QString("CMesh::paint() : Exception while rendering %1").arg(m_sName));
                                 }
-                            }
 
-                            pContext->m_iNumPolysDrawn += (pData->m_iNumRenderIndices / 4);
-                        }
-                        else
-                        {
-                            if (pContext->scene()->getDebugMode())
-                            {
-                                try
-                                {
-                                    glDrawElements(GL_LINES, pData->m_iNumRenderIndices, GL_UNSIGNED_INT, 0);
-                                }
-                                catch (...)
-                                {
-                                    LOG_ERROR(QString("CMesh::paint() : Exception while rendering %1").arg(m_sName));
-                                }
+                                pContext->m_iNumPolysDrawn += (pData->m_iNumRenderIndices / 4);
                             }
                             else
                             {
@@ -1753,15 +1766,13 @@ void CMesh::paint(CRenderContext* pContext)
                                 {
                                     LOG_ERROR(QString("CMesh::paint() : Exception while rendering %1").arg(m_sName));
                                 }
-                            }
 
-                            pContext->m_iNumPolysDrawn += (pData->m_iNumRenderIndices / 3);
+                                pContext->m_iNumPolysDrawn += (pData->m_iNumRenderIndices / 3);
+                            }
                         }
                     }
                 }
             }
-
-            m_bNeedTransferBuffers = false;
         }
     }
 }

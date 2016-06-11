@@ -108,12 +108,13 @@ public:
 
     ~CGLMeshData();
 
-    C3DScene*	m_pScene;
-    GLuint		m_iNumRenderPoints;			// Nombre de sommets transférés à OpenGL
-    GLuint		m_iNumRenderIndices;		// Nombre d'indices de sommets des polygones transférés à OpenGL
-    CVertex*	m_vRenderPoints;			// Sommets transférés à OpenGL
-    GLuint*		m_vRenderIndices;			// Indices de sommets des polygones transférés à OpenGL
-    GLuint		m_iVBO [2];					// Buffers de données alloués par OpenGL
+    C3DScene*   m_pScene;
+    GLuint      m_iNumRenderPoints;			// Nombre de sommets transférés à OpenGL
+    GLuint      m_iNumRenderIndices;		// Nombre d'indices de sommets des polygones transférés à OpenGL
+    CVertex*    m_vRenderPoints;			// Sommets transférés à OpenGL
+    GLuint*     m_vRenderIndices;			// Indices de sommets des polygones transférés à OpenGL
+    GLuint      m_iVBO [2];					// Buffers de données alloués par OpenGL
+    bool        m_bNeedTransferBuffers;		// Si vrai, il est temps de donner à OpenGL les buffers de géométrie
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -319,8 +320,8 @@ protected:
     QMap<QString, QString>                  m_mDynTexUpdaters;
     CMeshPartition                          m_mpPartitions;				// Partitions pour accélerer le ray-tracing
     double                                  m_dMaxDistance;				// Distance maximale à laquelle ce maillage est visible
+    bool                                    m_bPointCloud;
     bool                                    m_bAllQuads;				// Si vrai, tous les polygones ont quatre côtés
-    bool                                    m_bNeedTransferBuffers;		// Si vrai, il est temps de donner à OpenGL les buffers de géométrie
     bool                                    m_bUseSpacePartitionning;	// Si vrai, le partionnement des polygones est utilisé via m_mpPartitions
 
     static GLuint                           m_iCurrentVBO;				// Numéro du dernier VBO transmis à OpenGL

@@ -67,6 +67,7 @@ SOURCES += \
     Source/CFace.cpp \
     Source/CFog.cpp \
     Source/CForceController.cpp \
+    Source/CGLMeshData.cpp \
     Source/CGeneratedField.cpp \
     Source/CGenerateFunction.cpp \
     Source/CGeoloc.cpp \
@@ -243,6 +244,7 @@ HEADERS  += \
     Source/CFace.h \
     Source/CFog.h \
     Source/CForceController.h \
+    Source/CGLMeshData.h \
     Source/CGeneratedField.h \
     Source/CGenerateFunction.h \
     Source/CGeoloc.h \

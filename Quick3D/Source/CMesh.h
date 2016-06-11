@@ -17,6 +17,7 @@
 #include "CFace.h"
 #include "CVertexGroup.h"
 #include "CMaterial.h"
+#include "CGLMeshData.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -96,25 +97,6 @@ protected:
     CBoundingBox                m_bBounds;
     QVector<CMeshPartition>     m_vChildren;
     QVector<int>                m_vFaceIndices;
-};
-
-//-------------------------------------------------------------------------------------------------
-
-class QUICK3D_EXPORT CGLMeshData
-{
-public:
-
-    CGLMeshData(C3DScene* pScene);
-
-    ~CGLMeshData();
-
-    C3DScene*   m_pScene;
-    GLuint      m_iNumRenderPoints;			// Nombre de sommets transférés à OpenGL
-    GLuint      m_iNumRenderIndices;		// Nombre d'indices de sommets des polygones transférés à OpenGL
-    CVertex*    m_vRenderPoints;			// Sommets transférés à OpenGL
-    GLuint*     m_vRenderIndices;			// Indices de sommets des polygones transférés à OpenGL
-    GLuint      m_iVBO [2];					// Buffers de données alloués par OpenGL
-    bool        m_bNeedTransferBuffers;		// Si vrai, il est temps de donner à OpenGL les buffers de géométrie
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -323,6 +305,4 @@ protected:
     bool                                    m_bPointCloud;
     bool                                    m_bAllQuads;				// Si vrai, tous les polygones ont quatre côtés
     bool                                    m_bUseSpacePartitionning;	// Si vrai, le partionnement des polygones est utilisé via m_mpPartitions
-
-    static GLuint                           m_iCurrentVBO;				// Numéro du dernier VBO transmis à OpenGL
 };

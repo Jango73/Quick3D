@@ -128,7 +128,7 @@ CTerrain::~CTerrain()
 
 //-------------------------------------------------------------------------------------------------
 
-CBoundingBox CTerrain::getBounds() const
+CBoundingBox CTerrain::getBounds()
 {
     if (m_pMesh)
     {
@@ -140,7 +140,7 @@ CBoundingBox CTerrain::getBounds() const
 
 //-------------------------------------------------------------------------------------------------
 
-CBoundingBox CTerrain::getWorldBounds() const
+CBoundingBox CTerrain::getWorldBounds()
 {
     if (m_pMesh)
     {
@@ -523,7 +523,7 @@ void CTerrain::work()
     }
 
     // Update mesh
-    m_pMesh->updateGeometry(false);
+    m_pMesh->setGeometryDirty(true);
     m_pMesh->setInheritTransform(false);
     m_pMesh->setOriginPosition(getOriginPosition());
     m_pMesh->computeWorldTransform();
@@ -574,7 +574,7 @@ void CTerrain::flatten(const CGeoloc& gPosition, double dRadius)
 
 //-------------------------------------------------------------------------------------------------
 
-RayTracingResult CTerrain::intersect(Math::CRay3 ray) const
+RayTracingResult CTerrain::intersect(Math::CRay3 ray)
 {
     if (m_pMesh != NULL)
     {

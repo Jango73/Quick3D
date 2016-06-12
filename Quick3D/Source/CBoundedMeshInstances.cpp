@@ -35,14 +35,14 @@ void CBoundedMeshInstances::setBounds(CBoundingBox bBounds)
 
 //-------------------------------------------------------------------------------------------------
 
-CBoundingBox CBoundedMeshInstances::getBounds() const
+CBoundingBox CBoundedMeshInstances::getBounds()
 {
     return m_bBounds;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-CBoundingBox CBoundedMeshInstances::getWorldBounds() const
+CBoundingBox CBoundedMeshInstances::getWorldBounds()
 {
     return m_bBounds;
 }

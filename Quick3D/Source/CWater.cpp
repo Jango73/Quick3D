@@ -21,7 +21,7 @@ CWater::CWater(C3DScene* pScene, double dSize, int iIterations)
         m_vVertices[iIndex].position() = m_vVertices[iIndex].position() * dSize;
     }
 
-    updateGeometry();
+    setGeometryDirty(true);
 }
 
 //-------------------------------------------------------------------------------------------------

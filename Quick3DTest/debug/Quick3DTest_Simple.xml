@@ -18,7 +18,6 @@
 					<Texture Name="Textures/Snow01.jpg"/>
 					<Texture Name="Textures/Grass01.jpg"/>
 					<Texture Name="Textures/Grass02.jpg"/>
-					<Texture Name="Textures/GrassDecal.png"/>
 				</Material>
 				<Height>
 					<Value Type="Sub">

@@ -63,7 +63,7 @@ public:
     virtual void paint(CRenderContext* pContext);
 
     //! Calcul d'intersection avec un rayon
-    virtual Math::RayTracingResult intersect(Math::CRay3 ray) const;
+    virtual Math::RayTracingResult intersect(Math::CRay3 ray);
 
     //! Dump du contenu dans un flux
     virtual void dump(QTextStream& stream, int iIdent);

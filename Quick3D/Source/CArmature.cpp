@@ -68,7 +68,7 @@ void CArmature::paint(CRenderContext* pContext)
 
 //-------------------------------------------------------------------------------------------------
 
-RayTracingResult CArmature::intersect(Math::CRay3 ray) const
+RayTracingResult CArmature::intersect(Math::CRay3 ray)
 {
     return RayTracingResult(Q3D_INFINITY);
 }

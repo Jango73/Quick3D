@@ -151,7 +151,7 @@ public:
 
     //! Calcul l'intersection entre le rayon fourni et cette facette
     //! Retourne systématiquement l'infini pour l'instant
-    Math::RayTracingResult intersect(Math::CRay3 ray) const;
+    Math::RayTracingResult intersect(Math::CRay3 ray);
 
     //-------------------------------------------------------------------------------------------------
     // Propriétés

@@ -291,13 +291,13 @@ public:
     virtual void updateTexture(CTexture* pTexture, double dDeltaTime);
 
     //! Retourne la boite englobante locale
-    virtual CBoundingBox getBounds() const;
+    virtual CBoundingBox getBounds();
 
     //! Retourne la boite englobante "monde"
-    virtual CBoundingBox getWorldBounds() const;
+    virtual CBoundingBox getWorldBounds();
 
     //! Calcul d'intersection avec un rayon
-    virtual Math::RayTracingResult intersect(Math::CRay3 ray) const;
+    virtual Math::RayTracingResult intersect(Math::CRay3 ray);
 
     //! Inverse les vecteurs normaux des polygones
     virtual void flipNormals();

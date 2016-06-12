@@ -370,7 +370,7 @@ double CFace::intersectTriangle(
 
 //-------------------------------------------------------------------------------------------------
 
-RayTracingResult CFace::intersect(CRay3 ray) const
+RayTracingResult CFace::intersect(CRay3 ray)
 {
     return RayTracingResult(Q3D_INFINITY);
 }

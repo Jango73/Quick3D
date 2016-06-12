@@ -49,7 +49,7 @@ CMeshInstance* CMeshInstance::clone()
 
 //-------------------------------------------------------------------------------------------------
 
-CBoundingBox CMeshInstance::getBounds() const
+CBoundingBox CMeshInstance::getBounds()
 {
     if (m_vMeshes.count() > 0)
     {
@@ -61,7 +61,7 @@ CBoundingBox CMeshInstance::getBounds() const
 
 //-------------------------------------------------------------------------------------------------
 
-CBoundingBox CMeshInstance::getWorldBounds() const
+CBoundingBox CMeshInstance::getWorldBounds()
 {
     if (m_vMeshes.count() > 0)
     {

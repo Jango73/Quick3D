@@ -1,6 +1,7 @@
 
 // Application
 #include "CCone.h"
+#include "C3DScene.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -25,6 +26,7 @@ CCone::CCone(
 
     if (iNumSegments < 2) iNumSegments = 2;
 
+    setMaterial(m_pScene->getRessourcesManager()->getDefaultMaterial());
     getMaterials()[0]->setIRFactor(0.4);
 
     double dRadiusRange = dApexRadius - dBaseRadius;
@@ -70,7 +72,7 @@ CCone::CCone(
         }
     }
 
-    updateGeometry();
+    setGeometryDirty(true);
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -16,7 +16,8 @@ using namespace Math;
 CRain::CRain(C3DScene* pScene)
 : CParticleSystem(pScene)
 {
-	getMaterials()[0]->getDiffuse() = Vector4(0.8, 0.8, 1.0, 0.4);
+    setMaterial(m_pScene->getRessourcesManager()->getDefaultMaterial());
+    getMaterials()[0]->getDiffuse() = Vector4(0.8, 0.8, 1.0, 0.4);
 	getMaterials()[0]->getSpecular() = Vector4(0.4, 0.4, 0.4, 1.0);
 	getMaterials()[0]->setShininess(0.8);
 	getMaterials()[0]->setIRFactor(0.4);

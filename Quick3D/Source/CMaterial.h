@@ -66,6 +66,9 @@ public:
     //! Définit si ce matériau représente le ciel
     void setUseSky(bool value) { m_bUseSky = value; }
 
+    //!
+    void setBillBoard(bool value) { m_bBillBoard = value; }
+
     //! Définit la valeur temps utilisée pour animer les textures
     static void setTime(double value) { m_dTime = value; }
 
@@ -187,6 +190,7 @@ protected:
     double                  m_dIRFactor;
     bool                    m_bUseSky;
     bool                    m_bUseWaves;
+    bool                    m_bBillBoard;
 
     static double           m_dTime;
 };

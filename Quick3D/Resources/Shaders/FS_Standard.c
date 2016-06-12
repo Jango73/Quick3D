@@ -61,8 +61,6 @@ uniform sampler2D		u_texture_diffuse_4;
 uniform sampler2D		u_texture_diffuse_5;
 uniform sampler2D		u_texture_diffuse_6;
 uniform sampler2D		u_texture_diffuse_7;
-uniform sampler2D		u_texture_diffuse_8;
-uniform sampler2D		u_texture_diffuse_9;
 uniform sampler2D		u_shadow_texture;
 
 uniform vec4			u_material_ambient;
@@ -112,8 +110,6 @@ varying float			vo_difftex_weight_4;
 varying float			vo_difftex_weight_5;
 varying float			vo_difftex_weight_6;
 varying float			vo_difftex_weight_7;
-varying float			vo_difftex_weight_8;
-varying float			vo_difftex_weight_9;
 
 // Globals
 
@@ -770,8 +766,6 @@ vec4 getTexture()
         texture_color = mix(texture_color, texture2D(u_texture_diffuse_5, vo_texcoord), vo_difftex_weight_5);
         texture_color = mix(texture_color, texture2D(u_texture_diffuse_6, vo_texcoord), vo_difftex_weight_6);
         texture_color = mix(texture_color, texture2D(u_texture_diffuse_7, vo_texcoord), vo_difftex_weight_7);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_8, vo_texcoord), vo_difftex_weight_8);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_9, vo_texcoord), vo_difftex_weight_9);
     }
     else
     {

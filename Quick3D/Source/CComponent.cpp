@@ -671,7 +671,7 @@ void CComponent::postPaint(CRenderContext* pContext)
 /*!
     Returns the local bounds of the component.
 */
-CBoundingBox CComponent::getBounds() const
+CBoundingBox CComponent::getBounds()
 {
     // Sans géométrie, retourner une boite vide
 
@@ -683,7 +683,7 @@ CBoundingBox CComponent::getBounds() const
 /*!
     Returns the world bounds of the component.
 */
-CBoundingBox CComponent::getWorldBounds() const
+CBoundingBox CComponent::getWorldBounds()
 {
     // Sans géométrie, retourner une boite vide
 
@@ -695,7 +695,7 @@ CBoundingBox CComponent::getWorldBounds() const
 /*!
     Checks if \a ray intersects this component.
 */
-RayTracingResult CComponent::intersect(Math::CRay3 ray) const
+RayTracingResult CComponent::intersect(Math::CRay3 ray)
 {
     // Sans géométrie, retourner l'infini
 

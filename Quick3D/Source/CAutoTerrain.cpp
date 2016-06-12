@@ -154,8 +154,8 @@ void CAutoTerrain::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
         m_pHeights = new CGeneratedField(m_xParameters);
     }
 
-    readVegetationParameters();
-    readBuildingParameters();
+    readVegetationParameters(sBaseFile);
+    readBuildingParameters(sBaseFile);
 
     CXMLNode xMaterialNode = m_xParameters.getNodeByTagName(ParamName_Material);
 
@@ -683,7 +683,7 @@ void CAutoTerrain::flatten(const CGeoloc& gPosition, double dRadius)
 /*!
     Reads parameters for vegetation and creates appropriate meshes.
 */
-void CAutoTerrain::readVegetationParameters()
+void CAutoTerrain::readVegetationParameters(const QString& sBaseFile)
 {
     CXMLNode xVegeationNode = m_xParameters.getNodeByTagName(ParamName_Vegetation);
 
@@ -754,7 +754,31 @@ void CAutoTerrain::readVegetationParameters()
                                                      )));
         }
 
-        m_vVegetation.append(new CVegetation(dSpread, pFunction, new CMeshInstance(vMeshes)));
+        m_vVegetation.append(new CVegetation(CVegetation::evtTree, dSpread, pFunction, new CMeshInstance(vMeshes), NULL));
+    }
+
+    QVector<CXMLNode> xBushes = xVegeationNode.getNodesByTagName(ParamName_Bush);
+
+    foreach (CXMLNode xBush, xBushes)
+    {
+        CXMLNode xGeneral = xBush.getNodeByTagName(ParamName_General);
+        CXMLNode xCoverage = xBush.getNodeByTagName(ParamName_Coverage);
+        CXMLNode xMaterial = xBush.getNodeByTagName(ParamName_Material);
+
+        if (xCoverage.isEmpty() == false && xGeneral.attributes()[ParamName_Spread].isEmpty() == false)
+        {
+            CGenerateFunction* pFunction = new CGenerateFunction(xCoverage.getNodeByTagName(ParamName_Value));
+
+            double dSpread = xGeneral.attributes()[ParamName_Spread].toDouble();
+
+            if (xMaterial.isEmpty() == false)
+            {
+                CMaterial* pMaterial = new CMaterial(m_pScene);
+                pMaterial->loadParameters(sBaseFile, xMaterial);
+                pMaterial->setBillBoard(true);
+                m_vVegetation.append(new CVegetation(CVegetation::evtBush, dSpread, pFunction, NULL, pMaterial));
+            }
+        }
     }
 }
 
@@ -763,8 +787,10 @@ void CAutoTerrain::readVegetationParameters()
 /*!
     Reads parameters for buildings.
 */
-void CAutoTerrain::readBuildingParameters()
+void CAutoTerrain::readBuildingParameters(const QString& sBaseFile)
 {
+    Q_UNUSED(sBaseFile);
+
     CXMLNode xBuildingsNode = m_xParameters.getNodeByTagName(ParamName_Buildings);
 
     QVector<CXMLNode> xBuildings = xBuildingsNode.getNodesByTagName(ParamName_Building);
@@ -773,12 +799,14 @@ void CAutoTerrain::readBuildingParameters()
     {
         CXMLNode xMeshList = xBuilding.getNodeByTagName(ParamName_MeshList);
         CXMLNode xCoverage = xBuilding.getNodeByTagName(ParamName_Coverage);
+
+        // TODO : Complete
     }
 }
 
 //-------------------------------------------------------------------------------------------------
 
-RayTracingResult CAutoTerrain::intersect(Math::CRay3 ray) const
+RayTracingResult CAutoTerrain::intersect(Math::CRay3 ray)
 {
     if (m_pRoot != NULL)
     {

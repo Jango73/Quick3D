@@ -22,33 +22,46 @@ class QUICK3D_EXPORT CVegetation
 {
 public:
 
+    enum EVegetationType
+    {
+        evtNone,
+        evtTree,
+        evtBush
+    };
+
     //-------------------------------------------------------------------------------------------------
     // Constructeurs et destructeur
     //-------------------------------------------------------------------------------------------------
 
     CVegetation()
-        : m_dSpread(0.0)
+        : m_eType(evtNone)
+        , m_dSpread(0.0)
         , m_pFunction(NULL)
         , m_pMesh(NULL)
+        , m_pMaterial(NULL)
     {
     }
 
-    CVegetation(double dSpread, CGenerateFunction* pFunction, CMeshInstance* pMesh)
-        : m_dSpread(dSpread)
+    CVegetation(EVegetationType eType, double dSpread, CGenerateFunction* pFunction, CMeshInstance* pMesh, CMaterial* pMaterial)
+        : m_eType(eType)
+        , m_dSpread(dSpread)
         , m_pFunction(pFunction)
         , m_pMesh(pMesh)
+        , m_pMaterial(QSharedPointer<CMaterial>(pMaterial))
     {
     }
 
     virtual ~CVegetation()
     {
-        delete m_pFunction;
-        delete m_pMesh;
+        if (m_pFunction != NULL) delete m_pFunction;
+        if (m_pMesh != NULL) delete m_pMesh;
     }
 
-    double                  m_dSpread;
-    CGenerateFunction*      m_pFunction;
-    CMeshInstance*          m_pMesh;
+    EVegetationType             m_eType;
+    double                      m_dSpread;
+    CGenerateFunction*          m_pFunction;
+    CMeshInstance*              m_pMesh;
+    QSharedPointer<CMaterial>   m_pMaterial;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -154,7 +167,7 @@ public:
     virtual void flatten(const CGeoloc& gPosition, double dRadius);
 
     //! Calcul d'intersection avec un rayon
-    virtual Math::RayTracingResult intersect(Math::CRay3 ray) const;
+    virtual Math::RayTracingResult intersect(Math::CRay3 ray);
 
     //! Dump du contenu dans un flux
     virtual void dump(QTextStream& stream, int iIdent);
@@ -184,10 +197,10 @@ protected:
     void collectGarbageRecurse(CWorldChunk* pChunk);
 
     //!
-    void readVegetationParameters();
+    void readVegetationParameters(const QString& sBaseFile);
 
     //!
-    void readBuildingParameters();
+    void readBuildingParameters(const QString& sBaseFile);
 
     //! Calcul d'intersection avec un rayon
     Math::RayTracingResult intersectRecurse(CWorldChunk* pChunk, const Math::CRay3& ray) const;

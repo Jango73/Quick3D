@@ -32,6 +32,7 @@ CMaterial::CMaterial(C3DScene* pScene, QString sName)
     , m_dIRFactor(0.8)
     , m_bUseSky(false)
     , m_bUseWaves(false)
+    , m_bBillBoard(false)
 {
     m_cAmbient = Vector4(0.03, 0.03, 0.03, 1.0);
     m_cDiffuse = Vector4(1.0, 1.0, 1.0, 1.0);
@@ -65,6 +66,8 @@ Math::CVector2 CMaterial::getTexCoords(const CGeoloc& gPosition, int iLevel)
 
 void CMaterial::loadParameters(const QString& sBaseFile, CXMLNode xMaterial)
 {
+    m_sName = xMaterial.attributes()[ParamName_Name];
+
     // Lecture couleur ambiante
     CXMLNode xAmbient = xMaterial.getNodeByTagName(ParamName_Ambient);
 
@@ -219,7 +222,16 @@ void CMaterial::disableFrameBuffer()
 
 QGLShaderProgram* CMaterial::activate(CRenderContext* pContext)
 {
-    QGLShaderProgram* pProgram = pContext->scene()->getShaders()->getShader(SP_Standard);
+    QGLShaderProgram* pProgram = NULL;
+
+    if (m_bBillBoard)
+    {
+        pProgram = pContext->scene()->getShaders()->getShader(SP_Standard_Billboard);
+    }
+    else
+    {
+        pProgram = pContext->scene()->getShaders()->getShader(SP_Standard_Mesh);
+    }
 
     if (pProgram != NULL)
     {
@@ -280,7 +292,7 @@ QGLShaderProgram* CMaterial::activate(CRenderContext* pContext)
 
             if (m_vDiffuseTextures.count() > 0)
             {
-                for (int iIndex = 0; iIndex < m_vDiffuseTextures.count(); iIndex++)
+                for (int iIndex = 0; iIndex < m_vDiffuseTextures.count() && iIndex < 8; iIndex++)
                 {
                     m_vDiffuseTextures[iIndex]->activate(iIndex);
                 }
@@ -295,8 +307,6 @@ QGLShaderProgram* CMaterial::activate(CRenderContext* pContext)
                 pProgram->setUniformValue("u_texture_diffuse_5", (GLint) 6);
                 pProgram->setUniformValue("u_texture_diffuse_6", (GLint) 7);
                 pProgram->setUniformValue("u_texture_diffuse_7", (GLint) 8);
-                pProgram->setUniformValue("u_texture_diffuse_8", (GLint) 9);
-                pProgram->setUniformValue("u_texture_diffuse_9", (GLint) 10);
             }
             else
             {

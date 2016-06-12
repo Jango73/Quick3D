@@ -49,14 +49,8 @@ public:
     //! Retourne le délimiteur de la partition
     CBoundingBox& getBounds() { return m_bBounds; }
 
-    //! Retourne le délimiteur de la partition
-    const CBoundingBox& getBounds() const { return m_bBounds; }
-
     //! Retourne le vecteur de partitions enfant
     QVector<CMeshPartition>& getChildren() { return m_vChildren; }
-
-    //! Retourne le vecteur de partitions enfant
-    const QVector<CMeshPartition>& getChildren() const { return m_vChildren; }
 
     //! Retourne le vecteur d'indices de facettes
     QVector<int>& getFaceIndices() { return m_vFaceIndices; }
@@ -128,6 +122,12 @@ public:
     //!
     void setBounds(CBoundingBox bBox);
 
+    //!
+    void setGLType(int iGLType);
+
+    //!
+    void setGeometryDirty(bool bDirty);
+
     //-------------------------------------------------------------------------------------------------
     // Getters
     //-------------------------------------------------------------------------------------------------
@@ -173,10 +173,10 @@ public:
     virtual QString getClassName() const { return ClassName_CMesh; }
 
     //!
-    virtual CBoundingBox getBounds() const;
+    virtual CBoundingBox getBounds();
 
     //!
-    virtual CBoundingBox getWorldBounds() const;
+    virtual CBoundingBox getWorldBounds();
 
     //!
     virtual void update(double dDeltaTime);
@@ -207,7 +207,7 @@ public:
     void deleteMaterials();
 
     //! Met à jour les buffers de géométrie OpenGL
-    virtual void updateGeometry(bool bComputeNormals = true);
+    virtual void updateGeometry();
 
     //!
     void createPartition(CMeshPartition& mpCurrentPartition, int iLevel);
@@ -262,7 +262,7 @@ public:
     void scaleUVs(Math::CVector2 vScale);
 
     //! Calcul d'intersection avec un rayon
-    virtual Math::RayTracingResult intersect(Math::CRay3 ray) const;
+    virtual Math::RayTracingResult intersect(Math::CRay3 ray);
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes statiques
@@ -284,7 +284,7 @@ public:
 protected:
 
     //!
-    Math::RayTracingResult intersectRecurse(const CMeshPartition& mpPartition, Math::CRay3 ray) const;
+    Math::RayTracingResult intersectRecurse(CMeshPartition& mpPartition, Math::CRay3 ray);
 
     //-------------------------------------------------------------------------------------------------
     // Propriétés
@@ -304,4 +304,5 @@ protected:
     double                                  m_dMaxDistance;				// Distance maximale à laquelle ce maillage est visible
     int                                     m_iGLType;
     bool                                    m_bUseSpacePartitionning;	// Si vrai, le partionnement des polygones est utilisé via m_mpPartitions
+    bool                                    m_bGeometryDirty;
 };

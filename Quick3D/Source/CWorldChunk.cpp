@@ -13,6 +13,8 @@
 
 using namespace Math;
 
+//-------------------------------------------------------------------------------------------------
+
 #define NUM_CONTAINERS	8
 
 //-------------------------------------------------------------------------------------------------
@@ -67,6 +69,11 @@ CWorldChunk::~CWorldChunk()
         foreach (CBoundedMeshInstances* pBounded, m_vMeshes)
         {
             delete pBounded;
+        }
+
+        foreach (QString sKey, m_vBushMeshes.keys())
+        {
+            delete m_vBushMeshes[sKey];
         }
     }
 }
@@ -152,9 +159,9 @@ void CWorldChunk::build()
 
 //-------------------------------------------------------------------------------------------------
 
-CBoundingBox CWorldChunk::getBounds() const
+CBoundingBox CWorldChunk::getBounds()
 {
-    if (m_pTerrain && m_pTerrain->isOK())
+    if (m_pTerrain != NULL && m_pTerrain->isOK())
     {
         return m_pTerrain->getBounds();
     }
@@ -164,9 +171,9 @@ CBoundingBox CWorldChunk::getBounds() const
 
 //-------------------------------------------------------------------------------------------------
 
-CBoundingBox CWorldChunk::getWorldBounds() const
+CBoundingBox CWorldChunk::getWorldBounds()
 {
-    if (m_pTerrain && m_pTerrain->isOK())
+    if (m_pTerrain != NULL && m_pTerrain->isOK())
     {
         return m_pTerrain->getWorldBounds();
     }
@@ -185,12 +192,12 @@ CBoundingBox CWorldChunk::getBuildWorldBounds()
 
 void CWorldChunk::update(double dDeltaTime)
 {
-    if (m_pTerrain && m_pTerrain->isOK())
+    if (m_pTerrain != NULL && m_pTerrain->isOK())
     {
         m_pTerrain->update(dDeltaTime);
     }
 
-    if (m_pWater && m_pWater->isOK())
+    if (m_pWater != NULL && m_pWater->isOK())
     {
         m_pWater->update(dDeltaTime);
     }
@@ -200,7 +207,10 @@ void CWorldChunk::update(double dDeltaTime)
 
 double CWorldChunk::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 {
-    if (m_pTerrain && m_pTerrain->isOK()) return m_pTerrain->getHeightAt(gPosition, pRigidness);
+    if (m_pTerrain != NULL && m_pTerrain->isOK())
+    {
+        return m_pTerrain->getHeightAt(gPosition, pRigidness);
+    }
 
     return Q3D_INFINITY;
 }
@@ -209,7 +219,10 @@ double CWorldChunk::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 
 void CWorldChunk::flatten(const CGeoloc& gPosition, double dRadius)
 {
-    if (m_pTerrain && m_pTerrain->isOK()) return m_pTerrain->flatten(gPosition, dRadius);
+    if (m_pTerrain != NULL && m_pTerrain->isOK())
+    {
+        return m_pTerrain->flatten(gPosition, dRadius);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -272,8 +285,9 @@ void CWorldChunk::paint(CRenderContext* pContext, ETerrainType eType)
                 {
                     m_mBoundingBoxVisual->paint(pContext);
                 }
-            }
+
                 break;
+            }
 
             case ttWater:
             {
@@ -288,8 +302,9 @@ void CWorldChunk::paint(CRenderContext* pContext, ETerrainType eType)
                         glEnable(GL_CULL_FACE);
                     }
                 }
-            }
+
                 break;
+            }
 
             case ttVegetation:
             {
@@ -301,10 +316,16 @@ void CWorldChunk::paint(CRenderContext* pContext, ETerrainType eType)
                         {
                             pBoundedMeshInstance->paint(pContext);
                         }
+
+                        foreach (QString sBushName, m_vBushMeshes.keys())
+                        {
+                            m_vBushMeshes[sBushName]->paint(pContext);
+                        }
                     }
                 }
-            }
+
                 break;
+            }
         }
     }
 }
@@ -471,9 +492,9 @@ void CWorldChunk::work()
         }
 
         // Generate vegetation
-        for (int iTreeIndex = 0; iTreeIndex < m_pAutoTerrain->getVegetation().count(); iTreeIndex++)
+        for (int iVegetIndex = 0; iVegetIndex < m_pAutoTerrain->getVegetation().count(); iVegetIndex++)
         {
-            CVegetation* pVegetation = m_pAutoTerrain->getVegetation()[iTreeIndex];
+            CVegetation* pVegetation = m_pAutoTerrain->getVegetation()[iVegetIndex];
 
             double dAltitude_Trees = 10.0;
 
@@ -499,8 +520,8 @@ void CWorldChunk::work()
                         CGeoloc gPosition(dLat, dLon, 0.0);
                         CVector3 vPosition = gPosition.toVector3();
 
-                        gPosition.Latitude += perlin->getNoise((vPosition + CVector3(iTreeIndex, iTreeIndex, iTreeIndex)) * 0.5) * (pVegetation->m_dSpread * 0.5);
-                        gPosition.Longitude += perlin->getNoise((vPosition + CVector3(iTreeIndex, iTreeIndex, iTreeIndex)) * 0.5) * (pVegetation->m_dSpread * 0.5);
+                        // gPosition.Latitude += perlin->getNoise((vPosition + CVector3(iVegetIndex, iVegetIndex, iVegetIndex)) * 0.25) * pVegetation->m_dSpread;
+                        // gPosition.Longitude += perlin->getNoise((vPosition + CVector3(iVegetIndex, iVegetIndex, iVegetIndex)) * 0.25) * pVegetation->m_dSpread;
 
                         vPosition = gPosition.toVector3();
 
@@ -515,15 +536,14 @@ void CWorldChunk::work()
                             {
                                 gPosition = CGeoloc(dLat, dLon, dAltitude);
 
-                                /*
-                                gPosition = CGeoloc(
-                                    gPosition.Latitude,
-                                    gPosition.Longitude,
-                                    dAltitude
-                                    );
-                                    */
-
-                                placeTree(gPosition, 5.0, iTreeIndex);
+                                if (pVegetation->m_eType == CVegetation::evtTree)
+                                {
+                                    placeTree(gPosition, 5.0, iVegetIndex);
+                                }
+                                else if (pVegetation->m_eType == CVegetation::evtBush)
+                                {
+                                    placeBush(gPosition, 5.0, iVegetIndex);
+                                }
                             }
                         }
                     }
@@ -539,11 +559,11 @@ void CWorldChunk::work()
 
 //-------------------------------------------------------------------------------------------------
 
-void CWorldChunk::placeTree(CGeoloc gPosition, double dRadius, int iTreeIndex)
+void CWorldChunk::placeTree(CGeoloc gPosition, double dRadius, int iVegetIndex)
 {
     if (checkPositionFree(gPosition, dRadius))
     {
-        CMeshInstance* pMeshInstance = m_pAutoTerrain->getVegetation()[iTreeIndex]->m_pMesh->clone();
+        CMeshInstance* pMeshInstance = m_pAutoTerrain->getVegetation()[iVegetIndex]->m_pMesh->clone();
 
         if (pMeshInstance != NULL)
         {
@@ -561,6 +581,37 @@ void CWorldChunk::placeTree(CGeoloc gPosition, double dRadius, int iTreeIndex)
             }
 
             delete pMeshInstance;
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CWorldChunk::placeBush(CGeoloc gPosition, double dRadius, int iVegetIndex)
+{
+    if (m_pAutoTerrain->getVegetation()[iVegetIndex]->m_pMaterial != NULL)
+    {
+        QString sMaterialName = m_pAutoTerrain->getVegetation()[iVegetIndex]->m_pMaterial->getName();
+
+        if (sMaterialName.isEmpty() == false)
+        {
+            if (m_vBushMeshes.contains(sMaterialName) == false)
+            {
+                CMesh* pBushMesh = new CMesh(m_pScene, 100000.0);
+
+                pBushMesh->setGLType(GL_POINTS);
+                pBushMesh->setWorldTransform(getWorldTransform());
+                pBushMesh->setMaterial(m_pAutoTerrain->getVegetation()[iVegetIndex]->m_pMaterial);
+
+                m_vBushMeshes[sMaterialName] = pBushMesh;
+            }
+
+            CVector3 vGeocentricPosition = gPosition.toVector3();
+            CVector3 vPosition = vGeocentricPosition - m_vBushMeshes[sMaterialName]->getWorldPosition();
+            CVertex newVertex(vPosition);
+            newVertex.setNormal(vGeocentricPosition.Normalize());
+
+            m_vBushMeshes[sMaterialName]->getVertices().append(newVertex);
         }
     }
 }
@@ -626,7 +677,7 @@ bool CWorldChunk::checkPositionFree(CGeoloc gPosition, double dRadius)
 
 //-------------------------------------------------------------------------------------------------
 
-RayTracingResult CWorldChunk::intersect(Math::CRay3 ray) const
+RayTracingResult CWorldChunk::intersect(Math::CRay3 ray)
 {
     if (m_pTerrain != NULL && m_pTerrain->isOK())
     {

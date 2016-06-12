@@ -88,9 +88,7 @@ void CQ3DLoader::loadComponent(
 
     foreach (CXMLNode xMaterial, vxMaterials)
     {
-        QString sMaterialName = xMaterial.attributes()[ParamName_Name];
-
-        CMaterial* pNewMaterial = new CMaterial(pScene, sMaterialName);
+        CMaterial* pNewMaterial = new CMaterial(pScene);
 
         pNewMaterial->loadParameters(sBaseFile, xMaterial);
 
@@ -174,9 +172,6 @@ void CQ3DLoader::loadComponent(
         int iNewFaceMaterialIndex = mMaterialIndex[iFaceMaterialIndex];
         pMesh->getFaces()[iFaceIndex].setMaterialIndex(iNewFaceMaterialIndex);
     }
-
-    // Mise à jour de la géométrie du mesh
-    pMesh->updateGeometry();
 
     // Chargement des noeuds enfants
     QVector<CXMLNode> vComponents = xComponent.getNodesByTagName(ParamName_Component);

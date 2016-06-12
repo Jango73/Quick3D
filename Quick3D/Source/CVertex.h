@@ -41,6 +41,9 @@ public:
     //! Définit un poids pour une texture
     void setDiffuseTextureWeight(int iTexture, double dWeight);
 
+    //!
+    void setNormal(const Math::CVector3& value) { m_vNormal = value; }
+
     //-------------------------------------------------------------------------------------------------
     // Getters
     //-------------------------------------------------------------------------------------------------

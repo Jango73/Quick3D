@@ -25,6 +25,9 @@
 
 	<Components>
 
+		<Component Name="SkyBox" Class="CSkyBox">
+		</Component>
+
 		<Component Name="Terrain" Class="CAutoTerrain">
 			<Parameters>
 				<General Levels="18" Resolution="21"/>
@@ -37,7 +40,6 @@
 					<Texture Name="Textures/Snow01.jpg"/>
 					<Texture Name="Textures/Grass01.jpg"/>
 					<Texture Name="Textures/Grass02.jpg"/>
-					<Texture Name="Textures/GrassDecal.png"/>
 				</Material>
 				<Height>
 					<Value Type="Sub">
@@ -384,7 +386,7 @@
 						</Coverage>
 					</Tree>
 					<Bush>
-						<General Spread="0.0002"/>
+						<General Spread="0.00002"/>
 						<Coverage>
 							<Value Type="Mul">
 								<Operand>
@@ -398,7 +400,7 @@
 							</Value>
 						</Coverage>
 						<Material Name="Bush01">
-							<Ambient g="1.0000" b="1.0000" r="1.0000"/>
+							<Ambient g="0.5000" b="0.5000" r="0.5000"/>
 							<Diffuse g="0.0000" b="0.0000" Map="Textures/GrassDecal.png" r="0.0000"/>
 							<Specular g="1.0000" b="1.0000" Hardness="50" Intensity="0.2" r="1.0000"/>
 						</Material>
@@ -423,9 +425,6 @@
 					</Building>
 				</Buildings>
 			</Parameters>
-		</Component>
-
-		<Component Name="SkyBox" Class="CSkyBox">
 		</Component>
 
 		<Component Name="Man1" Class="CMan">

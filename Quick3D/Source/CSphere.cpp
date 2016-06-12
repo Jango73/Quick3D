@@ -1,5 +1,6 @@
 
 #include "CSphere.h"
+#include "C3DScene.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -12,11 +13,12 @@ CSphere::CSphere(C3DScene* pScene, double dMaxDistance, int iNumSegments)
 {
     setName("Sphere");
 
+    setMaterial(m_pScene->getRessourcesManager()->getDefaultMaterial());
     getMaterials()[0]->setIRFactor(0.4);
 
     createSphere(iNumSegments);
 
-    updateGeometry();
+    setGeometryDirty(true);
 }
 
 //-------------------------------------------------------------------------------------------------

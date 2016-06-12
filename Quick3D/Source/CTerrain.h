@@ -107,10 +107,10 @@ public:
     virtual QString getClassName() const { return ClassName_CTerrain; }
 
     //!
-    virtual CBoundingBox getBounds() const;
+    virtual CBoundingBox getBounds();
 
     //!
-    virtual CBoundingBox getWorldBounds() const;
+    virtual CBoundingBox getWorldBounds();
 
     //!
     virtual void paint(CRenderContext* pContext);
@@ -122,7 +122,7 @@ public:
     virtual void flatten(const CGeoloc& gPosition, double dRadius);
 
     //! Calcul d'intersection avec un rayon
-    virtual Math::RayTracingResult intersect(Math::CRay3 ray) const;
+    virtual Math::RayTracingResult intersect(Math::CRay3 ray);
 
     //!
     virtual void work();

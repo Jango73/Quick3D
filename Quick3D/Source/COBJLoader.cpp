@@ -169,9 +169,6 @@ void COBJLoader::load(const QString& sBaseFile, C3DScene* pScene, CMesh* pMesh, 
     // Séparation des polygones en fonction des groupes de lissage
     pMesh->splitVerticesBySmoothingGroup();
 
-    // Mise à jour de la géométrie du mesh
-    pMesh->updateGeometry();
-
     LOG_DEBUG(QString("COBJLoader::load() : END : %1").arg(pMesh->getName()));
 }
 

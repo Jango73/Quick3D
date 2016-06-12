@@ -46,10 +46,10 @@ public:
     virtual QString getClassName() const { return ClassName_CBoundedMeshInstances; }
 
     //!
-    virtual CBoundingBox getBounds() const;
+    virtual CBoundingBox getBounds();
 
     //!
-    virtual CBoundingBox getWorldBounds() const;
+    virtual CBoundingBox getWorldBounds();
 
     //!
     virtual void update(double dDeltaTime);

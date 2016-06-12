@@ -30,9 +30,8 @@ CMesh::CMesh(C3DScene* pScene, double dMaxDistance, bool bUseSpacePartitionning)
     , m_dMaxDistance(dMaxDistance)
     , m_iGLType(GL_TRIANGLES)
     , m_bUseSpacePartitionning(bUseSpacePartitionning)
+    , m_bGeometryDirty(true)
 {
-    m_vMaterials.append(m_pScene->getRessourcesManager()->getDefaultMaterial());
-    m_vGLMeshData.append(new CGLMeshData(m_pScene));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -74,15 +73,33 @@ void CMesh::setBounds(CBoundingBox bBox)
 
 //-------------------------------------------------------------------------------------------------
 
-CBoundingBox CMesh::getBounds() const
+void CMesh::setGLType(int iGLType)
 {
+    m_iGLType = iGLType;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CMesh::setGeometryDirty(bool bDirty)
+{
+    m_bGeometryDirty = bDirty;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+CBoundingBox CMesh::getBounds()
+{
+    updateGeometry();
+
     return m_bBounds;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-CBoundingBox CMesh::getWorldBounds() const
+CBoundingBox CMesh::getWorldBounds()
 {
+    updateGeometry();
+
     // Récupération de la position "monde"
     CVector3 vWorldPosition = getWorldPosition();
 
@@ -149,8 +166,6 @@ void CMesh::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
         {
             createSphere(16);
         }
-
-        updateGeometry();
     }
 }
 
@@ -202,150 +217,158 @@ void CMesh::solveLinks(C3DScene* pScene)
 
 //-------------------------------------------------------------------------------------------------
 
-void CMesh::updateGeometry(bool bComputeNormals)
+void CMesh::updateGeometry()
 {
-    QMutexLocker locker(&m_mMutex);
-
-    if (m_vVertices.count() > 0)
+    if (m_bGeometryDirty)
     {
-        // Tri des faces par matériau
-        qSort(m_vFaces);
+        QMutexLocker locker(&m_mMutex);
 
-        // Calcul des vecteurs normaux
-        if (bComputeNormals)
+        if (m_vVertices.count() > 0)
         {
+            // Tri des faces par matériau
+            qSort(m_vFaces);
+
+            // Calcul des vecteurs normaux
             computeNormals();
-        }
 
-        if (m_vMaterials.count() != m_vGLMeshData.count())
-        {
-            // Destruction des buffers de géométrie OpenGL
-            foreach (CGLMeshData* data, m_vGLMeshData)
+            if (m_vMaterials.count() != m_vGLMeshData.count())
             {
-                delete data;
+                // Destruction des buffers de géométrie OpenGL
+                foreach (CGLMeshData* data, m_vGLMeshData)
+                {
+                    delete data;
+                }
+
+                m_vGLMeshData.clear();
+
+                for (int iMaterialIndex = 0; iMaterialIndex < m_vMaterials.count(); iMaterialIndex++)
+                {
+                    m_vGLMeshData.append(new CGLMeshData(m_pScene));
+                }
             }
 
-            m_vGLMeshData.clear();
+            // Remise à zéro de la boite englobante
+            m_bBounds.prepare();
 
             for (int iMaterialIndex = 0; iMaterialIndex < m_vMaterials.count(); iMaterialIndex++)
             {
-                m_vGLMeshData.append(new CGLMeshData(m_pScene));
-            }
-        }
+                CGLMeshData* pGLMeshData = m_vGLMeshData[iMaterialIndex];
 
-        for (int iMaterialIndex = 0; iMaterialIndex < m_vMaterials.count(); iMaterialIndex++)
-        {
-            QVector<int> vFaceIndices;
+                // Les buffers doivent être retransmis à OpenGL
+                pGLMeshData->m_bNeedTransferBuffers = true;
 
-            CGLMeshData* pGLMeshData = m_vGLMeshData[iMaterialIndex];
-
-            // Les buffers doivent être retransmis à OpenGL
-            pGLMeshData->m_bNeedTransferBuffers = true;
-
-            if (m_iGLType == GL_POINTS)
-            {
-                if (iMaterialIndex == 0)
+                if (m_iGLType == GL_POINTS)
                 {
-                    pGLMeshData->m_iNumRenderPoints = m_vVertices.count();
-                    pGLMeshData->m_iNumRenderIndices = m_vVertices.count();
-
-                    // Création des buffers de géométrie OpenGL
-                    pGLMeshData->m_vRenderPoints = new CVertex[pGLMeshData->m_iNumRenderPoints];
-                    pGLMeshData->m_vRenderIndices = new GLuint[pGLMeshData->m_iNumRenderIndices];
-
-                    for (int iVertexIndex = 0; iVertexIndex < m_vVertices.count(); iVertexIndex++)
+                    if (iMaterialIndex == 0)
                     {
-                        pGLMeshData->m_vRenderPoints[iVertexIndex] = m_vVertices[iVertexIndex];
-                        pGLMeshData->m_vRenderIndices[iVertexIndex] = iVertexIndex;
-                    }
-                }
-            }
-            else
-            {
-                // Récupération des faces associées à ce matériau
-                for (int iFaceIndex = 0; iFaceIndex < m_vFaces.count(); iFaceIndex++)
-                {
-                    if (m_vFaces[iFaceIndex].getMaterialIndex() == iMaterialIndex)
-                    {
-                        vFaceIndices.append(iFaceIndex);
-                    }
-                }
-
-                if (vFaceIndices.count() > 0)
-                {
-                    // Définition des quantités
-                    pGLMeshData->m_iNumRenderPoints = m_vVertices.count();
-
-                    if (m_iGLType == GL_QUADS)
-                    {
-                        pGLMeshData->m_iNumRenderIndices = vFaceIndices.count() * 4;
-                    }
-                    else
-                    {
-                        pGLMeshData->m_iNumRenderIndices = getNumTriangleCountForFaces(vFaceIndices) * 3;
-                    }
-
-                    if (pGLMeshData->m_iNumRenderPoints > 0 && pGLMeshData->m_iNumRenderIndices > 0)
-                    {
-                        /*
-                        LOG_DEBUG(QString("CMesh::updateGeometry() : Allocating %1 vertices and %2 indices for %3")
-                            .arg(pGLMeshData->m_iNumRenderPoints)
-                            .arg(pGLMeshData->m_iNumRenderIndices)
-                            .arg(m_sName)
-                            );
-                            */
+                        pGLMeshData->m_iNumRenderPoints = m_vVertices.count();
+                        pGLMeshData->m_iNumRenderIndices = m_vVertices.count();
 
                         // Création des buffers de géométrie OpenGL
                         pGLMeshData->m_vRenderPoints = new CVertex[pGLMeshData->m_iNumRenderPoints];
                         pGLMeshData->m_vRenderIndices = new GLuint[pGLMeshData->m_iNumRenderIndices];
 
-                        // Remise à zéro de la boite englobante
-                        m_bBounds.prepare();
-
-                        // Remplissage du buffer de vertex OpenGL
-                        for (int iVertex = 0; iVertex < m_vVertices.count(); iVertex++)
+                        for (int iVertexIndex = 0; iVertexIndex < m_vVertices.count(); iVertexIndex++)
                         {
-                            pGLMeshData->m_vRenderPoints[iVertex] = m_vVertices[iVertex];
+                            pGLMeshData->m_vRenderPoints[iVertexIndex] = m_vVertices[iVertexIndex];
+                            pGLMeshData->m_vRenderIndices[iVertexIndex] = iVertexIndex;
 
                             // Check bounding box limits
-                            if (m_vVertices[iVertex].position().X < m_bBounds.minimum().X) m_bBounds.minimum().X = m_vVertices[iVertex].position().X;
-                            if (m_vVertices[iVertex].position().Y < m_bBounds.minimum().Y) m_bBounds.minimum().Y = m_vVertices[iVertex].position().Y;
-                            if (m_vVertices[iVertex].position().Z < m_bBounds.minimum().Z) m_bBounds.minimum().Z = m_vVertices[iVertex].position().Z;
-                            if (m_vVertices[iVertex].position().X > m_bBounds.maximum().X) m_bBounds.maximum().X = m_vVertices[iVertex].position().X;
-                            if (m_vVertices[iVertex].position().Y > m_bBounds.maximum().Y) m_bBounds.maximum().Y = m_vVertices[iVertex].position().Y;
-                            if (m_vVertices[iVertex].position().Z > m_bBounds.maximum().Z) m_bBounds.maximum().Z = m_vVertices[iVertex].position().Z;
+                            if (m_vVertices[iVertexIndex].position().X < m_bBounds.minimum().X) m_bBounds.minimum().X = m_vVertices[iVertexIndex].position().X;
+                            if (m_vVertices[iVertexIndex].position().Y < m_bBounds.minimum().Y) m_bBounds.minimum().Y = m_vVertices[iVertexIndex].position().Y;
+                            if (m_vVertices[iVertexIndex].position().Z < m_bBounds.minimum().Z) m_bBounds.minimum().Z = m_vVertices[iVertexIndex].position().Z;
+                            if (m_vVertices[iVertexIndex].position().X > m_bBounds.maximum().X) m_bBounds.maximum().X = m_vVertices[iVertexIndex].position().X;
+                            if (m_vVertices[iVertexIndex].position().Y > m_bBounds.maximum().Y) m_bBounds.maximum().Y = m_vVertices[iVertexIndex].position().Y;
+                            if (m_vVertices[iVertexIndex].position().Z > m_bBounds.maximum().Z) m_bBounds.maximum().Z = m_vVertices[iVertexIndex].position().Z;
                         }
+                    }
+                }
+                else
+                {
+                    QVector<int> vFaceIndices;
 
-                        m_bBounds.expand(CVector3(0.1, 0.1, 0.1));
+                    // Récupération des faces associées à ce matériau
+                    for (int iFaceIndex = 0; iFaceIndex < m_vFaces.count(); iFaceIndex++)
+                    {
+                        if (m_vFaces[iFaceIndex].getMaterialIndex() == iMaterialIndex)
+                        {
+                            vFaceIndices.append(iFaceIndex);
+                        }
+                    }
 
-                        // Remplissage du buffer d'indices OpenGL
-                        int iIndiceIndex = 0;
+                    if (vFaceIndices.count() > 0)
+                    {
+                        // Définition des quantités
+                        pGLMeshData->m_iNumRenderPoints = m_vVertices.count();
 
                         if (m_iGLType == GL_QUADS)
                         {
-                            for (int iFaceIndex = 0; iFaceIndex < vFaceIndices.count(); iFaceIndex++)
-                            {
-                                CFace* pFace = &(m_vFaces[vFaceIndices[iFaceIndex]]);
-
-                                pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[0];
-                                pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[1];
-                                pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[2];
-                                pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[3];
-                            }
+                            pGLMeshData->m_iNumRenderIndices = vFaceIndices.count() * 4;
                         }
                         else
                         {
-                            for (int iFaceIndex = 0; iFaceIndex < vFaceIndices.count(); iFaceIndex++)
-                            {
-                                CFace* pFace = &(m_vFaces[vFaceIndices[iFaceIndex]]);
+                            pGLMeshData->m_iNumRenderIndices = getNumTriangleCountForFaces(vFaceIndices) * 3;
+                        }
 
-                                if (pFace->getIndices().count() > 2)
+                        if (pGLMeshData->m_iNumRenderPoints > 0 && pGLMeshData->m_iNumRenderIndices > 0)
+                        {
+                            /*
+                            LOG_DEBUG(QString("CMesh::updateGeometry() : Allocating %1 vertices and %2 indices for %3")
+                                .arg(pGLMeshData->m_iNumRenderPoints)
+                                .arg(pGLMeshData->m_iNumRenderIndices)
+                                .arg(m_sName)
+                                );
+                                */
+
+                            // Création des buffers de géométrie OpenGL
+                            pGLMeshData->m_vRenderPoints = new CVertex[pGLMeshData->m_iNumRenderPoints];
+                            pGLMeshData->m_vRenderIndices = new GLuint[pGLMeshData->m_iNumRenderIndices];
+
+                            // Remplissage du buffer de vertex OpenGL
+                            for (int iVertex = 0; iVertex < m_vVertices.count(); iVertex++)
+                            {
+                                pGLMeshData->m_vRenderPoints[iVertex] = m_vVertices[iVertex];
+
+                                // Check bounding box limits
+                                if (m_vVertices[iVertex].position().X < m_bBounds.minimum().X) m_bBounds.minimum().X = m_vVertices[iVertex].position().X;
+                                if (m_vVertices[iVertex].position().Y < m_bBounds.minimum().Y) m_bBounds.minimum().Y = m_vVertices[iVertex].position().Y;
+                                if (m_vVertices[iVertex].position().Z < m_bBounds.minimum().Z) m_bBounds.minimum().Z = m_vVertices[iVertex].position().Z;
+                                if (m_vVertices[iVertex].position().X > m_bBounds.maximum().X) m_bBounds.maximum().X = m_vVertices[iVertex].position().X;
+                                if (m_vVertices[iVertex].position().Y > m_bBounds.maximum().Y) m_bBounds.maximum().Y = m_vVertices[iVertex].position().Y;
+                                if (m_vVertices[iVertex].position().Z > m_bBounds.maximum().Z) m_bBounds.maximum().Z = m_vVertices[iVertex].position().Z;
+                            }
+
+                            m_bBounds.expand(CVector3(0.1, 0.1, 0.1));
+
+                            // Remplissage du buffer d'indices OpenGL
+                            int iIndiceIndex = 0;
+
+                            if (m_iGLType == GL_QUADS)
+                            {
+                                for (int iFaceIndex = 0; iFaceIndex < vFaceIndices.count(); iFaceIndex++)
                                 {
-                                    for (int iIndex = 2; iIndex < pFace->getIndices().count(); iIndex++)
+                                    CFace* pFace = &(m_vFaces[vFaceIndices[iFaceIndex]]);
+
+                                    pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[0];
+                                    pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[1];
+                                    pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[2];
+                                    pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[3];
+                                }
+                            }
+                            else
+                            {
+                                for (int iFaceIndex = 0; iFaceIndex < vFaceIndices.count(); iFaceIndex++)
+                                {
+                                    CFace* pFace = &(m_vFaces[vFaceIndices[iFaceIndex]]);
+
+                                    if (pFace->getIndices().count() > 2)
                                     {
-                                        pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[0];
-                                        pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[iIndex - 1];
-                                        pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[iIndex];
+                                        for (int iIndex = 2; iIndex < pFace->getIndices().count(); iIndex++)
+                                        {
+                                            pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[0];
+                                            pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[iIndex - 1];
+                                            pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[iIndex];
+                                        }
                                     }
                                 }
                             }
@@ -353,18 +376,20 @@ void CMesh::updateGeometry(bool bComputeNormals)
                     }
                 }
             }
+
+            // Partitionnement spatial
+            if (m_bUseSpacePartitionning)
+            {
+                // Effacement des partitions
+                m_mpPartitions.clear();
+                m_mpPartitions = CMeshPartition(m_bBounds);
+
+                // Création des partitions
+                createPartition(m_mpPartitions, 0);
+            }
         }
 
-        // Partitionnement spatial
-        if (m_bUseSpacePartitionning)
-        {
-            // Effacement des partitions
-            m_mpPartitions.clear();
-            m_mpPartitions = CMeshPartition(m_bBounds);
-
-            // Création des partitions
-            createPartition(m_mpPartitions, 0);
-        }
+        m_bGeometryDirty = false;
     }
 }
 
@@ -458,6 +483,8 @@ void CMesh::isolateVertices()
             m_vVertices.append(CVertex(vVertices[iVertexIndex]));
         }
     }
+
+    m_bGeometryDirty = true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -552,6 +579,8 @@ void CMesh::splitVerticesBySmoothingGroup()
             m_vVertices[iVertexIndex].m_vVertexIndicesForGroup.clear();
         }
     }
+
+    m_bGeometryDirty = true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -578,7 +607,7 @@ void CMesh::flipNormals()
         }
     }
 
-    updateGeometry();
+    m_bGeometryDirty = true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -621,36 +650,50 @@ int CMesh::getNumTriangleCountForFaces(const QVector<int>& vFaceIndices)
 
 void CMesh::computeNormals()
 {
-    // Remise à zéro des normales de polygone
-    for (int Index = 0; Index < m_vVertices.count(); Index++)
+    if (m_iGLType == GL_POINTS)
     {
-        m_vVertices[Index].normal() = CVector3(0.0, 0.0, 0.0);
-        m_vVertices[Index].tangent() = CVector3(0.0, 0.0, 0.0);
-        m_vVertices[Index].normalDivider() = 0.0;
-    }
-
-    // Parcours de tous les polygones
-    for (int FaceIndex = 0; FaceIndex < m_vFaces.count(); FaceIndex++)
-    {
-        // Calcul du vecteur normal du polygone
-        m_vFaces[FaceIndex].computeNormal();
-
-        // Traitement de chaque vertex du polygone
-        foreach (int VertexIndex, m_vFaces[FaceIndex].getIndices())
+        /*
+        for (int Index = 0; Index < m_vVertices.count(); Index++)
         {
-            m_vVertices[VertexIndex].normal() += m_vFaces[FaceIndex].getNormal();
-            m_vVertices[VertexIndex].tangent() += m_vFaces[FaceIndex].getTangent();
-            m_vVertices[VertexIndex].normalDivider() += 1.0;
+            m_vVertices[Index].normal() = CVector3(0.0, 1.0, 0.0);
+            m_vVertices[Index].tangent() = CVector3(0.0, 1.0, 0.0);
+            m_vVertices[Index].normalDivider() = 0.0;
         }
+        */
     }
-
-    // Division des normales et tangentes de chaque vertex
-    for (int Index = 0; Index < m_vVertices.count(); Index++)
+    else
     {
-        if (m_vVertices[Index].normalDivider() > 0.0)
+        // Remise à zéro des normales de polygone
+        for (int Index = 0; Index < m_vVertices.count(); Index++)
         {
-            m_vVertices[Index].normal() /= m_vVertices[Index].normalDivider();
-            m_vVertices[Index].tangent() /= m_vVertices[Index].normalDivider();
+            m_vVertices[Index].normal() = CVector3(0.0, 0.0, 0.0);
+            m_vVertices[Index].tangent() = CVector3(0.0, 0.0, 0.0);
+            m_vVertices[Index].normalDivider() = 0.0;
+        }
+
+        // Parcours de tous les polygones
+        for (int FaceIndex = 0; FaceIndex < m_vFaces.count(); FaceIndex++)
+        {
+            // Calcul du vecteur normal du polygone
+            m_vFaces[FaceIndex].computeNormal();
+
+            // Traitement de chaque vertex du polygone
+            foreach (int VertexIndex, m_vFaces[FaceIndex].getIndices())
+            {
+                m_vVertices[VertexIndex].normal() += m_vFaces[FaceIndex].getNormal();
+                m_vVertices[VertexIndex].tangent() += m_vFaces[FaceIndex].getTangent();
+                m_vVertices[VertexIndex].normalDivider() += 1.0;
+            }
+        }
+
+        // Division des normales et tangentes de chaque vertex
+        for (int Index = 0; Index < m_vVertices.count(); Index++)
+        {
+            if (m_vVertices[Index].normalDivider() > 0.0)
+            {
+                m_vVertices[Index].normal() /= m_vVertices[Index].normalDivider();
+                m_vVertices[Index].tangent() /= m_vVertices[Index].normalDivider();
+            }
         }
     }
 }
@@ -755,6 +798,8 @@ void CMesh::createSphere(int iNumSegments)
 
         m_vFaces.append(CFace(this, v1, v2, v3));
     }
+
+    m_bGeometryDirty = true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -848,6 +893,8 @@ void CMesh::createSpherePart(
 
         iVertexOffset += (iPanSegments + 1);
     }
+
+    m_bGeometryDirty = true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -968,6 +1015,8 @@ void CMesh::createAdaptiveTriPatch(Math::CVector3 vCenter, int iNumIterations)
 
         dDistance *= 0.8;
     }
+
+    m_bGeometryDirty = true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1086,6 +1135,8 @@ void CMesh::createAdaptiveQuadPatch(Math::CVector3 vCenter, int iNumIterations)
 
         dDistance *= 0.65;
     }
+
+    m_bGeometryDirty = true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1160,6 +1211,8 @@ void CMesh::createQuadPatch(int iNumVerts, int iNumSkirtVerts, bool bDoubleSided
             }
         }
     }
+
+    m_bGeometryDirty = true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1207,6 +1260,8 @@ void CMesh::createCircularQuadPatch(Math::CVector3 vCenter, int iNumVerts)
             m_vFaces.append(CFace(this, v1, v2, v3, v4));
         }
     }
+
+    m_bGeometryDirty = true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1240,8 +1295,7 @@ void CMesh::createSurfaceFromFFD(const QVector<Math::CVector3>& vFFDFrom, const 
         }
     }
 
-    // Mise à jour des dépendances de géométrie
-    updateGeometry();
+    m_bGeometryDirty = true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1340,6 +1394,8 @@ void CMesh::subdivideQuads(int iNumIterations)
             m_vFaces.append(face);
         }
     }
+
+    m_bGeometryDirty = true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1372,7 +1428,6 @@ CComponent* CMesh::createMultiTextureSphere(C3DScene* pScene, int iNumSegments, 
                         );
 
             pMesh->setParent(pComponent);
-            pMesh->updateGeometry();
         }
     }
 
@@ -1402,10 +1457,7 @@ void CMesh::merge(const CMesh& other, bool bUpdateGeometry)
         m_vFaces.append(CFace(this, vNewIndices));
     }
 
-    if (bUpdateGeometry)
-    {
-        updateGeometry(true);
-    }
+    m_bGeometryDirty = true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1418,6 +1470,8 @@ void CMesh::transformVertices(const CMatrix4& matrix)
     {
         m_vVertices[iIndex].position() = matrix * m_vVertices[iIndex].position();
     }
+
+    m_bGeometryDirty = true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1428,6 +1482,8 @@ void CMesh::translateUVs(CVector2 vTranslate)
     {
         m_vVertices[iIndex].texCoord() = m_vVertices[iIndex].texCoord() + vTranslate;
     }
+
+    m_bGeometryDirty = true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1438,11 +1494,13 @@ void CMesh::scaleUVs(CVector2 vScale)
     {
         m_vVertices[iIndex].texCoord() = m_vVertices[iIndex].texCoord() * vScale;
     }
+
+    m_bGeometryDirty = true;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-RayTracingResult CMesh::intersect(CRay3 ray) const
+RayTracingResult CMesh::intersect(CRay3 ray)
 {
     RayTracingResult dReturnResult(Q3D_INFINITY, this);
 
@@ -1494,7 +1552,7 @@ RayTracingResult CMesh::intersect(CRay3 ray) const
 
 //-------------------------------------------------------------------------------------------------
 
-RayTracingResult CMesh::intersectRecurse(const CMeshPartition& mpPartition, CRay3 ray) const
+RayTracingResult CMesh::intersectRecurse(CMeshPartition& mpPartition, CRay3 ray)
 {
     RayTracingResult dReturnResult(Q3D_INFINITY);
     double dDistanceToBox = mpPartition.getBounds().intersect(ray).m_dDistance;
@@ -1510,7 +1568,7 @@ RayTracingResult CMesh::intersectRecurse(const CMeshPartition& mpPartition, CRay
     {
         if (mpPartition.getChildren().count() > 0)
         {
-            foreach (const CMeshPartition& mpChild, mpPartition.getChildren())
+            foreach (CMeshPartition mpChild, mpPartition.getChildren())
             {
                 RayTracingResult dNewResult = intersectRecurse(mpChild, ray);
 
@@ -1560,6 +1618,10 @@ RayTracingResult CMesh::intersectRecurse(const CMeshPartition& mpPartition, CRay
 
 void CMesh::paint(CRenderContext* pContext)
 {
+    QMutexLocker locker(&m_mMutex);
+
+    updateGeometry();
+
     CVector3 vPosition = pContext->internalCameraMatrix() * getWorldBounds().center();
     double dRadius = getWorldBounds().radius();
 
@@ -1569,8 +1631,6 @@ void CMesh::paint(CRenderContext* pContext)
             m_vGLMeshData.count() > 0
             )
     {
-        QMutexLocker locker(&m_mMutex);
-
         // Create and set transform matrices
         CVector3 WorldPosition = getWorldPosition() - pContext->scene()->getWorldOrigin();
         CVector3 WorldRotation = getWorldRotation();

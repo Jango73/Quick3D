@@ -1,5 +1,6 @@
 
 #include "CBox.h"
+#include "C3DScene.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -22,6 +23,7 @@ CBox::CBox(C3DScene* pScene, double dMaxDistance)
 
     m_iGLType = GL_QUADS;
 
+    setMaterial(m_pScene->getRessourcesManager()->getDefaultMaterial());
     getMaterials()[0]->setIRFactor(0.4);
 
     m_vFaces.append(CFace(this,  0,  1,  2,  3));
@@ -110,5 +112,5 @@ void CBox::fillVertices()
     m_vVertices.append(CVertex(CVector3(m_vMaximum.X, m_vMinimum.Y, m_vMinimum.Z), CVector2(COORD_STEP * 2.0, COORD_STEP * 0.0)));
     m_vVertices.append(CVertex(CVector3(m_vMinimum.X, m_vMinimum.Y, m_vMinimum.Z), CVector2(COORD_STEP * 1.0, COORD_STEP * 0.0)));
 
-    updateGeometry();
+    setGeometryDirty(true);
 }

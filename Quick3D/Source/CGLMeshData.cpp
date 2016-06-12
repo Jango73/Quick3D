@@ -61,6 +61,8 @@ void CGLMeshData::paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolu
     // If at least one point to render
     if (m_iNumRenderPoints > 0 && m_iNumRenderIndices > 0 && m_iVBO[0] > 0 && m_iVBO[1] > 0)
     {
+        m_pScene->makeCurrentRenderingContext();
+
         pContext->m_iNumMeshesDrawn++;
 
         // If program ok...

@@ -89,6 +89,7 @@
 #define ParamName_BranchRadiusScale         "BranchRadiusScale"
 #define ParamName_Building                  "Building"
 #define ParamName_Buildings                 "Buildings"
+#define ParamName_Bush                      "Bush"
 #define ParamName_CenterOfMass				"CenterOfMass"
 #define ParamName_Cast_Shadows              "CastShadows"
 #define ParamName_Class						"Class"
@@ -187,7 +188,8 @@
 //-------------------------------------------------------------------------------------------------
 // Noms de shaders
 
-#define SP_Standard		"Standard"
+#define SP_Standard_Mesh                    "Standard_Mesh"
+#define SP_Standard_Billboard               "Standard_Billboard"
 
 //-------------------------------------------------------------------------------------------------
 // Evènements Q3D

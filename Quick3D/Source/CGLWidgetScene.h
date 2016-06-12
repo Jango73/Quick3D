@@ -21,41 +21,41 @@ class QUICK3D_EXPORT CGLWidgetScene : public QGLWidget, public C3DScene
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//! Constructeur
-	CGLWidgetScene(bool bForDisplay = true);
+    //! Constructeur
+    CGLWidgetScene(bool bForDisplay = true);
 
-	//! Destructeur
-	virtual ~CGLWidgetScene();
+    //! Destructeur
+    virtual ~CGLWidgetScene();
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes héritées
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes héritées
+    //-------------------------------------------------------------------------------------------------
 
-	//! Rendu
-	virtual void paintGL();
+    //! Rendu
+    virtual void paintGL();
 
-	//!
-	virtual void init(QVector<CComponent*> vComponents);
+    //!
+    virtual void init(QVector<CComponent*> vComponents);
 
-	//!
-	virtual void initShaders();
+    //!
+    virtual void initShaders();
 
-	//!
-	virtual void setupEnvironment(CRenderContext* pContext, QGLShaderProgram* pProgram, bool bBackgroundItem);
+    //!
+    virtual void setupEnvironment(CRenderContext* pContext, QGLShaderProgram* pProgram, bool bBackgroundItem);
 
-	//!
-	virtual void setupLights(CRenderContext* pContext);
+    //!
+    virtual void setupLights(CRenderContext* pContext);
 
-	//!
-	virtual void makeCurrentRenderingContext();
+    //!
+    virtual void makeCurrentRenderingContext();
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 };

@@ -104,10 +104,10 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    virtual CBoundingBox getBounds() const;
+    virtual CBoundingBox getBounds();
 
     //!
-    virtual CBoundingBox getWorldBounds() const;
+    virtual CBoundingBox getWorldBounds();
 
     //!
     virtual CBoundingBox getBuildWorldBounds();
@@ -122,7 +122,7 @@ public:
     virtual void flatten(const CGeoloc& gPosition, double dRadius);
 
     //! Calcul d'intersection avec un rayon
-    virtual Math::RayTracingResult intersect(Math::CRay3 ray) const;
+    virtual Math::RayTracingResult intersect(Math::CRay3 ray);
 
     //! Dump du contenu dans un flux
     virtual void dump(QTextStream& stream, int iIdent);
@@ -156,7 +156,10 @@ public:
     virtual void work();
 
     //!
-    void placeTree(CGeoloc gPosition, double dRadius, int iTreeIndex);
+    void placeTree(CGeoloc gPosition, double dRadius, int iVegetIndex);
+
+    //!
+    void placeBush(CGeoloc gPosition, double dRadius, int iVegetIndex);
 
     //!
     void placeBuilding(CGeoloc gPosition, double dRadius, int iBuildingIndex);
@@ -180,10 +183,11 @@ protected:
     CTerrain*                       m_pWater;
     CBox*                           m_mBoundingBoxVisual;
     QVector<CBoundedMeshInstances*> m_vMeshes;
-    QDateTime						m_tLastUsed;
-    QMutex							m_mMutex;
-    double							m_dDistance;
-    bool							m_bOK;
+    QMap<QString, CMesh*>           m_vBushMeshes;
+    QDateTime                       m_tLastUsed;
+    QMutex                          m_mMutex;
+    double                          m_dDistance;
+    bool                            m_bOK;
 
-    static int						m_iNumWorldChunks;
+    static int                      m_iNumWorldChunks;
 };

@@ -61,10 +61,10 @@ public:
     virtual QString getClassName() const { return ClassName_CMeshInstance; }
 
     //!
-    virtual CBoundingBox getBounds() const;
+    virtual CBoundingBox getBounds();
 
     //!
-    virtual CBoundingBox getWorldBounds() const;
+    virtual CBoundingBox getWorldBounds();
 
     //! Renders the mesh
     virtual void paint(CRenderContext* pContext);

@@ -54,8 +54,6 @@ uniform sampler2D		u_texture_diffuse_4;
 uniform sampler2D		u_texture_diffuse_5;
 uniform sampler2D		u_texture_diffuse_6;
 uniform sampler2D		u_texture_diffuse_7;
-uniform sampler2D		u_texture_diffuse_8;
-uniform sampler2D		u_texture_diffuse_9;
 uniform sampler2D		u_shadow_texture;
 
 uniform vec4			u_material_ambient;
@@ -105,8 +103,6 @@ varying float			v_difftex_weight_4;
 varying float			v_difftex_weight_5;
 varying float			v_difftex_weight_6;
 varying float			v_difftex_weight_7;
-varying float			v_difftex_weight_8;
-varying float			v_difftex_weight_9;
 
 // Incoming data from vertices
 
@@ -242,11 +238,8 @@ void main()
         v_difftex_weight_5 = a_difftext_weight_3_4_5.z;
         v_difftex_weight_6 = a_difftext_weight_6_7_8.x;
         v_difftex_weight_7 = a_difftext_weight_6_7_8.y;
-        v_difftex_weight_8 = 0.0;
-        v_difftex_weight_9 = 0.0;
     }
 
     // Vertex screen position
-    // gl_Position = u_camera_projection_matrix * (u_camera_matrix * vertex_pos);
     gl_Position = mvp * vec4(a_position, 1.0);
 }

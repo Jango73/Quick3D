@@ -95,8 +95,6 @@ CMesh* CTreeGenerator::createTree(
         pMesh->getVertices()[iVertexIndex].position() = CVector3(vPosition.X + dX, (vPosition.Y + dY) - VERT_OFFSET, vPosition.Z + dZ);
     }
 
-    pMesh->updateGeometry();
-
     return pMesh;
 }
 
@@ -235,7 +233,7 @@ void CTreeGenerator::addLeaves(
 
             CMesh mLeaf(m_pScene);
             mLeaf.createSurfaceFromFFD(vFFDFrom, vFFDTo, iNumVerts);
-            mLeaf.updateGeometry();
+            // mLeaf.updateGeometry();
             mLeaf.transformVertices(CMatrix4().MakeTranslation(CVector3(0.0, 0.0, 0.5)));
             mLeaf.transformVertices(CMatrix4().MakeScale(CVector3(dTrunkLength * 0.1, dTrunkLength * 0.1, dTrunkLength * 0.1)));
 

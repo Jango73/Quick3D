@@ -145,17 +145,35 @@ void CGLWidgetScene::initShaders()
         setlocale(LC_NUMERIC, "C");
 
         //-----------------------------------------------
-        // Standard
+        // Standard mesh
 
         pProgram = new QGLShaderProgram();
 
         pProgram->addShaderFromSourceCode(QGLShader::Vertex, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/VS_Standard.c"));
-        pProgram->addShaderFromSourceCode(QGLShader::Fragment, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/FS_Standard.c"));
         pProgram->addShaderFromSourceCode(QGLShader::Geometry, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/GS_Standard.c"));
+        pProgram->addShaderFromSourceCode(QGLShader::Fragment, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/FS_Standard.c"));
 
         if (pProgram->link())
         {
-            m_vShaders->addShader(SP_Standard, pProgram);
+            m_vShaders->addShader(SP_Standard_Mesh, pProgram);
+        }
+        else
+        {
+            delete pProgram;
+        }
+
+        //-----------------------------------------------
+        // Standard billboard
+
+        pProgram = new QGLShaderProgram();
+
+        pProgram->addShaderFromSourceCode(QGLShader::Vertex, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/VS_Standard.c"));
+        pProgram->addShaderFromSourceCode(QGLShader::Geometry, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/GS_Standard_Billboard.c"));
+        pProgram->addShaderFromSourceCode(QGLShader::Fragment, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/FS_Standard.c"));
+
+        if (pProgram->link())
+        {
+            m_vShaders->addShader(SP_Standard_Billboard, pProgram);
         }
         else
         {

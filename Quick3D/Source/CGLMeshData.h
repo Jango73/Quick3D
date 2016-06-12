@@ -25,11 +25,29 @@ class QUICK3D_EXPORT CGLMeshData
 {
 public:
 
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    // Constructors and destructor
+    //-------------------------------------------------------------------------------------------------
+
+    //!
     CGLMeshData(C3DScene* pScene);
 
+    //!
     ~CGLMeshData();
 
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    // Control methods
+    //-------------------------------------------------------------------------------------------------
+
+    //!
     void paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolute, QGLShaderProgram* pProgram, int iGLType);
+
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    // Properties
+    //-------------------------------------------------------------------------------------------------
 
     C3DScene*       m_pScene;
     GLuint          m_iNumRenderPoints;			// Nombre de sommets transférés à OpenGL

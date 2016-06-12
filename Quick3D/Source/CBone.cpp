@@ -33,9 +33,9 @@ CBone::~CBone()
 
 //-------------------------------------------------------------------------------------------------
 
-void CBone::loadParameters(CXMLNode xComponent)
+void CBone::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
-    CComponent::loadParameters(xComponent);
+    CComponent::loadParameters(sBaseFile, xComponent);
 
     CXMLNode xHeadNode = xComponent.getNodeByTagName("Head");
     CXMLNode xTailNode = xComponent.getNodeByTagName("Tail");

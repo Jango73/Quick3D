@@ -30,9 +30,9 @@ CHydraulicComponent::~CHydraulicComponent()
 
 //-------------------------------------------------------------------------------------------------
 
-void CHydraulicComponent::loadParameters(CXMLNode xComponent)
+void CHydraulicComponent::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
-    CComponent::loadParameters(xComponent);
+    CComponent::loadParameters(sBaseFile, xComponent);
 
     QVector<CXMLNode> vInputsNodes = xComponent.getNodesByTagName(ParamName_PowerInput);
 

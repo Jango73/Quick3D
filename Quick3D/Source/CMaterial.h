@@ -9,11 +9,10 @@
 #include <QtOpenGL/QGLShaderProgram>
 #include <QGLFramebufferObject>
 
-// Fondations
+// Application
 #include "CVector4.h"
 #include "CGeoloc.h"
-
-// Application
+#include "ILoadable.h"
 #include "CQ3DConstants.h"
 #include "CVertex.h"
 #include "CRenderContext.h"
@@ -25,7 +24,7 @@ class C3DScene;
 
 //-------------------------------------------------------------------------------------------------
 
-class QUICK3D_EXPORT CMaterial : public QObject
+class QUICK3D_EXPORT CMaterial : public QObject, public ILoadable
 {
     Q_OBJECT
 
@@ -33,6 +32,7 @@ public:
 
     //-------------------------------------------------------------------------------------------------
     // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //!
@@ -107,23 +107,33 @@ public:
     virtual Math::CVector2 getTexCoords(const CGeoloc& gPosition, int iLevel);
 
     //-------------------------------------------------------------------------------------------------
+    // Méthodes héritées
+    // Inherited methods
+    //-------------------------------------------------------------------------------------------------
+
+    //! Charge les propriétés de l'objet depuis un CXMLNode
+    //! Loads the object's properties from a CXMLNode
+    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
+
+    //-------------------------------------------------------------------------------------------------
     // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //!
     virtual void update(double dDeltaTime);
 
     //! Ajoute l'image spécifiée en texture diffuse
-    void addDiffuseTexture(QString sResourceName);
+    void addDiffuseTexture(const QString& sBaseFile, const QString& sResourceName);
 
     //! Ajoute l'image spécifiée en texture diffuse
-    void addDiffuseTexture(QString sName, const QImage& imgTexture);
+    void addDiffuseTexture(const QString& sName, const QImage& imgTexture);
 
     //! Ajoute l'image spécifiée en texture diffuse
-    void addDynamicDiffuseTexture(QString sResourceName);
+    void addDynamicDiffuseTexture(const QString& sBaseFile, const QString& sResourceName);
 
     //!
-    void addDynamicDiffuseTexture(QString sName, const QImage& imgTexture);
+    void addDynamicDiffuseTexture(const QString& sName, const QImage& imgTexture);
 
     //! Créé une texture d'ombre portée
     void createShadowTexture();
@@ -155,6 +165,7 @@ public:
 
     //-------------------------------------------------------------------------------------------------
     // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:

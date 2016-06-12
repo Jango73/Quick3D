@@ -71,9 +71,9 @@ void CWing::setFlapsPosition_norm(double dValue)
 
 //-------------------------------------------------------------------------------------------------
 
-void CWing::loadParameters(CXMLNode xComponent)
+void CWing::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
-    CPhysicalComponent::loadParameters(xComponent);
+    CPhysicalComponent::loadParameters(sBaseFile, xComponent);
 
     CXMLNode xPhysicsNode = xComponent.getNodeByTagName(ParamName_Physics);
     CXMLNode xAileronPositionNode = xComponent.getNodeByTagName(ParamName_AileronPosition);

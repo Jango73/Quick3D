@@ -144,7 +144,7 @@ public:
     virtual bool isCamera() const { return true; }
 
     //! Charge les paramètres de cet objet d'après le noeud XML fourni
-    virtual void loadParameters(CXMLNode xComponent);
+    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes de contrôle

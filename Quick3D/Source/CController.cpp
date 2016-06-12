@@ -48,9 +48,9 @@ CController::~CController()
 
 //-------------------------------------------------------------------------------------------------
 
-void CController::loadParameters(CXMLNode xComponent)
+void CController::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
-    CComponent::loadParameters(xComponent);
+    CComponent::loadParameters(sBaseFile, xComponent);
 
     m_rPositionTarget.setName(xComponent.attributes()[ParamName_PositionTarget]);
     m_rRotationTarget.setName(xComponent.attributes()[ParamName_RotationTarget]);

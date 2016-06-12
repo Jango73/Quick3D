@@ -29,9 +29,9 @@ CAirbusController::~CAirbusController()
 
 //-------------------------------------------------------------------------------------------------
 
-void CAirbusController::loadParameters(CXMLNode xNode)
+void CAirbusController::loadParameters(const QString& sBaseFile, CXMLNode xNode)
 {
-    CAircraftController::loadParameters(xNode);
+    CAircraftController::loadParameters(sBaseFile, xNode);
 
     m_rFCU.setName(xNode.attributes()["FCU"]);
 }

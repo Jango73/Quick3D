@@ -19,13 +19,13 @@ CQ3DLoader::CQ3DLoader()
 
 //-------------------------------------------------------------------------------------------------
 
-void CQ3DLoader::load(C3DScene* pScene, CMesh* pMesh, QString sText)
+void CQ3DLoader::load(const QString& sBaseFile, C3DScene* pScene, CMesh* pMesh, QString sText)
 {
     CXMLNode xNode = CXMLNode::parseXML(sText);
 
     QVector<QSharedPointer<CMaterial> > vMaterials;
 
-    loadComponent(pScene, pMesh, xNode, vMaterials);
+    loadComponent(sBaseFile, pScene, pMesh, xNode, vMaterials);
 
     // Elaboration de la boite englobante
 
@@ -40,6 +40,7 @@ void CQ3DLoader::load(C3DScene* pScene, CMesh* pMesh, QString sText)
 //-------------------------------------------------------------------------------------------------
 
 void CQ3DLoader::loadComponent(
+        const QString& sBaseFile,
         C3DScene* pScene,
         CMesh* pMesh,
         CXMLNode xComponent,
@@ -91,50 +92,7 @@ void CQ3DLoader::loadComponent(
 
         CMaterial* pNewMaterial = new CMaterial(pScene, sMaterialName);
 
-        // Lecture couleur ambiante
-        CXMLNode xAmbient = xMaterial.getNodeByTagName(ParamName_Ambient);
-
-        // Lecture couleur diffuse
-        CXMLNode xDiffuse = xMaterial.getNodeByTagName(ParamName_Diffuse);
-
-        // Lecture couleur spéculaire
-        CXMLNode xSpecular = xMaterial.getNodeByTagName(ParamName_Specular);
-
-        if (xDiffuse.isEmpty() == false)
-        {
-            pNewMaterial->getAmbient().X = xAmbient.attributes()[ParamName_r].toDouble();
-            pNewMaterial->getAmbient().Y = xAmbient.attributes()[ParamName_g].toDouble();
-            pNewMaterial->getAmbient().Z = xAmbient.attributes()[ParamName_b].toDouble();
-
-            pNewMaterial->getDiffuse().X = xDiffuse.attributes()[ParamName_r].toDouble();
-            pNewMaterial->getDiffuse().Y = xDiffuse.attributes()[ParamName_g].toDouble();
-            pNewMaterial->getDiffuse().Z = xDiffuse.attributes()[ParamName_b].toDouble();
-
-            QString sTextureName = xDiffuse.attributes()[ParamName_Map];
-
-            if (sTextureName.isEmpty() == false)
-            {
-                QString sFileName = QFileInfo(sTextureName).fileName();
-
-                if (sFileName.startsWith(ParamName_DynTex))
-                {
-                    pNewMaterial->addDynamicDiffuseTexture(sTextureName);
-                }
-                else
-                {
-                    pNewMaterial->addDiffuseTexture(sTextureName);
-                }
-            }
-        }
-
-        if (xSpecular.isEmpty() == false)
-        {
-            double dIntensity = xSpecular.attributes()[ParamName_Intensity].toDouble();
-            pNewMaterial->getSpecular().X = xSpecular.attributes()[ParamName_r].toDouble() * dIntensity;
-            pNewMaterial->getSpecular().Y = xSpecular.attributes()[ParamName_g].toDouble() * dIntensity;
-            pNewMaterial->getSpecular().Z = xSpecular.attributes()[ParamName_b].toDouble() * dIntensity;
-            pNewMaterial->setShininess(xSpecular.attributes()[ParamName_Hardness].toDouble());
-        }
+        pNewMaterial->loadParameters(sBaseFile, xMaterial);
 
         vMaterials.append(QSharedPointer<CMaterial>(pNewMaterial));
     }
@@ -227,7 +185,7 @@ void CQ3DLoader::loadComponent(
     {
         CMesh* pChildMesh = new CMesh(pScene);
 
-        loadComponent(pScene, pChildMesh, xChild, vMaterials, pMesh);
+        loadComponent(sBaseFile, pScene, pChildMesh, xChild, vMaterials, pMesh);
     }
 }
 

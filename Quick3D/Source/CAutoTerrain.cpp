@@ -118,9 +118,9 @@ void CAutoTerrain::setTerrainResolution(int value)
 /*!
     Loads the properties of this terrain from \a xComponent.
 */
-void CAutoTerrain::loadParameters(CXMLNode xComponent)
+void CAutoTerrain::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
-    CComponent::loadParameters(xComponent);
+    CComponent::loadParameters(sBaseFile, xComponent);
 
     m_xParameters = xComponent.getNodeByTagName(ParamName_Parameters);
 
@@ -176,15 +176,15 @@ void CAutoTerrain::loadParameters(CXMLNode xComponent)
 
         m_pMaterial->setIRFactor(0.2);
 
-        m_pMaterial->addDiffuseTexture("Textures/Stone01.jpg");
-        m_pMaterial->addDiffuseTexture("Textures/Stone02.jpg");
-        m_pMaterial->addDiffuseTexture("Textures/Dirt01.jpg");
-        m_pMaterial->addDiffuseTexture("Textures/Dirt02.jpg");
-        m_pMaterial->addDiffuseTexture("Textures/Sand01.jpg");
-        m_pMaterial->addDiffuseTexture("Textures/Snow01.jpg");
-        m_pMaterial->addDiffuseTexture("Textures/Grass01.jpg");
-        m_pMaterial->addDiffuseTexture("Textures/Grass02.jpg");
-        m_pMaterial->addDiffuseTexture("Textures/GrassDecal.png");
+        m_pMaterial->addDiffuseTexture(sBaseFile, "Textures/Stone01.jpg");
+        m_pMaterial->addDiffuseTexture(sBaseFile, "Textures/Stone02.jpg");
+        m_pMaterial->addDiffuseTexture(sBaseFile, "Textures/Dirt01.jpg");
+        m_pMaterial->addDiffuseTexture(sBaseFile, "Textures/Dirt02.jpg");
+        m_pMaterial->addDiffuseTexture(sBaseFile, "Textures/Sand01.jpg");
+        m_pMaterial->addDiffuseTexture(sBaseFile, "Textures/Snow01.jpg");
+        m_pMaterial->addDiffuseTexture(sBaseFile, "Textures/Grass01.jpg");
+        m_pMaterial->addDiffuseTexture(sBaseFile, "Textures/Grass02.jpg");
+        m_pMaterial->addDiffuseTexture(sBaseFile, "Textures/GrassDecal.png");
     }
 }
 

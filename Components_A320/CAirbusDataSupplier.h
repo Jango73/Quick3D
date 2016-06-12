@@ -4,6 +4,7 @@
 // Quick3D
 #include "CXMLNode.h"
 #include "CComponent.h"
+#include "ILoadable.h"
 
 // Application
 #include "components_a320_global.h"
@@ -12,7 +13,7 @@
 
 //-------------------------------------------------------------------------------------------------
 
-class COMPONENTS_A320_EXPORT CAirbusDataSupplier
+class COMPONENTS_A320_EXPORT CAirbusDataSupplier : public ILoadable
 {
     friend class CAirbusDataConsumer;
 
@@ -48,7 +49,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Charge les paramètres de cet objet
-    virtual void loadParameters(CXMLNode xComponent);
+    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
     //! Recherche les liens de cet objet
     virtual void solveLinks(C3DScene* pScene, CComponent* pCaller);

@@ -54,7 +54,7 @@ public:
     virtual QString getClassName() const { return ClassName_CArmature; }
 
     //!
-    virtual void loadParameters(CXMLNode xComponent);
+    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
     //! Méthode de mise à jour avec temps delta depuis la dernière itération
     virtual void update(double dDeltaTime);

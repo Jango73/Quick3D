@@ -31,9 +31,9 @@ CElectricalContactor::~CElectricalContactor()
 
 //-------------------------------------------------------------------------------------------------
 
-void CElectricalContactor::loadParameters(CXMLNode xComponent)
+void CElectricalContactor::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
-	CElectricalComponent::loadParameters(xComponent);
+    CElectricalComponent::loadParameters(sBaseFile, xComponent);
 
 	CXMLNode xGeneralNode = xComponent.getNodeByTagName(ParamName_General);
 

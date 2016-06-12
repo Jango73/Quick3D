@@ -61,9 +61,9 @@ void CBasicAnimator::addRotationStep(CBasicAnimationStep value)
 
 //-------------------------------------------------------------------------------------------------
 
-void CBasicAnimator::loadParameters(CXMLNode xNode)
+void CBasicAnimator::loadParameters(const QString& sBaseFile, CXMLNode xNode)
 {
-    CAnimator::loadParameters(xNode);
+    CAnimator::loadParameters(sBaseFile, xNode);
 
     CXMLNode xGeneralNode = xNode.getNodeByTagName(ParamName_General);
 

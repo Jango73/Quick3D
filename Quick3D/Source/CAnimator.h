@@ -63,7 +63,7 @@ public:
 	virtual QString getClassName() const { return ClassName_CAnimator; }
 
 	//! Charge les paramètres de cet objet d'après le noeud XML fourni
-	virtual void loadParameters(CXMLNode xComponent);
+    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
 	//!
 	virtual void update(double dDeltaTime);

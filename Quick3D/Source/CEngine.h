@@ -60,7 +60,7 @@ public:
 	virtual QString getClassName() const { return ClassName_CEngine; }
 
 	//!
-	virtual void loadParameters(CXMLNode xComponent);
+    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
 	//!
 	virtual void update(double dDeltaTime);

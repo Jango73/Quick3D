@@ -31,9 +31,9 @@ CElectricalComponent::~CElectricalComponent()
 
 //-------------------------------------------------------------------------------------------------
 
-void CElectricalComponent::loadParameters(CXMLNode xComponent)
+void CElectricalComponent::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
-    CComponent::loadParameters(xComponent);
+    CComponent::loadParameters(sBaseFile, xComponent);
 
     QVector<CXMLNode> vInputsNodes = xComponent.getNodesByTagName(ParamName_PowerInput);
 

@@ -36,9 +36,9 @@ CAircraftController::~CAircraftController()
 
 //-------------------------------------------------------------------------------------------------
 
-void CAircraftController::loadParameters(CXMLNode xNode)
+void CAircraftController::loadParameters(const QString& sBaseFile, CXMLNode xNode)
 {
-	CStandardController::loadParameters(xNode);
+    CStandardController::loadParameters(sBaseFile, xNode);
 
     m_rLeftWingTarget.setName(xNode.attributes()["LeftWingTarget"]);
     m_rRightWingTarget.setName(xNode.attributes()["RightWingTarget"]);

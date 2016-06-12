@@ -103,7 +103,7 @@ void VirtualPilot::loadScene(QString sFileName)
 
     LOG_DEBUG("VirtualPilot::VirtualPilot() : loading components...");
 
-    QVector<CComponent*> vComponents = CComponentLoader::getInstance()->load(m_pScene, sFileName);
+    QVector<CComponent*> vComponents = CComponentLoader::getInstance()->load(sFileName, m_pScene);
 
     m_pScene->init(vComponents);
 
@@ -121,7 +121,7 @@ void VirtualPilot::loadVehicle(QString sFileName)
     CGeoloc playerGeoloc;
     CVector3 playerRotation;
 
-    QSharedPointer<CComponent> pComponent(CComponentLoader::getInstance()->loadComponent(m_pScene, sFileName));
+    QSharedPointer<CComponent> pComponent(CComponentLoader::getInstance()->loadComponent(sFileName, m_pScene));
 
     QVector<QSharedPointer<CComponent> > vComponents = m_pScene->getComponentsByTag("PLAYER");
 

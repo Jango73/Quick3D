@@ -22,7 +22,7 @@ CAirbusDataSupplier::~CAirbusDataSupplier()
 
 //-------------------------------------------------------------------------------------------------
 
-void CAirbusDataSupplier::loadParameters(CXMLNode xComponent)
+void CAirbusDataSupplier::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
     QVector<CXMLNode> vInputsNodes = xComponent.getNodesByTagName("DataInput");
 

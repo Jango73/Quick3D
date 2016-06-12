@@ -182,7 +182,7 @@ public:
     virtual void update(double dDeltaTime);
 
     //! Charge les paramètres de l'objet
-    virtual void loadParameters(CXMLNode xComponent);
+    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
     //! Recherche les liens de cet objet
     virtual void solveLinks(C3DScene* pScene);

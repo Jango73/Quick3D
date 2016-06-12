@@ -37,9 +37,9 @@ CVehicle::~CVehicle()
 
 //-------------------------------------------------------------------------------------------------
 
-void CVehicle::loadParameters(CXMLNode xComponent)
+void CVehicle::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
-    CTrajectorable::loadParameters(xComponent);
+    CTrajectorable::loadParameters(sBaseFile, xComponent);
 
     // Read physics
 

@@ -40,10 +40,10 @@ CAirbusFlightComputer::~CAirbusFlightComputer()
 
 //-------------------------------------------------------------------------------------------------
 
-void CAirbusFlightComputer::loadParameters(CXMLNode xComponent)
+void CAirbusFlightComputer::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
-    CElectricalConsumer::loadParameters(xComponent);
-    CAirbusDataSupplier::loadParameters(xComponent);
+    CElectricalConsumer::loadParameters(sBaseFile, xComponent);
+    CAirbusDataSupplier::loadParameters(sBaseFile, xComponent);
 
     CXMLNode xGeneralNode = xComponent.getNodeByTagName(ParamName_General);
 

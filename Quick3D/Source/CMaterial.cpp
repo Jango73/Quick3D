@@ -63,6 +63,56 @@ Math::CVector2 CMaterial::getTexCoords(const CGeoloc& gPosition, int iLevel)
 
 //-------------------------------------------------------------------------------------------------
 
+void CMaterial::loadParameters(const QString& sBaseFile, CXMLNode xMaterial)
+{
+    // Lecture couleur ambiante
+    CXMLNode xAmbient = xMaterial.getNodeByTagName(ParamName_Ambient);
+
+    // Lecture couleur diffuse
+    CXMLNode xDiffuse = xMaterial.getNodeByTagName(ParamName_Diffuse);
+
+    // Lecture couleur spéculaire
+    CXMLNode xSpecular = xMaterial.getNodeByTagName(ParamName_Specular);
+
+    if (xDiffuse.isEmpty() == false)
+    {
+        m_cAmbient.X = xAmbient.attributes()[ParamName_r].toDouble();
+        m_cAmbient.Y = xAmbient.attributes()[ParamName_g].toDouble();
+        m_cAmbient.Z = xAmbient.attributes()[ParamName_b].toDouble();
+
+        m_cDiffuse.X = xDiffuse.attributes()[ParamName_r].toDouble();
+        m_cDiffuse.Y = xDiffuse.attributes()[ParamName_g].toDouble();
+        m_cDiffuse.Z = xDiffuse.attributes()[ParamName_b].toDouble();
+
+        QString sTextureName = xDiffuse.attributes()[ParamName_Map];
+
+        if (sTextureName.isEmpty() == false)
+        {
+            QString sFileName = QFileInfo(sTextureName).fileName();
+
+            if (sFileName.startsWith(ParamName_DynTex))
+            {
+                addDynamicDiffuseTexture(sBaseFile, sTextureName);
+            }
+            else
+            {
+                addDiffuseTexture(sBaseFile, sTextureName);
+            }
+        }
+    }
+
+    if (xSpecular.isEmpty() == false)
+    {
+        double dIntensity = xSpecular.attributes()[ParamName_Intensity].toDouble();
+        m_cSpecular.X = xSpecular.attributes()[ParamName_r].toDouble() * dIntensity;
+        m_cSpecular.Y = xSpecular.attributes()[ParamName_g].toDouble() * dIntensity;
+        m_cSpecular.Z = xSpecular.attributes()[ParamName_b].toDouble() * dIntensity;
+        m_dShininess = xSpecular.attributes()[ParamName_Hardness].toDouble();
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CMaterial::update(double dDeltaTime)
 {
     for (int iIndex = 0; iIndex < m_vDiffuseTextures.count(); iIndex++)
@@ -73,16 +123,20 @@ void CMaterial::update(double dDeltaTime)
 
 //-------------------------------------------------------------------------------------------------
 
-void CMaterial::addDiffuseTexture(QString sResourceName)
+void CMaterial::addDiffuseTexture(const QString& sBaseFile, const QString& sResourceName)
 {
-    QImage imgTexture = QImage(QString(":/Resources/%1").arg(sResourceName));
+    QString sFinalResource = m_pScene->getRessourcesManager()->locateResource(sBaseFile, sResourceName);
 
-    addDiffuseTexture(sResourceName, imgTexture);
+    if (sFinalResource.isEmpty() == false)
+    {
+        QImage imgTexture = QImage(sFinalResource);
+        addDiffuseTexture(sFinalResource, imgTexture);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void CMaterial::addDiffuseTexture(QString sName, const QImage& imgTexture)
+void CMaterial::addDiffuseTexture(const QString& sName, const QImage& imgTexture)
 {
     if (imgTexture.width() > 0 && imgTexture.height() > 0)
     {
@@ -92,16 +146,20 @@ void CMaterial::addDiffuseTexture(QString sName, const QImage& imgTexture)
 
 //-------------------------------------------------------------------------------------------------
 
-void CMaterial::addDynamicDiffuseTexture(QString sResourceName)
+void CMaterial::addDynamicDiffuseTexture(const QString& sBaseFile, const QString& sResourceName)
 {
-    QImage imgTexture = QImage(QString(":/Resources/%1").arg(sResourceName));
+    QString sFinalResource = m_pScene->getRessourcesManager()->locateResource(sBaseFile, sResourceName);
 
-    addDynamicDiffuseTexture(sResourceName, imgTexture);
+    if (sFinalResource.isEmpty() == false)
+    {
+        QImage imgTexture = QImage(sFinalResource);
+        addDynamicDiffuseTexture(sFinalResource, imgTexture);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void CMaterial::addDynamicDiffuseTexture(QString sName, const QImage& imgTexture)
+void CMaterial::addDynamicDiffuseTexture(const QString& sName, const QImage& imgTexture)
 {
     m_pScene->makeCurrentRenderingContext();
 

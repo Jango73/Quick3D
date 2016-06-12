@@ -14,29 +14,29 @@
 
 class QUICK3D_EXPORT CComponentLoader : public CSingleton<CComponentLoader>
 {
-	friend class CSingleton<CComponentLoader>;
+    friend class CSingleton<CComponentLoader>;
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	//! Constructeur par défaut
-	CComponentLoader();
+    //! Constructeur par défaut
+    CComponentLoader();
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
 public:
 
-	//! Charge une scène
-	QVector<CComponent*> load(C3DScene* pScene, QString sFileName);
+    //! Charge une scène
+    QVector<CComponent*> load(const QString& sBaseFile, C3DScene* pScene);
 
-	//! Charge un composant
-	CComponent* loadComponent(C3DScene* pScene, QString sFileName);
+    //! Charge un composant
+    CComponent* loadComponent(const QString& sBaseFile, C3DScene* pScene);
 
-	//! Charge un composant
-	CComponent* loadComponent(C3DScene* pScene, CXMLNode xComponent, CComponent* pParent);
+    //! Charge un composant
+    CComponent* loadComponent(const QString& sBaseFile, C3DScene* pScene, CXMLNode xComponent, CComponent* pParent);
 };

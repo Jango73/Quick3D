@@ -36,7 +36,7 @@ COBJLoader::COBJLoader()
 
 //-------------------------------------------------------------------------------------------------
 
-void COBJLoader::load(C3DScene* pScene, CMesh* pMesh, QString sText)
+void COBJLoader::load(const QString& sBaseFile, C3DScene* pScene, CMesh* pMesh, QString sText)
 {
     LOG_DEBUG(QString("COBJLoader::load() : START : %1").arg(pMesh->getName()));
 
@@ -69,7 +69,7 @@ void COBJLoader::load(C3DScene* pScene, CMesh* pMesh, QString sText)
                 {
                     QString sMaterialFileName = ":/Resources/" + lWords.at(1);
 
-                    loadMaterials(pScene, pMesh, pScene->getRessourcesManager()->getObjByFilePathName(sMaterialFileName));
+                    loadMaterials(sBaseFile, pScene, pMesh, pScene->getRessourcesManager()->getObjByFilePathName(sMaterialFileName));
                 }
                 else if (sFirstWord == "o" && lWords.count() > 1)
                 {
@@ -177,8 +177,10 @@ void COBJLoader::load(C3DScene* pScene, CMesh* pMesh, QString sText)
 
 //-------------------------------------------------------------------------------------------------
 
-void COBJLoader::loadMaterials(C3DScene* pScene, CMesh* pMesh, QString sText)
+void COBJLoader::loadMaterials(const QString& sBaseFile, C3DScene* pScene, CMesh* pMesh, QString sText)
 {
+    Q_UNUSED(sBaseFile);
+
     LOG_DEBUG(QString("COBJLoader::loadMaterials() : START : %1").arg(pMesh->getName()));
 
     QTextStream sInput(&sText, QIODevice::ReadOnly);
@@ -267,11 +269,11 @@ void COBJLoader::loadMaterials(C3DScene* pScene, CMesh* pMesh, QString sText)
 
                         if (sFileName.startsWith(ParamName_DynTex))
                         {
-                            pMaterial->addDynamicDiffuseTexture(sTextureName);
+                            pMaterial->addDynamicDiffuseTexture(sBaseFile, sTextureName);
                         }
                         else
                         {
-                            pMaterial->addDiffuseTexture(sTextureName);
+                            pMaterial->addDiffuseTexture(sBaseFile, sTextureName);
                         }
                     }
                 }

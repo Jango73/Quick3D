@@ -1,125 +1,122 @@
 
 #pragma once
 
-#ifndef __INTERPOLATOR_H__
-#define __INTERPOLATOR_H__
-
 #include <QVector>
 
 #include "math.h"
 
 namespace Math
 {
-	template <class T>
-	class Interpolator
-	{
-	public:
 
-		//-------------------------------------------------------------------------------------------------
-		// Classes imbriquées
-		//-------------------------------------------------------------------------------------------------
+template <class T>
+class Interpolator
+{
+public:
 
-		class InterpolatorValue
-		{
-		public:
+    //-------------------------------------------------------------------------------------------------
+    // Classes imbriquées
+    //-------------------------------------------------------------------------------------------------
 
-			InterpolatorValue()
-			{
-				dInput = 0.0;
-			}
+    class InterpolatorValue
+    {
+    public:
 
-			InterpolatorValue(double NewInput, T NewOutput)
-			{
-				dInput = NewInput;
-				tOutput = NewOutput;
-			}
+        InterpolatorValue()
+        {
+            dInput = 0.0;
+        }
 
-			double	dInput;
-			T		tOutput;
-		};
+        InterpolatorValue(double NewInput, T NewOutput)
+        {
+            dInput = NewInput;
+            tOutput = NewOutput;
+        }
 
-		//-------------------------------------------------------------------------------------------------
-		// Constructeurs et destructeur
-		//-------------------------------------------------------------------------------------------------
+        double	dInput;
+        T		tOutput;
+    };
 
-		//! Constructeur par défaut
-		Interpolator()
-		{
-		}
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-		//-------------------------------------------------------------------------------------------------
-		// Getters
-		//-------------------------------------------------------------------------------------------------
+    //! Constructeur par défaut
+    Interpolator()
+    {
+    }
 
-		//! Retourne le nombre de valeurs
-		int count() { return m_vValues.count(); }
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-		//! Retourne le vecteur de valeurs
-		QVector<InterpolatorValue>& getValues() { return m_vValues; }
+    //! Retourne le nombre de valeurs
+    int count() { return m_vValues.count(); }
 
-		//-------------------------------------------------------------------------------------------------
-		// Méthodes de contrôle
-		//-------------------------------------------------------------------------------------------------
+    //! Retourne le vecteur de valeurs
+    QVector<InterpolatorValue>& getValues() { return m_vValues; }
 
-		//!
-		void clear()
-		{
-			m_vValues.clear();
-		}
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-		//! Ajoute un pas d'interpolation
-		//! Une valeur double donnée est associée une valeur T
-		void addValue(double input, T output)
-		{
-			m_vValues.append(InterpolatorValue(input, output));
-		}
+    //!
+    void clear()
+    {
+        m_vValues.clear();
+    }
 
-		//! Retourne la valeur T correspondant à la valeur double d'entrée
-		T getValue(double input)
-		{
-			T output = T(); // Stéphane Château : Suppression d'un warning
+    //! Ajoute un pas d'interpolation
+    //! Une valeur double donnée est associée une valeur T
+    void addValue(double input, T output)
+    {
+        m_vValues.append(InterpolatorValue(input, output));
+    }
 
-			if (m_vValues.count() == 0) return output;
+    //! Retourne la valeur T correspondant à la valeur double d'entrée
+    T getValue(double input)
+    {
+        T output = T(); // Stéphane Château : Suppression d'un warning
 
-			if (input < m_vValues[0].dInput) input = m_vValues[0].dInput;
-			if (input > m_vValues[m_vValues.count() - 1].dInput) input = m_vValues[m_vValues.count() - 1].dInput;
+        if (m_vValues.count() == 0) return output;
 
-			for (int iIndex = 0; iIndex < m_vValues.count(); iIndex++)
-			{
-				if (input >= m_vValues[iIndex].dInput)
-				{
-					if (iIndex < m_vValues.count() - 1)
-					{
-						if (input <= m_vValues[iIndex + 1].dInput)
-						{
-							double input1 = m_vValues[iIndex + 0].dInput;
-							double input2 = m_vValues[iIndex + 1].dInput;
-							double inputRange = input2 - input1;
+        if (input < m_vValues[0].dInput) input = m_vValues[0].dInput;
+        if (input > m_vValues[m_vValues.count() - 1].dInput) input = m_vValues[m_vValues.count() - 1].dInput;
 
-							T output1 = m_vValues[iIndex + 0].tOutput;
-							T output2 = m_vValues[iIndex + 1].tOutput;
-							T outputRange = output2 - output1;
+        for (int iIndex = 0; iIndex < m_vValues.count(); iIndex++)
+        {
+            if (input >= m_vValues[iIndex].dInput)
+            {
+                if (iIndex < m_vValues.count() - 1)
+                {
+                    if (input <= m_vValues[iIndex + 1].dInput)
+                    {
+                        double input1 = m_vValues[iIndex + 0].dInput;
+                        double input2 = m_vValues[iIndex + 1].dInput;
+                        double inputRange = input2 - input1;
 
-							double factor = (input - input1) / inputRange;
-							output = output1 + (outputRange * factor);
+                        T output1 = m_vValues[iIndex + 0].tOutput;
+                        T output2 = m_vValues[iIndex + 1].tOutput;
+                        T outputRange = output2 - output1;
 
-							break;
-						}
-					}
-					else
-					{
-						output = m_vValues[iIndex].tOutput;
-					}
-				}
-			}
+                        double factor = (input - input1) / inputRange;
+                        output = output1 + (outputRange * factor);
 
-			return output;
-		}
+                        break;
+                    }
+                }
+                else
+                {
+                    output = m_vValues[iIndex].tOutput;
+                }
+            }
+        }
 
-	protected:
+        return output;
+    }
 
-		QVector<InterpolatorValue>	m_vValues;
-	};
+protected:
+
+    QVector<InterpolatorValue>	m_vValues;
+};
+
 }
-
-#endif // __INTERPOLATOR_H__

@@ -532,8 +532,10 @@ CComponent& CComponent::operator = (const CComponent& target)
 /*!
     Loads the properties of this component from \a xComponent.
 */
-void CComponent::loadParameters(CXMLNode xComponent)
+void CComponent::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
+    Q_UNUSED(sBaseFile);
+
     CXMLNode tGeolocNode = xComponent.getNodeByTagName(ParamName_Geoloc);
     CXMLNode tPositionNode = xComponent.getNodeByTagName(ParamName_Position);
     CXMLNode tRotationNode = xComponent.getNodeByTagName(ParamName_Rotation);

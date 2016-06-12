@@ -120,7 +120,7 @@ void Quick3DTest::loadScene(QString sFileName)
 
     LOG_DEBUG("Quick3DTest::Quick3DTest() : loading components...");
 
-    QVector<CComponent*> vComponents = CComponentLoader::getInstance()->load(m_pScene, sFileName);
+    QVector<CComponent*> vComponents = CComponentLoader::getInstance()->load(sFileName, m_pScene);
 
     m_pScene->init(vComponents);
 

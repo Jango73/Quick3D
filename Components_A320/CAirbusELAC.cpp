@@ -40,9 +40,9 @@ CAirbusELAC::~CAirbusELAC()
 
 //-------------------------------------------------------------------------------------------------
 
-void CAirbusELAC::loadParameters(CXMLNode xComponent)
+void CAirbusELAC::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
-    CAirbusFlightComputer::loadParameters(xComponent);
+    CAirbusFlightComputer::loadParameters(sBaseFile, xComponent);
 
     CXMLNode xNode = xComponent.getNodeByTagName(ParamName_ControlSurfaces);
 

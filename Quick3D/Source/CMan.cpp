@@ -7,13 +7,13 @@
 
 CComponent* CMan::instanciator(C3DScene* pScene)
 {
-	return new CMan(pScene);
+    return new CMan(pScene);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CMan::CMan(C3DScene* pScene)
-: CTrajectorable(pScene)
+    : CTrajectorable(pScene)
 {
 }
 
@@ -25,7 +25,7 @@ CMan::~CMan()
 
 //-------------------------------------------------------------------------------------------------
 
-void CMan::loadParameters(CXMLNode xComponent)
+void CMan::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
-	CMesh::loadParameters(xComponent);
+    CMesh::loadParameters(sBaseFile, xComponent);
 }

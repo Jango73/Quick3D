@@ -34,7 +34,7 @@ CRessourcesManager::CRessourcesManager(C3DScene* pScene)
 
     m_pTreeMaterial = QSharedPointer<CMaterial>(new CMaterial(pScene));
     m_pTreeMaterial->getDiffuse() = Vector4(0.5, 0.3, 0.1, 1.0);
-    m_pTreeMaterial->addDiffuseTexture("Textures/Tree01.jpg");
+    m_pTreeMaterial->addDiffuseTexture(QString(""),"Textures/Tree01.jpg");
     m_pTreeMaterial->setIRFactor(0.2);
 }
 
@@ -63,17 +63,46 @@ CRessourcesManager::~CRessourcesManager()
 
 //-------------------------------------------------------------------------------------------------
 
-void CRessourcesManager::loadMesh(CMesh* pMesh, const QString& sFileName)
+QString CRessourcesManager::locateResource(const QString& sBaseFile, const QString& sFileToLocate)
 {
-    QString sFullFileName = ":/Resources/" + sFileName;
-
-    if (sFileName.contains(".obj"))
+    // Check in file system, relative to base file
+    if (sBaseFile.isEmpty() == false)
     {
-        COBJLoader::getInstance()->load(m_pScene, pMesh, getObjByFilePathName(sFullFileName));
+        QFileInfo iBaseInfo(sBaseFile);
+        QString sFinalName = iBaseInfo.absolutePath() + sFileToLocate;
+        QFileInfo iFinalInfo(sFinalName);
+        if (iFinalInfo.exists())
+        {
+            return sFinalName;
+        }
     }
-    else if (sFileName.contains(".q3d"))
+
+    // Check in resources
     {
-        CQ3DLoader::getInstance()->load(m_pScene, pMesh, getObjByFilePathName(sFullFileName));
+        QString sFinalName = QString(":/Resources/%1").arg(sFileToLocate);
+        QFileInfo iFinalInfo(sFinalName);
+        if (iFinalInfo.exists())
+        {
+            return sFinalName;
+        }
+    }
+
+    return QString("");
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CRessourcesManager::loadMesh(const QString& sBaseFile, CMesh* pMesh, const QString& sMeshFileName)
+{
+    QString sFullFileName = locateResource(sBaseFile, sMeshFileName);
+
+    if (sMeshFileName.contains(".obj"))
+    {
+        COBJLoader::getInstance()->load(sBaseFile, m_pScene, pMesh, getObjByFilePathName(sFullFileName));
+    }
+    else if (sMeshFileName.contains(".q3d"))
+    {
+        CQ3DLoader::getInstance()->load(sBaseFile, m_pScene, pMesh, getObjByFilePathName(sFullFileName));
     }
 }
 

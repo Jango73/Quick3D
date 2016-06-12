@@ -38,9 +38,9 @@ CAirbusFADEC::~CAirbusFADEC()
 
 //-------------------------------------------------------------------------------------------------
 
-void CAirbusFADEC::loadParameters(CXMLNode xComponent)
+void CAirbusFADEC::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
-    CAirbusFlightComputer::loadParameters(xComponent);
+    CAirbusFlightComputer::loadParameters(sBaseFile, xComponent);
 
     CXMLNode xNode = xComponent.getNodeByTagName(ParamName_Engines);
 

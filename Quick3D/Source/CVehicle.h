@@ -19,44 +19,44 @@ class QUICK3D_EXPORT CVehicle : public CTrajectorable
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	static CComponent* instanciator(C3DScene* pScene);
+    //!
+    static CComponent* instanciator(C3DScene* pScene);
 
-	//! Constructeur
-	CVehicle(C3DScene* pScene);
+    //! Constructeur
+    CVehicle(C3DScene* pScene);
 
-	//!
-	virtual ~CVehicle();
+    //!
+    virtual ~CVehicle();
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes héritées
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes héritées
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual QString getClassName() const { return ClassName_CVehicle; }
+    //!
+    virtual QString getClassName() const { return ClassName_CVehicle; }
 
-	//!
-	virtual void loadParameters(CXMLNode xComponent);
+    //!
+    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
-	//!
-	virtual void update(double dDeltaTime);
+    //!
+    virtual void update(double dDeltaTime);
 
-	//!
-	virtual void paint(CRenderContext* pContext);
+    //!
+    virtual void paint(CRenderContext* pContext);
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	QVector<CMeshInstance*>		m_vAxisMeshes;
+    QVector<CMeshInstance*>		m_vAxisMeshes;
 };

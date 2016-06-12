@@ -16,30 +16,30 @@ class QUICK3D_EXPORT CTerrestrialVehicle : public CVehicle
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	static CComponent* instanciator(C3DScene* pScene);
+    //!
+    static CComponent* instanciator(C3DScene* pScene);
 
-	//!
-	CTerrestrialVehicle(C3DScene* pScene);
+    //!
+    CTerrestrialVehicle(C3DScene* pScene);
 
-	//!
-	virtual ~CTerrestrialVehicle();
+    //!
+    virtual ~CTerrestrialVehicle();
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes héritées
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes héritées
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual QString getClassName() const { return ClassName_CTerrestrialVehicle; }
+    //!
+    virtual QString getClassName() const { return ClassName_CTerrestrialVehicle; }
 
-	//!
-	virtual void loadParameters(CXMLNode xComponent);
+    //!
+    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 };

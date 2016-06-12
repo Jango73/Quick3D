@@ -24,13 +24,13 @@ CComponentLoader::CComponentLoader()
 
 //-------------------------------------------------------------------------------------------------
 
-QVector<CComponent*> CComponentLoader::load(C3DScene* pScene, QString sFileName)
+QVector<CComponent*> CComponentLoader::load(const QString& sBaseFile, C3DScene* pScene)
 {
     LOG_DEBUG("CComponentLoader::load()");
 
     QVector<CComponent*> vOutput;
 
-    CXMLNode tDoc = CXMLNode::loadXMLFromFile(sFileName);
+    CXMLNode tDoc = CXMLNode::loadXMLFromFile(sBaseFile);
 
     QString sCamera1;
     QString sCamera2;
@@ -56,7 +56,7 @@ QVector<CComponent*> CComponentLoader::load(C3DScene* pScene, QString sFileName)
 
             foreach (CXMLNode xComponent, xComponents)
             {
-                CComponent* pComponent = loadComponent(pScene, xComponent, NULL);
+                CComponent* pComponent = loadComponent(sBaseFile, pScene, xComponent, NULL);
 
                 if (pComponent != NULL)
                 {
@@ -101,18 +101,18 @@ QVector<CComponent*> CComponentLoader::load(C3DScene* pScene, QString sFileName)
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CComponentLoader::loadComponent(C3DScene* pScene, QString sFileName)
+CComponent* CComponentLoader::loadComponent(const QString& sBaseFile, C3DScene* pScene)
 {
-    CXMLNode xComponent = CXMLNode::loadXMLFromFile(sFileName);
+    CXMLNode xComponent = CXMLNode::loadXMLFromFile(sBaseFile);
 
-    CComponent* pNewComponent = loadComponent(pScene, xComponent, NULL);
+    CComponent* pNewComponent = loadComponent(sBaseFile, pScene, xComponent, NULL);
 
     return pNewComponent;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CComponentLoader::loadComponent(C3DScene* pScene, CXMLNode xComponent, CComponent* pParent)
+CComponent* CComponentLoader::loadComponent(const QString& sBaseFile, C3DScene* pScene, CXMLNode xComponent, CComponent* pParent)
 {
     QString sClass = xComponent.attributes()[ParamName_Class];
 
@@ -125,7 +125,7 @@ CComponent* CComponentLoader::loadComponent(C3DScene* pScene, CXMLNode xComponen
             pComponent->setParentName(pParent->getName());
         }
 
-        pComponent->loadParameters(xComponent);
+        pComponent->loadParameters(sBaseFile, xComponent);
 
         LOG_DEBUG(QString("... Adding component %1").arg(pComponent->getName()));
 
@@ -135,7 +135,7 @@ CComponent* CComponentLoader::loadComponent(C3DScene* pScene, CXMLNode xComponen
 
         foreach (CXMLNode xChildComponent, xChildComponents)
         {
-            CComponent* pChildComponent = loadComponent(pScene, xChildComponent, pComponent);
+            CComponent* pChildComponent = loadComponent(sBaseFile, pScene, xChildComponent, pComponent);
 
             if (pChildComponent != NULL)
             {
@@ -155,7 +155,7 @@ CComponent* CComponentLoader::loadComponent(C3DScene* pScene, CXMLNode xComponen
 
             if (pControllerComponent != NULL)
             {
-                pControllerComponent->loadParameters(xController);
+                pControllerComponent->loadParameters(sBaseFile, xController);
 
                 pComponent->setController(dynamic_cast<CController*>(pControllerComponent));
                 pControllerComponent->setParent(pComponent);

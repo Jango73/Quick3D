@@ -107,9 +107,9 @@ void CMesh::update(double dDeltaTime)
 
 //-------------------------------------------------------------------------------------------------
 
-void CMesh::loadParameters(CXMLNode xComponent)
+void CMesh::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
-    CPhysicalComponent::loadParameters(xComponent);
+    CPhysicalComponent::loadParameters(sBaseFile, xComponent);
 
     CXMLNode xMeshNode = xComponent.getNodeByTagName(ParamName_Mesh);
     CXMLNode xProceduralMeshNode = xComponent.getNodeByTagName(ParamName_ProceduralMesh);
@@ -122,7 +122,7 @@ void CMesh::loadParameters(CXMLNode xComponent)
 
         if (sName != "")
         {
-            m_pScene->getRessourcesManager()->loadMesh(this, sName);
+            m_pScene->getRessourcesManager()->loadMesh(sBaseFile, this, sName);
 
             if (xIRNode.attributes()[ParamName_Factor].isEmpty() == false)
             {

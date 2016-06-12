@@ -43,9 +43,9 @@ CAircraft::~CAircraft()
 
 //-------------------------------------------------------------------------------------------------
 
-void CAircraft::loadParameters(CXMLNode xComponent)
+void CAircraft::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
-	CVehicle::loadParameters(xComponent);
+    CVehicle::loadParameters(sBaseFile, xComponent);
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -37,7 +37,7 @@ public:
 	virtual void paint(CRenderContext* pContext);
 
 	//!
-	virtual void loadParameters(CXMLNode xComponent);
+    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
 	//-------------------------------------------------------------------------------------------------
 	// Méthodes de contrôle

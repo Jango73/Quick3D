@@ -11,14 +11,13 @@
 #include <QImage>
 #include <QtOpenGL>
 
-// Fondations
+// Application
 #include "CVector3.h"
 #include "CMatrix4.h"
 #include "CRay3.h"
 #include "CGeoloc.h"
 #include "CXMLNode.h"
-
-// Application
+#include "ILoadable.h"
 #include "CQ3DConstants.h"
 #include "CGLExtension.h"
 #include "CRenderContext.h"
@@ -67,7 +66,7 @@ class CController;
 
 //-------------------------------------------------------------------------------------------------
 
-class QUICK3D_EXPORT CComponent : public CNamed, public CParented, public CDumpable
+class QUICK3D_EXPORT CComponent : public CNamed, public CParented, public CDumpable, public ILoadable
 {
 public:
 
@@ -259,7 +258,7 @@ public:
     CComponent& operator = (const CComponent& target);
 
     //! Charge les paramètres de cet objet
-    virtual void loadParameters(CXMLNode xComponent);
+    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
     //! Recherche les liens de cet objet
     virtual void solveLinks(C3DScene* pScene);

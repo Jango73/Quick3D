@@ -33,7 +33,10 @@ public:
     virtual ~CRessourcesManager();
 
     //!
-    void loadMesh(CMesh* pMesh, const QString& sFileName);
+    QString locateResource(const QString& sBaseFile, const QString& sFileToLocate);
+
+    //!
+    void loadMesh(const QString& sBaseFile, CMesh* pMesh, const QString& sMeshFileName);
 
     //! Recupere un shader par son nom
     QString getShaderByFilePathName(const QString& filePathName);

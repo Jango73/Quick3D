@@ -49,7 +49,7 @@ public:
     virtual QString getClassName() const { return ClassName_CAirbusFADEC; }
 
     //! Charge les paramètres de cet objet
-    virtual void loadParameters(CXMLNode xComponent);
+    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
     //! Recherche les liens de cet objet
     virtual void solveLinks(C3DScene* pScene);

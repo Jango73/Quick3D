@@ -7,27 +7,27 @@
 
 CComponent* CTerrestrialVehicle::instanciator(C3DScene* pScene)
 {
-	return new CTerrestrialVehicle(pScene);
+    return new CTerrestrialVehicle(pScene);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CTerrestrialVehicle::CTerrestrialVehicle(C3DScene* pScene)
-: CVehicle(pScene)
+    : CVehicle(pScene)
 {
-	LOG_DEBUG("CTerrestrialVehicle::CTerrestrialVehicle()");
+    LOG_DEBUG("CTerrestrialVehicle::CTerrestrialVehicle()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CTerrestrialVehicle::~CTerrestrialVehicle()
 {
-	LOG_DEBUG("CTerrestrialVehicle::~CTerrestrialVehicle()");
+    LOG_DEBUG("CTerrestrialVehicle::~CTerrestrialVehicle()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void CTerrestrialVehicle::loadParameters(CXMLNode xComponent)
+void CTerrestrialVehicle::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
-	CVehicle::loadParameters(xComponent);
+    CVehicle::loadParameters(sBaseFile, xComponent);
 }

@@ -86,9 +86,9 @@ CCamera& CCamera::operator = (const CCamera& target)
 
 //-------------------------------------------------------------------------------------------------
 
-void CCamera::loadParameters(CXMLNode xComponent)
+void CCamera::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
-    CPhysicalComponent::loadParameters(xComponent);
+    CPhysicalComponent::loadParameters(sBaseFile, xComponent);
 
     CXMLNode xGeneralNode = xComponent.getNodeByTagName(ParamName_General);
 

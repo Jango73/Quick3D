@@ -49,7 +49,7 @@ public:
     virtual QString getClassName() const { return ClassName_CBone; }
 
     //!
-    virtual void loadParameters(CXMLNode xComponent);
+    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes de contrôle

@@ -18,123 +18,123 @@ class QUICK3D_EXPORT CVertex
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//! Constructeur par défaut
-	CVertex();
+    //! Constructeur par défaut
+    CVertex();
 
-	//! Constructeur avec coordonnées de position et de texture mapping
-	CVertex(Math::CVector3 NewPosition, Math::CVector2 NewTexCoord = Math::CVector2());
+    //! Constructeur avec coordonnées de position et de texture mapping
+    CVertex(Math::CVector3 NewPosition, Math::CVector2 NewTexCoord = Math::CVector2());
 
-	//! Constructeur de copie
-	CVertex(const CVertex&);
+    //! Constructeur de copie
+    CVertex(const CVertex&);
 
-	//! Destructeur
-	virtual ~CVertex();
+    //! Destructeur
+    virtual ~CVertex();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//! Définit un poids pour une texture
-	void setDiffuseTextureWeight(int iTexture, double dWeight);
+    //! Définit un poids pour une texture
+    void setDiffuseTextureWeight(int iTexture, double dWeight);
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	Math::CVector3& position() { return m_vPosition; }
+    //!
+    Math::CVector3& position() { return m_vPosition; }
 
-	//!
-	Math::CVector3& normal() { return m_vNormal; }
+    //!
+    Math::CVector3& normal() { return m_vNormal; }
 
-	//!
-	Math::CVector3& tangent() { return m_vTangent; }
+    //!
+    Math::CVector3& tangent() { return m_vTangent; }
 
-	//!
-	Math::CVector3& gravity() { return m_vGravity; }
+    //!
+    Math::CVector3& gravity() { return m_vGravity; }
 
-	//!
-	Math::CVector2& texCoord() { return m_vTexCoord; }
+    //!
+    Math::CVector2& texCoord() { return m_vTexCoord; }
 
-	//!
-	double& altitude() { return m_dAltitude; }
+    //!
+    double& altitude() { return m_dAltitude; }
 
-	//!
-	double& normalDivider() { return m_dNormalDivider; }
+    //!
+    double& normalDivider() { return m_dNormalDivider; }
 
-	//!
-	Math::CVector3 position() const { return m_vPosition; }
+    //!
+    Math::CVector3 position() const { return m_vPosition; }
 
-	//!
-	Math::CVector3 normal() const { return m_vNormal; }
+    //!
+    Math::CVector3 normal() const { return m_vNormal; }
 
-	//!
-	Math::CVector3 tangent() const { return m_vTangent; }
+    //!
+    Math::CVector3 tangent() const { return m_vTangent; }
 
-	//!
-	Math::CVector2 texCoord() const { return m_vTexCoord; }
+    //!
+    Math::CVector2 texCoord() const { return m_vTexCoord; }
 
-	//!
-	double altitude() const { return m_dAltitude; }
+    //!
+    double altitude() const { return m_dAltitude; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes statiques
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes statiques
+    //-------------------------------------------------------------------------------------------------
 
-	//! Retourne l'offset mémoire de la propriété m_vPosition
-	static int positionOffset() { return VTX_OFFSET_OF(CVertex, m_vPosition); }
+    //! Retourne l'offset mémoire de la propriété m_vPosition
+    static int positionOffset() { return VTX_OFFSET_OF(CVertex, m_vPosition); }
 
-	//! Retourne l'offset mémoire de la propriété m_vTexCoord
-	static int texCoordOffset() { return VTX_OFFSET_OF(CVertex, m_vTexCoord); }
+    //! Retourne l'offset mémoire de la propriété m_vTexCoord
+    static int texCoordOffset() { return VTX_OFFSET_OF(CVertex, m_vTexCoord); }
 
-	//! Retourne l'offset mémoire de la propriété m_vNormal
-	static int normalOffset() { return VTX_OFFSET_OF(CVertex, m_vNormal); }
+    //! Retourne l'offset mémoire de la propriété m_vNormal
+    static int normalOffset() { return VTX_OFFSET_OF(CVertex, m_vNormal); }
 
-	//! Retourne l'offset mémoire de la propriété m_vTangent
-	static int tangentOffset() { return VTX_OFFSET_OF(CVertex, m_vTangent); }
+    //! Retourne l'offset mémoire de la propriété m_vTangent
+    static int tangentOffset() { return VTX_OFFSET_OF(CVertex, m_vTangent); }
 
-	//! Retourne l'offset mémoire de la propriété m_dAltitude
-	static int altitudeOffset() { return VTX_OFFSET_OF(CVertex, m_dAltitude); }
+    //! Retourne l'offset mémoire de la propriété m_dAltitude
+    static int altitudeOffset() { return VTX_OFFSET_OF(CVertex, m_dAltitude); }
 
-	//! Retourne l'offset mémoire de la propriété m_vDiffTexWeight_0_1_2
-	static int diffTexWeight_0_1_2Offset() { return VTX_OFFSET_OF(CVertex, m_vDiffTexWeight_0_1_2); }
+    //! Retourne l'offset mémoire de la propriété m_vDiffTexWeight_0_1_2
+    static int diffTexWeight_0_1_2Offset() { return VTX_OFFSET_OF(CVertex, m_vDiffTexWeight_0_1_2); }
 
-	//! Retourne l'offset mémoire de la propriété m_vDiffTexWeight_3_4_5
-	static int diffTexWeight_3_4_5Offset() { return VTX_OFFSET_OF(CVertex, m_vDiffTexWeight_3_4_5); }
+    //! Retourne l'offset mémoire de la propriété m_vDiffTexWeight_3_4_5
+    static int diffTexWeight_3_4_5Offset() { return VTX_OFFSET_OF(CVertex, m_vDiffTexWeight_3_4_5); }
 
-	//! Retourne l'offset mémoire de la propriété m_vDiffTexWeight_6_7_8
-	static int diffTexWeight_6_7_8Offset() { return VTX_OFFSET_OF(CVertex, m_vDiffTexWeight_6_7_8); }
+    //! Retourne l'offset mémoire de la propriété m_vDiffTexWeight_6_7_8
+    static int diffTexWeight_6_7_8Offset() { return VTX_OFFSET_OF(CVertex, m_vDiffTexWeight_6_7_8); }
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//! Opérateur de copie
-	CVertex& operator=(const CVertex& target);
+    //! Opérateur de copie
+    CVertex& operator=(const CVertex& target);
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 public:
 
-	QVector<int>	m_vSmoothingGroups;
-	QVector<int>	m_vVertexIndicesForGroup;
+    QVector<int>        m_vSmoothingGroups;
+    QVector<int>        m_vVertexIndicesForGroup;
 
 protected:
 
-	Math::CVector3	m_vPosition;				// Coordonnées de position
-	Math::CVector2	m_vTexCoord;				// Coordonnées de texture mapping
-	Math::CVector3	m_vDiffTexWeight_0_1_2;		// Poids des textures 0 à 2
-	Math::CVector3	m_vDiffTexWeight_3_4_5;		// Poids des textures 3 à 5
-	Math::CVector3	m_vDiffTexWeight_6_7_8;		// Poids des textures 6 à 8
-	Math::CVector3	m_vNormal;					// Vecteur normal du vertex
-	Math::CVector3	m_vTangent;					// Vecteur tangent du vertex
-	Math::CVector3	m_vGravity;					// Vecteur de gravité
-	double			m_dAltitude;				// Altitude du vertex
-	double			m_dNormalDivider;			// Diviseur du vecteur normal
+    Math::CVector3      m_vPosition;				// Coordonnées de position
+    Math::CVector2      m_vTexCoord;				// Coordonnées de texture mapping
+    Math::CVector3      m_vDiffTexWeight_0_1_2;		// Poids des textures 0 à 2
+    Math::CVector3      m_vDiffTexWeight_3_4_5;		// Poids des textures 3 à 5
+    Math::CVector3      m_vDiffTexWeight_6_7_8;		// Poids des textures 6 à 8
+    Math::CVector3      m_vNormal;					// Vecteur normal du vertex
+    Math::CVector3      m_vTangent;					// Vecteur tangent du vertex
+    Math::CVector3      m_vGravity;					// Vecteur de gravité
+    double              m_dAltitude;				// Altitude du vertex
+    double              m_dNormalDivider;			// Diviseur du vecteur normal
 };

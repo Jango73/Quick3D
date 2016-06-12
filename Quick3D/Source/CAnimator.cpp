@@ -41,9 +41,9 @@ void CAnimator::stop()
 
 //-------------------------------------------------------------------------------------------------
 
-void CAnimator::loadParameters(CXMLNode xNode)
+void CAnimator::loadParameters(const QString& sBaseFile, CXMLNode xNode)
 {
-	CController::loadParameters(xNode);
+    CController::loadParameters(sBaseFile, xNode);
 
     if (xNode.attributes()[ParamName_Playing].isEmpty() == false)
 	{

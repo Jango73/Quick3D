@@ -62,9 +62,9 @@ double CEngine::getCurrentFuelCons_ls() const
 
 //-------------------------------------------------------------------------------------------------
 
-void CEngine::loadParameters(CXMLNode xComponent)
+void CEngine::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
-	CPhysicalComponent::loadParameters(xComponent);
+    CPhysicalComponent::loadParameters(sBaseFile, xComponent);
 
 	CXMLNode xThrustNode = xComponent.getNodeByTagName(ParamName_Thrust);
 

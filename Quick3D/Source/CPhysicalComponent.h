@@ -121,7 +121,7 @@ public:
     CPhysicalComponent& operator = (const CPhysicalComponent& target);
 
     //! Charge les paramètres de cet objet
-    virtual void loadParameters(CXMLNode xComponent);
+    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
     //! Méthode de mise à jour avec temps delta depuis la dernière itération
     virtual void update(double dDeltaTime);

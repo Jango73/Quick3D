@@ -73,9 +73,9 @@ CLight& CLight::operator = (const CLight& target)
 /*!
     Loads the properties of this light from \a xComponent.
 */
-void CLight::loadParameters(CXMLNode xComponent)
+void CLight::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
-    CCamera::loadParameters(xComponent);
+    CCamera::loadParameters(sBaseFile, xComponent);
 
     CXMLNode tColorNode = xComponent.getNodeByTagName(ParamName_Color);
 

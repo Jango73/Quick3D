@@ -327,6 +327,7 @@ HEADERS  += \
     Source/CZip.h \
     Source/glext.h \
     Source/ILogger.h \
+    Source/ILoadable.h \
     Source/Interpolator.h \
     Source/IProgressListener.h \
     Source/quick3d_global.h \

@@ -14,69 +14,69 @@ class QUICK3D_EXPORT CWing : public CPhysicalComponent
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	static CComponent* instanciator(C3DScene* pScene);
+    //!
+    static CComponent* instanciator(C3DScene* pScene);
 
-	//!
-	CWing(C3DScene* pScene);
+    //!
+    CWing(C3DScene* pScene);
 
-	//!
-	virtual ~CWing();
+    //!
+    virtual ~CWing();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual void setAileronAngle_norm(double dValue);
+    //!
+    virtual void setAileronAngle_norm(double dValue);
 
-	//!
-	virtual void setAileronAngle_rad(double dAngle);
+    //!
+    virtual void setAileronAngle_rad(double dAngle);
 
-	//!
-	virtual void setFlapsPosition_norm(double dValue);
+    //!
+    virtual void setFlapsPosition_norm(double dValue);
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual double getFlapsPosition_norm() const { return m_dFlapsPosition_norm; }
+    //!
+    virtual double getFlapsPosition_norm() const { return m_dFlapsPosition_norm; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes héritées
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes héritées
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual QString getClassName() const { return ClassName_CWing; }
+    //!
+    virtual QString getClassName() const { return ClassName_CWing; }
 
-	//!
-	virtual void loadParameters(CXMLNode xComponent);
+    //!
+    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
-	//!
-	virtual void update(double dDeltaTime);
+    //!
+    virtual void update(double dDeltaTime);
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	double						m_dArea_m2;
-	double						m_dWingAngle_rad;
-	double						m_dAileronArea_m2;
-	double						m_dAileronMaxPositiveAngle_rad;
-	double						m_dAileronAngle_rad;
-	double						m_dFlapsPosition_norm;
-	Math::CVector3				m_vAileronPosition;
-	Math::Interpolator<double>	m_iBodyAirflowDotLiftFactor;
-	Math::Interpolator<double>	m_iBodyAirflowDotAileronLiftFactor;
+    double						m_dArea_m2;
+    double						m_dWingAngle_rad;
+    double						m_dAileronArea_m2;
+    double						m_dAileronMaxPositiveAngle_rad;
+    double						m_dAileronAngle_rad;
+    double						m_dFlapsPosition_norm;
+    Math::CVector3				m_vAileronPosition;
+    Math::Interpolator<double>	m_iBodyAirflowDotLiftFactor;
+    Math::Interpolator<double>	m_iBodyAirflowDotAileronLiftFactor;
 };

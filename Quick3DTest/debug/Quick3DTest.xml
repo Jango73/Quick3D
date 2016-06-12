@@ -27,7 +27,18 @@
 
 		<Component Name="Terrain" Class="CAutoTerrain">
 			<Parameters>
-				<General Levels="18" Resolution="15"/>
+				<General Levels="18" Resolution="21"/>
+				<Material Type="blend">
+					<Texture Name="Textures/Stone01.jpg"/>
+					<Texture Name="Textures/Stone02.jpg"/>
+					<Texture Name="Textures/Dirt01.jpg"/>
+					<Texture Name="Textures/Dirt02.jpg"/>
+					<Texture Name="Textures/Sand01.jpg"/>
+					<Texture Name="Textures/Snow01.jpg"/>
+					<Texture Name="Textures/Grass01.jpg"/>
+					<Texture Name="Textures/Grass02.jpg"/>
+					<Texture Name="Textures/GrassDecal.png"/>
+				</Material>
 				<Height>
 					<Value Type="Sub">
 						<Operand>
@@ -233,7 +244,8 @@
 				</Height>
 				<Vegetation>
 					<Tree>
-						<DNA Levels="5" TrunkLength="50.0" TrunkRadius="4.0" BranchLengthScale="0.70" BranchRadiusScale="0.8" LeafScale="2.0" GravityFactor="1.2" Spread="0.00092">
+						<General Spread="0.00092"/>
+						<DNA Levels="5" TrunkLength="50.0" TrunkRadius="4.0" BranchLengthScale="0.70" BranchRadiusScale="0.8" LeafScale="2.0" GravityFactor="1.2">
 							<Leaf>
 								<FFD>
 									<Point fx=" 0.50" fy="0.0" fz="-0.50" tx=" 0.00" ty=" 0.0" tz="-0.50"/>
@@ -260,7 +272,8 @@
 						</Coverage>
 					</Tree>
 					<Tree>
-						<DNA Levels="5" TrunkLength="15.0" TrunkRadius="1.5" BranchLengthScale="0.80" BranchRadiusScale="0.5" LeafScale="2.0" GravityFactor="0.5" Spread="0.00025">
+						<General Spread="0.00025"/>
+						<DNA Levels="5" TrunkLength="15.0" TrunkRadius="1.5" BranchLengthScale="0.80" BranchRadiusScale="0.5" LeafScale="2.0" GravityFactor="0.5">
 							<Leaf>
 								<FFD>
 									<Point fx=" 0.50" fy="0.0" fz="-0.50" tx=" 0.00" ty=" 0.0" tz="-0.50"/>
@@ -287,7 +300,8 @@
 						</Coverage>
 					</Tree>
 					<Tree>
-						<DNA Levels="5" TrunkLength="4.0" TrunkRadius="0.4" BranchLengthScale="0.90" BranchRadiusScale="0.5" LeafScale="1.0" GravityFactor="0.3" Spread="0.00035">
+						<General Spread="0.00035"/>
+						<DNA Levels="5" TrunkLength="4.0" TrunkRadius="0.4" BranchLengthScale="0.90" BranchRadiusScale="0.5" LeafScale="1.0" GravityFactor="0.3">
 							<Leaf>
 								<FFD>
 									<Point fx=" 0.50" fy="0.0" fz="-0.50" tx=" 0.00" ty=" 0.0" tz="-0.50"/>
@@ -314,7 +328,8 @@
 						</Coverage>
 					</Tree>
 					<Tree>
-						<DNA Levels="5" TrunkLength="2.0" TrunkRadius="0.2" BranchLengthScale="0.70" BranchRadiusScale="0.5" LeafScale="1.0" GravityFactor="1.0" Spread="0.0002">
+						<General Spread="0.0002"/>
+						<DNA Levels="5" TrunkLength="2.0" TrunkRadius="0.2" BranchLengthScale="0.70" BranchRadiusScale="0.5" LeafScale="1.0" GravityFactor="1.0">
 							<Leaf>
 								<FFD>
 									<Point fx=" 0.50" fy="0.0" fz="-0.50" tx=" 0.00" ty=" 0.0" tz="-0.50"/>
@@ -341,7 +356,8 @@
 						</Coverage>
 					</Tree>
 					<Tree>
-						<DNA Levels="3" TrunkLength="0.3" TrunkRadius="0.05" BranchLengthScale="0.95" BranchRadiusScale="0.50" LeafScale="6.0" GravityFactor="0.5" Spread="0.00015">
+						<General Spread="0.00015"/>
+						<DNA Levels="3" TrunkLength="0.3" TrunkRadius="0.05" BranchLengthScale="0.95" BranchRadiusScale="0.50" LeafScale="6.0" GravityFactor="0.5">
 							<Leaf>
 								<FFD>
 									<Point fx=" 0.50" fy="0.0" fz="-0.50" tx=" 0.00" ty=" 0.0" tz="-0.50"/>
@@ -367,6 +383,26 @@
 							</Value>
 						</Coverage>
 					</Tree>
+					<Bush>
+						<General Spread="0.0002"/>
+						<Coverage>
+							<Value Type="Mul">
+								<Operand>
+									<!-- Coverage -->
+									<Value Type="Perlin" InputScale="0.0001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="1.0"/>
+								</Operand>
+								<Operand>
+									<!-- Probability -->
+									<Value Type="Turbulence" InputScale="0.1" MinClamp="-1.0" MaxClamp="1.0" OutputScale="10.0"/>
+								</Operand>
+							</Value>
+						</Coverage>
+						<Material Name="Bush01">
+							<Ambient g="1.0000" b="1.0000" r="1.0000"/>
+							<Diffuse g="0.0000" b="0.0000" Map="Textures/GrassDecal.png" r="0.0000"/>
+							<Specular g="1.0000" b="1.0000" Hardness="50" Intensity="0.2" r="1.0000"/>
+						</Material>
+					</Bush>
 				</Vegetation>
 				<Buildings>
 					<Building>

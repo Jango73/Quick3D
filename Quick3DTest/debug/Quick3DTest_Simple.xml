@@ -8,7 +8,18 @@
 
 		<Component Name="Terrain" Class="CAutoTerrain">
 			<Parameters>
-				<General Levels="18" Resolution="15"/>
+				<General Levels="18" Resolution="21"/>
+				<Material Type="blend">
+					<Texture Name="Textures/Stone01.jpg"/>
+					<Texture Name="Textures/Stone02.jpg"/>
+					<Texture Name="Textures/Dirt01.jpg"/>
+					<Texture Name="Textures/Dirt02.jpg"/>
+					<Texture Name="Textures/Sand01.jpg"/>
+					<Texture Name="Textures/Snow01.jpg"/>
+					<Texture Name="Textures/Grass01.jpg"/>
+					<Texture Name="Textures/Grass02.jpg"/>
+					<Texture Name="Textures/GrassDecal.png"/>
+				</Material>
 				<Height>
 					<Value Type="Sub">
 						<Operand>

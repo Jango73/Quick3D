@@ -161,6 +161,7 @@
 #define ParamName_Sphere					"Sphere"
 #define ParamName_Step						"Step"
 #define ParamName_Target					"Target"
+#define ParamName_Texture                   "Texture"
 #define ParamName_Thrust					"Thrust"
 #define ParamName_Type						"Type"
 #define ParamName_Translation				"Translation"

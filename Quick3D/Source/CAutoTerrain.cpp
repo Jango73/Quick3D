@@ -161,7 +161,23 @@ void CAutoTerrain::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 
     QString sMaterialType = xMaterialNode.attributes()[ParamName_Type];
 
-    if (sMaterialType.toLower() == "bing")
+    if (sMaterialType.toLower() == "blend")
+    {
+        m_pMaterial = m_pScene->getRessourcesManager()->shareMaterial(QSharedPointer<CMaterial>(new CMaterial(m_pScene)));
+
+        m_pMaterial->setIRFactor(0.2);
+
+        QVector<CXMLNode> xTextures = xMaterialNode.getNodesByTagName(ParamName_Texture);
+
+        foreach (CXMLNode xTexture, xTextures)
+        {
+            if (xTexture.attributes()[ParamName_Name].isEmpty() == false)
+            {
+                m_pMaterial->addDiffuseTexture(sBaseFile, xTexture.attributes()[ParamName_Name]);
+            }
+        }
+    }
+    else if (sMaterialType.toLower() == "bing")
     {
         CTiledMaterial* pTiled = new CTiledMaterial(m_pScene);
 
@@ -169,22 +185,6 @@ void CAutoTerrain::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
         pTiled->setLevels(m_iLevels);
 
         m_pMaterial = m_pScene->getRessourcesManager()->shareMaterial(QSharedPointer<CMaterial>(pTiled));
-    }
-    else
-    {
-        m_pMaterial = m_pScene->getRessourcesManager()->shareMaterial(QSharedPointer<CMaterial>(new CMaterial(m_pScene)));
-
-        m_pMaterial->setIRFactor(0.2);
-
-        m_pMaterial->addDiffuseTexture(sBaseFile, "Textures/Stone01.jpg");
-        m_pMaterial->addDiffuseTexture(sBaseFile, "Textures/Stone02.jpg");
-        m_pMaterial->addDiffuseTexture(sBaseFile, "Textures/Dirt01.jpg");
-        m_pMaterial->addDiffuseTexture(sBaseFile, "Textures/Dirt02.jpg");
-        m_pMaterial->addDiffuseTexture(sBaseFile, "Textures/Sand01.jpg");
-        m_pMaterial->addDiffuseTexture(sBaseFile, "Textures/Snow01.jpg");
-        m_pMaterial->addDiffuseTexture(sBaseFile, "Textures/Grass01.jpg");
-        m_pMaterial->addDiffuseTexture(sBaseFile, "Textures/Grass02.jpg");
-        m_pMaterial->addDiffuseTexture(sBaseFile, "Textures/GrassDecal.png");
     }
 }
 
@@ -691,11 +691,13 @@ void CAutoTerrain::readVegetationParameters()
 
     foreach (CXMLNode xTree, xTrees)
     {
+        CXMLNode xGeneral = xTree.getNodeByTagName(ParamName_General);
         CXMLNode xDNA = xTree.getNodeByTagName(ParamName_DNA);
         CXMLNode xCoverage = xTree.getNodeByTagName(ParamName_Coverage);
 
         CGenerateFunction* pFunction = new CGenerateFunction(xCoverage.getNodeByTagName(ParamName_Value));
 
+        double dSpread = xGeneral.attributes()[ParamName_Spread].toDouble();
         int iLevels = xDNA.attributes()[ParamName_Levels].toDouble();
         double dTrunkLength = xDNA.attributes()[ParamName_TrunkLength].toDouble();
         double dTrunkRadius = xDNA.attributes()[ParamName_TrunkRadius].toDouble();
@@ -703,7 +705,6 @@ void CAutoTerrain::readVegetationParameters()
         double dBranchRadiusScale = xDNA.attributes()[ParamName_BranchRadiusScale].toDouble();
         double dLeafScale = xDNA.attributes()[ParamName_LeafScale].toDouble();
         double dGravityFactor = xDNA.attributes()[ParamName_GravityFactor].toDouble();
-        double dSpread = xDNA.attributes()[ParamName_Spread].toDouble();
 
         CXMLNode xLeaf = xDNA.getNodeByTagName(ParamName_Leaf);
         CXMLNode xFFD = xLeaf.getNodeByTagName(ParamName_FFD);

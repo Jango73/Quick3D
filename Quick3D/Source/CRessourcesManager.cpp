@@ -69,7 +69,17 @@ QString CRessourcesManager::locateResource(const QString& sBaseFile, const QStri
     if (sBaseFile.isEmpty() == false)
     {
         QFileInfo iBaseInfo(sBaseFile);
-        QString sFinalName = iBaseInfo.absolutePath() + sFileToLocate;
+        QString sFinalName = iBaseInfo.absolutePath() + "/" + sFileToLocate;
+        QFileInfo iFinalInfo(sFinalName);
+        if (iFinalInfo.exists())
+        {
+            return sFinalName;
+        }
+    }
+
+    // Check in file system, relative to executable
+    {
+        QString sFinalName = QCoreApplication::applicationDirPath() + "/" + sFileToLocate;
         QFileInfo iFinalInfo(sFinalName);
         if (iFinalInfo.exists())
         {

@@ -107,7 +107,7 @@ public:
     static CComponent* instanciator(C3DScene* pScene);
 
     //!
-    CMesh(C3DScene* pScene, double dMaxDistance = 10000.0, bool bUseSpacePartitionning = false);
+    CMesh(C3DScene* pScene, double dMaxDistance = 10000.0, bool bUseSpacePartitionning = true);
 
     //!
     virtual ~CMesh();

@@ -19,7 +19,8 @@ using namespace Math;
 //-------------------------------------------------------------------------------------------------
 
 CGLWidgetScene::CGLWidgetScene(bool bForDisplay)
-    : C3DScene(bForDisplay)
+    : QGLWidget(QGLFormat (QGL::DoubleBuffer | QGL::DepthBuffer | QGL::StencilBuffer))
+    , C3DScene(bForDisplay)
 {
     LOG_DEBUG("CGLWidgetScene::CGLWidgetScene()");
 
@@ -385,7 +386,7 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
     m_tFog.color() = m_tFog.color() * m_dSunIntensity;
 
     // Compute light occlusions
-    // computeLightsOcclusion(pContext);
+    computeLightsOcclusion(pContext);
 
     C3DScene::setupLights(pContext);
 }
@@ -399,8 +400,10 @@ void CGLWidgetScene::computeLightsOcclusion(CRenderContext* pContext)
     foreach (CLight* pLight, vLights)
     {
         CRay3 aRay;
-        aRay.vOrigin = pContext->camera()->getWorldTransform() * CVector3();
-        aRay.vNormal = (pLight->getWorldPosition() - aRay.vOrigin).Normalize();
+        // aRay.vOrigin = pContext->camera()->getWorldTransform() * CVector3();
+        // aRay.vNormal = (pLight->getWorldPosition() - aRay.vOrigin).Normalize();
+        aRay.vOrigin = pLight->getWorldPosition();
+        aRay.vNormal = pContext->camera()->getWorldPosition() - aRay.vOrigin;
 
         RayTracingResult aResult = pContext->scene()->intersect(aRay);
 

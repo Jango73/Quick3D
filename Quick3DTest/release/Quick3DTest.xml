@@ -31,6 +31,23 @@
 		<Component Name="Terrain" Class="CAutoTerrain">
 			<Parameters>
 				<General Levels="18" Resolution="21"/>
+				<Functions>
+					<Function Name="ContinentsFactor">
+						<Value Type="Turbulence" InputScale="0.000001" MinClamp="0.0" MaxClamp="1.0" OutputScale="1.0"/>
+					</Function>
+					<Function Name="Continents_Large">
+						<Value Type="Turbulence" InputScale="0.000001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="1500.0"/>
+					</Function>
+					<Function Name="Continents_Medium">
+						<Value Type="Turbulence" InputScale="0.00001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="500.0"/>
+					</Function>
+					<Function Name="Continents_Small">
+						<Value Type="Turbulence" InputScale="0.0001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="100.0"/>
+					</Function>
+					<Function Name="Continents_Tiny">
+						<Value Type="Turbulence" InputScale="0.01" MinClamp="-1.0" MaxClamp="1.0" OutputScale="4.0"/>
+					</Function>
+				</Functions>
 				<Material Type="blend">
 					<Texture Name="Textures/Stone01.jpg"/>
 					<Texture Name="Textures/Stone02.jpg"/>
@@ -49,16 +66,16 @@
 									<Value Type="Constant" Value="-100.0"/>
 								</Operand>
 								<Operand>
-									<Value Type="Turbulence" InputScale="0.000001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="1500.0"/>
+									<Value Type="Function" Name="Continents_Large"/>
 								</Operand>
 								<Operand>
-									<Value Type="Turbulence" InputScale="0.00001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="500.0"/>
+									<Value Type="Function" Name="Continents_Medium"/>
 								</Operand>
 								<Operand>
-									<Value Type="Turbulence" InputScale="0.0001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="100.0"/>
+									<Value Type="Function" Name="Continents_Small"/>
 								</Operand>
 								<Operand>
-									<Value Type="Turbulence" InputScale="0.01" MinClamp="-1.0" MaxClamp="1.0" OutputScale="4.0"/>
+									<Value Type="Function" Name="Continents_Tiny"/>
 								</Operand>
 								<Operand>
 									<Value Type="Turbulence" InputScale="0.1" MinClamp="-1.0" MaxClamp="1.0" OutputScale="2.0"/>
@@ -91,7 +108,7 @@
 									<Value Type="Mul">
 										<Operand>
 											<!-- Continent factor -->
-											<Value Type="Turbulence" InputScale="0.000001" MinClamp="0.0" MaxClamp="1.0" OutputScale="1.0"/>
+											<Value Type="Function" Name="ContinentsFactor"/>
 										</Operand>
 										<Operand>
 											<Value Type="Mul">
@@ -127,7 +144,7 @@
 									<Value Type="Mul">
 										<Operand>
 											<!-- Continent factor -->
-											<Value Type="Turbulence" InputScale="0.000001" MinClamp="0.0" MaxClamp="1.0" OutputScale="1.0"/>
+											<Value Type="Function" Name="ContinentsFactor"/>
 										</Operand>
 										<Operand>
 											<Value Type="Mul">

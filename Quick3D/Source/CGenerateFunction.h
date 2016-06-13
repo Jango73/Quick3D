@@ -34,17 +34,33 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    CGenerateFunction(CXMLNode xNode);
+    CGenerateFunction(CXMLNode xFunctions, CXMLNode xNode);
 
     //!
     virtual ~CGenerateFunction();
+
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
+
+    //!
+    void setName(const QString& sName);
+
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
+
+    QString getName() const;
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes de contrôle
     //-------------------------------------------------------------------------------------------------
 
     //!
-    void getProceduralParameters(CXMLNode xParams);
+    void getStandardParameters(CXMLNode xFunctions, CXMLNode xParams);
+
+    //!
+    void getProceduralParameters(CXMLNode xFunctions, CXMLNode xParams);
 
     //!
     double process(CPerlin* pPerlin, const Math::CVector3& vPosition, const Math::CAxis& aAxis) const;
@@ -55,15 +71,16 @@ public:
 
 protected:
 
-    ETerrainOperation			m_eType;
-    double						m_dConstant;
-    QVector<CGenerateFunction*>	m_vOperands;
-    double						m_dInputScale;
-    double						m_dOutputScale;
-    double						m_dMinClamp;
-    double						m_dMaxClamp;
-    double						m_dDisplace;
-    int							m_dIterations;
-    double						m_dInputScaleFactor;
-    double						m_dOutputScaleFactor;
+    ETerrainOperation               m_eType;
+    QString                         m_sName;
+    double                          m_dConstant;
+    QVector<CGenerateFunction*>     m_vOperands;
+    double                          m_dInputScale;
+    double                          m_dOutputScale;
+    double                          m_dMinClamp;
+    double                          m_dMaxClamp;
+    double                          m_dDisplace;
+    int                             m_dIterations;
+    double                          m_dInputScaleFactor;
+    double                          m_dOutputScaleFactor;
 };

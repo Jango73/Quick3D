@@ -8,7 +8,7 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-CGenerateFunction::CGenerateFunction(CXMLNode xNode)
+CGenerateFunction::CGenerateFunction(CXMLNode xFunctions, CXMLNode xNode)
     : m_eType(toNone)
     , m_dConstant(0.0)
     , m_dInputScale(1.0)
@@ -22,72 +22,22 @@ CGenerateFunction::CGenerateFunction(CXMLNode xNode)
 {
     const QString& sType = xNode.attributes()[ParamName_Type];
 
-    if (sType.toLower() == "constant")
+    if (sType.toLower() == "function")
     {
-        m_eType = toConstant;
-        m_dConstant = xNode.attributes()[ParamName_Value].toDouble();
-    }
-    else if (sType.toLower() == "add")
-    {
-        m_eType = toAdd;
-        QVector<CXMLNode> xOperands = xNode.getNodesByTagName(ParamName_Operand);
-        foreach (CXMLNode xOperand, xOperands)
+        QString sFunctionName = xNode.attributes()[ParamName_Name];
+        QVector<CXMLNode> vFunctions = xFunctions.getNodesByTagName(ParamName_Function);
+
+        foreach (CXMLNode xFunction, vFunctions)
         {
-            m_vOperands.append(new CGenerateFunction(xOperand.getNodeByTagName(ParamName_Value)));
+            if (xFunction.attributes()[ParamName_Name] == sFunctionName)
+            {
+                getStandardParameters(xFunctions, xFunction.getNodeByTagName(ParamName_Value));
+            }
         }
     }
-    else if (sType.toLower() == "sub")
+    else
     {
-        m_eType = toSub;
-        QVector<CXMLNode> xOperands = xNode.getNodesByTagName(ParamName_Operand);
-        foreach (CXMLNode xOperand, xOperands)
-        {
-            m_vOperands.append(new CGenerateFunction(xOperand.getNodeByTagName(ParamName_Value)));
-        }
-    }
-    else if (sType.toLower() == "mul")
-    {
-        m_eType = toMul;
-        QVector<CXMLNode> xOperands = xNode.getNodesByTagName(ParamName_Operand);
-        foreach (CXMLNode xOperand, xOperands)
-        {
-            m_vOperands.append(new CGenerateFunction(xOperand.getNodeByTagName(ParamName_Value)));
-        }
-    }
-    else if (sType.toLower() == "div")
-    {
-        m_eType = toDiv;
-        QVector<CXMLNode> xOperands = xNode.getNodesByTagName(ParamName_Operand);
-        foreach (CXMLNode xOperand, xOperands)
-        {
-            m_vOperands.append(new CGenerateFunction(xOperand.getNodeByTagName(ParamName_Value)));
-        }
-    }
-    else if (sType.toLower() == "pow")
-    {
-        m_eType = toPow;
-        m_dConstant = xNode.attributes()[ParamName_Value].toDouble();
-        m_vOperands.append(new CGenerateFunction(xNode.getNodeByTagName(ParamName_Operand).getNodeByTagName(ParamName_Value)));
-    }
-    else if (sType.toLower() == "perlin")
-    {
-        m_eType = toPerlin;
-        getProceduralParameters(xNode);
-    }
-    else if (sType.toLower() == "turbulence")
-    {
-        m_eType = toTurbulence;
-        getProceduralParameters(xNode);
-    }
-    else if (sType.toLower() == "erosion")
-    {
-        m_eType = toErosion;
-        getProceduralParameters(xNode);
-    }
-    else if (sType.toLower() == "voronoi")
-    {
-        m_eType = toVoronoi;
-        getProceduralParameters(xNode);
+        getStandardParameters(xFunctions, xNode);
     }
 }
 
@@ -103,7 +53,96 @@ CGenerateFunction::~CGenerateFunction()
 
 //-------------------------------------------------------------------------------------------------
 
-void CGenerateFunction::getProceduralParameters(CXMLNode xParams)
+void CGenerateFunction::setName(const QString& sName)
+{
+    m_sName = sName;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QString CGenerateFunction::getName() const
+{
+    return m_sName;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CGenerateFunction::getStandardParameters(CXMLNode xFunctions, CXMLNode xNode)
+{
+    const QString& sType = xNode.attributes()[ParamName_Type];
+
+    if (sType.toLower() == "constant")
+    {
+        m_eType = toConstant;
+        m_dConstant = xNode.attributes()[ParamName_Value].toDouble();
+    }
+    else if (sType.toLower() == "add")
+    {
+        m_eType = toAdd;
+        QVector<CXMLNode> xOperands = xNode.getNodesByTagName(ParamName_Operand);
+        foreach (CXMLNode xOperand, xOperands)
+        {
+            m_vOperands.append(new CGenerateFunction(xFunctions, xOperand.getNodeByTagName(ParamName_Value)));
+        }
+    }
+    else if (sType.toLower() == "sub")
+    {
+        m_eType = toSub;
+        QVector<CXMLNode> xOperands = xNode.getNodesByTagName(ParamName_Operand);
+        foreach (CXMLNode xOperand, xOperands)
+        {
+            m_vOperands.append(new CGenerateFunction(xFunctions, xOperand.getNodeByTagName(ParamName_Value)));
+        }
+    }
+    else if (sType.toLower() == "mul")
+    {
+        m_eType = toMul;
+        QVector<CXMLNode> xOperands = xNode.getNodesByTagName(ParamName_Operand);
+        foreach (CXMLNode xOperand, xOperands)
+        {
+            m_vOperands.append(new CGenerateFunction(xFunctions, xOperand.getNodeByTagName(ParamName_Value)));
+        }
+    }
+    else if (sType.toLower() == "div")
+    {
+        m_eType = toDiv;
+        QVector<CXMLNode> xOperands = xNode.getNodesByTagName(ParamName_Operand);
+        foreach (CXMLNode xOperand, xOperands)
+        {
+            m_vOperands.append(new CGenerateFunction(xFunctions, xOperand.getNodeByTagName(ParamName_Value)));
+        }
+    }
+    else if (sType.toLower() == "pow")
+    {
+        m_eType = toPow;
+        m_dConstant = xNode.attributes()[ParamName_Value].toDouble();
+        m_vOperands.append(new CGenerateFunction(xFunctions, xNode.getNodeByTagName(ParamName_Operand).getNodeByTagName(ParamName_Value)));
+    }
+    else if (sType.toLower() == "perlin")
+    {
+        m_eType = toPerlin;
+        getProceduralParameters(xFunctions, xNode);
+    }
+    else if (sType.toLower() == "turbulence")
+    {
+        m_eType = toTurbulence;
+        getProceduralParameters(xFunctions, xNode);
+    }
+    else if (sType.toLower() == "erosion")
+    {
+        m_eType = toErosion;
+        getProceduralParameters(xFunctions, xNode);
+    }
+    else if (sType.toLower() == "voronoi")
+    {
+        m_eType = toVoronoi;
+        getProceduralParameters(xFunctions, xNode);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CGenerateFunction::getProceduralParameters(CXMLNode xFunctions, CXMLNode xParams)
 {
     if (xParams.attributes()[ParamName_InputScale].isEmpty() == false)
     {

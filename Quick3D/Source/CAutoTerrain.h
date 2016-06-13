@@ -197,10 +197,10 @@ protected:
     void collectGarbageRecurse(CWorldChunk* pChunk);
 
     //!
-    void readVegetationParameters(const QString& sBaseFile);
+    void readVegetationParameters(const QString& sBaseFile, CXMLNode xFunctions);
 
     //!
-    void readBuildingParameters(const QString& sBaseFile);
+    void readBuildingParameters(const QString& sBaseFile, CXMLNode xFunctions);
 
     //! Calcul d'intersection avec un rayon
     Math::RayTracingResult intersectRecurse(CWorldChunk* pChunk, const Math::CRay3& ray) const;
@@ -211,12 +211,12 @@ protected:
 
 protected:
 
-    bool                        m_bGenerateNow;
-    CWorldChunk*                m_pRoot;
-    CHeightField*               m_pHeights;
-    int                         m_iLevels;
-    int                         m_iTerrainResolution;
-    CXMLNode                    m_xParameters;
-    QSharedPointer<CMaterial>   m_pMaterial;
-    QVector<CVegetation*>       m_vVegetation;
+    bool                            m_bGenerateNow;
+    CWorldChunk*                    m_pRoot;
+    CHeightField*                   m_pHeights;
+    int                             m_iLevels;
+    int                             m_iTerrainResolution;
+    CXMLNode                        m_xParameters;
+    QSharedPointer<CMaterial>       m_pMaterial;
+    QVector<CVegetation*>           m_vVegetation;
 };

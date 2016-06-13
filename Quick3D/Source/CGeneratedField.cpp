@@ -12,8 +12,8 @@ CGeneratedField::CGeneratedField(CXMLNode xParameters)
     : m_xParameters(xParameters)
 {
     // Compile parameters
-    CXMLNode xHeightNode = xParameters.getNodeByTagName("Height");
-    m_pFunction = new CGenerateFunction(xHeightNode.getNodeByTagName("Value"));
+    CXMLNode xHeightNode = xParameters.getNodeByTagName(ParamName_Height);
+    m_pFunction = new CGenerateFunction(xParameters.getNodeByTagName(ParamName_Functions), xHeightNode.getNodeByTagName(ParamName_Value));
 }
 
 //-------------------------------------------------------------------------------------------------

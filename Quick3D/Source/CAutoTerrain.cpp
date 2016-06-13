@@ -132,6 +132,8 @@ void CAutoTerrain::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
     m_iTerrainResolution = xGeneralNode.attributes()[ParamName_Resolution].toInt();
     m_iTerrainResolution = Angles::clipInt(m_iTerrainResolution, 3, 81);
 
+    CXMLNode xFunctionsNode = m_xParameters.getNodeByTagName(ParamName_Functions);
+
     CXMLNode xHeightNode = m_xParameters.getNodeByTagName(ParamName_Height);
 
     QString sType = xHeightNode.attributes()[ParamName_Type];
@@ -154,8 +156,8 @@ void CAutoTerrain::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
         m_pHeights = new CGeneratedField(m_xParameters);
     }
 
-    readVegetationParameters(sBaseFile);
-    readBuildingParameters(sBaseFile);
+    readVegetationParameters(sBaseFile, xFunctionsNode);
+    readBuildingParameters(sBaseFile, xFunctionsNode);
 
     CXMLNode xMaterialNode = m_xParameters.getNodeByTagName(ParamName_Material);
 
@@ -683,7 +685,7 @@ void CAutoTerrain::flatten(const CGeoloc& gPosition, double dRadius)
 /*!
     Reads parameters for vegetation and creates appropriate meshes.
 */
-void CAutoTerrain::readVegetationParameters(const QString& sBaseFile)
+void CAutoTerrain::readVegetationParameters(const QString& sBaseFile, CXMLNode xFunctions)
 {
     CXMLNode xVegeationNode = m_xParameters.getNodeByTagName(ParamName_Vegetation);
 
@@ -695,7 +697,7 @@ void CAutoTerrain::readVegetationParameters(const QString& sBaseFile)
         CXMLNode xDNA = xTree.getNodeByTagName(ParamName_DNA);
         CXMLNode xCoverage = xTree.getNodeByTagName(ParamName_Coverage);
 
-        CGenerateFunction* pFunction = new CGenerateFunction(xCoverage.getNodeByTagName(ParamName_Value));
+        CGenerateFunction* pFunction = new CGenerateFunction(xFunctions, xCoverage.getNodeByTagName(ParamName_Value));
 
         double dSpread = xGeneral.attributes()[ParamName_Spread].toDouble();
         int iLevels = xDNA.attributes()[ParamName_Levels].toDouble();
@@ -767,7 +769,7 @@ void CAutoTerrain::readVegetationParameters(const QString& sBaseFile)
 
         if (xCoverage.isEmpty() == false && xGeneral.attributes()[ParamName_Spread].isEmpty() == false)
         {
-            CGenerateFunction* pFunction = new CGenerateFunction(xCoverage.getNodeByTagName(ParamName_Value));
+            CGenerateFunction* pFunction = new CGenerateFunction(xFunctions, xCoverage.getNodeByTagName(ParamName_Value));
 
             double dSpread = xGeneral.attributes()[ParamName_Spread].toDouble();
 
@@ -787,7 +789,7 @@ void CAutoTerrain::readVegetationParameters(const QString& sBaseFile)
 /*!
     Reads parameters for buildings.
 */
-void CAutoTerrain::readBuildingParameters(const QString& sBaseFile)
+void CAutoTerrain::readBuildingParameters(const QString& sBaseFile, CXMLNode xFunctions)
 {
     Q_UNUSED(sBaseFile);
 

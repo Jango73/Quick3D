@@ -58,6 +58,6 @@ public:
 
 protected:
 
-    CXMLNode			m_xParameters;
-    CGenerateFunction*	m_pFunction;
+    CXMLNode            m_xParameters;
+    CGenerateFunction*  m_pFunction;
 };

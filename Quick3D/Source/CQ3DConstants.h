@@ -113,6 +113,8 @@
 #define ParamName_FFD                       "FFD"
 #define ParamName_ForceFactor				"ForceFactor"
 #define ParamName_FOV                       "FOV"
+#define ParamName_Function                  "Function"
+#define ParamName_Functions                 "Functions"
 #define ParamName_General					"General"
 #define ParamName_Geoloc					"Geoloc"
 #define ParamName_GravityFactor             "GravityFactor"

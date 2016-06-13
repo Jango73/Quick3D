@@ -51,6 +51,7 @@ uniform vec3			u_light_color[8];
 uniform float			u_light_distance_to_camera[8];
 uniform float			u_light_distance[8];
 uniform float			u_light_spot_angle[8];
+uniform float			u_light_occlusion[8];
 
 uniform int				u_texture_diffuse_enable;
 uniform sampler2D		u_texture_diffuse_0;
@@ -340,29 +341,32 @@ vec3 lightRays(vec3 origin, vec3 direction, vec2 xy)
 
     for (int index = 0; index < u_num_lights; index++)
     {
-        float distanceFactor = clamp((u_light_distance[index] * 2.0) / u_light_distance_to_camera[index], 0.0, 1.0);
-
-        // Large glow
-        if (u_light_is_sun[index] > 0)
+        if (u_light_occlusion[index] == 0.0)
         {
-            vec3 lightDirection = normalize(u_light_position[index] - origin);
-            float amount = max(dot(direction, lightDirection), 0.0);
-            color += (u_light_color[index] * amount * amount * 0.25) * gAtmosphereFactor;
-            color += (u_light_color[index] * min(pow(amount, 1000.0), 1.0));
-            distanceFactor = 1.0;
-        }
+            float distanceFactor = clamp((u_light_distance[index] * 2.0) / u_light_distance_to_camera[index], 0.0, 1.0);
 
-        // Ray
-        if (u_light_screen_position[index].z > 0.0)
-        {
-            float diffX = abs(xy.x - u_light_screen_position[index].x);
-            float mixX = mix(1.0, 0.90, diffX);
-            float rayAmountX = clamp(mixX, 0.0, 1.0) * distanceFactor;
-            float diffY = abs(xy.y - u_light_screen_position[index].y);
-            float mixY = mix(0.9, 0.00, diffY);
-            float rayAmountY = clamp(mixY, 0.0, 1.0) * distanceFactor;
-            float final = pow(rayAmountX * rayAmountY, 20.0);
-            color += u_light_color[index] * final;
+            // Large glow
+            if (u_light_is_sun[index] > 0)
+            {
+                vec3 lightDirection = normalize(u_light_position[index] - origin);
+                float amount = max(dot(direction, lightDirection), 0.0);
+                color += (u_light_color[index] * amount * amount * 0.25) * gAtmosphereFactor;
+                color += (u_light_color[index] * min(pow(amount, 1000.0), 1.0));
+                distanceFactor = 1.0;
+            }
+
+            // Ray
+            if (u_light_screen_position[index].z > 0.0)
+            {
+                float diffX = abs(xy.x - u_light_screen_position[index].x);
+                float mixX = mix(1.0, 0.90, diffX);
+                float rayAmountX = clamp(mixX, 0.0, 1.0) * distanceFactor;
+                float diffY = abs(xy.y - u_light_screen_position[index].y);
+                float mixY = mix(0.9, 0.00, diffY);
+                float rayAmountY = clamp(mixY, 0.0, 1.0) * distanceFactor;
+                float final = pow(rayAmountX * rayAmountY, 20.0);
+                color += u_light_color[index] * final;
+            }
         }
     }
 

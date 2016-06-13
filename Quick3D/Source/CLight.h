@@ -44,6 +44,9 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
+    void setOcclusion(double value) { m_dOcclusion = value; }
+
+    //!
     void setCastShadows(bool value) { m_bCastShadows = value; }
 
     //!
@@ -54,13 +57,16 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
+    double getDistance() const { return m_dDistance; }
+
+    //!
     CMaterial* getMaterial() const { return m_pMaterial; }
 
     //!
-    bool castShadows() const { return m_bCastShadows; }
+    double getOcclusion() const { return m_dOcclusion; }
 
     //!
-    double getDistance() const { return m_dDistance; }
+    bool castShadows() const { return m_bCastShadows; }
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes héritées
@@ -89,6 +95,7 @@ public:
 protected:
 
     double          m_dDistance;
+    double          m_dOcclusion;
     bool            m_bCastShadows;
     CMaterial*      m_pMaterial;
 };

@@ -23,6 +23,7 @@ CComponent* CLight::instanciator(C3DScene* pScene)
 CLight::CLight(C3DScene* pScene)
     : CCamera(pScene)
     , m_dDistance(0.0)
+    , m_dOcclusion(0.0)
     , m_bCastShadows(false)
     , m_pMaterial(NULL)
 {
@@ -58,6 +59,7 @@ CLight& CLight::operator = (const CLight& target)
     CCamera::operator = (target);
 
     m_dDistance         = target.m_dDistance;
+    m_dOcclusion        = target.m_dOcclusion;
     m_bCastShadows      = target.m_bCastShadows;
 
     if (m_pMaterial != NULL && target.m_pMaterial != NULL)

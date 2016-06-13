@@ -44,6 +44,7 @@ uniform vec3			u_light_color[8];
 uniform float			u_light_distance_to_camera[8];
 uniform float			u_light_distance[8];
 uniform float			u_light_spot_angle[8];
+uniform float			u_light_occlusion[8];
 
 uniform int				u_texture_diffuse_enable;
 uniform sampler2D		u_texture_diffuse_0;

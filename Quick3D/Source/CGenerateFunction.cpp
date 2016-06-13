@@ -228,7 +228,7 @@ double CGenerateFunction::process(CPerlin* pPerlin, const CVector3& vPosition, c
                         dNewValue = pPerlin->getErosion(vPosition * dInputScale, aAxis, m_dDisplace);
                         break;
                     case toVoronoi:
-                        pPerlin->getVoronoi(vPosition * dInputScale, aAxis, m_dDisplace);
+                        dNewValue = pPerlin->getVoronoi(vPosition * dInputScale, aAxis, m_dDisplace);
                         break;
                     default:
                         break;

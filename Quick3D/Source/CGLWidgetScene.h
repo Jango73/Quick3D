@@ -51,6 +51,9 @@ public:
     virtual void setupLights(CRenderContext* pContext);
 
     //!
+    virtual void computeLightsOcclusion(CRenderContext* pContext);
+
+    //!
     virtual void makeCurrentRenderingContext();
 
     //-------------------------------------------------------------------------------------------------

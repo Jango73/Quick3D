@@ -251,6 +251,7 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
         GLfloat u_light_distance_to_camera [MAX_GL_LIGHTS];
         GLfloat u_light_distance [MAX_GL_LIGHTS];
         GLfloat u_light_spot_angle [MAX_GL_LIGHTS];
+        GLfloat u_light_occlusion [MAX_GL_LIGHTS];
         QVector3D vSunColor;
 
         if (vSuns.count() > 0)
@@ -295,6 +296,7 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
                 u_light_distance_to_camera[iOpenGLLightIndex]   = (GLfloat) vRelativePosition.length();
                 u_light_distance[iOpenGLLightIndex]             = (GLfloat) vLights[iLightIndex]->getDistance();
                 u_light_spot_angle[iOpenGLLightIndex]           = (GLfloat) Math::Angles::toRad(vLights[iLightIndex]->getFOV());
+                u_light_occlusion[iOpenGLLightIndex]            = (GLfloat) vLights[iLightIndex]->getOcclusion();
 
                 iOpenGLLightIndex++;
             }
@@ -309,6 +311,7 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
         pProgram->setUniformValueArray("u_light_distance_to_camera", u_light_distance_to_camera, MAX_GL_LIGHTS, 1);
         pProgram->setUniformValueArray("u_light_distance", u_light_distance, MAX_GL_LIGHTS, 1);
         pProgram->setUniformValueArray("u_light_spot_angle", u_light_spot_angle, MAX_GL_LIGHTS, 1);
+        pProgram->setUniformValueArray("u_light_occlusion", u_light_occlusion, MAX_GL_LIGHTS, 1);
 
         if (vSuns.count() > 0 && vSuns[0]->castShadows())
         {
@@ -336,6 +339,7 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
     CGeoloc gSunPosition(0.0, dSunAngle, 100000000.0);
     CVector3 vSunPosition = gSunPosition.toVector3();
 
+    // Compute sun intensity
     m_dSunIntensity = vSunPosition.Normalize().DotProduct(pContext->camera()->getWorldPosition().Normalize());
     m_dSunIntensity = (m_dSunIntensity + 1.0) * 0.5;
 
@@ -377,9 +381,31 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
         }
     }
 
+    // Multiply fog color with sun intensity
     m_tFog.color() = m_tFog.color() * m_dSunIntensity;
 
+    // Compute light occlusions
+    // computeLightsOcclusion(pContext);
+
     C3DScene::setupLights(pContext);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CGLWidgetScene::computeLightsOcclusion(CRenderContext* pContext)
+{
+    QVector<CLight*> vLights = getLights();
+
+    foreach (CLight* pLight, vLights)
+    {
+        CRay3 aRay;
+        aRay.vOrigin = pContext->camera()->getWorldTransform() * CVector3();
+        aRay.vNormal = (pLight->getWorldPosition() - aRay.vOrigin).Normalize();
+
+        RayTracingResult aResult = pContext->scene()->intersect(aRay);
+
+        pLight->setOcclusion(aResult.m_dDistance < Q3D_INFINITY ? 1.0 : 0.0);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------

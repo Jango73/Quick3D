@@ -518,31 +518,43 @@ void CWorldChunk::work()
                             )
                     {
                         CGeoloc gPosition(dLat, dLon, 0.0);
-                        CVector3 vPosition = gPosition.toVector3();
+                        // CVector3 vPosition = gPosition.toVector3();
 
-                        // gPosition.Latitude += perlin->getNoise((vPosition + CVector3(iVegetIndex, iVegetIndex, iVegetIndex)) * 0.25) * pVegetation->m_dSpread;
-                        // gPosition.Longitude += perlin->getNoise((vPosition + CVector3(iVegetIndex, iVegetIndex, iVegetIndex)) * 0.25) * pVegetation->m_dSpread;
+                        /*
+                        CVector3 vLatDisplace = (vPosition + CVector3(iVegetIndex, iVegetIndex, iVegetIndex)) * 0.0001;
+                        CVector3 vLonDisplace = (vPosition - CVector3(iVegetIndex, iVegetIndex, iVegetIndex)) * 0.0002;
 
-                        vPosition = gPosition.toVector3();
+                        double dLatNoise = perlin->getNoise(vLatDisplace);
+                        double dLonNoise = perlin->getNoise(vLonDisplace);
 
-                        double dLandscapeValue = pVegetation->m_pFunction->process(perlin, vPosition, CAxis());
+                        gPosition.Latitude += dLatNoise * (pVegetation->m_dSpread * 0.25);
+                        gPosition.Longitude += dLonNoise * (pVegetation->m_dSpread * 0.25);
+                        */
+
+                        // gPosition.Latitude += (((double) qrand() / (double) RAND_MAX) - 0.5) * pVegetation->m_dSpread;
+                        // gPosition.Longitude += (((double) qrand() / (double) RAND_MAX) - 0.5) * pVegetation->m_dSpread;
+
+                        double dLandscapeValue = pVegetation->m_pFunction->process(perlin, gPosition.toVector3(), CAxis());
 
                         if (dLandscapeValue > 0.0)
                         {
                             double dRigidness = 0.0;
-                            double dAltitude = m_pTerrain->getHeightAt(vPosition, &dRigidness);
+                            gPosition.Altitude = m_pTerrain->getHeightAt(gPosition, &dRigidness);
 
-                            if (dAltitude >= dAltitude_Trees)
+                            if (gPosition.Altitude >= dAltitude_Trees)
                             {
-                                gPosition = CGeoloc(dLat, dLon, dAltitude);
+                                switch (pVegetation->m_eType)
+                                {
+                                    case CVegetation::evtTree:
+                                        placeTree(gPosition, 5.0, iVegetIndex);
+                                        break;
 
-                                if (pVegetation->m_eType == CVegetation::evtTree)
-                                {
-                                    placeTree(gPosition, 5.0, iVegetIndex);
-                                }
-                                else if (pVegetation->m_eType == CVegetation::evtBush)
-                                {
-                                    placeBush(gPosition, 5.0, iVegetIndex);
+                                    case CVegetation::evtBush:
+                                        placeBush(gPosition, 5.0, iVegetIndex);
+                                        break;
+
+                                    default:
+                                        break;
                                 }
                             }
                         }
@@ -608,9 +620,9 @@ void CWorldChunk::placeBush(CGeoloc gPosition, double dRadius, int iVegetIndex)
 
             CVector3 vGeocentricPosition = gPosition.toVector3();
             CVector3 vPosition = vGeocentricPosition - m_vBushMeshes[sMaterialName]->getWorldPosition();
+
             CVertex newVertex(vPosition);
             newVertex.setNormal(vGeocentricPosition.Normalize());
-
             m_vBushMeshes[sMaterialName]->getVertices().append(newVertex);
         }
     }

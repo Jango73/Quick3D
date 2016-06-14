@@ -578,6 +578,38 @@
 			</Component>
 		</Component>
 
+		<Component Name="Visitor3" Class="CTerrestrialVehicle">
+			<Geoloc Latitude="19.2380" Longitude="10.8955" Altitude="0.0"/>
+			<Rotation x="0.0" y="0.0" z="0.0"/>
+			<Mesh Name="PVP.obj"/>
+			<IR Factor="0.8"/>
+			<Physics SpeedMS="4.0" TurnSpeedDS="30.0" PhysicsActive="0"/>
+		</Component>
+
+		<Component Name="Visitor4" Class="CTerrestrialVehicle">
+			<Geoloc Latitude="19.2380" Longitude="10.8950" Altitude="0.0"/>
+			<Rotation x="0.0" y="0.0" z="0.0"/>
+			<Mesh Name="PVP.obj"/>
+			<IR Factor="0.8"/>
+			<Physics SpeedMS="4.0" TurnSpeedDS="30.0" PhysicsActive="0"/>
+		</Component>
+
+		<Component Name="Visitor5" Class="CTerrestrialVehicle">
+			<Geoloc Latitude="19.2380" Longitude="10.8945" Altitude="0.0"/>
+			<Rotation x="0.0" y="0.0" z="0.0"/>
+			<Mesh Name="PVP.obj"/>
+			<IR Factor="0.8"/>
+			<Physics SpeedMS="4.0" TurnSpeedDS="30.0" PhysicsActive="0"/>
+		</Component>
+
+		<Component Name="Visitor6" Class="CTerrestrialVehicle">
+			<Geoloc Latitude="19.2380" Longitude="10.8940" Altitude="0.0"/>
+			<Rotation x="0.0" y="0.0" z="0.0"/>
+			<Mesh Name="PVP.obj"/>
+			<IR Factor="0.8"/>
+			<Physics SpeedMS="4.0" TurnSpeedDS="30.0" PhysicsActive="0"/>
+		</Component>
+
 		<Component Name="PCC" Class="CTerrestrialVehicle">
 			<Geoloc Latitude="19.2374" Longitude="10.8966" Altitude="0.0"/>
 			<Rotation x="0.0" y="90.0" z="0.0"/>

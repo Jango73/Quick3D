@@ -114,6 +114,11 @@ QSharedPointer<CMeshGeometry> CRessourcesManager::loadMesh(const QString& sBaseF
 
     QSharedPointer<CMeshGeometry> pLoadedMesh = findMesh(sFullFileName);
 
+    if (pLoadedMesh.isNull() == false)
+    {
+        return pLoadedMesh;
+    }
+
     if (sMeshFileName.contains(".obj"))
     {
         pLoadedMesh = COBJLoader::getInstance()->load(sBaseFile, pContainer, getObjByFilePathName(sFullFileName));
@@ -124,6 +129,8 @@ QSharedPointer<CMeshGeometry> CRessourcesManager::loadMesh(const QString& sBaseF
         pLoadedMesh = CQ3DLoader::getInstance()->load(sBaseFile, pContainer, getObjByFilePathName(sFullFileName));
         pLoadedMesh->setURL(sFullFileName);
     }
+
+    m_vGeometry.append(pLoadedMesh);
 
     return pLoadedMesh;
 }

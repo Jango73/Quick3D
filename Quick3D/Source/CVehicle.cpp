@@ -7,8 +7,6 @@
 #include "CVehicle.h"
 #include "CMesh.h"
 
-// #define SHOW_AXES
-
 //-------------------------------------------------------------------------------------------------
 
 using namespace Math;
@@ -87,40 +85,13 @@ void CVehicle::update(double dDeltaTime)
 {
     CTrajectorable::update(dDeltaTime);
 
-#ifdef SHOW_AXES
-    if (m_vAxisMeshes.count() == 0)
-    {
-        CMesh* pMesh = new CMesh(m_pScene);
-
-        COBJLoader::getInstance()->load(
-                    m_pScene,
-                    pMesh,
-                    CRessourcesManager::getInstance()->getObjByFilePathName(":/Resources/Axis.obj")
-                    );
-
-        pMesh->updateGeometry();
-
-        for (int iIndex = 0; iIndex < 4; iIndex++)
-        {
-            m_vAxisMeshes.append(CRessourcesManager::getInstance()->share(pMesh));
-        }
-    }
-#endif
-
-    if (isRootObject())
+    if (isRootObject() && m_bPhysicsActive)
     {
         if (m_pFields.count() > 0.0)
         {
             CVector3 vRotation;
 
-            if (m_bPhysicsActive == true)
-            {
-                vRotation = getOriginRotation();
-            }
-            else
-            {
-                vRotation = CVector3(0.0, getOriginRotation().Y, 0.0);
-            }
+            vRotation = getOriginRotation();
 
             CBoundingBox box = getBounds();
 
@@ -147,61 +118,28 @@ void CVehicle::update(double dDeltaTime)
 
             if (hBackLeft != Q3D_INFINITY && hBackRight != Q3D_INFINITY && hFrontLeft != Q3D_INFINITY && hFrontRight != Q3D_INFINITY)
             {
-                if (m_bPhysicsActive == true)
+                if (fabs(getGeoloc().Altitude - hAverage) < 5.0)
                 {
-                    if (fabs(getGeoloc().Altitude - hAverage) < 5.0)
-                    {
-                        double hdBackLeft = gBackLeft.Altitude - hBackLeft;
-                        double hdBackRight = gBackRight.Altitude - hBackRight;
-                        double hdFrontLeft = gFrontLeft.Altitude - hFrontLeft;
-                        double hdFrontRight = gFrontRight.Altitude - hFrontRight;
+                    double hdBackLeft = gBackLeft.Altitude - hBackLeft;
+                    double hdBackRight = gBackRight.Altitude - hBackRight;
+                    double hdFrontLeft = gFrontLeft.Altitude - hFrontLeft;
+                    double hdFrontRight = gFrontRight.Altitude - hFrontRight;
 
-                        // X
-                        CVector3 Front = CVector3(0.0, (hdFrontLeft + hdFrontRight) / 2.0, box.maximum().Z * 0.8);
-                        CVector3 Back = CVector3(0.0, (hdBackLeft + hdBackRight) / 2.0, box.minimum().Z * 0.8);
+                    // X
+                    CVector3 Front = CVector3(0.0, (hdFrontLeft + hdFrontRight) / 2.0, box.maximum().Z * 0.8);
+                    CVector3 Back = CVector3(0.0, (hdBackLeft + hdBackRight) / 2.0, box.minimum().Z * 0.8);
 
-                        double dDiffX = (Front - Back).AngleX();
+                    double dDiffX = (Front - Back).AngleX();
 
-                        // Z
-                        CVector3 Right = CVector3(box.maximum().X * 0.8, (hdBackRight + hdFrontRight) / 2.0, 0.0);
-                        CVector3 Left = CVector3(box.minimum().X * 0.8, (hdBackLeft + hdFrontLeft) / 2.0, 0.0);
+                    // Z
+                    CVector3 Right = CVector3(box.maximum().X * 0.8, (hdBackRight + hdFrontRight) / 2.0, 0.0);
+                    CVector3 Left = CVector3(box.minimum().X * 0.8, (hdBackLeft + hdFrontLeft) / 2.0, 0.0);
 
-                        double dDiffZ = (Right - Left).AngleZ();
+                    double dDiffZ = (Right - Left).AngleZ();
 
-                        CVector3 torque(-dDiffX * 4.0, 0.0, -dDiffZ);
+                    CVector3 torque(-dDiffX * 4.0, 0.0, -dDiffZ);
 
-                        addLocalTorque_kg(torque * getTotalMass_kg());
-                    }
-                }
-                else
-                {
-                    if (fabs(getGeoloc().Altitude - hAverage) < 2.0)
-                    {
-                        // X
-                        CVector3 Front = CVector3(0.0, (hFrontLeft + hFrontRight) / 2.0, box.maximum().Z * 0.8);
-                        CVector3 Back = CVector3(0.0, (hBackLeft + hBackRight) / 2.0, box.minimum().Z * 0.8);
-
-                        double dDiffX = (Front - Back).AngleX();
-
-                        // Z
-                        CVector3 Right = CVector3(box.maximum().X * 0.8, (hBackRight + hFrontRight) / 2.0, 0.0);
-                        CVector3 Left = CVector3(box.minimum().X * 0.8, (hBackLeft + hFrontLeft) / 2.0, 0.0);
-
-                        double dDiffZ = (Right - Left).AngleZ();
-
-                        setOriginRotation(CVector3(
-                                              dDiffX * dRigidness,
-                                              getOriginRotation().Y,
-                                              dDiffZ * dRigidness
-                                              ));
-                    }
-
-#ifdef SHOW_AXES
-                    m_vAxisMeshes[0]->setGeoloc(Geoloc(gBackLeft.Latitude, gBackLeft.Longitude, hBackLeft));
-                    m_vAxisMeshes[1]->setGeoloc(Geoloc(gBackRight.Latitude, gBackRight.Longitude, hBackRight));
-                    m_vAxisMeshes[2]->setGeoloc(Geoloc(gFrontLeft.Latitude, gFrontLeft.Longitude, hFrontLeft));
-                    m_vAxisMeshes[3]->setGeoloc(Geoloc(gFrontRight.Latitude, gFrontRight.Longitude, hFrontRight));
-#endif
+                    addLocalTorque_kg(torque * getTotalMass_kg());
                 }
             }
         }
@@ -213,11 +151,4 @@ void CVehicle::update(double dDeltaTime)
 void CVehicle::paint(CRenderContext* pContext)
 {
     CTrajectorable::paint(pContext);
-
-#ifdef SHOW_AXES
-    foreach (CMeshInstance* pMesh, m_vAxisMeshes)
-    {
-        pMesh->paint(pContext);
-    }
-#endif
 }

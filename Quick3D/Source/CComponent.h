@@ -23,6 +23,7 @@
 #include "CRenderContext.h"
 #include "CNamed.h"
 #include "CParented.h"
+#include "CExpendable.h"
 #include "CDumpable.h"
 #include "CBoundingBox.h"
 #include "CHeightField.h"
@@ -66,7 +67,7 @@ class CController;
 
 //-------------------------------------------------------------------------------------------------
 
-class QUICK3D_EXPORT CComponent : public CNamed, public CParented, public CDumpable, public ILoadable
+class QUICK3D_EXPORT CComponent : public CNamed, public CParented, public CExpendable, public CDumpable, public ILoadable
 {
 public:
 

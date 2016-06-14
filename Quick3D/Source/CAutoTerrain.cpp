@@ -367,7 +367,7 @@ void CAutoTerrain::buildRecurse(CWorldChunk* pChunk, CRenderContext* pContext, i
                 }
             }
 
-            pChunk->setLastUsed(QDateTime::currentDateTime());
+            pChunk->setUsedNow();
         }
     }
     else
@@ -576,7 +576,7 @@ void CAutoTerrain::collectGarbageRecurse(CWorldChunk* pChunk)
 {
     if (pChunk->getTerrain() != NULL)
     {
-        if (pChunk->getTerrain()->isOK() && pChunk->getLastUsed().secsTo(QDateTime::currentDateTime()) > 60.0)
+        if (pChunk->getTerrain()->isOK() && pChunk->isExpendable())
         {
             pChunk->clearTerrain();
         }

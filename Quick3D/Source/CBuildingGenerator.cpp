@@ -18,7 +18,7 @@ CBuildingGenerator::CBuildingGenerator(C3DScene* pScene)
 {
     m_pBuilding1 = QSharedPointer<CMesh>(new CBox(m_pScene, 150.0));
 
-    m_pScene->getRessourcesManager()->share(m_pBuilding1);
+    // m_pScene->getRessourcesManager()->share(m_pBuilding1);
 }
 
 //-------------------------------------------------------------------------------------------------

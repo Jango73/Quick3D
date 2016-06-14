@@ -60,9 +60,6 @@ public:
     virtual void setSize(CGeoloc value);
 
     //!
-    void setLastUsed(QDateTime value) { m_tLastUsed = value; }
-
-    //!
     void setTerrain(CTerrain* value, bool bGenerateNow = false);
 
     //!
@@ -89,9 +86,6 @@ public:
 
     //!
     CTerrain* getWater() const { return m_pWater; }
-
-    //!
-    QDateTime getLastUsed() const { return m_tLastUsed; }
 
     //!
     bool isOK() const { return m_bOK; }
@@ -184,7 +178,6 @@ protected:
     CBox*                           m_mBoundingBoxVisual;
     QVector<CBoundedMeshInstances*> m_vMeshes;
     QMap<QString, CMeshGeometry*>   m_vBushMeshes;
-    QDateTime                       m_tLastUsed;
     QMutex                          m_mMutex;
     double                          m_dDistance;
     bool                            m_bOK;

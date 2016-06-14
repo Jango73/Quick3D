@@ -44,7 +44,7 @@ void CMeshInstance::addMesh(QSharedPointer<CMesh> pMesh)
 
 CMeshInstance* CMeshInstance::clone()
 {
-    return m_pScene->getRessourcesManager()->share(m_vMeshes);
+    return new CMeshInstance(m_vMeshes);
 }
 
 //-------------------------------------------------------------------------------------------------

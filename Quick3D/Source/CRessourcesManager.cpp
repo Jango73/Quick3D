@@ -48,16 +48,7 @@ CRessourcesManager::~CRessourcesManager()
     }
 
     m_Icons.clear();
-
-    foreach (QPixmap* pixmap, m_Pixmaps)
-    {
-        delete pixmap;
-    }
-
-    m_Pixmaps.clear();
-
-    m_vMeshes.clear();
-
+    m_vGeometry.clear();
     m_vMaterials.clear();
 }
 
@@ -102,20 +93,39 @@ QString CRessourcesManager::locateResource(const QString& sBaseFile, const QStri
 
 //-------------------------------------------------------------------------------------------------
 
+QSharedPointer<CMeshGeometry> CRessourcesManager::findMesh(const QString& sFullFileName)
+{
+    foreach (QSharedPointer<CMeshGeometry> pMesh, m_vGeometry)
+    {
+        if (pMesh->getURL() == sFullFileName)
+        {
+            return pMesh;
+        }
+    }
+
+    return QSharedPointer<CMeshGeometry>(NULL);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 QSharedPointer<CMeshGeometry> CRessourcesManager::loadMesh(const QString& sBaseFile, const QString& sMeshFileName, CComponent *pContainer)
 {
     QString sFullFileName = locateResource(sBaseFile, sMeshFileName);
 
+    QSharedPointer<CMeshGeometry> pLoadedMesh = findMesh(sFullFileName);
+
     if (sMeshFileName.contains(".obj"))
     {
-        return COBJLoader::getInstance()->load(sBaseFile, pContainer, getObjByFilePathName(sFullFileName));
+        pLoadedMesh = COBJLoader::getInstance()->load(sBaseFile, pContainer, getObjByFilePathName(sFullFileName));
+        pLoadedMesh->setURL(sFullFileName);
     }
     else if (sMeshFileName.contains(".q3d"))
     {
-        return CQ3DLoader::getInstance()->load(sBaseFile, pContainer, getObjByFilePathName(sFullFileName));
+        pLoadedMesh = CQ3DLoader::getInstance()->load(sBaseFile, pContainer, getObjByFilePathName(sFullFileName));
+        pLoadedMesh->setURL(sFullFileName);
     }
 
-    return QSharedPointer<CMeshGeometry>(NULL);
+    return pLoadedMesh;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -176,51 +186,6 @@ QIcon* CRessourcesManager::getIconByFilePathName(const QString& filePathName)
     }
 
     return m_Icons[filePathName];
-}
-
-//-------------------------------------------------------------------------------------------------
-
-QPixmap* CRessourcesManager::getPixmapByFilePathName(const QString& filePathName)
-{
-    QHash<QString, QPixmap*>::iterator i = m_Pixmaps.find(filePathName);
-
-    if (i == m_Pixmaps.constEnd())
-    {
-        m_Pixmaps[filePathName] = new QPixmap(filePathName);
-    }
-
-    return m_Pixmaps[filePathName];
-}
-
-//-------------------------------------------------------------------------------------------------
-
-CMeshInstance* CRessourcesManager::share(QSharedPointer<CMesh> pMesh)
-{
-    QMutexLocker locker(&m_mMutex);
-
-    if (m_vMeshes.contains(pMesh) == false)
-    {
-        m_vMeshes.append(pMesh);
-    }
-
-    return new CMeshInstance(pMesh);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-CMeshInstance* CRessourcesManager::share(QVector<QSharedPointer<CMesh> > vMeshes)
-{
-    QMutexLocker locker(&m_mMutex);
-
-    foreach (QSharedPointer<CMesh> pMesh, vMeshes)
-    {
-        if (m_vMeshes.contains(pMesh) == false)
-        {
-            m_vMeshes.append(pMesh);
-        }
-    }
-
-    return new CMeshInstance(vMeshes);
 }
 
 //-------------------------------------------------------------------------------------------------

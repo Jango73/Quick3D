@@ -64,6 +64,7 @@ SOURCES += \
     Source/CElectricalContactor.cpp \
     Source/CElevator.cpp \
     Source/CEngine.cpp \
+    Source/CExpendable.cpp \
     Source/CFace.cpp \
     Source/CFog.cpp \
     Source/CForceController.cpp \
@@ -244,6 +245,7 @@ HEADERS  += \
     Source/CElectricalContactor.h \
     Source/CElevator.h \
     Source/CEngine.h \
+    Source/CExpendable.h \
     Source/CFace.h \
     Source/CFog.h \
     Source/CForceController.h \

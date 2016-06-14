@@ -36,6 +36,9 @@ public:
     QString locateResource(const QString& sBaseFile, const QString& sFileToLocate);
 
     //!
+    QSharedPointer<CMeshGeometry> findMesh(const QString& sFullFileName);
+
+    //!
     QSharedPointer<CMeshGeometry> loadMesh(const QString& sBaseFile, const QString& sMeshFileName, CComponent* pContainer);
 
     //! Recupere un shader par son nom
@@ -49,12 +52,6 @@ public:
 
     //! Recupere un pixmap par son nom
     QPixmap* getPixmapByFilePathName(const QString& filePathName);
-
-    //!
-    CMeshInstance* share(QSharedPointer<CMesh> pMesh);
-
-    //!
-    CMeshInstance* share(QVector<QSharedPointer<CMesh> > vMeshes);
 
     //!
     QSharedPointer<CMaterial> shareMaterial(QSharedPointer<CMaterial> pMaterial);
@@ -73,8 +70,8 @@ public:
 
 protected:
 
-    QMutex		m_mMutex;
-    C3DScene*	m_pScene;
+    QMutex      m_mMutex;
+    C3DScene*   m_pScene;
 
     //! Table de hachage ou sont stockees les shaders
     QHash<QString, QString> m_Shaders;
@@ -85,11 +82,8 @@ protected:
     //! Table de hachage ou sont stockees les icones
     QHash<QString, QIcon*> m_Icons;
 
-    //! Table de hachage ou sont stockees les pixmaps
-    QHash<QString, QPixmap*> m_Pixmaps;
-
     //! Table des mesh
-    QVector<QSharedPointer<CMesh> > m_vMeshes;
+    QVector<QSharedPointer<CMeshGeometry> > m_vGeometry;
 
     //! Material table
     QVector<QSharedPointer<CMaterial> > m_vMaterials;

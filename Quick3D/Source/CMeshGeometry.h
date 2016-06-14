@@ -114,6 +114,9 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
+    void setURL(const QString& sURL);
+
+    //!
     void setMaterial(QSharedPointer<CMaterial> pMaterial);
 
     //!
@@ -128,6 +131,9 @@ public:
     //-------------------------------------------------------------------------------------------------
     // Getters
     //-------------------------------------------------------------------------------------------------
+
+    //!
+    QString getURL() const { return m_sURL; }
 
     //!
     QVector<CVertex>& getVertices() { return m_vVertices; }
@@ -281,6 +287,7 @@ protected:
 
     QMutex                                  m_mMutex;					// Mutex de protection des données entre threads
     C3DScene*                               m_pScene;
+    QString                                 m_sURL;
     CBoundingBox                            m_bBounds;					// Boite englobante du maillage
     QVector<CVertex>                        m_vVertices;				// Sommets du maillage
     QVector<CFace>                          m_vFaces;					// Polygones du maillage

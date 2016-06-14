@@ -114,7 +114,7 @@ void CBILField::collectGarbage()
 
         for (int iIndex = 0; iIndex < m_vChunks.count(); iIndex++)
         {
-            if (m_vChunks[iIndex]->getLastUsed().secsTo(QDateTime::currentDateTime()) > 20)
+            if (m_vChunks[iIndex]->isExpendable())
             {
                 m_vChunks[iIndex]->clearData();
             }

@@ -76,8 +76,8 @@ CTerrain::CTerrain(
     computeWorldTransform();
 
     // Create terrain mesh
-    m_pMesh = new CMesh(pScene, 100000000.0, true);
-    m_pMesh->setName(QString("TerrainMesh%1").arg(sGeolocName));
+    m_pMesh = new CMeshGeometry(pScene, 100000000.0, true);
+    // m_pMesh->setName(QString("TerrainMesh%1").arg(sGeolocName));
 
     if (bIsWater == false)
     {
@@ -120,7 +120,7 @@ CTerrain::~CTerrain()
 
     delete m_pMesh;
 
-    foreach (CMesh* pSeam, m_vSeams)
+    foreach (CMeshGeometry* pSeam, m_vSeams)
     {
         delete pSeam;
     }
@@ -144,7 +144,7 @@ CBoundingBox CTerrain::getWorldBounds()
 {
     if (m_pMesh)
     {
-        return m_pMesh->getWorldBounds();
+        return m_pMesh->getWorldBounds(this);
     }
 
     return CBoundingBox();
@@ -190,7 +190,7 @@ int CTerrain::getFaceIndexForVertices(int v1, int v2, int v3, int v4) const
 
 void CTerrain::paint(CRenderContext* pContext)
 {
-    m_pMesh->paint(pContext);
+    m_pMesh->paint(this, pContext);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -524,9 +524,6 @@ void CTerrain::work()
 
     // Update mesh
     m_pMesh->setGeometryDirty(true);
-    m_pMesh->setInheritTransform(false);
-    m_pMesh->setOriginPosition(getOriginPosition());
-    m_pMesh->computeWorldTransform();
 
     // Terrain is ready
     m_bOK = true;
@@ -578,7 +575,7 @@ RayTracingResult CTerrain::intersect(Math::CRay3 ray)
 {
     if (m_pMesh != NULL)
     {
-        return m_pMesh->intersect(ray);
+        return m_pMesh->intersect(this, ray);
     }
 
     return RayTracingResult(Q3D_INFINITY);

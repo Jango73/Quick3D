@@ -741,19 +741,24 @@ void CAutoTerrain::readVegetationParameters(const QString& sBaseFile, CXMLNode x
 
         for (int iLODLevel = 0; iLODLevel < 5; iLODLevel++)
         {
-            vMeshes.append(QSharedPointer<CMesh>(m_pScene->getTreeGenerator()->createTree(
-                                                     iLODLevel,
-                                                     vNoisePosition,
-                                                     iLevels,
-                                                     dTrunkLength,
-                                                     dTrunkRadius,
-                                                     dBranchLengthScale,
-                                                     dBranchRadiusScale,
-                                                     dLeafScale,
-                                                     dGravityFactor,
-                                                     vFFDFrom,
-                                                     vFFDTo
-                                                     )));
+            CMesh* pMesh = new CMesh(m_pScene);
+
+            CMeshGeometry* pMeshGeometry = m_pScene->getTreeGenerator()->createTree(
+                        iLODLevel,
+                        vNoisePosition,
+                        iLevels,
+                        dTrunkLength,
+                        dTrunkRadius,
+                        dBranchLengthScale,
+                        dBranchRadiusScale,
+                        dLeafScale,
+                        dGravityFactor,
+                        vFFDFrom,
+                        vFFDTo
+                        );
+
+            pMesh->setGeometry(QSharedPointer<CMeshGeometry>(pMeshGeometry));
+            vMeshes.append(QSharedPointer<CMesh>(pMesh));
         }
 
         m_vVegetation.append(new CVegetation(CVegetation::evtTree, dSpread, pFunction, new CMeshInstance(vMeshes), NULL));

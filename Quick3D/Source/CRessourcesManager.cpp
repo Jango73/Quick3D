@@ -102,18 +102,20 @@ QString CRessourcesManager::locateResource(const QString& sBaseFile, const QStri
 
 //-------------------------------------------------------------------------------------------------
 
-void CRessourcesManager::loadMesh(const QString& sBaseFile, CMesh* pMesh, const QString& sMeshFileName)
+QSharedPointer<CMeshGeometry> CRessourcesManager::loadMesh(const QString& sBaseFile, const QString& sMeshFileName, CComponent *pContainer)
 {
     QString sFullFileName = locateResource(sBaseFile, sMeshFileName);
 
     if (sMeshFileName.contains(".obj"))
     {
-        COBJLoader::getInstance()->load(sBaseFile, m_pScene, pMesh, getObjByFilePathName(sFullFileName));
+        return COBJLoader::getInstance()->load(sBaseFile, pContainer, getObjByFilePathName(sFullFileName));
     }
     else if (sMeshFileName.contains(".q3d"))
     {
-        CQ3DLoader::getInstance()->load(sBaseFile, m_pScene, pMesh, getObjByFilePathName(sFullFileName));
+        return CQ3DLoader::getInstance()->load(sBaseFile, pContainer, getObjByFilePathName(sFullFileName));
     }
+
+    return QSharedPointer<CMeshGeometry>(NULL);
 }
 
 //-------------------------------------------------------------------------------------------------

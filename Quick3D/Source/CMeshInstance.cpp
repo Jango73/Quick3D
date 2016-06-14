@@ -83,7 +83,7 @@ void CMeshInstance::paint(CRenderContext* pContext)
 
         foreach (QSharedPointer<CMesh> pMesh, m_vMeshes)
         {
-            if (vPosition.getMagnitude() <= pMesh->getMaxDistance())
+            if (vPosition.getMagnitude() <= pMesh->geometry()->getMaxDistance())
             {
                 pMesh->setWorldTransform(m_mWorldTransform);
                 pMesh->paint(pContext);

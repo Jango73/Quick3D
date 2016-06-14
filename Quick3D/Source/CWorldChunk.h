@@ -183,7 +183,7 @@ protected:
     CTerrain*                       m_pWater;
     CBox*                           m_mBoundingBoxVisual;
     QVector<CBoundedMeshInstances*> m_vMeshes;
-    QMap<QString, CMesh*>           m_vBushMeshes;
+    QMap<QString, CMeshGeometry*>   m_vBushMeshes;
     QDateTime                       m_tLastUsed;
     QMutex                          m_mMutex;
     double                          m_dDistance;

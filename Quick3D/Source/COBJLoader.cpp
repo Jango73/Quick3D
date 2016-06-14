@@ -9,20 +9,20 @@
 
 //-------------------------------------------------------------------------------------------------
 
-#define TOKEN_comment           "#"
-#define TOKEN_material_lib      "mtllib"
-#define TOKEN_new_material      "newmtl"
-#define TOKEN_material_ambient  "Ka"
-#define TOKEN_material_diffuse  "Kd"
-#define TOKEN_material_specular "Ks"
-#define TOKEN_material_emission "Ke"
-#define TOKEN_texture_diffuse   "map_Kd"
-#define TOKEN_use_material      "usemtl"
-#define TOKEN_vertex            "v"
-#define TOKEN_vertex_normal     "vn"
-#define TOKEN_vertex_texture    "vt"
-#define TOKEN_smoothing         "s"
-#define TOKEN_face              "f"
+#define TOKEN_comment               "#"
+#define TOKEN_material_lib          "mtllib"
+#define TOKEN_new_material          "newmtl"
+#define TOKEN_material_ambient      "Ka"
+#define TOKEN_material_diffuse      "Kd"
+#define TOKEN_material_specular     "Ks"
+#define TOKEN_material_emission     "Ke"
+#define TOKEN_texture_diffuse       "map_Kd"
+#define TOKEN_use_material          "usemtl"
+#define TOKEN_vertex                "v"
+#define TOKEN_vertex_normal         "vn"
+#define TOKEN_vertex_texture        "vt"
+#define TOKEN_smoothing             "s"
+#define TOKEN_face                  "f"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -36,11 +36,11 @@ COBJLoader::COBJLoader()
 
 //-------------------------------------------------------------------------------------------------
 
-void COBJLoader::load(const QString& sBaseFile, C3DScene* pScene, CMesh* pMesh, QString sText)
+QSharedPointer<CMeshGeometry> COBJLoader::load(const QString& sBaseFile, CComponent *pContainer, QString sText)
 {
-    LOG_DEBUG(QString("COBJLoader::load() : START : %1").arg(pMesh->getName()));
-
     QTextStream sInput(&sText, QIODevice::ReadOnly);
+
+    QSharedPointer<CMeshGeometry> pMesh = QSharedPointer<CMeshGeometry>(new CMeshGeometry(pContainer->getScene()));
 
     pMesh->getFaces().clear();
     pMesh->getVertices().clear();
@@ -69,7 +69,12 @@ void COBJLoader::load(const QString& sBaseFile, C3DScene* pScene, CMesh* pMesh, 
                 {
                     QString sMaterialFileName = ":/Resources/" + lWords.at(1);
 
-                    loadMaterials(sBaseFile, pScene, pMesh, pScene->getRessourcesManager()->getObjByFilePathName(sMaterialFileName));
+                    loadMaterials(
+                                sBaseFile,
+                                pContainer->getScene(),
+                                pMesh.data(),
+                                pContainer->getScene()->getRessourcesManager()->getObjByFilePathName(sMaterialFileName)
+                                );
                 }
                 else if (sFirstWord == "o" && lWords.count() > 1)
                 {
@@ -121,7 +126,7 @@ void COBJLoader::load(const QString& sBaseFile, C3DScene* pScene, CMesh* pMesh, 
                 }
                 else if (sFirstWord == TOKEN_face && lWords.count() > 3)
                 {
-                    CFace NewFace(pMesh);
+                    CFace NewFace(pMesh.data());
 
                     NewFace.setSmoothingGroup(iSmoothingGroup);
                     NewFace.setMaterialIndex(iMaterialIndex);
@@ -169,16 +174,14 @@ void COBJLoader::load(const QString& sBaseFile, C3DScene* pScene, CMesh* pMesh, 
     // Séparation des polygones en fonction des groupes de lissage
     pMesh->splitVerticesBySmoothingGroup();
 
-    LOG_DEBUG(QString("COBJLoader::load() : END : %1").arg(pMesh->getName()));
+    return pMesh;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void COBJLoader::loadMaterials(const QString& sBaseFile, C3DScene* pScene, CMesh* pMesh, QString sText)
+void COBJLoader::loadMaterials(const QString& sBaseFile, C3DScene* pScene, CMeshGeometry* pMesh, QString sText)
 {
     Q_UNUSED(sBaseFile);
-
-    LOG_DEBUG(QString("COBJLoader::loadMaterials() : START : %1").arg(pMesh->getName()));
 
     QTextStream sInput(&sText, QIODevice::ReadOnly);
 
@@ -277,6 +280,4 @@ void COBJLoader::loadMaterials(const QString& sBaseFile, C3DScene* pScene, CMesh
             }
         }
     }
-
-    LOG_DEBUG(QString("COBJLoader::loadMaterials() : END : %1").arg(pMesh->getName()));
 }

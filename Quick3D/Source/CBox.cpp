@@ -10,7 +10,6 @@ using namespace Math;
 // Constantes
 
 #define BOX_SIZE	0.5
-#define COORD_STEP	((float) (1.0 / 4.0))
 
 //-------------------------------------------------------------------------------------------------
 
@@ -21,17 +20,8 @@ CBox::CBox(C3DScene* pScene, double dMaxDistance)
 {
     setName("Box");
 
-    m_iGLType = GL_QUADS;
-
-    setMaterial(m_pScene->getRessourcesManager()->getDefaultMaterial());
-    getMaterials()[0]->setIRFactor(0.4);
-
-    m_vFaces.append(CFace(this,  0,  1,  2,  3));
-    m_vFaces.append(CFace(this,  4,  5,  6,  7));
-    m_vFaces.append(CFace(this,  8,  9, 10, 11));
-    m_vFaces.append(CFace(this, 12, 13, 14, 15));
-    m_vFaces.append(CFace(this, 16, 17, 18, 19));
-    m_vFaces.append(CFace(this, 20, 21, 22, 23));
+    m_pGeometry->setMaterial(m_pScene->getRessourcesManager()->getDefaultMaterial());
+    m_pGeometry->getMaterials()[0]->setIRFactor(0.4);
 
     fillVertices();
 }
@@ -74,43 +64,5 @@ void CBox::setBounds(const CVector3& vMinimum, const CVector3& vMaximum)
 
 void CBox::fillVertices()
 {
-    m_vVertices.clear();
-
-    // Front
-    m_vVertices.append(CVertex(CVector3(m_vMinimum.X, m_vMaximum.Y, m_vMaximum.Z), CVector2(COORD_STEP * 1.0, COORD_STEP * 2.0)));
-    m_vVertices.append(CVertex(CVector3(m_vMaximum.X, m_vMaximum.Y, m_vMaximum.Z), CVector2(COORD_STEP * 2.0, COORD_STEP * 2.0)));
-    m_vVertices.append(CVertex(CVector3(m_vMaximum.X, m_vMinimum.Y, m_vMaximum.Z), CVector2(COORD_STEP * 2.0, COORD_STEP * 1.0)));
-    m_vVertices.append(CVertex(CVector3(m_vMinimum.X, m_vMinimum.Y, m_vMaximum.Z), CVector2(COORD_STEP * 1.0, COORD_STEP * 1.0)));
-
-    // Top
-    m_vVertices.append(CVertex(CVector3(m_vMaximum.X, m_vMaximum.Y, m_vMaximum.Z), CVector2(COORD_STEP * 2.0, COORD_STEP * 2.0)));
-    m_vVertices.append(CVertex(CVector3(m_vMinimum.X, m_vMaximum.Y, m_vMaximum.Z), CVector2(COORD_STEP * 1.0, COORD_STEP * 2.0)));
-    m_vVertices.append(CVertex(CVector3(m_vMinimum.X, m_vMaximum.Y, m_vMinimum.Z), CVector2(COORD_STEP * 1.0, COORD_STEP * 3.0)));
-    m_vVertices.append(CVertex(CVector3(m_vMaximum.X, m_vMaximum.Y, m_vMinimum.Z), CVector2(COORD_STEP * 2.0, COORD_STEP * 3.0)));
-
-    // Right
-    m_vVertices.append(CVertex(CVector3(m_vMaximum.X, m_vMaximum.Y, m_vMaximum.Z), CVector2(COORD_STEP * 2.0, COORD_STEP * 2.0)));
-    m_vVertices.append(CVertex(CVector3(m_vMaximum.X, m_vMaximum.Y, m_vMinimum.Z), CVector2(COORD_STEP * 3.0, COORD_STEP * 2.0)));
-    m_vVertices.append(CVertex(CVector3(m_vMaximum.X, m_vMinimum.Y, m_vMinimum.Z), CVector2(COORD_STEP * 3.0, COORD_STEP * 1.0)));
-    m_vVertices.append(CVertex(CVector3(m_vMaximum.X, m_vMinimum.Y, m_vMaximum.Z), CVector2(COORD_STEP * 2.0, COORD_STEP * 1.0)));
-
-    // Left
-    m_vVertices.append(CVertex(CVector3(m_vMinimum.X, m_vMaximum.Y, m_vMinimum.Z), CVector2(COORD_STEP * 0.0, COORD_STEP * 2.0)));
-    m_vVertices.append(CVertex(CVector3(m_vMinimum.X, m_vMaximum.Y, m_vMaximum.Z), CVector2(COORD_STEP * 1.0, COORD_STEP * 2.0)));
-    m_vVertices.append(CVertex(CVector3(m_vMinimum.X, m_vMinimum.Y, m_vMaximum.Z), CVector2(COORD_STEP * 1.0, COORD_STEP * 1.0)));
-    m_vVertices.append(CVertex(CVector3(m_vMinimum.X, m_vMinimum.Y, m_vMinimum.Z), CVector2(COORD_STEP * 0.0, COORD_STEP * 1.0)));
-
-    // Back
-    m_vVertices.append(CVertex(CVector3(m_vMaximum.X, m_vMaximum.Y, m_vMinimum.Z), CVector2(COORD_STEP * 2.0, COORD_STEP * 3.0)));
-    m_vVertices.append(CVertex(CVector3(m_vMinimum.X, m_vMaximum.Y, m_vMinimum.Z), CVector2(COORD_STEP * 1.0, COORD_STEP * 3.0)));
-    m_vVertices.append(CVertex(CVector3(m_vMinimum.X, m_vMinimum.Y, m_vMinimum.Z), CVector2(COORD_STEP * 1.0, COORD_STEP * 4.0)));
-    m_vVertices.append(CVertex(CVector3(m_vMaximum.X, m_vMinimum.Y, m_vMinimum.Z), CVector2(COORD_STEP * 2.0, COORD_STEP * 4.0)));
-
-    // Bottom
-    m_vVertices.append(CVertex(CVector3(m_vMinimum.X, m_vMinimum.Y, m_vMaximum.Z), CVector2(COORD_STEP * 1.0, COORD_STEP * 1.0)));
-    m_vVertices.append(CVertex(CVector3(m_vMaximum.X, m_vMinimum.Y, m_vMaximum.Z), CVector2(COORD_STEP * 2.0, COORD_STEP * 1.0)));
-    m_vVertices.append(CVertex(CVector3(m_vMaximum.X, m_vMinimum.Y, m_vMinimum.Z), CVector2(COORD_STEP * 2.0, COORD_STEP * 0.0)));
-    m_vVertices.append(CVertex(CVector3(m_vMinimum.X, m_vMinimum.Y, m_vMinimum.Z), CVector2(COORD_STEP * 1.0, COORD_STEP * 0.0)));
-
-    setGeometryDirty(true);
+    m_pGeometry->createBox(m_vMinimum, m_vMaximum);
 }

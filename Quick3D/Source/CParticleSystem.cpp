@@ -30,6 +30,7 @@ void CParticleSystem::update(double dDeltaTime)
 
 void CParticleSystem::paint(CRenderContext* pContext)
 {
+    /*
     m_vVertices.clear();
     m_vFaces.clear();
 
@@ -65,4 +66,5 @@ void CParticleSystem::paint(CRenderContext* pContext)
     setGeometryDirty(true);
 
     CMesh::paint(pContext);
+    */
 }

@@ -7,7 +7,7 @@
 
 // Application
 #include "CVector3.h"
-#include "CMeshInstance.h"
+#include "CMeshGeometry.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -42,7 +42,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    CMesh* createTree(
+    CMeshGeometry* createTree(
             int iLODLevel,
             Math::CVector3 vNoisePosition,
             int iNumLevels,
@@ -64,7 +64,7 @@ protected:
 
     //!
     void addBranches(
-            CMesh* pMesh,
+            CMeshGeometry* pMesh,
             int iLODLevel,
             Math::CVector3 vNoisePosition,
             int iNumLevels,
@@ -84,7 +84,7 @@ protected:
 
     //!
     void addLeaves(
-            CMesh* pMesh,
+            CMeshGeometry* pMesh,
             int iLODLevel,
             Math::CMatrix4 mAccumTransform,
             double dTrunkLength,
@@ -102,6 +102,6 @@ protected:
 
 protected:
 
-    QMutex						m_mMutex;
-    C3DScene*					m_pScene;
+    QMutex      m_mMutex;
+    C3DScene*   m_pScene;
 };

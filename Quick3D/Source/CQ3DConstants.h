@@ -17,6 +17,7 @@
 #define ClassName_CVertex					"CVertex"
 #define ClassName_CFace						"CFace"
 #define ClassName_CMesh						"CMesh"
+#define ClassName_CMeshGeometry             "CMeshGeometry"
 #define ClassName_CMeshInstance				"CMeshInstance"
 #define ClassName_CBoundedMeshInstances		"CBoundedMeshInstances"
 

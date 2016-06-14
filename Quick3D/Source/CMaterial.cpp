@@ -116,6 +116,12 @@ void CMaterial::loadParameters(const QString& sBaseFile, CXMLNode xMaterial)
 
 //-------------------------------------------------------------------------------------------------
 
+void CMaterial::solveLinks(C3DScene* pScene)
+{
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CMaterial::update(double dDeltaTime)
 {
     for (int iIndex = 0; iIndex < m_vDiffuseTextures.count(); iIndex++)

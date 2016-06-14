@@ -52,6 +52,9 @@ public:
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
     //! Recherche les liens de cet objet
+    virtual void solveLinks(C3DScene* pScene);
+
+    //! Recherche les liens de cet objet
     virtual void solveLinks(C3DScene* pScene, CComponent* pCaller);
 
     //!
@@ -72,8 +75,8 @@ public:
 
 protected:
 
-    QVector<QString>				m_vDataInputNames;
-    QVector<CAirbusDataSupplier*>	m_vDataOutputs;
-    QVector<CAirbusDataSupplier*>	m_vDataInputs;
-    QVector<CAirbusData>			m_vData;
+    QVector<QString>                m_vDataInputNames;
+    QVector<CAirbusDataSupplier*>   m_vDataOutputs;
+    QVector<CAirbusDataSupplier*>   m_vDataInputs;
+    QVector<CAirbusData>            m_vData;
 };

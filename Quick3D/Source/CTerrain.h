@@ -13,7 +13,7 @@
 #include "CQ3DConstants.h"
 #include "CWorker.h"
 #include "CComponent.h"
-#include "CMesh.h"
+#include "CMeshGeometry.h"
 #include "CMaterial.h"
 #include "CHeightField.h"
 #include "CPerlin.h"
@@ -91,10 +91,10 @@ public:
     int getLevel() { return m_iLevel; }
 
     //!
-    CMesh* getMesh () { return m_pMesh; }
+    CMeshGeometry* getMesh () { return m_pMesh; }
 
     //!
-    const CMesh* getMesh () const { return m_pMesh; }
+    const CMeshGeometry* getMesh () const { return m_pMesh; }
 
     //!
     static int getNumTerrains() { return m_iNumTerrains; }
@@ -162,8 +162,8 @@ protected:
     CGeoloc                             m_gOriginalGeoloc;
     CGeoloc                             m_gOriginalSize;
     CGeoloc                             m_gSize;
-    CMesh*                              m_pMesh;
-    QVector<CMesh*>                     m_vSeams;
+    CMeshGeometry*                      m_pMesh;
+    QVector<CMeshGeometry*>             m_vSeams;
     QMap<QString, int>                  m_mVerticesToFace;
     int                                 m_iNumPoints;
     int                                 m_iLevel;

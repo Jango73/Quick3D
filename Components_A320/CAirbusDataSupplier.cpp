@@ -37,6 +37,12 @@ void CAirbusDataSupplier::loadParameters(const QString& sBaseFile, CXMLNode xCom
 
 //-------------------------------------------------------------------------------------------------
 
+void CAirbusDataSupplier::solveLinks(C3DScene* pScene)
+{
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CAirbusDataSupplier::solveLinks(C3DScene* pScene, CComponent* pCaller)
 {
     foreach (QString sName, m_vDataInputNames)

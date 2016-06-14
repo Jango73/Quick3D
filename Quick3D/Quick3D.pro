@@ -89,6 +89,7 @@ SOURCES += \
     Source/CMan.cpp \
     Source/CMaterial.cpp \
     Source/CMesh.cpp \
+    Source/CMeshGeometry.cpp \
     Source/CMeshInstance.cpp \
     Source/CMJPEGServer.cpp \
     Source/CNamed.cpp \
@@ -267,6 +268,7 @@ HEADERS  += \
     Source/CMan.h \
     Source/CMaterial.h \
     Source/CMesh.h \
+    Source/CMeshGeometry.h \
     Source/CMeshInstance.h \
     Source/CMJPEGServer.h \
     Source/CNamed.h \

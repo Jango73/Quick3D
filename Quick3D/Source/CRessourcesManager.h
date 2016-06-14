@@ -36,7 +36,7 @@ public:
     QString locateResource(const QString& sBaseFile, const QString& sFileToLocate);
 
     //!
-    void loadMesh(const QString& sBaseFile, CMesh* pMesh, const QString& sMeshFileName);
+    QSharedPointer<CMeshGeometry> loadMesh(const QString& sBaseFile, const QString& sMeshFileName, CComponent* pContainer);
 
     //! Recupere un shader par son nom
     QString getShaderByFilePathName(const QString& filePathName);

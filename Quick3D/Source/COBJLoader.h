@@ -7,7 +7,7 @@
 #include "CSingleton.h"
 
 // Application
-#include "CMesh.h"
+#include "CMeshGeometry.h"
 
 class QUICK3D_EXPORT COBJLoader : public CSingleton<COBJLoader>
 {
@@ -16,10 +16,10 @@ class QUICK3D_EXPORT COBJLoader : public CSingleton<COBJLoader>
 public:
 
     //! Charge un fichier .obj
-    void load(const QString& sBaseFile, C3DScene* pScene, CMesh* pMesh, QString sText);
+    QSharedPointer<CMeshGeometry> load(const QString& sBaseFile, CComponent* pContainer, QString sText);
 
     //! Charge un fichier .mtl
-    void loadMaterials(const QString& sBaseFile, C3DScene* pScene, CMesh* pMesh, QString sText);
+    void loadMaterials(const QString& sBaseFile, C3DScene* pScene, CMeshGeometry* pMesh, QString sText);
 
 protected:
 

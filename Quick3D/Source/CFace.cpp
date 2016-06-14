@@ -1,6 +1,6 @@
 
 // Application
-#include "CMesh.h"
+#include "CMeshGeometry.h"
 #include "CFace.h"
 
 //-------------------------------------------------------------------------------------------------
@@ -37,7 +37,7 @@ CFace::CFace()
 /*!
     Constructs a CFace that belongs to \a pParent.
 */
-CFace::CFace(CMesh* pParent)
+CFace::CFace(CMeshGeometry* pParent)
     : m_pParent(pParent)
     , m_iSmoothingGroup(0)
     , m_iMaterialIndex(0)
@@ -49,7 +49,7 @@ CFace::CFace(CMesh* pParent)
 /*!
     Constructs a CFace that belongs to \a pParent and is a clone of \a target.
 */
-CFace::CFace(CMesh* pParent, const CFace& target)
+CFace::CFace(CMeshGeometry* pParent, const CFace& target)
     : m_pParent(pParent)
     , m_iSmoothingGroup(0)
     , m_iMaterialIndex(0)
@@ -62,7 +62,7 @@ CFace::CFace(CMesh* pParent, const CFace& target)
 /*!
     Constructs a CFace that belongs to \a pParent and uses 3 vertex indices: \a iV1, \a iV2 and \a iV3.
 */
-CFace::CFace(CMesh* pParent, int iV1, int iV2, int iV3)
+CFace::CFace(CMeshGeometry* pParent, int iV1, int iV2, int iV3)
     : m_pParent(pParent)
     , m_iSmoothingGroup(0)
     , m_iMaterialIndex(0)
@@ -77,7 +77,7 @@ CFace::CFace(CMesh* pParent, int iV1, int iV2, int iV3)
 /*!
     Constructs a CFace that belongs to \a pParent and uses 4 vertex indices: \a iV1, \a iV2, \a iV3 and \a iV4.
 */
-CFace::CFace(CMesh* pParent, int iV1, int iV2, int iV3, int iV4)
+CFace::CFace(CMeshGeometry* pParent, int iV1, int iV2, int iV3, int iV4)
     : m_pParent(pParent)
     , m_iSmoothingGroup(0)
     , m_iMaterialIndex(0)
@@ -93,7 +93,7 @@ CFace::CFace(CMesh* pParent, int iV1, int iV2, int iV3, int iV4)
 /*!
     Constructs a CFace that belongs to \a pParent and uses vertex indices in \a vIndices.
 */
-CFace::CFace(CMesh* pParent, QVector<int> vIndices)
+CFace::CFace(CMeshGeometry* pParent, QVector<int> vIndices)
     : m_pParent(pParent)
     , m_iSmoothingGroup(0)
     , m_iMaterialIndex(0)

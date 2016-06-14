@@ -32,7 +32,7 @@ CTreeGenerator::~CTreeGenerator()
 
 //-------------------------------------------------------------------------------------------------
 
-CMesh* CTreeGenerator::createTree(
+CMeshGeometry* CTreeGenerator::createTree(
         int iLODLevel,
         CVector3 vNoisePosition,
         int iNumLevels,
@@ -49,9 +49,9 @@ CMesh* CTreeGenerator::createTree(
     CPerlin* perlin = CPerlin::getInstance();
 
     // Create trunk
-    CMesh* pMesh = new CCone(
-                m_pScene,
-                10.0 + (10.0 * (double) iLODLevel),
+    CMeshGeometry* pMesh = new CMeshGeometry(m_pScene, 10.0 + (10.0 * (double) iLODLevel));
+
+    pMesh->createCone(
                 NUM_SEGMENTS / (iLODLevel + 1),
                 NUM_HEIGHT_SEGMENTS / (iLODLevel + 1),
                 dTrunkLength + VERT_OFFSET,
@@ -101,7 +101,7 @@ CMesh* CTreeGenerator::createTree(
 //-------------------------------------------------------------------------------------------------
 
 void CTreeGenerator::addBranches(
-        CMesh* pMesh,
+        CMeshGeometry* pMesh,
         int iLODLevel,
         CVector3 vNoisePosition,
         int iNumLevels,
@@ -142,9 +142,9 @@ void CTreeGenerator::addBranches(
                 dRotationX *= 0.02;
             }
 
-            CCone mBranch(
-                        m_pScene,
-                        100.0,
+            CMeshGeometry mBranch(m_pScene, 100.0);
+
+            mBranch.createCone(
                         NUM_SEGMENTS / (iLODLevel + 1),
                         NUM_HEIGHT_SEGMENTS / (iLODLevel + 1),
                         dTrunkLength * dCurrentLengthScale,
@@ -179,7 +179,7 @@ void CTreeGenerator::addBranches(
 
             mTransform = ((mTranslate * mRotate1) * mRotate2) * mAccumTransform;
 
-            pMesh->merge(mBranch, false);
+            pMesh->merge(mBranch);
 
             addBranches(
                         pMesh,
@@ -208,7 +208,7 @@ void CTreeGenerator::addBranches(
 //-------------------------------------------------------------------------------------------------
 
 void CTreeGenerator::addLeaves(
-        CMesh* pMesh,
+        CMeshGeometry* pMesh,
         int iLODLevel,
         CMatrix4 mAccumTransform,
         double dTrunkLength,
@@ -231,9 +231,8 @@ void CTreeGenerator::addLeaves(
             double dRotationY = (((double) iIndex / (double) iNumLeaves) * (Math::Pi * 2.0)) + ((double) rand() / 32768.0) * (Math::Pi / 6.0);
             double dTranslationY = ((double) rand() / 32768.0) * (dTrunkLength * dCurrentLengthScale);
 
-            CMesh mLeaf(m_pScene);
+            CMeshGeometry mLeaf(m_pScene);
             mLeaf.createSurfaceFromFFD(vFFDFrom, vFFDTo, iNumVerts);
-            // mLeaf.updateGeometry();
             mLeaf.transformVertices(CMatrix4().MakeTranslation(CVector3(0.0, 0.0, 0.5)));
             mLeaf.transformVertices(CMatrix4().MakeScale(CVector3(dTrunkLength * 0.1, dTrunkLength * 0.1, dTrunkLength * 0.1)));
 
@@ -245,7 +244,7 @@ void CTreeGenerator::addLeaves(
 
             mLeaf.transformVertices(mTransform);
 
-            pMesh->merge(mLeaf, false);
+            pMesh->merge(mLeaf);
         }
     }
 }

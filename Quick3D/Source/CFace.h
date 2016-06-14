@@ -10,7 +10,7 @@
 //-------------------------------------------------------------------------------------------------
 // Déclarations avancées
 
-class CMesh;
+class CMeshGeometry;
 
 //-------------------------------------------------------------------------------------------------
 
@@ -79,19 +79,19 @@ public:
     CFace();
 
     //! Constructeur avec parent
-    CFace(CMesh* pParent);
+    CFace(CMeshGeometry* pParent);
 
     //! Constructeur de copie
-    CFace(CMesh* pParent, const CFace&);
+    CFace(CMeshGeometry* pParent, const CFace&);
 
     //! Constructeur avec trois indices de sommet (triangle)
-    CFace(CMesh* pParent, int iV1, int iV2, int iV3);
+    CFace(CMeshGeometry* pParent, int iV1, int iV2, int iV3);
 
     //! Constructeur avec quatre indices de sommet (quad)
-    CFace(CMesh* pParent, int iV1, int iV2, int iV3, int iV4);
+    CFace(CMeshGeometry* pParent, int iV1, int iV2, int iV3, int iV4);
 
     //! Constructeur avec n indices de sommet (polygone)
-    CFace(CMesh* pParent, QVector<int> vIndices);
+    CFace(CMeshGeometry* pParent, QVector<int> vIndices);
 
     //-------------------------------------------------------------------------------------------------
     // Setters
@@ -159,7 +159,7 @@ public:
 
 protected:
 
-    CMesh*          m_pParent;
+    CMeshGeometry*  m_pParent;
     QVector<int>    m_vIndices;
     Math::CVector3  m_vNormal;
     Math::CVector3  m_vTangent;

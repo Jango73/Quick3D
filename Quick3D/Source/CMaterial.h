@@ -118,6 +118,9 @@ public:
     //! Loads the object's properties from a CXMLNode
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
+    //! Recherche les liens de cet objet
+    virtual void solveLinks(C3DScene* pScene);
+
     //-------------------------------------------------------------------------------------------------
     // Méthodes de contrôle
     // Control methods

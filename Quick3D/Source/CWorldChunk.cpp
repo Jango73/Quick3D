@@ -319,7 +319,7 @@ void CWorldChunk::paint(CRenderContext* pContext, ETerrainType eType)
 
                         foreach (QString sBushName, m_vBushMeshes.keys())
                         {
-                            m_vBushMeshes[sBushName]->paint(pContext);
+                            m_vBushMeshes[sBushName]->paint(this, pContext);
                         }
                     }
                 }
@@ -609,17 +609,16 @@ void CWorldChunk::placeBush(CGeoloc gPosition, double dRadius, int iVegetIndex)
         {
             if (m_vBushMeshes.contains(sMaterialName) == false)
             {
-                CMesh* pBushMesh = new CMesh(m_pScene, 100000.0);
+                CMeshGeometry* pBushMesh = new CMeshGeometry(m_pScene, 100000.0);
 
                 pBushMesh->setGLType(GL_POINTS);
-                pBushMesh->setWorldTransform(getWorldTransform());
                 pBushMesh->setMaterial(m_pAutoTerrain->getVegetation()[iVegetIndex]->m_pMaterial);
 
                 m_vBushMeshes[sMaterialName] = pBushMesh;
             }
 
             CVector3 vGeocentricPosition = gPosition.toVector3();
-            CVector3 vPosition = vGeocentricPosition - m_vBushMeshes[sMaterialName]->getWorldPosition();
+            CVector3 vPosition = vGeocentricPosition - getWorldPosition();
 
             CVertex newVertex(vPosition);
             newVertex.setNormal(vGeocentricPosition.Normalize());

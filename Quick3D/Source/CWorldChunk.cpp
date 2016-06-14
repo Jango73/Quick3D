@@ -319,7 +319,7 @@ void CWorldChunk::paint(CRenderContext* pContext, ETerrainType eType)
 
                         foreach (QString sBushName, m_vBushMeshes.keys())
                         {
-                            m_vBushMeshes[sBushName]->paint(this, pContext);
+                            m_vBushMeshes[sBushName]->paint(pContext, this);
                         }
                     }
                 }

@@ -186,16 +186,22 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
+    void clear();
+
+    //!
+    void update(double dDeltaTime);
+
+    //! Met à jour les buffers de géométrie OpenGL
+    void checkAndUpdateGeometry();
+
+    //!
     CBoundingBox getBounds();
 
     //!
     CBoundingBox getWorldBounds(CComponent* pContainer);
 
-    //!
-    void update(double dDeltaTime);
-
     //! Dessine l'objet
-    void paint(CComponent* pContainer, CRenderContext* pContext);
+    void paint(CRenderContext* pContext, CComponent* pContainer);
 
     //! Inverse les vecteurs normaux des polygones
     void flipNormals();
@@ -205,9 +211,6 @@ public:
 
     //!
     void deleteMaterials();
-
-    //! Met à jour les buffers de géométrie OpenGL
-    virtual void updateGeometry();
 
     //!
     void createPartition(CMeshPartition& mpCurrentPartition, int iLevel);

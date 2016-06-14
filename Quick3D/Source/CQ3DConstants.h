@@ -191,8 +191,9 @@
 //-------------------------------------------------------------------------------------------------
 // Noms de shaders
 
-#define SP_Standard_Mesh                    "Standard_Mesh"
 #define SP_Standard_Billboard               "Standard_Billboard"
+#define SP_Standard_Lines                   "Standard_Lines"
+#define SP_Standard_Mesh                    "Standard_Mesh"
 
 //-------------------------------------------------------------------------------------------------
 // Evènements Q3D

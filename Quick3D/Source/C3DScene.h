@@ -117,7 +117,7 @@ public:
     bool getForDisplay() const { return m_bForDisplay; }
 
     //!
-    Math::CVector3 getWorldOrigin() const { return m_WorldOrigin; }
+    Math::CVector3 getWorldOrigin() const { return m_vWorldOrigin; }
 
     //!
     QMap<int, CViewport*>& getViewports() { return m_pViewports; }
@@ -232,6 +232,9 @@ public:
     void updateScene(double dDeltaTime);
 
     //!
+    void paintComponents(CRenderContext* pContext);
+
+    //!
     void addComponent(QSharedPointer<CComponent> pComponent);
 
     //!
@@ -248,6 +251,9 @@ public:
 
     //! Calcul d'intersection avec un rayon
     Math::RayTracingResult intersectRecurse(CComponent* pComponent, const Math::CRay3& aRay) const;
+
+    //!
+    void addSegment(Math::CVector3 vStart, Math::CVector3 vEnd);
 
     //! Dump du contenu dans un flux
     virtual void dump(QTextStream& stream, int iIdent);
@@ -271,10 +277,10 @@ protected:
 
 public:
 
-    int										m_iNumMeshesDrawn;
-    int										m_iNumPolysDrawn;
-    int										m_iNumChunksDrawn;
-    CRain*									m_pRain;
+    int                                     m_iNumMeshesDrawn;
+    int                                     m_iNumPolysDrawn;
+    int                                     m_iNumChunksDrawn;
+    CRain*                                  m_pRain;
 
 protected:
 
@@ -287,10 +293,11 @@ protected:
     QVector<QSharedPointer<CComponent> >    m_vComponents;
     CController*                            m_pController;
     CController*                            m_pDefaultController;
-    Math::CVector3                          m_WorldOrigin;
+    Math::CVector3                          m_vWorldOrigin;
     QTime                                   m_tTimeOfDay;
     CFog                                    m_tFog;
     Math::Interpolator<Math::Vector4>       m_vSunColor;
+    CMeshGeometry                           m_mSegments;
     bool                                    m_bForDisplay;
     bool                                    m_bFrustumCheck;
     bool                                    m_bEditMode;

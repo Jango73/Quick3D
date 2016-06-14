@@ -190,7 +190,7 @@ int CTerrain::getFaceIndexForVertices(int v1, int v2, int v3, int v4) const
 
 void CTerrain::paint(CRenderContext* pContext)
 {
-    m_pMesh->paint(this, pContext);
+    m_pMesh->paint(pContext, this);
 }
 
 //-------------------------------------------------------------------------------------------------

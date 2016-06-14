@@ -8,11 +8,6 @@
 using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
-// Constantes
-
-#define MAX_PARTITION_LEVEL		1
-
-//-------------------------------------------------------------------------------------------------
 // Propriétés statiques
 
 GLuint CGLMeshData::m_iCurrentVBO = 0;
@@ -157,6 +152,23 @@ void CGLMeshData::paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolu
                     {
                         // Draw quads
                         glDrawElements(GL_POINTS, m_iNumRenderIndices, GL_UNSIGNED_INT, 0);
+                    }
+                    catch (...)
+                    {
+                        // LOG_ERROR(QString("CMesh::paint() : Exception while rendering %1").arg(m_sName));
+                    }
+
+                    pContext->m_iNumPolysDrawn += (m_iNumRenderIndices);
+
+                    break;
+                }
+
+                case GL_LINES:
+                {
+                    try
+                    {
+                        // Draw quads
+                        glDrawElements(GL_LINES, m_iNumRenderIndices, GL_UNSIGNED_INT, 0);
                     }
                     catch (...)
                     {

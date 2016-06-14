@@ -32,6 +32,8 @@ CGLWidgetScene::CGLWidgetScene(bool bForDisplay)
         m_pBuildingGenerator = new CBuildingGenerator(this);
         m_pTreeGenerator = new CTreeGenerator(this);
         m_vShaders = new CShaderCollection();
+
+        m_mSegments.setMaterial(m_pRessourcesManager->getDefaultMaterial());
     }
 }
 
@@ -73,11 +75,11 @@ void CGLWidgetScene::paintGL()
 
         if (m_pViewports.count() > 0 && m_pViewports[0]->getCamera() != NULL)
         {
-            m_WorldOrigin = m_pViewports[0]->getCamera()->getWorldPosition();
+            m_vWorldOrigin = m_pViewports[0]->getCamera()->getWorldPosition();
 
-            m_WorldOrigin.X = m_WorldOrigin.X - fmod(m_WorldOrigin.X, 1000.0);
-            m_WorldOrigin.Y = m_WorldOrigin.Y - fmod(m_WorldOrigin.Y, 1000.0);
-            m_WorldOrigin.Z = m_WorldOrigin.Z - fmod(m_WorldOrigin.Z, 1000.0);
+            m_vWorldOrigin.X = m_vWorldOrigin.X - fmod(m_vWorldOrigin.X, 1000.0);
+            m_vWorldOrigin.Y = m_vWorldOrigin.Y - fmod(m_vWorldOrigin.Y, 1000.0);
+            m_vWorldOrigin.Z = m_vWorldOrigin.Z - fmod(m_vWorldOrigin.Z, 1000.0);
         }
 
         //-------------------------------------------------------------------------------------------------
@@ -150,7 +152,7 @@ void CGLWidgetScene::initShaders()
         pProgram = new QGLShaderProgram();
 
         pProgram->addShaderFromSourceCode(QGLShader::Vertex, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/VS_Standard.c"));
-        pProgram->addShaderFromSourceCode(QGLShader::Geometry, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/GS_Standard.c"));
+        pProgram->addShaderFromSourceCode(QGLShader::Geometry, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/GS_Standard_Triangle.c"));
         pProgram->addShaderFromSourceCode(QGLShader::Fragment, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/FS_Standard.c"));
 
         if (pProgram->link())
@@ -174,6 +176,24 @@ void CGLWidgetScene::initShaders()
         if (pProgram->link())
         {
             m_vShaders->addShader(SP_Standard_Billboard, pProgram);
+        }
+        else
+        {
+            delete pProgram;
+        }
+
+        //-----------------------------------------------
+        // Standard lines
+
+        pProgram = new QGLShaderProgram();
+
+        pProgram->addShaderFromSourceCode(QGLShader::Vertex, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/VS_Standard.c"));
+        pProgram->addShaderFromSourceCode(QGLShader::Geometry, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/GS_Standard_Line.c"));
+        pProgram->addShaderFromSourceCode(QGLShader::Fragment, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/FS_Standard.c"));
+
+        if (pProgram->link())
+        {
+            m_vShaders->addShader(SP_Standard_Lines, pProgram);
         }
         else
         {
@@ -205,7 +225,7 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
         // Camera
 
         CVector3 vCamTruePos = pContext->camera()->getWorldPosition();
-        CVector3 vCamPos = pContext->camera()->getWorldPosition() - m_WorldOrigin;
+        CVector3 vCamPos = pContext->camera()->getWorldPosition() - m_vWorldOrigin;
         CVector3 vCamRot = pContext->camera()->getWorldRotation();
         CVector3 vWorldUp = pContext->camera()->getWorldPosition().Normalize();
 
@@ -224,7 +244,7 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
         pProgram->setUniformValue("u_camera_position", QVector3D(vCamPos.X, vCamPos.Y, vCamPos.Z));
         pProgram->setUniformValue("u_camera_direction", QVector3D(vFront.x(), vFront.y(), vFront.z()));
         pProgram->setUniformValue("u_camera_up", QVector3D(vUp.x(), vUp.y(), vUp.z()));
-        pProgram->setUniformValue("u_world_origin", QVector3D(m_WorldOrigin.X, m_WorldOrigin.Y, m_WorldOrigin.Z));
+        pProgram->setUniformValue("u_world_origin", QVector3D(m_vWorldOrigin.X, m_vWorldOrigin.Y, m_vWorldOrigin.Z));
         pProgram->setUniformValue("u_world_up", QVector3D(vWorldUp.X, vWorldUp.Y, vWorldUp.Z));
         pProgram->setUniformValue("u_camera_altitude", (GLfloat) pContext->camera()->getGeoloc().Altitude);
         pProgram->setUniformValue("u_atmosphere_altitude", (GLfloat) ATMOSPHERE_ALTITUDE);
@@ -335,7 +355,7 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
             if (vColor.X != 0.0 || vColor.Y != 0.0 || vColor.Z != 0.0)
             {
                 CVector3 vLightPosition = vLights[iLightIndex]->getWorldPosition();
-                CVector3 vWorldPosition = vLightPosition - m_WorldOrigin;
+                CVector3 vWorldPosition = vLightPosition - m_vWorldOrigin;
                 CVector3 vWorldDirection = vLights[iLightIndex]->getWorldDirection();
 
                 QVector4D vRelativePosition(vWorldPosition.X, vWorldPosition.Y, vWorldPosition.Z, 1.0);

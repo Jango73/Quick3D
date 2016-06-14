@@ -320,14 +320,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     //-------------------------------------------------------------------------------------------------
     // Render objects
 
-    foreach(QSharedPointer<CComponent> pComponent, pScene->getComponents())
-    {
-        if (pComponent->isVisible())
-        {
-            pComponent->paint(&Context);
-            pComponent->postPaint(&Context);
-        }
-    }
+    pScene->paintComponents(&Context);
 
     //-------------------------------------------------------------------------------------------------
     // OpenGL settings

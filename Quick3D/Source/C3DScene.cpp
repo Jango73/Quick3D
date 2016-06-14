@@ -4,8 +4,6 @@
 #endif
 
 // Qt
-#include <QPainter>
-#include <QPaintEngine>
 #include <QtOpenGL>
 #include <GL/glu.h>
 
@@ -49,6 +47,7 @@ C3DScene::C3DScene(bool bForDisplay)
     , m_vShaders(NULL)
     , m_pController(NULL)
     , m_pDefaultController(NULL)
+    , m_mSegments(this)
     , m_bForDisplay(bForDisplay)
     , m_bFrustumCheck(true)
     , m_bEditMode(false)
@@ -233,7 +232,7 @@ void C3DScene::initShaders()
 */
 void C3DScene::setWorldOrigin(Math::CVector3 value)
 {
-    m_WorldOrigin = value;
+    m_vWorldOrigin = value;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -431,6 +430,9 @@ void C3DScene::getLightsByTagRecurse(QVector<CLight*>& vLights, const QString& s
 
 void C3DScene::updateScene(double dDeltaTimeS)
 {
+    m_mSegments.clear();
+    m_mSegments.setGLType(GL_LINES);
+
     if (m_pController != NULL)
     {
         m_pController->update(dDeltaTimeS);
@@ -452,6 +454,22 @@ void C3DScene::updateScene(double dDeltaTimeS)
     }
 
     CPhysicalComponent::computeCollisions(m_vComponents, dDeltaTimeS);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void C3DScene::paintComponents(CRenderContext* pContext)
+{
+    foreach(QSharedPointer<CComponent> pComponent, m_vComponents)
+    {
+        if (pComponent->isVisible())
+        {
+            pComponent->paint(pContext);
+            pComponent->postPaint(pContext);
+        }
+    }
+
+    m_mSegments.paint(pContext, NULL);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -577,6 +595,14 @@ RayTracingResult C3DScene::intersectRecurse(CComponent* pComponent, const Math::
     }
 
     return dReturnResult;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void C3DScene::addSegment(Math::CVector3 vStart, Math::CVector3 vEnd)
+{
+    m_mSegments.getVertices().append(CVertex(vStart - m_vWorldOrigin));
+    m_mSegments.getVertices().append(CVertex(vEnd - m_vWorldOrigin));
 }
 
 //-------------------------------------------------------------------------------------------------

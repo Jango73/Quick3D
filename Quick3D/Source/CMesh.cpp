@@ -211,7 +211,7 @@ void CMesh::paint(CRenderContext* pContext)
 {
     if (m_pGeometry != NULL)
     {
-        m_pGeometry->paint(this, pContext);
+        m_pGeometry->paint(pContext, this);
     }
 }
 

@@ -21,6 +21,11 @@ CShaderCollection::~CShaderCollection()
 
 void CShaderCollection::clear()
 {
+    foreach (QGLShaderProgram* pShader, m_vShaders.values())
+    {
+        delete pShader;
+    }
+
     m_vShaders.clear();
 }
 

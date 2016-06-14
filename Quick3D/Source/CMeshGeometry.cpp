@@ -88,9 +88,20 @@ void CMeshGeometry::setGeometryDirty(bool bDirty)
 
 //-------------------------------------------------------------------------------------------------
 
+void CMeshGeometry::clear()
+{
+    m_vVertices.clear();
+    m_vFaces.clear();
+    m_vVertexGroups.clear();
+
+    m_bGeometryDirty = true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 CBoundingBox CMeshGeometry::getBounds()
 {
-    updateGeometry();
+    checkAndUpdateGeometry();
 
     return m_bBounds;
 }
@@ -123,7 +134,7 @@ void CMeshGeometry::update(double dDeltaTime)
 
 //-------------------------------------------------------------------------------------------------
 
-void CMeshGeometry::updateGeometry()
+void CMeshGeometry::checkAndUpdateGeometry()
 {
     if (m_bGeometryDirty)
     {
@@ -166,7 +177,7 @@ void CMeshGeometry::updateGeometry()
                 // Les buffers doivent être retransmis à OpenGL
                 pGLMeshData->m_bNeedTransferBuffers = true;
 
-                if (m_iGLType == GL_POINTS)
+                if (m_iGLType == GL_POINTS || m_iGLType == GL_LINES)
                 {
                     if (iMaterialIndex == 0)
                     {
@@ -614,8 +625,7 @@ void CMeshGeometry::computeNormals()
 
 void CMeshGeometry::createBox(Math::CVector3 vMinimum, Math::CVector3 vMaximum)
 {
-    m_vVertices.clear();
-    m_vFaces.clear();
+    clear();
 
     m_iGLType = GL_QUADS;
 
@@ -661,16 +671,13 @@ void CMeshGeometry::createBox(Math::CVector3 vMinimum, Math::CVector3 vMaximum)
     m_vFaces.append(CFace(this, 12, 13, 14, 15));
     m_vFaces.append(CFace(this, 16, 17, 18, 19));
     m_vFaces.append(CFace(this, 20, 21, 22, 23));
-
-    m_bGeometryDirty = true;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CMeshGeometry::createSphere(int iNumSegments)
 {
-    m_vVertices.clear();
-    m_vFaces.clear();
+    clear();
 
     // Le nombre de segments doit être paire
     if ((iNumSegments & 1) == 1)
@@ -765,8 +772,6 @@ void CMeshGeometry::createSphere(int iNumSegments)
 
         m_vFaces.append(CFace(this, v1, v2, v3));
     }
-
-    m_bGeometryDirty = true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -780,8 +785,7 @@ void CMeshGeometry::createSpherePart(
         double dEndTiltDegrees
         )
 {
-    m_vVertices.clear();
-    m_vFaces.clear();
+    clear();
 
     // Le nombre de segments en gisement doit être paire
     if ((iPanSegments & 1) == 1)
@@ -860,16 +864,13 @@ void CMeshGeometry::createSpherePart(
 
         iVertexOffset += (iPanSegments + 1);
     }
-
-    m_bGeometryDirty = true;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CMeshGeometry::createCone(int iNumSegments, int iNumHeightSegments, double dHeight, double dBaseRadius, double dApexRadius)
 {
-    m_vVertices.clear();
-    m_vFaces.clear();
+    clear();
 
     m_iGLType = GL_QUADS;
 
@@ -917,16 +918,13 @@ void CMeshGeometry::createCone(int iNumSegments, int iNumHeightSegments, double 
             m_vFaces.append(CFace(this, iV4, iV3, iV2, iV1));
         }
     }
-
-    m_bGeometryDirty = true;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CMeshGeometry::createAdaptiveTriPatch(Math::CVector3 vCenter, int iNumIterations)
 {
-    m_vVertices.clear();
-    m_vFaces.clear();
+    clear();
 
     // Create initial vertices and faces
     m_vVertices.append(CVertex(CVector3( 0.0, 0.0,  0.0), CVector2( 0.5,  0.5)));
@@ -1039,18 +1037,15 @@ void CMeshGeometry::createAdaptiveTriPatch(Math::CVector3 vCenter, int iNumItera
 
         dDistance *= 0.8;
     }
-
-    m_bGeometryDirty = true;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CMeshGeometry::createAdaptiveQuadPatch(Math::CVector3 vCenter, int iNumIterations)
 {
-    m_iGLType = GL_QUADS;
+    clear();
 
-    m_vVertices.clear();
-    m_vFaces.clear();
+    m_iGLType = GL_QUADS;
 
     // Create initial vertices and faces
     m_vVertices.append(CVertex(CVector3(-1.0, 0.0, -0.05), CVector2( 0.0,  0.0)));
@@ -1159,18 +1154,15 @@ void CMeshGeometry::createAdaptiveQuadPatch(Math::CVector3 vCenter, int iNumIter
 
         dDistance *= 0.65;
     }
-
-    m_bGeometryDirty = true;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CMeshGeometry::createQuadPatch(int iNumVerts, int iNumSkirtVerts, bool bDoubleSided)
 {
-    m_iGLType = GL_QUADS;
+    clear();
 
-    m_vVertices.clear();
-    m_vFaces.clear();
+    m_iGLType = GL_QUADS;
 
     int iNumSkirtVertsX2 = iNumSkirtVerts * 2;
     double dSpan = (1.0 / (double) iNumVerts) * ((double) iNumVerts + (double) iNumSkirtVertsX2);
@@ -1235,18 +1227,15 @@ void CMeshGeometry::createQuadPatch(int iNumVerts, int iNumSkirtVerts, bool bDou
             }
         }
     }
-
-    m_bGeometryDirty = true;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CMeshGeometry::createCircularQuadPatch(Math::CVector3 vCenter, int iNumVerts)
 {
-    m_iGLType = GL_QUADS;
+    clear();
 
-    m_vVertices.clear();
-    m_vFaces.clear();
+    m_iGLType = GL_QUADS;
 
     for (int z = 0; z < iNumVerts; z++)
     {
@@ -1284,8 +1273,6 @@ void CMeshGeometry::createCircularQuadPatch(Math::CVector3 vCenter, int iNumVert
             m_vFaces.append(CFace(this, v1, v2, v3, v4));
         }
     }
-
-    m_bGeometryDirty = true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1318,8 +1305,6 @@ void CMeshGeometry::createSurfaceFromFFD(const QVector<Math::CVector3>& vFFDFrom
             m_vVertices[iVertexIndex].position() = vNewPosition;
         }
     }
-
-    m_bGeometryDirty = true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1600,33 +1585,60 @@ RayTracingResult CMeshGeometry::intersectRecurse(CMeshPartition& mpPartition, CR
 
 //-------------------------------------------------------------------------------------------------
 
-void CMeshGeometry::paint(CComponent* pContainer, CRenderContext* pContext)
+void CMeshGeometry::paint(CRenderContext* pContext, CComponent* pContainer)
 {
     QMutexLocker locker(&m_mMutex);
 
-    updateGeometry();
+    checkAndUpdateGeometry();
 
-    CVector3 vPosition = pContext->internalCameraMatrix() * pContainer->getWorldBounds().center();
-    double dRadius = pContainer->getWorldBounds().radius();
+    if (m_vGLMeshData.count() == 0) return;
 
-    if (
-            (pContext->scene()->getFrustumCheck() == false || pContext->camera()->contains(vPosition, dRadius)) &&
-            vPosition.getMagnitude() < m_dMaxDistance &&
-            m_vGLMeshData.count() > 0
-            )
+    bool bFrustumCheck = false;
+
+    if (pContainer != NULL && pContext->scene()->getFrustumCheck())
     {
-        // Create and set transform matrices
-        CVector3 WorldPosition = pContainer->getWorldPosition() - pContext->scene()->getWorldOrigin();
-        CVector3 WorldRotation = pContainer->getWorldRotation();
-        CVector3 WorldScale = pContainer->getWorldScale();
+        CBoundingBox bWorldBounds = pContainer->getWorldBounds();
+        CVector3 vPosition = pContext->internalCameraMatrix() * bWorldBounds.center();
+        double dRadius = bWorldBounds.radius();
 
+        if (
+                pContext->camera()->contains(vPosition, dRadius) &&
+                vPosition.getMagnitude() < m_dMaxDistance
+                )
+        {
+            bFrustumCheck = true;
+        }
+    }
+    else
+    {
+        bFrustumCheck = true;
+    }
+
+    if (bFrustumCheck)
+    {
         QMatrix4x4 mModelAbsolute;
         mModelAbsolute.setToIdentity();
-        mModelAbsolute.translate(WorldPosition.X, WorldPosition.Y, WorldPosition.Z);
-        mModelAbsolute.rotate(Math::Angles::toDeg(WorldRotation.Y), QVector3D(0, 1, 0));
-        mModelAbsolute.rotate(Math::Angles::toDeg(WorldRotation.X), QVector3D(1, 0, 0));
-        mModelAbsolute.rotate(Math::Angles::toDeg(WorldRotation.Z), QVector3D(0, 0, 1));
-        mModelAbsolute.scale(WorldScale.X, WorldScale.Y, WorldScale.Z);
+
+        if (pContainer != NULL)
+        {
+            // Set transform matrix
+            CVector3 WorldPosition = pContainer->getWorldPosition() - pContext->scene()->getWorldOrigin();
+            CVector3 WorldRotation = pContainer->getWorldRotation();
+            CVector3 WorldScale = pContainer->getWorldScale();
+
+            mModelAbsolute.translate(WorldPosition.X, WorldPosition.Y, WorldPosition.Z);
+            mModelAbsolute.rotate(Math::Angles::toDeg(WorldRotation.Y), QVector3D(0, 1, 0));
+            mModelAbsolute.rotate(Math::Angles::toDeg(WorldRotation.X), QVector3D(1, 0, 0));
+            mModelAbsolute.rotate(Math::Angles::toDeg(WorldRotation.Z), QVector3D(0, 0, 1));
+            mModelAbsolute.scale(WorldScale.X, WorldScale.Y, WorldScale.Z);
+        }
+        else
+        {
+            // Set transform matrix
+            CVector3 WorldPosition = CVector3() - pContext->scene()->getWorldOrigin();
+
+            mModelAbsolute.translate(WorldPosition.X, WorldPosition.Y, WorldPosition.Z);
+        }
 
         if (m_vMaterials.count() == m_vGLMeshData.count())
         {

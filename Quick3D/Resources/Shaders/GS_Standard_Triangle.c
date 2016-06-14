@@ -88,7 +88,6 @@ uniform int				u_inverse_polarity_enable;
 
 layout (triangles) in;
 layout (triangle_strip, max_vertices = 9) out;
-// layout (line_strip, max_vertices = 9) out;
 
 varying in vec3			v_position[3];
 varying in vec3			v_normal[3];

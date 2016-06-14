@@ -157,7 +157,7 @@ public:
     virtual QGLShaderProgram* activate(CRenderContext* pContext);
 
     //! Active les ombres portées
-    virtual void activateShadow(CRenderContext* pContext, QGLShaderProgram* pProgram);
+    virtual void activateShadow(CRenderContext* pContext);
 
     //! Applique des transformations à la géolocalisation donnée (ex: Mercator)
     virtual CGeoloc transformGeoloc(const CGeoloc& gPosition);

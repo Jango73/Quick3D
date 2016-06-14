@@ -474,7 +474,7 @@
 			<Rotation x="0.0" y="0.0" z="0.0"/>
 			<Mesh Name="VBCI.obj"/>
 			<IR Factor="0.8"/>
-			<Physics MassKG="26000" SpeedMS="4.0" TurnSpeedDS="30.0" Drag="0.1" Friction="2.0"/>
+			<Physics MassKG="26000" SpeedMS="4.0" TurnSpeedDS="30.0" Drag="0.1" Friction="2.0" PhysicsActive="1"/>
 			<Controller Class="CTankController" ForceFactor="1000.0" TurretYawTarget=".Turret" TurretPitchTarget=".Turret.Gun"/>
 			<Component Name="FrontRightWheel" Class="CWheel">
 				<Position x="0.8" y="0.4" z="3.0"/>

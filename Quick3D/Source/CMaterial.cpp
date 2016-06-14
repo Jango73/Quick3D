@@ -329,7 +329,7 @@ QGLShaderProgram* CMaterial::activate(CRenderContext* pContext)
 
 //-------------------------------------------------------------------------------------------------
 
-void CMaterial::activateShadow(CRenderContext* pContext, QGLShaderProgram* pProgram)
+void CMaterial::activateShadow(CRenderContext* pContext)
 {
     if (m_pShadowBuffer)
     {

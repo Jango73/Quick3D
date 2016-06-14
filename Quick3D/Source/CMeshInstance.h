@@ -71,5 +71,5 @@ public:
 
 protected:
 
-    QVector<QSharedPointer<CMesh> >	m_vMeshes;
+    QVector<QSharedPointer<CMesh> >     m_vMeshes;
 };

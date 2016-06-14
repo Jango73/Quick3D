@@ -1,6 +1,5 @@
 
-#ifndef CMJPEGSERVER_H
-#define CMJPEGSERVER_H
+#pragma once
 
 #include "quick3d_global.h"
 
@@ -18,128 +17,129 @@
 #include "CHTTPServer.h"
 
 //-------------------------------------------------------------------------------------------------
+// Déclarations avancées
+// Forward declarations
 
 class CMJPEGServer;
 
+//-------------------------------------------------------------------------------------------------
+
 class CMJPEGThread : public QThread
 {
-	Q_OBJECT
+    Q_OBJECT
 
-	friend class CMJPEGServer;
+    friend class CMJPEGServer;
 
 public:
 
-	//! Constructeur
-	CMJPEGThread(CMJPEGServer* pParent);
+    //! Constructeur
+    CMJPEGThread(CMJPEGServer* pParent);
 
-	//! Destructeur
-	virtual ~CMJPEGThread();
+    //! Destructeur
+    virtual ~CMJPEGThread();
 
-	virtual void run();
+    virtual void run();
 
 protected:
 
-	CMJPEGServer*	m_pParent;
-	bool			m_bRun;
+    CMJPEGServer*	m_pParent;
+    bool			m_bRun;
 };
+
+//-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CMJPEGServer : public CHTTPServer
 {
-	Q_OBJECT
+    Q_OBJECT
 
-	friend class CMJPEGThread;
+    friend class CMJPEGThread;
 
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//! Constructeur par défaut
-	CMJPEGServer(int iPort);
+    //! Constructeur par défaut
+    CMJPEGServer(int iPort);
 
-	//! Constructeur pour sortie sur fichier
-	CMJPEGServer(QString sFileName);
+    //! Constructeur pour sortie sur fichier
+    CMJPEGServer(QString sFileName);
 
-	//! Destructeur
-	virtual ~CMJPEGServer();
+    //! Destructeur
+    virtual ~CMJPEGServer();
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	void send(const QByteArray& baData);
+    //!
+    void send(const QByteArray& baData);
 
-	//!
-	void sendRaw(const QByteArray& baData, int iWidth, int iHeight);
+    //!
+    void sendRaw(const QByteArray& baData, int iWidth, int iHeight);
 
-	//!
-	void sendImage(const QImage& image);
+    //!
+    void sendImage(const QImage& image);
 
-	//!
-	bool hasConnections() { return m_vSockets.count() > 0; }
+    //!
+    bool hasConnections() { return m_vSockets.count() > 0; }
 
-	//!
-	void flush();
+    //!
+    void flush();
 
-	//!
-	virtual void getContent(const CWebContext& tContext, QString& sHead, QString& sBody, QString& xmlResponse, QString& sCustomResponse);
+    //!
+    virtual void getContent(const CWebContext& tContext, QString& sHead, QString& sBody, QString& xmlResponse, QString& sCustomResponse);
 
-	//!
-	virtual void handleSocketBytesWritten(QTcpSocket* pSocket, qint64 iBytes);
+    //!
+    virtual void handleSocketBytesWritten(QTcpSocket* pSocket, qint64 iBytes);
 
-	//!
-	virtual void handleSocketBytesRead(QTcpSocket* pSocket);
+    //!
+    virtual void handleSocketDisconnection(QTcpSocket* pSocket);
 
-	//!
-	virtual void handleSocketDisconnection(QTcpSocket* pSocket);
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes statiques
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes statiques
-	//-------------------------------------------------------------------------------------------------
+    //!
+    static void saveMJPEG(const QVector<QImage>& vImages, QString sFileName);
 
-	//!
-	static void saveMJPEG(const QVector<QImage>& vImages, QString sFileName);
-
-	//-------------------------------------------------------------------------------------------------
-	// Slots
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Slots
+    //-------------------------------------------------------------------------------------------------
 
 protected slots:
 
-	void onTimeout();
+    void onTimeout();
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes protégées
-	//-------------------------------------------------------------------------------------------------
-
-protected:
-
-	//!
-	void processOutputImages();
-
-	//!
-	static QString getHeader();
-
-	//!
-	static QString getImageDescriptor(int iSize);
-
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes protégées
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	QTimer					m_tTimer;
-	QMutex					m_tMutex;
-	QString					m_sFileName;
-	QFile*					m_pOutputFile;
-	QVector<QByteArray>		m_vOutput;
-	QVector<QImage>			m_vOutputImages;
-	QVector<QTcpSocket*>	m_vSockets;
-	CMJPEGThread*			m_pThread;
-	int						m_iCompressionRate;
+    //!
+    void processOutputImages();
+
+    //!
+    static QString getHeader();
+
+    //!
+    static QString getImageDescriptor(int iSize);
+
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
+
+protected:
+
+    QTimer					m_tTimer;
+    QMutex					m_tMutex;
+    QString					m_sFileName;
+    QFile*					m_pOutputFile;
+    QVector<QByteArray>		m_vOutput;
+    QVector<QImage>			m_vOutputImages;
+    QVector<QTcpSocket*>	m_vSockets;
+    CMJPEGThread*			m_pThread;
+    int						m_iCompressionRate;
 };
-
-#endif // CMJPEGSERVER_H

@@ -42,25 +42,25 @@ class QUICK3D_EXPORT CUtility
 {
 protected:
 
-	//!
-	CUtility();
+    //!
+    CUtility();
 
 public:
 
-	//!
-	virtual ~CUtility();
+    //!
+    virtual ~CUtility();
 
-	// Format method for QString
-	static QString					FormatString(const char *szFormat, va_list &arg_ptr) ;
-	static QString					FormatString(const char *szFormat, ...) ;
-	static void						FormatPath(QString &path);
-	static void						ensurePathExists(const QString& sName);
-	static bool						findProcessByName(const QString& sName);
-	static void						sleep(int iMilliSeconds);
-	static void						sleepButProcessEvent(int iMilliSeconds);
-	static QMap<QString, QString>	getMapFromCommaSeparatedKeyValues(const QString& sParameters);
-	static QByteArray				convertQImageToByteArray(const QImage& image, const char* szFormat, int compressionRate);
-	static QImage					convertByteArrayToQImage(const QByteArray& data, const char* szFormat);
+    // Format method for QString
+    static QString					FormatString(const char *szFormat, va_list &arg_ptr) ;
+    static QString					FormatString(const char *szFormat, ...) ;
+    static void						FormatPath(QString &path);
+    static void						ensurePathExists(const QString& sName);
+    static bool						findProcessByName(const QString& sName);
+    static void						sleep(int iMilliSeconds);
+    static void						sleepButProcessEvent(int iMilliSeconds);
+    static QMap<QString, QString>	getMapFromCommaSeparatedKeyValues(const QString& sParameters);
+    static QByteArray				convertQImageToByteArray(const QImage& image, const char* szFormat, int compressionRate);
+    static QImage					convertByteArrayToQImage(const QByteArray& data, const char* szFormat);
 };
 
 #endif // CUTILITY_H

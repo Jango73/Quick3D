@@ -91,6 +91,7 @@ SOURCES += \
     Source/CMesh.cpp \
     Source/CMeshGeometry.cpp \
     Source/CMeshInstance.cpp \
+    Source/CMJPEGClient.cpp \
     Source/CMJPEGServer.cpp \
     Source/CNamed.cpp \
     Source/COBJLoader.cpp \
@@ -138,6 +139,7 @@ SOURCES += \
     Source/CWater.cpp \
     Source/CWaterMaterial.cpp \
     Source/CWaypoint.cpp \
+    Source/CWebContext.cpp \
     Source/CWheel.cpp \
     Source/CWing.cpp \
     Source/CWorker.cpp \
@@ -270,6 +272,7 @@ HEADERS  += \
     Source/CMesh.h \
     Source/CMeshGeometry.h \
     Source/CMeshInstance.h \
+    Source/CMJPEGClient.h \
     Source/CMJPEGServer.h \
     Source/CNamed.h \
     Source/COBJLoader.h \
@@ -320,6 +323,7 @@ HEADERS  += \
     Source/CWater.h \
     Source/CWaterMaterial.h \
     Source/CWaypoint.h \
+    Source/CWebContext.h \
     Source/CWheel.h \
     Source/CWing.h \
     Source/CWorker.h \

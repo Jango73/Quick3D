@@ -9,7 +9,7 @@
 
 /*!
     \class CXMLNode
-    \inmodule unis-lib
+    \inmodule Quick3D
     \brief A simple XML class, based on QDomDocument and QJsonDocument.
 */
 
@@ -177,17 +177,32 @@ CXMLNode CXMLNode::parseXMLNode(QDomNode node)
     CXMLNode tNode;
 
     tNode.m_sTag = node.nodeName();
-    tNode.m_sValue	= node.nodeValue();
+    tNode.m_sValue = node.nodeValue();
 
     for (int Index = 0; Index < node.attributes().length(); Index++)
     {
         QDomNode attrNode = node.attributes().item(Index);
+
         tNode.m_vAttributes[attrNode.nodeName()] = attrNode.nodeValue();
     }
 
-    for (int Index = 0; Index < node.childNodes().length(); Index++)
+    if (node.childNodes().length() == 1)
     {
-        tNode.m_vNodes.append(CXMLNode::parseXMLNode(node.childNodes().at(Index)));
+        if (node.childNodes().at(0).nodeName().startsWith("#text"))
+        {
+            tNode.m_sValue = node.childNodes().at(0).nodeValue();
+        }
+        else
+        {
+            tNode.m_vNodes.append(CXMLNode::parseXMLNode(node.childNodes().at(0)));
+        }
+    }
+    else
+    {
+        for (int Index = 0; Index < node.childNodes().length(); Index++)
+        {
+            tNode.m_vNodes.append(CXMLNode::parseXMLNode(node.childNodes().at(Index)));
+        }
     }
 
     return tNode;
@@ -319,6 +334,12 @@ QDomElement CXMLNode::toQDomElement(QDomDocument& xDocument) const
             thisElement.setAttribute(sAttributeName, m_vAttributes[sAttributeName]);
         }
 
+        if (m_sValue.isEmpty() == false)
+        {
+            QDomText textElement = xDocument.createTextNode(m_sValue);
+            thisElement.appendChild(textElement);
+        }
+
         foreach(CXMLNode xChild, m_vNodes)
         {
             thisElement.appendChild(xChild.toQDomElement(xDocument));
@@ -379,7 +400,7 @@ QJsonObject CXMLNode::toJsonObject() const
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Returns \c true if this CXMLNode tree has been saved as XML in the file named \a sFileName.
+    Saves this CXMLNode tree as xml in the file named \a sFileName.
 */
 bool CXMLNode::saveXMLToFile(const QString& sFileName)
 {
@@ -399,7 +420,7 @@ bool CXMLNode::saveXMLToFile(const QString& sFileName)
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Returns \c true if this CXMLNode tree has been saved as JSON in the file named \a sFileName.
+    Saves this CXMLNode tree as json in the file named \a sFileName.
 */
 bool CXMLNode::saveJSONToFile(const QString& sFileName)
 {

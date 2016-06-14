@@ -156,8 +156,8 @@ public:
 
 protected:
 
-    QString                 m_sTag;			// Tag du noeud - Node's tag
-    QString                 m_sValue;		// Valeur du noeud - Node's value
-    QMap<QString, QString>  m_vAttributes;	// Attributs du noeuds - Node's attributes
-    QVector<CXMLNode>       m_vNodes;		// Noeuds enfants - Child nodes
+    QString                 m_sTag;         // Tag du noeud - Node's tag
+    QString                 m_sValue;       // Valeur du noeud - Node's value
+    QMap<QString, QString>  m_vAttributes;  // Attributs du noeuds - Node's attributes
+    QVector<CXMLNode>       m_vNodes;       // Noeuds enfants - Child nodes
 };

@@ -288,20 +288,25 @@ protected:
 
 protected:
 
-    QMutex                                  m_mMutex;					// Mutex de protection des données entre threads
+    // Owned data
+
+    QMutex                                  m_mMutex;                   // Mutex de protection des données entre threads
     C3DScene*                               m_pScene;
     QString                                 m_sURL;
-    CBoundingBox                            m_bBounds;					// Boite englobante du maillage
-    QVector<CVertex>                        m_vVertices;				// Sommets du maillage
-    QVector<CFace>                          m_vFaces;					// Polygones du maillage
-    QVector<CVertexGroup>                   m_vVertexGroups;			// Groupes de sommets pour skinning
-    QVector<QSharedPointer<CMaterial> >     m_vMaterials;				// Matériau du maillage
+    CBoundingBox                            m_bBounds;                  // Boite englobante du maillage
+    QVector<CVertex>                        m_vVertices;                // Sommets du maillage
+    QVector<CFace>                          m_vFaces;                   // Polygones du maillage
+    QVector<CVertexGroup>                   m_vVertexGroups;            // Groupes de sommets pour skinning
     QVector<CGLMeshData*>                   m_vGLMeshData;
     QMap<QString, QString>                  m_mDynTexUpdaters;
-    CMeshPartition                          m_mpPartitions;				// Partitions pour accélerer le ray-tracing
-    double                                  m_dMaxDistance;				// Distance maximale à laquelle ce maillage est visible
+    CMeshPartition                          m_mpPartitions;             // Partitions pour accélerer le ray-tracing
+    double                                  m_dMaxDistance;             // Distance maximale à laquelle ce maillage est visible
     int                                     m_iGLType;
-    bool                                    m_bUseSpacePartitionning;	// Si vrai, le partionnement des polygones est utilisé via m_mpPartitions
+    bool                                    m_bUseSpacePartitionning;   // Si vrai, le partionnement des polygones est utilisé via m_mpPartitions
     bool                                    m_bAutomaticBounds;
     bool                                    m_bGeometryDirty;
+
+    // Shared data
+
+    QVector<QSharedPointer<CMaterial> >     m_vMaterials;               // Matériaux du maillage
 };

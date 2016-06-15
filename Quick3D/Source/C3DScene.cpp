@@ -430,8 +430,10 @@ void C3DScene::getLightsByTagRecurse(QVector<CLight*>& vLights, const QString& s
 
 void C3DScene::updateScene(double dDeltaTimeS)
 {
+    if (dDeltaTimeS < 0.0) dDeltaTimeS = 0.0;
+    if (dDeltaTimeS > 1.0) dDeltaTimeS = 1.0;
+
     m_mSegments.clear();
-    m_mSegments.setGLType(GL_LINES);
 
     if (m_pController != NULL)
     {

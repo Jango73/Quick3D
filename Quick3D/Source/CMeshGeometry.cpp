@@ -1632,13 +1632,6 @@ void CMeshGeometry::paint(CRenderContext* pContext, CComponent* pContainer)
             mModelAbsolute.rotate(Math::Angles::toDeg(WorldRotation.Z), QVector3D(0, 0, 1));
             mModelAbsolute.scale(WorldScale.X, WorldScale.Y, WorldScale.Z);
         }
-        else
-        {
-            // Set transform matrix
-            CVector3 WorldPosition = CVector3() - pContext->scene()->getWorldOrigin();
-
-            mModelAbsolute.translate(WorldPosition.X, WorldPosition.Y, WorldPosition.Z);
-        }
 
         if (m_vMaterials.count() == m_vGLMeshData.count())
         {

@@ -34,6 +34,7 @@ CGLWidgetScene::CGLWidgetScene(bool bForDisplay)
         m_vShaders = new CShaderCollection();
 
         m_mSegments.setMaterial(m_pRessourcesManager->getDefaultMaterial());
+        m_mSegments.setGLType(GL_LINES);
     }
 }
 
@@ -189,11 +190,11 @@ void CGLWidgetScene::initShaders()
 
         pProgram->addShaderFromSourceCode(QGLShader::Vertex, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/VS_Standard.c"));
         pProgram->addShaderFromSourceCode(QGLShader::Geometry, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/GS_Standard_Line.c"));
-        pProgram->addShaderFromSourceCode(QGLShader::Fragment, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/FS_Standard.c"));
+        pProgram->addShaderFromSourceCode(QGLShader::Fragment, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/FS_Special_Line.c"));
 
         if (pProgram->link())
         {
-            m_vShaders->addShader(SP_Standard_Lines, pProgram);
+            m_vShaders->addShader(SP_Special_Lines, pProgram);
         }
         else
         {

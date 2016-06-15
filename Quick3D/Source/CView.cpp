@@ -224,6 +224,9 @@ void CView::focusOutEvent(QFocusEvent* event)
 
 void CView::update(double dDeltaTimeS)
 {
+    if (dDeltaTimeS < 0.0) dDeltaTimeS = 0.0;
+    if (dDeltaTimeS > 1.0) dDeltaTimeS = 1.0;
+
     if (m_pScene != NULL)
     {
         if (m_pScene->getEditMode())

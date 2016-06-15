@@ -249,9 +249,6 @@ void Quick3DTest::onTimer()
 
         m_FPS.append(1.0 / dDeltaTime);
 
-        if (dDeltaTime < 0.0) dDeltaTime = 0.0;
-        if (dDeltaTime > 2.0) dDeltaTime = 2.0;
-
         m_pScene->updateScene(dDeltaTime);
         m_pView->update(dDeltaTime);
 

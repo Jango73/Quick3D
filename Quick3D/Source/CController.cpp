@@ -92,6 +92,8 @@ void CController::update(double dDeltaTime)
         sf::Joystick::Update();
         m_pJoystick->update(dDeltaTime);
     }
+
+    m_pScene->addSegment(m_rLastRay.vOrigin, m_rLastRay.vOrigin + m_rLastRay.vNormal);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -247,12 +249,11 @@ void CController::mousePressEvent(QMouseEvent* event)
                             CVector2 vAngles2 = CVector2::pointToAngles(pViewport->getSize(), pCamera->getFOV(), normalizedPoint);
                             CVector3 vAngles3(vAngles2.Y, vAngles2.X, 0.0);
 
-                            CRay3 aRay;
-                            aRay.vOrigin = pCamera->getWorldTransform() * CVector3();
-                            aRay.vNormal = CMatrix4::MakeRotation(vAngles3) * CVector3(0.0, 0.0, 1.0);
-                            aRay.vNormal = (pCamera->getWorldTransform() * aRay.vNormal) - aRay.vOrigin;
+                            m_rLastRay.vOrigin = pCamera->getWorldTransform() * CVector3();
+                            m_rLastRay.vNormal = CMatrix4::MakeRotation(vAngles3) * CVector3(0.0, 0.0, 1.0);
+                            m_rLastRay.vNormal = (pCamera->getWorldTransform() * m_rLastRay.vNormal) - m_rLastRay.vOrigin;
 
-                            RayTracingResult aResult = pScene->intersectComponentHierarchy(m_pParent, aRay);
+                            RayTracingResult aResult = pScene->intersectComponentHierarchy(m_pParent, m_rLastRay);
 
                             if (aResult.m_dDistance < Q3D_INFINITY)
                             {

@@ -280,7 +280,7 @@ public:
 protected:
 
     //!
-    Math::RayTracingResult intersectRecurse(CMeshPartition& mpPartition, Math::CRay3 ray);
+    Math::RayTracingResult intersectRecurse(CComponent* pContainer, CMeshPartition& mpPartition, Math::CRay3 ray);
 
     //-------------------------------------------------------------------------------------------------
     // Propriétés

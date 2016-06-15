@@ -203,6 +203,8 @@
 #define Q3D_RightMouseButton				"RMB"
 #define Q3D_MiddleMouseButton				"MMB"
 
+#define Q3DEvent_ToggleEdit					"TOGGLE_EDIT"
+
 #define Q3DEvent_Up							"UP"
 #define Q3DEvent_Down						"DOWN"
 #define Q3DEvent_UpFast						"UP_FAST"

@@ -191,6 +191,7 @@ protected:
     CQ3DEvent							m_eCurrentRightMouseEvent;
     CQ3DEvent							m_eCurrentMiddleMouseEvent;
     QPoint								m_pPreviousMousePos;
+    Math::CRay3                         m_rLastRay;
     bool								m_bUseMouse;
     bool								m_bControlPressed;
     bool								m_bAltPressed;

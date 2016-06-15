@@ -1473,7 +1473,7 @@ void CMeshGeometry::scaleUVs(CVector2 vScale)
 
 RayTracingResult CMeshGeometry::intersect(CComponent* pContainer, CRay3 ray)
 {
-    RayTracingResult dReturnResult(Q3D_INFINITY, this);
+    RayTracingResult dReturnResult(Q3D_INFINITY, pContainer);
 
     // Transformation du rayon dans le repère local
     CRay3 rLocalray = pContainer->getWorldTransformInverse() * ray;
@@ -1482,7 +1482,7 @@ RayTracingResult CMeshGeometry::intersect(CComponent* pContainer, CRay3 ray)
     {
         if (m_bUseSpacePartitionning)
         {
-            return intersectRecurse(m_mpPartitions, rLocalray);
+            return intersectRecurse(pContainer, m_mpPartitions, rLocalray);
         }
         else
         {
@@ -1521,9 +1521,9 @@ RayTracingResult CMeshGeometry::intersect(CComponent* pContainer, CRay3 ray)
 
 //-------------------------------------------------------------------------------------------------
 
-RayTracingResult CMeshGeometry::intersectRecurse(CMeshPartition& mpPartition, CRay3 ray)
+RayTracingResult CMeshGeometry::intersectRecurse(CComponent* pContainer, CMeshPartition& mpPartition, CRay3 ray)
 {
-    RayTracingResult dReturnResult(Q3D_INFINITY);
+    RayTracingResult dReturnResult(Q3D_INFINITY, pContainer);
     double dDistanceToBox = mpPartition.getBounds().intersect(ray).m_dDistance;
 
     /*
@@ -1539,11 +1539,11 @@ RayTracingResult CMeshGeometry::intersectRecurse(CMeshPartition& mpPartition, CR
         {
             foreach (CMeshPartition mpChild, mpPartition.getChildren())
             {
-                RayTracingResult dNewResult = intersectRecurse(mpChild, ray);
+                RayTracingResult dNewResult = intersectRecurse(pContainer, mpChild, ray);
 
                 if (dNewResult.m_dDistance < dReturnResult.m_dDistance)
                 {
-                    dReturnResult = dNewResult;
+                    dReturnResult.m_dDistance = dNewResult.m_dDistance;
                 }
             }
         }
@@ -1572,7 +1572,7 @@ RayTracingResult CMeshGeometry::intersectRecurse(CMeshPartition& mpPartition, CR
 
                         if (dNewResult.m_dDistance < dReturnResult.m_dDistance)
                         {
-                            dReturnResult = dNewResult;
+                            dReturnResult.m_dDistance = dNewResult.m_dDistance;
                         }
                     }
                 }

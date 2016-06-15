@@ -433,7 +433,10 @@ void C3DScene::updateScene(double dDeltaTimeS)
     if (dDeltaTimeS < 0.0) dDeltaTimeS = 0.0;
     if (dDeltaTimeS > 1.0) dDeltaTimeS = 1.0;
 
-    m_mSegments.clear();
+    if (m_bEditMode == false)
+    {
+        m_mSegments.clear();
+    }
 
     if (m_pController != NULL)
     {
@@ -603,8 +606,11 @@ RayTracingResult C3DScene::intersectRecurse(CComponent* pComponent, const Math::
 
 void C3DScene::addSegment(Math::CVector3 vStart, Math::CVector3 vEnd)
 {
-    m_mSegments.getVertices().append(CVertex(vStart - m_vWorldOrigin));
-    m_mSegments.getVertices().append(CVertex(vEnd - m_vWorldOrigin));
+    if (m_bEditMode == false)
+    {
+        m_mSegments.getVertices().append(CVertex(vStart - m_vWorldOrigin));
+        m_mSegments.getVertices().append(CVertex(vEnd - m_vWorldOrigin));
+    }
 }
 
 //-------------------------------------------------------------------------------------------------

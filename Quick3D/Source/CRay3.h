@@ -17,77 +17,79 @@
 
 namespace Math
 {
-	class RayTracingResult
-	{
-	public:
 
-		inline RayTracingResult(double dDistance, const void* pObject = NULL, CVector3 vNormal = CVector3())
-			: m_dDistance(dDistance)
-			, m_pObject(pObject)
-			, m_vNormal(vNormal)
-		{
-		}
+class RayTracingResult
+{
+public:
 
-		inline RayTracingResult& operator = (const RayTracingResult& aCopy)
-		{
-			m_dDistance = aCopy.m_dDistance;
-			m_pObject = aCopy.m_pObject;
-			m_vNormal = aCopy.m_vNormal;
+    inline RayTracingResult(double dDistance, const void* pObject = NULL, CVector3 vNormal = CVector3())
+        : m_dDistance(dDistance)
+        , m_pObject(pObject)
+        , m_vNormal(vNormal)
+    {
+    }
 
-			return *this;
-		}
+    inline RayTracingResult& operator = (const RayTracingResult& aCopy)
+    {
+        m_dDistance = aCopy.m_dDistance;
+        m_pObject = aCopy.m_pObject;
+        m_vNormal = aCopy.m_vNormal;
 
-		double			m_dDistance;
-		const void*		m_pObject;
-		CVector3		m_vNormal;
-	};
+        return *this;
+    }
 
-	class CRay3
-	{
-	public:
+    double			m_dDistance;
+    const void*		m_pObject;
+    CVector3		m_vNormal;
+};
 
-		CVector3 vOrigin;
-		CVector3 vNormal;
+class CRay3
+{
+public:
 
-		//! Constructeur par défaut
-		inline CRay3 ()
-		{
-		}
+    CVector3 vOrigin;
+    CVector3 vNormal;
 
-		//! Constructeur par composants
-		inline CRay3 (CVector3 dNewOrigin, CVector3 vNewNormal)
-		{
-			vOrigin = dNewOrigin;
-			vNormal = vNewNormal;
-		}
+    //! Constructeur par défaut
+    inline CRay3 ()
+    {
+    }
 
-		//! Constructeur de copie
-		inline CRay3 (const CRay3& Target)
-		{
-			*this = Target;
-		}
+    //! Constructeur par composants
+    inline CRay3 (CVector3 dNewOrigin, CVector3 vNewNormal)
+    {
+        vOrigin = dNewOrigin;
+        vNormal = vNewNormal;
+    }
 
-		//! Opérateur d'égalité
-		inline bool operator == (const CRay3& V2) const
-		{
-			return (vOrigin == V2.vOrigin) && (vNormal == V2.vNormal);
-		}
+    //! Constructeur de copie
+    inline CRay3 (const CRay3& Target)
+    {
+        *this = Target;
+    }
 
-		//! Opérateur d'inégalité
-		inline bool operator != (const CRay3& V2) const
-		{
-			return !(*this == V2);
-		}
+    //! Opérateur d'égalité
+    inline bool operator == (const CRay3& V2) const
+    {
+        return (vOrigin == V2.vOrigin) && (vNormal == V2.vNormal);
+    }
 
-		//! Opérateur d'assignation
-		inline CRay3& operator = (const CRay3& Target)
-		{
-			vOrigin = Target.vOrigin;
-			vNormal = Target.vNormal;
+    //! Opérateur d'inégalité
+    inline bool operator != (const CRay3& V2) const
+    {
+        return !(*this == V2);
+    }
 
-			return *this;
-		}
-	};
+    //! Opérateur d'assignation
+    inline CRay3& operator = (const CRay3& Target)
+    {
+        vOrigin = Target.vOrigin;
+        vNormal = Target.vNormal;
+
+        return *this;
+    }
+};
+
 }
 
 #endif // __RAY3_H__

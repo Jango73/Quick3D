@@ -85,17 +85,6 @@ void CVehicle::update(double dDeltaTime)
 {
     CTrajectorable::update(dDeltaTime);
 
-    /*
-    CAxis axis = getGeoloc().getNOLLAxis();
-    CVector3 vStart = getWorldPosition() + axis.Up * 2.0;
-    CVector3 vEnd = vStart + axis.Front * 4.0;
-    m_pScene->addSegment(vStart, vEnd);
-
-    vStart = getWorldPosition();
-    vEnd = vStart + axis.Up * 4.0;
-    m_pScene->addSegment(vStart, vEnd);
-    */
-
     if (isRootObject() && m_bPhysicsActive)
     {
         if (m_pFields.count() > 0.0)

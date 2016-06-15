@@ -469,6 +469,19 @@ void CPhysicalComponent::update(double dDeltaTimeS)
 
     m_vSummedForces_mss = CVector3();
     m_vSummedTorques_rss = CVector3();
+
+    // Show axis
+
+    CAxis axis = getGeoloc().getNOLLAxis();
+    CVector3 vStart = getWorldPosition();
+    CVector3 vEnd = vStart + axis.Front * 2.0;
+    m_pScene->addSegment(vStart, vEnd);
+
+    vEnd = vStart + axis.Up * 2.0;
+    m_pScene->addSegment(vStart, vEnd);
+
+    vEnd = vStart + axis.Right * 2.0;
+    m_pScene->addSegment(vStart, vEnd);
 }
 
 //-------------------------------------------------------------------------------------------------

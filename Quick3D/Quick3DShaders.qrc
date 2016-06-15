@@ -1,10 +1,10 @@
 <RCC>
     <qresource prefix="/">
         <file>Resources/Shaders/VS_Standard.c</file>
-        <file>Resources/Shaders/GS_Standard_Billboard.c</file>
-        <file>Resources/Shaders/FS_Standard.c</file>
         <file>Resources/Shaders/GS_Standard_Triangle.c</file>
+        <file>Resources/Shaders/GS_Standard_Billboard.c</file>
         <file>Resources/Shaders/GS_Standard_Line.c</file>
+        <file>Resources/Shaders/FS_Standard.c</file>
         <file>Resources/Shaders/FS_Special_Line.c</file>
     </qresource>
 </RCC>

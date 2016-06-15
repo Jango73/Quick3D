@@ -1591,50 +1591,48 @@ void CMeshGeometry::paint(CRenderContext* pContext, CComponent* pContainer)
 
     checkAndUpdateGeometry();
 
-    if (m_vGLMeshData.count() == 0) return;
-
-    bool bFrustumCheck = false;
-
-    if (pContainer != NULL && pContext->scene()->getFrustumCheck())
+    if (m_vGLMeshData.count() > 0 && m_vGLMeshData.count() == m_vMaterials.count())
     {
-        CBoundingBox bWorldBounds = pContainer->getWorldBounds();
-        CVector3 vPosition = pContext->internalCameraMatrix() * bWorldBounds.center();
-        double dRadius = bWorldBounds.radius();
+        bool bFrustumCheck = false;
 
-        if (
-                pContext->camera()->contains(vPosition, dRadius) &&
-                vPosition.getMagnitude() < m_dMaxDistance
-                )
+        if (pContainer != NULL && pContext->scene()->getFrustumCheck())
+        {
+            CBoundingBox bWorldBounds = pContainer->getWorldBounds();
+            CVector3 vPosition = pContext->internalCameraMatrix() * bWorldBounds.center();
+            double dRadius = bWorldBounds.radius();
+
+            if (
+                    pContext->camera()->contains(vPosition, dRadius) &&
+                    vPosition.getMagnitude() < m_dMaxDistance
+                    )
+            {
+                bFrustumCheck = true;
+            }
+        }
+        else
         {
             bFrustumCheck = true;
         }
-    }
-    else
-    {
-        bFrustumCheck = true;
-    }
 
-    if (bFrustumCheck)
-    {
-        QMatrix4x4 mModelAbsolute;
-        mModelAbsolute.setToIdentity();
-
-        if (pContainer != NULL)
+        if (bFrustumCheck)
         {
-            // Set transform matrix
-            CVector3 WorldPosition = pContainer->getWorldPosition() - pContext->scene()->getWorldOrigin();
-            CVector3 WorldRotation = pContainer->getWorldRotation();
-            CVector3 WorldScale = pContainer->getWorldScale();
+            QMatrix4x4 mModelAbsolute;
+            mModelAbsolute.setToIdentity();
 
-            mModelAbsolute.translate(WorldPosition.X, WorldPosition.Y, WorldPosition.Z);
-            mModelAbsolute.rotate(Math::Angles::toDeg(WorldRotation.Y), QVector3D(0, 1, 0));
-            mModelAbsolute.rotate(Math::Angles::toDeg(WorldRotation.X), QVector3D(1, 0, 0));
-            mModelAbsolute.rotate(Math::Angles::toDeg(WorldRotation.Z), QVector3D(0, 0, 1));
-            mModelAbsolute.scale(WorldScale.X, WorldScale.Y, WorldScale.Z);
-        }
+            if (pContainer != NULL)
+            {
+                // Set transform matrix
+                CVector3 WorldPosition = pContainer->getWorldPosition() - pContext->scene()->getWorldOrigin();
+                CVector3 WorldRotation = pContainer->getWorldRotation();
+                CVector3 WorldScale = pContainer->getWorldScale();
 
-        if (m_vMaterials.count() == m_vGLMeshData.count())
-        {
+                mModelAbsolute.translate(WorldPosition.X, WorldPosition.Y, WorldPosition.Z);
+                mModelAbsolute.rotate(Math::Angles::toDeg(WorldRotation.Y), QVector3D(0, 1, 0));
+                mModelAbsolute.rotate(Math::Angles::toDeg(WorldRotation.X), QVector3D(1, 0, 0));
+                mModelAbsolute.rotate(Math::Angles::toDeg(WorldRotation.Z), QVector3D(0, 0, 1));
+                mModelAbsolute.scale(WorldScale.X, WorldScale.Y, WorldScale.Z);
+            }
+
             for (int iMaterialIndex = 0; iMaterialIndex < m_vMaterials.count(); iMaterialIndex++)
             {
                 CGLMeshData* pData = m_vGLMeshData[iMaterialIndex];

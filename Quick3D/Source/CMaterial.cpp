@@ -33,6 +33,7 @@ CMaterial::CMaterial(C3DScene* pScene, QString sName)
     , m_bUseSky(false)
     , m_bUseWaves(false)
     , m_bBillBoard(false)
+    , m_bLines(false)
 {
     m_cAmbient = Vector4(0.03, 0.03, 0.03, 1.0);
     m_cDiffuse = Vector4(1.0, 1.0, 1.0, 1.0);
@@ -233,6 +234,10 @@ QGLShaderProgram* CMaterial::activate(CRenderContext* pContext)
     if (m_bBillBoard)
     {
         pProgram = pContext->scene()->getShaders()->getShader(SP_Standard_Billboard);
+    }
+    else if (m_bLines)
+    {
+        pProgram = pContext->scene()->getShaders()->getShader(SP_Special_Lines);
     }
     else
     {

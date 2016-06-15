@@ -11,12 +11,6 @@ precision highp int;
 precision highp float;
 #endif
 
-#define ROOTTHREE		1.73205081
-#define uTMK			20.0
-#define MAX_STEPS		64
-#define TM_MIN			0.05
-#define pi				3.1415926535
-
 // Constant incoming data
 
 uniform vec2			u_resolution;
@@ -119,6 +113,14 @@ float	gSeaAltitudeFactor_1;
 float	gSeaAltitudeFactor_2;
 float	gStepSize;
 float	gStepFactor;
+
+// Constants
+
+#define ROOTTHREE		1.73205081
+#define uTMK			20.0
+#define MAX_STEPS		64
+#define TM_MIN			0.05
+#define pi				3.1415926535
 
 //-------------------------------------------------------------------------------------------------
 

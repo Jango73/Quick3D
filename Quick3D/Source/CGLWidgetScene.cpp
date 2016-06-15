@@ -33,7 +33,10 @@ CGLWidgetScene::CGLWidgetScene(bool bForDisplay)
         m_pTreeGenerator = new CTreeGenerator(this);
         m_vShaders = new CShaderCollection();
 
-        m_mSegments.setMaterial(m_pRessourcesManager->getDefaultMaterial());
+        CMaterial* pMaterial = new CMaterial(this);
+        pMaterial->getDiffuse() = Vector4(1.0, 0.0, 0.0, 1.0);
+        pMaterial->setLines(true);
+        m_mSegments.setMaterial(QSharedPointer<CMaterial>(pMaterial));
         m_mSegments.setGLType(GL_LINES);
     }
 }

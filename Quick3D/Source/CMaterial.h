@@ -69,6 +69,9 @@ public:
     //!
     void setBillBoard(bool value) { m_bBillBoard = value; }
 
+    //!
+    void setLines(bool value) { m_bLines = value; }
+
     //! Définit la valeur temps utilisée pour animer les textures
     static void setTime(double value) { m_dTime = value; }
 
@@ -194,6 +197,7 @@ protected:
     bool                    m_bUseSky;
     bool                    m_bUseWaves;
     bool                    m_bBillBoard;
+    bool                    m_bLines;
 
     static double           m_dTime;
 };

@@ -206,7 +206,7 @@ void main()
     vec4 tangent = u_model_matrix * vec4(a_tangent, 0.0);
     vec3 binormal = normalize(cross(normal.xyz, tangent.xyz));
     vec4 shadow_coord = u_shadow_projection_matrix * (u_shadow_matrix * vertex_pos);
-    mat4 mvp = u_camera_projection_matrix * u_camera_matrix * u_model_matrix;
+    mat4 vp = u_camera_projection_matrix * u_camera_matrix;
 
     // Distance
     float distance = length((u_camera_matrix * vertex_pos).xyz);
@@ -242,5 +242,5 @@ void main()
     }
 
     // Vertex screen position
-    gl_Position = mvp * vec4(a_position, 1.0);
+    gl_Position = vp * vertex_pos;
 }

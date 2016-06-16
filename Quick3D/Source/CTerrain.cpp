@@ -381,6 +381,12 @@ void CTerrain::work()
         {
             m_pMesh->getVertices()[iIndex].texCoord() = pMaterial->getTexCoords(gPosition, m_iLevel);
         }
+        else if (m_bIsWater)
+        {
+            m_pMesh->getVertices()[iIndex].texCoord().X = gPosition.Longitude;
+            m_pMesh->getVertices()[iIndex].texCoord().Y = gPosition.Altitude;
+            m_pMesh->getVertices()[iIndex].texCoord().Z = gPosition.Latitude;
+        }
 
         if (m_bStopRequested)
         {

@@ -705,7 +705,7 @@ vec3 getNormal()
     {
         if (u_shaderQuality >= 0.75)
         {
-            float large_amplitude = u_wave_amplitude * 3.0;
+            float large_amplitude = u_wave_amplitude * 0.3;
             float small_amplitude = large_amplitude * 2.0;
 
             mat3 toLocalTangent = inverse(mat3(
@@ -715,20 +715,20 @@ vec3 getNormal()
                                               ));
 
             // Perturbate normal
-            vec3 normal_1 = oceanNormal(vo_position, 0.005, 0.1, large_amplitude).xyz;
+            vec3 normal_1 = oceanNormal(vo_texcoord, 0.05, 0.1, large_amplitude).xyz;
             vec3 normal_2 = vec3(0.0, 0.0, 0.0);
             vec3 normal_3 = vec3(0.0, 0.0, 0.0);
 
             if (vo_distance < 1000.0)
             {
                 float factor = (1000.0 - vo_distance) / 1000.0;
-                normal_2 = oceanNormal(vo_position, 0.3, 0.5, small_amplitude).xyz * factor;
+                normal_2 = oceanNormal(vo_texcoord, 3.0, 0.5, small_amplitude).xyz * factor;
             }
 
             if (vo_distance < 500.0)
             {
                 float factor = (500.0 - vo_distance) / 500.0;
-                normal_3 = oceanNormal(vo_position * -1.0, 1.0, 2.0, small_amplitude).xyz * factor;
+                normal_3 = oceanNormal(vo_texcoord * -1.0, 10.0, 2.0, small_amplitude).xyz * factor;
             }
 
             normal = normalize(toLocalTangent * (normal_1 + normal_2 + normal_3));
@@ -882,9 +882,6 @@ void main()
                 // Input color
                 vec4 color = vec4(doLighting(vo_position, normal, eye_to_vertex, xy), 1.0);
 
-                // vec3 normal_eye_space = (u_camera_matrix * normal) - (u_camera_matrix * vec3(0.0, 0.0, 0.0));
-                // vec3 tangent_eye_space = (u_camera_matrix * v_tangent) - (u_camera_matrix * vec3(0.0, 0.0, 0.0));
-
                 // Apply texture
                 color *= getTexture();
 
@@ -905,16 +902,16 @@ void main()
                     }
                     else if (u_shaderQuality < 0.75)
                     {
-                        float large_amplitude = 2.0;
+                        float large_amplitude = 2.5;
                         float small_amplitude = large_amplitude * 2.0;
 
-                        float v1 = movingTurbulence(vo_position * 0.005, 0.1) * large_amplitude;
-                        float v2 = movingTurbulence(vo_position * 0.3, 0.5) * large_amplitude;
+                        float v1 = movingTurbulence(vo_texcoord * 0.05, 0.1) * large_amplitude;
+                        float v2 = movingTurbulence(vo_texcoord * 3.0, 0.5) * large_amplitude;
                         float v3 = 0.0;
 
                         if (vo_distance < 500.0)
                         {
-                            v3 = movingTurbulence(vo_position * 2.0, 0.7) * small_amplitude;
+                            v3 = movingTurbulence(vo_texcoord * 20.0, 0.7) * small_amplitude;
                         }
 
                         float turb = clamp((v1 + v2 + v3) * 0.5, 1.0, 100.0);

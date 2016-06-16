@@ -496,7 +496,7 @@ void CAutoTerrain::paintRecurse(QVector<CWorldChunk*>& vChunkCollect, CRenderCon
             vChunkCollect.append(pChunk);
 
             // Get rid of unneeded water
-            if (pChunk->getWater() != NULL && pChunk->getWater()->getAllHeightsOverSea())
+            if (pChunk->getWater() != NULL && pChunk->getTerrain()->getAllHeightsOverSea())
             {
                 delete pChunk->getWater();
                 pChunk->setWater(NULL);

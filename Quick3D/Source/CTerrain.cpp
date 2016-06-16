@@ -426,7 +426,7 @@ void CTerrain::work()
                 dTerrainAltitude = -20000.0;
             }
 
-            if (dTerrainAltitude < 0.0)
+            if (dTerrainAltitude < 0.01)
             {
                 m_bAllHeightsOverSea = false;
             }

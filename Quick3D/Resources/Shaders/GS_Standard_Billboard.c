@@ -87,7 +87,7 @@ uniform float           u_IR_factor;
 uniform int             u_inverse_polarity_enable;
 
 layout (points) in;
-layout (triangle_strip, max_vertices = 9) out;
+layout (triangle_strip, max_vertices = 6) out;
 
 varying in vec3			v_position[1];
 varying in vec3			v_normal[1];

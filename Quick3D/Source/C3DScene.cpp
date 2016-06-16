@@ -606,6 +606,8 @@ RayTracingResult C3DScene::intersectRecurse(CComponent* pComponent, const Math::
 
 void C3DScene::addSegment(Math::CVector3 vStart, Math::CVector3 vEnd)
 {
+    if (m_mSegments.getVertices().count() > 400) return;
+
     if (m_bEditMode == false)
     {
         m_mSegments.getVertices().append(CVertex(vStart - m_vWorldOrigin));

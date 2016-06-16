@@ -28,7 +28,6 @@ CWorldChunk::CWorldChunk(C3DScene* pScene, CAutoTerrain* pAutoTerrain, CHeightFi
     , m_pAutoTerrain(pAutoTerrain)
     , m_pTerrain(NULL)
     , m_pWater(NULL)
-    , m_mBoundingBoxVisual(NULL)
     , m_pContainer(pContainer)
     , m_mMutex(QMutex::Recursive)
     , m_dDistance(0.0)
@@ -58,11 +57,6 @@ CWorldChunk::~CWorldChunk()
         delete m_pWater;
     }
 
-    if (m_mBoundingBoxVisual != NULL)
-    {
-        delete m_mBoundingBoxVisual;
-    }
-
     {
         QMutexLocker locker(&m_mMutex);
 
@@ -84,7 +78,7 @@ void CWorldChunk::setTerrain(CTerrain* value, bool bGenerateNow)
 {
     m_pTerrain = value;
 
-    if (m_pTerrain != NULL && m_pTerrain->getLevel() == 0)
+    if (m_pTerrain != NULL && m_pTerrain->getLevel() < 2)
     {
         if (bGenerateNow)
         {
@@ -173,11 +167,6 @@ CBoundingBox CWorldChunk::getBounds()
 
 CBoundingBox CWorldChunk::getWorldBounds()
 {
-    if (m_pTerrain != NULL && m_pTerrain->isOK())
-    {
-        return m_pTerrain->getWorldBounds();
-    }
-
     return m_bWorldBounds;
 }
 
@@ -241,21 +230,15 @@ void CWorldChunk::paint(CRenderContext* pContext, ETerrainType eType)
 
     m_tLastUsed = QDateTime::currentDateTime();
 
-    // En cas de mode debug, on créé le mesh de la boite englobante
-    if (pContext->scene()->getDebugMode())
+    /*
+    if (eType == ttGround)
     {
-        if (pContext->scene()->getBoundsOnly())
+        if (vPosition.getMagnitude() < 10000.0)
         {
-            CBoundingBox bounds = getBounds();
-
-            if (m_mBoundingBoxVisual == NULL)
-            {
-                m_mBoundingBoxVisual = new CBox(pContext->scene(), 100000000.0);
-                m_mBoundingBoxVisual->setBounds(bounds.minimum(), bounds.maximum());
-                m_mBoundingBoxVisual->setGeoloc(getGeoloc());
-            }
+            getWorldBounds().addSegments(pContext->scene());
         }
     }
+    */
 
     // Paint chunk if containing sphere is within the viewing frustum
     if (pContext->scene()->getFrustumCheck() == false || pContext->camera()->contains(vPosition, dRadius))
@@ -279,11 +262,6 @@ void CWorldChunk::paint(CRenderContext* pContext, ETerrainType eType)
 
                         m_pTerrain->paint(pContext);
                     }
-                }
-
-                if (pContext->scene()->getDebugMode() && m_mBoundingBoxVisual != NULL)
-                {
-                    m_mBoundingBoxVisual->paint(pContext);
                 }
 
                 break;
@@ -496,21 +474,22 @@ void CWorldChunk::work()
         {
             CVegetation* pVegetation = m_pAutoTerrain->getVegetation()[iVegetIndex];
 
+            double dSpread = pVegetation->m_dSpread * ((double) m_pTerrain->getLevel() + 1.0);
             double dAltitude_Trees = 10.0;
 
             CGeoloc gStart(getGeoloc().Latitude - m_gSize.Latitude * 0.5, getGeoloc().Longitude - m_gSize.Longitude * 0.5, 0.0);
 
-            double dLatStart = fmod(gStart.Latitude, pVegetation->m_dSpread);
-            double dLonStart = fmod(gStart.Longitude, pVegetation->m_dSpread);
+            double dLatStart = fmod(gStart.Latitude, dSpread);
+            double dLonStart = fmod(gStart.Longitude, dSpread);
 
-            if (dLatStart < 0.0) dLatStart -= pVegetation->m_dSpread * 0.5;
-            if (dLonStart < 0.0) dLonStart -= pVegetation->m_dSpread * 0.5;
+            if (dLatStart < 0.0) dLatStart -= dSpread * 0.5;
+            if (dLonStart < 0.0) dLonStart -= dSpread * 0.5;
 
             CGeoloc gStartOffset = CGeoloc(gStart.Latitude - dLatStart, gStart.Longitude - dLonStart, 0.0);
 
-            for (double dLat = gStartOffset.Latitude; dLat < gStartOffset.Latitude + m_gSize.Latitude; dLat += pVegetation->m_dSpread)
+            for (double dLat = gStartOffset.Latitude; dLat < gStartOffset.Latitude + m_gSize.Latitude; dLat += dSpread)
             {
-                for (double dLon = gStartOffset.Longitude; dLon < gStartOffset.Longitude + m_gSize.Longitude; dLon += pVegetation->m_dSpread)
+                for (double dLon = gStartOffset.Longitude; dLon < gStartOffset.Longitude + m_gSize.Longitude; dLon += dSpread)
                 {
                     if (
                             dLat > gStart.Latitude && dLat < gStart.Latitude + m_gSize.Latitude &&
@@ -527,12 +506,12 @@ void CWorldChunk::work()
                         double dLatNoise = perlin->getNoise(vLatDisplace);
                         double dLonNoise = perlin->getNoise(vLonDisplace);
 
-                        gPosition.Latitude += dLatNoise * (pVegetation->m_dSpread * 0.25);
-                        gPosition.Longitude += dLonNoise * (pVegetation->m_dSpread * 0.25);
+                        gPosition.Latitude += dLatNoise * (dSpread * 0.25);
+                        gPosition.Longitude += dLonNoise * (dSpread * 0.25);
                         */
 
-                        // gPosition.Latitude += (((double) qrand() / (double) RAND_MAX) - 0.5) * pVegetation->m_dSpread;
-                        // gPosition.Longitude += (((double) qrand() / (double) RAND_MAX) - 0.5) * pVegetation->m_dSpread;
+                        // gPosition.Latitude += (((double) qrand() / (double) RAND_MAX) - 0.5) * dSpread;
+                        // gPosition.Longitude += (((double) qrand() / (double) RAND_MAX) - 0.5) * dSpread;
 
                         double dLandscapeValue = pVegetation->m_pFunction->process(perlin, gPosition.toVector3(), CAxis());
 

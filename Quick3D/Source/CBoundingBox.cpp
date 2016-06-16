@@ -1,5 +1,6 @@
 
 #include "CBoundingBox.h"
+#include "C3DScene.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -248,6 +249,26 @@ CBoundingBox CBoundingBox::operator & (const CBoundingBox& target) const
     if (target.m_vMaximum.Z > bReturn.m_vMaximum.Z) bReturn.m_vMaximum.Z = target.m_vMaximum.Z;
 
     return bReturn;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CBoundingBox::addSegments(C3DScene* pScene)
+{
+    pScene->addSegment(CVector3(m_vMinimum.X, m_vMinimum.Y, m_vMinimum.Z), CVector3(m_vMinimum.X, m_vMaximum.Y, m_vMinimum.Z));
+    pScene->addSegment(CVector3(m_vMaximum.X, m_vMinimum.Y, m_vMinimum.Z), CVector3(m_vMaximum.X, m_vMaximum.Y, m_vMinimum.Z));
+    pScene->addSegment(CVector3(m_vMinimum.X, m_vMinimum.Y, m_vMaximum.Z), CVector3(m_vMinimum.X, m_vMaximum.Y, m_vMaximum.Z));
+    pScene->addSegment(CVector3(m_vMaximum.X, m_vMinimum.Y, m_vMaximum.Z), CVector3(m_vMaximum.X, m_vMaximum.Y, m_vMaximum.Z));
+
+    pScene->addSegment(CVector3(m_vMinimum.X, m_vMinimum.Y, m_vMinimum.Z), CVector3(m_vMinimum.X, m_vMinimum.Y, m_vMaximum.Z));
+    pScene->addSegment(CVector3(m_vMaximum.X, m_vMinimum.Y, m_vMinimum.Z), CVector3(m_vMaximum.X, m_vMinimum.Y, m_vMaximum.Z));
+    pScene->addSegment(CVector3(m_vMinimum.X, m_vMaximum.Y, m_vMinimum.Z), CVector3(m_vMinimum.X, m_vMaximum.Y, m_vMaximum.Z));
+    pScene->addSegment(CVector3(m_vMaximum.X, m_vMaximum.Y, m_vMinimum.Z), CVector3(m_vMaximum.X, m_vMaximum.Y, m_vMaximum.Z));
+
+    pScene->addSegment(CVector3(m_vMinimum.X, m_vMinimum.Y, m_vMinimum.Z), CVector3(m_vMaximum.X, m_vMinimum.Y, m_vMinimum.Z));
+    pScene->addSegment(CVector3(m_vMinimum.X, m_vMinimum.Y, m_vMaximum.Z), CVector3(m_vMaximum.X, m_vMinimum.Y, m_vMaximum.Z));
+    pScene->addSegment(CVector3(m_vMinimum.X, m_vMaximum.Y, m_vMinimum.Z), CVector3(m_vMaximum.X, m_vMaximum.Y, m_vMinimum.Z));
+    pScene->addSegment(CVector3(m_vMinimum.X, m_vMaximum.Y, m_vMaximum.Z), CVector3(m_vMaximum.X, m_vMaximum.Y, m_vMaximum.Z));
 }
 
 //-------------------------------------------------------------------------------------------------

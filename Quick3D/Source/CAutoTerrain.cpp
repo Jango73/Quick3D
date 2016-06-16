@@ -285,6 +285,20 @@ void CAutoTerrain::buildRoot()
 
 //-------------------------------------------------------------------------------------------------
 
+bool CAutoTerrain::enoughDetail(CWorldChunk* pChunk, CRenderContext* pContext, int iLevel)
+{
+    // double dDistance = (pContext->camera()->getWorldPosition() - pChunk->getWorldBounds().center()).getMagnitude();
+    // return pChunk->getWorldBounds().radius() / dDistance < 2.0;
+
+    return (
+                pChunk->getWorldBounds().containsSpherical(pContext->camera()->getGeoloc()) == false ||
+                iLevel == 0
+                )
+            && iLevel < m_iLevels;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /*!
     Called by paint() to build necessary terrain patches given the camera location. \br\br
     \a pChunk is any chunk in the chunk tree of the terrain. \br
@@ -299,15 +313,9 @@ void CAutoTerrain::buildRecurse(CWorldChunk* pChunk, CRenderContext* pContext, i
     CGeoloc gChunkPosition = pChunk->getGeoloc();
     CGeoloc gChunkSize = pChunk->getSize();
 
-    CBoundingBox bChunkBounds = pChunk->getBuildWorldBounds();
-
     // On décide si ce niveau de détail est suffisant
     // Decide whether this level of detail is enough
-    bool bStayHere = (
-                bChunkBounds.containsSpherical(pContext->camera()->getGeoloc()) == false ||
-                iLevel == 0
-                )
-            && iLevel < m_iLevels;
+    bool bStayHere = enoughDetail(pChunk, pContext, iLevel);
 
     if (bStayHere)
     {
@@ -457,15 +465,10 @@ void CAutoTerrain::buildRecurse(CWorldChunk* pChunk, CRenderContext* pContext, i
 void CAutoTerrain::paintRecurse(QVector<CWorldChunk*>& vChunkCollect, CRenderContext* pContext, CWorldChunk* pChunk, int iLevel, bool bForcePaint)
 {
     CGeoloc gChunkPosition = pChunk->getGeoloc();
-    CGeoloc gChunkSize = pChunk->getSize();
-    CBoundingBox bChunkBounds = pChunk->getWorldBounds();
 
     // On décide si ce niveau de détail est suffisant
-    bool bStayHere = (
-                bChunkBounds.containsSpherical(pContext->camera()->getGeoloc()) == false ||
-                iLevel == 0
-                )
-            && iLevel < m_iLevels;
+    // Decide whether this level of detail is enough
+    bool bStayHere = enoughDetail(pChunk, pContext, iLevel);
 
     bool bChildrenDrawable = true;
 
@@ -687,9 +690,9 @@ void CAutoTerrain::flatten(const CGeoloc& gPosition, double dRadius)
 */
 void CAutoTerrain::readVegetationParameters(const QString& sBaseFile, CXMLNode xFunctions)
 {
-    CXMLNode xVegeationNode = m_xParameters.getNodeByTagName(ParamName_Vegetation);
+    CXMLNode xVegetationNode = m_xParameters.getNodeByTagName(ParamName_Vegetation);
 
-    QVector<CXMLNode> xTrees = xVegeationNode.getNodesByTagName(ParamName_Tree);
+    QVector<CXMLNode> xTrees = xVegetationNode.getNodesByTagName(ParamName_Tree);
 
     foreach (CXMLNode xTree, xTrees)
     {
@@ -764,7 +767,7 @@ void CAutoTerrain::readVegetationParameters(const QString& sBaseFile, CXMLNode x
         m_vVegetation.append(new CVegetation(CVegetation::evtTree, dSpread, pFunction, new CMeshInstance(vMeshes), NULL));
     }
 
-    QVector<CXMLNode> xBushes = xVegeationNode.getNodesByTagName(ParamName_Bush);
+    QVector<CXMLNode> xBushes = xVegetationNode.getNodesByTagName(ParamName_Bush);
 
     foreach (CXMLNode xBush, xBushes)
     {

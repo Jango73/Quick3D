@@ -49,7 +49,7 @@ CMeshGeometry* CTreeGenerator::createTree(
     CPerlin* perlin = CPerlin::getInstance();
 
     // Create trunk
-    CMeshGeometry* pMesh = new CMeshGeometry(m_pScene, 10.0 + (10.0 * (double) iLODLevel));
+    CMeshGeometry* pMesh = new CMeshGeometry(m_pScene, 50.0 + (50.0 * (double) iLODLevel));
 
     pMesh->createCone(
                 NUM_SEGMENTS / (iLODLevel + 1),

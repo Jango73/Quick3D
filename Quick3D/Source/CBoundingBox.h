@@ -8,6 +8,12 @@
 #include "CMatrix4.h"
 #include "CGeoloc.h"
 
+//-------------------------------------------------------------------------------------------------
+
+class C3DScene;
+
+//-------------------------------------------------------------------------------------------------
+
 class QUICK3D_EXPORT CBoundingBox
 {
 public:
@@ -105,6 +111,9 @@ public:
 
     //!
     CBoundingBox operator & (const CBoundingBox& target) const;
+
+    //!
+    void addSegments(C3DScene* pScene);
 
     //-------------------------------------------------------------------------------------------------
     // Propriétés

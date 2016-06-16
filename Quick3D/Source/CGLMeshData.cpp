@@ -34,6 +34,8 @@ CGLMeshData::CGLMeshData(C3DScene* pScene)
 
 CGLMeshData::~CGLMeshData()
 {
+    GL_glDeleteBuffers(2, m_iVBO);
+
     if (m_vRenderPoints != NULL)
     {
         delete [] m_vRenderPoints;
@@ -45,8 +47,6 @@ CGLMeshData::~CGLMeshData()
     }
 
     m_pScene->makeCurrentRenderingContext();
-
-    GL_glDeleteBuffers(2, m_iVBO);
 }
 
 //-------------------------------------------------------------------------------------------------

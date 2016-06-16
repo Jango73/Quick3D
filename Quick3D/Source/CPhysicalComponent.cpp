@@ -472,6 +472,7 @@ void CPhysicalComponent::update(double dDeltaTimeS)
 
     // Show axis
 
+    /*
     CAxis axis = getGeoloc().getNOLLAxis();
     CVector3 vStart = getWorldPosition();
     CVector3 vEnd = vStart + axis.Front * 2.0;
@@ -482,6 +483,7 @@ void CPhysicalComponent::update(double dDeltaTimeS)
 
     vEnd = vStart + axis.Right * 2.0;
     m_pScene->addSegment(vStart, vEnd);
+    */
 }
 
 //-------------------------------------------------------------------------------------------------

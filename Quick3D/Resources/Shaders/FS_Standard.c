@@ -962,6 +962,11 @@ void main()
 
                 // Final color
                 gl_FragColor = color;
+
+                if (color.a < 0.01)
+                {
+                    discard;
+                }
             }
         }
     }

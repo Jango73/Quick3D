@@ -175,7 +175,6 @@ protected:
     CBoundingBox                    m_bWorldBounds;
     CTerrain*                       m_pTerrain;
     CTerrain*                       m_pWater;
-    CBox*                           m_mBoundingBoxVisual;
     QVector<CBoundedMeshInstances*> m_vMeshes;
     QMap<QString, CMeshGeometry*>   m_vBushMeshes;
     QMutex                          m_mMutex;

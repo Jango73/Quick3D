@@ -136,6 +136,9 @@ public:
     CHeightField* getHeights() { return m_pHeights; }
 
     //!
+    int getLevels() const { return m_iLevels; }
+
+    //!
     QVector<CVegetation*>& getVegetation() { return m_vVegetation; }
 
     //!
@@ -180,6 +183,9 @@ protected:
 
     //!
     void buildRoot();
+
+    //!
+    bool enoughDetail(CWorldChunk* pChunk, CRenderContext* pContext, int iLevel);
 
     //!
     void paintRecurse(QVector<CWorldChunk*>& vChunkCollect, CRenderContext* pContext, CWorldChunk* pChunk, int iLevel, bool bForcePaint);

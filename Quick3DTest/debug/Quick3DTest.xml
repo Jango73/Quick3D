@@ -403,7 +403,47 @@
 						</Coverage>
 					</Tree>
 					<Bush>
-						<General Spread="0.00002"/>
+						<General Spread="0.000008"/>
+						<Coverage>
+							<Value Type="Mul">
+								<Operand>
+									<!-- Coverage -->
+									<Value Type="Perlin" InputScale="0.0001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="1.0"/>
+								</Operand>
+								<Operand>
+									<!-- Probability -->
+									<Value Type="Turbulence" InputScale="2.0" MinClamp="-1.0" MaxClamp="1.0" OutputScale="10.0"/>
+								</Operand>
+							</Value>
+						</Coverage>
+						<Material Name="Bush01">
+							<Ambient g="0.5000" b="0.5000" r="0.5000"/>
+							<Diffuse g="0.0000" b="0.0000" Map="Textures/GrassDecal01.png" r="0.0000"/>
+							<Specular g="1.0000" b="1.0000" Hardness="50" Intensity="0.2" r="1.0000"/>
+						</Material>
+					</Bush>
+					<Bush>
+						<General Spread="0.000010"/>
+						<Coverage>
+							<Value Type="Mul">
+								<Operand>
+									<!-- Coverage -->
+									<Value Type="Perlin" InputScale="0.0001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="1.0"/>
+								</Operand>
+								<Operand>
+									<!-- Probability -->
+									<Value Type="Turbulence" InputScale="2.0" MinClamp="-1.0" MaxClamp="1.0" OutputScale="10.0"/>
+								</Operand>
+							</Value>
+						</Coverage>
+						<Material Name="Bush02">
+							<Ambient g="0.5000" b="0.5000" r="0.5000"/>
+							<Diffuse g="0.0000" b="0.0000" Map="Textures/GrassDecal02.png" r="0.0000"/>
+							<Specular g="1.0000" b="1.0000" Hardness="50" Intensity="0.2" r="1.0000"/>
+						</Material>
+					</Bush>
+					<Bush>
+						<General Spread="0.0001"/>
 						<Coverage>
 							<Value Type="Mul">
 								<Operand>
@@ -416,9 +456,9 @@
 								</Operand>
 							</Value>
 						</Coverage>
-						<Material Name="Bush01">
+						<Material Name="Flower01">
 							<Ambient g="0.5000" b="0.5000" r="0.5000"/>
-							<Diffuse g="0.0000" b="0.0000" Map="Textures/GrassDecal.png" r="0.0000"/>
+							<Diffuse g="0.0000" b="0.0000" Map="Textures/FlowerDecal01.png" r="0.0000"/>
 							<Specular g="1.0000" b="1.0000" Hardness="50" Intensity="0.2" r="1.0000"/>
 						</Material>
 					</Bush>

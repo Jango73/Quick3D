@@ -98,7 +98,7 @@ void CGLMeshData::paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolu
                 int texcoordLocation = pProgram->attributeLocation("a_texcoord");
                 pProgram->enableAttributeArray(texcoordLocation);
                 GL_glVertexAttribPointer(
-                            texcoordLocation, 2, GL_DOUBLE, GL_FALSE, sizeof(CVertex), (const void*) CVertex::texCoordOffset()
+                            texcoordLocation, 3, GL_DOUBLE, GL_FALSE, sizeof(CVertex), (const void*) CVertex::texCoordOffset()
                             );
 
                 // Tell OpenGL how to locate vertex diffuse texture weight data

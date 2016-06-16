@@ -93,7 +93,7 @@ varying vec3			vo_position;
 varying vec3			vo_normal;
 varying vec3			vo_tangent;
 varying vec3			vo_binormal;
-varying vec2			vo_texcoord;
+varying vec3			vo_texcoord;
 varying vec4			vo_shadow_coord;
 varying float			vo_distance;
 varying float			vo_altitude;

@@ -26,7 +26,7 @@ public:
     CVertex();
 
     //! Constructeur avec coordonnées de position et de texture mapping
-    CVertex(Math::CVector3 NewPosition, Math::CVector2 NewTexCoord = Math::CVector2());
+    CVertex(Math::CVector3 NewPosition, Math::CVector3 NewTexCoord = Math::CVector3());
 
     //! Constructeur de copie
     CVertex(const CVertex&);
@@ -61,7 +61,7 @@ public:
     Math::CVector3& gravity() { return m_vGravity; }
 
     //!
-    Math::CVector2& texCoord() { return m_vTexCoord; }
+    Math::CVector3& texCoord() { return m_vTexCoord; }
 
     //!
     double& altitude() { return m_dAltitude; }
@@ -79,7 +79,7 @@ public:
     Math::CVector3 tangent() const { return m_vTangent; }
 
     //!
-    Math::CVector2 texCoord() const { return m_vTexCoord; }
+    Math::CVector3 texCoord() const { return m_vTexCoord; }
 
     //!
     double altitude() const { return m_dAltitude; }
@@ -131,7 +131,7 @@ public:
 protected:
 
     Math::CVector3      m_vPosition;				// Coordonnées de position
-    Math::CVector2      m_vTexCoord;				// Coordonnées de texture mapping
+    Math::CVector3      m_vTexCoord;				// Coordonnées de texture mapping
     Math::CVector3      m_vDiffTexWeight_0_1_2;		// Poids des textures 0 à 2
     Math::CVector3      m_vDiffTexWeight_3_4_5;		// Poids des textures 3 à 5
     Math::CVector3      m_vDiffTexWeight_6_7_8;		// Poids des textures 6 à 8

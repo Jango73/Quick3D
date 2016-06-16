@@ -88,33 +88,33 @@ uniform int				u_inverse_polarity_enable;
 
 // Interpolated values
 
-varying vec3			v_position;
-varying vec3			v_normal;
-varying vec3			v_tangent;
-varying vec3			v_binormal;
-varying vec2			v_texcoord;
-varying vec4			v_shadow_coord;
-varying float			v_distance;
-varying float			v_altitude;
-varying float			v_difftex_weight_0;
-varying float			v_difftex_weight_1;
-varying float			v_difftex_weight_2;
-varying float			v_difftex_weight_3;
-varying float			v_difftex_weight_4;
-varying float			v_difftex_weight_5;
-varying float			v_difftex_weight_6;
-varying float			v_difftex_weight_7;
+varying vec3            v_position;
+varying vec3            v_normal;
+varying vec3            v_tangent;
+varying vec3            v_binormal;
+varying vec3            v_texcoord;
+varying vec4            v_shadow_coord;
+varying float           v_distance;
+varying float           v_altitude;
+varying float           v_difftex_weight_0;
+varying float           v_difftex_weight_1;
+varying float           v_difftex_weight_2;
+varying float           v_difftex_weight_3;
+varying float           v_difftex_weight_4;
+varying float           v_difftex_weight_5;
+varying float           v_difftex_weight_6;
+varying float           v_difftex_weight_7;
 
 // Incoming data from vertices
 
-attribute vec3			a_position;
-attribute vec2			a_texcoord;
-attribute vec3			a_normal;
-attribute vec3			a_difftext_weight_0_1_2;
-attribute vec3			a_difftext_weight_3_4_5;
-attribute vec3			a_difftext_weight_6_7_8;
-attribute vec3			a_tangent;
-attribute float			a_altitude;
+attribute vec3          a_position;
+attribute vec3          a_texcoord;
+attribute vec3          a_normal;
+attribute vec3          a_difftext_weight_0_1_2;
+attribute vec3          a_difftext_weight_3_4_5;
+attribute vec3          a_difftext_weight_6_7_8;
+attribute vec3          a_tangent;
+attribute float         a_altitude;
 
 //-------------------------------------------------------------------------------------------------
 

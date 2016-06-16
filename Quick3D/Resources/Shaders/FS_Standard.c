@@ -13,50 +13,50 @@ precision highp float;
 
 // Constant incoming data
 
-uniform vec2			u_resolution;
-uniform float			u_time;
-uniform float			u_deltaTime;
-uniform float			u_shaderQuality;
-uniform int				u_rendering_shadows;
-uniform int				u_normals_only;
+uniform vec2            u_resolution;
+uniform float           u_time;
+uniform float           u_deltaTime;
+uniform float           u_shaderQuality;
+uniform int             u_rendering_shadows;
+uniform int             u_normals_only;
 
-uniform mat4			u_camera_projection_matrix;
-uniform mat4			u_camera_matrix;
-uniform mat4			u_shadow_projection_matrix;
-uniform mat4			u_shadow_matrix;
-uniform mat4			u_model_matrix;
-uniform vec3			u_camera_true_position;
-uniform vec3			u_camera_position;
-uniform vec3			u_camera_direction;
-uniform vec3			u_camera_up;
-uniform vec3			u_world_origin;
-uniform vec3			u_world_up;
-uniform float			u_camera_altitude;
-uniform float			u_atmosphere_altitude;
+uniform mat4            u_camera_projection_matrix;
+uniform mat4            u_camera_matrix;
+uniform mat4            u_shadow_projection_matrix;
+uniform mat4            u_shadow_matrix;
+uniform mat4            u_model_matrix;
+uniform vec3            u_camera_true_position;
+uniform vec3            u_camera_position;
+uniform vec3            u_camera_direction;
+uniform vec3            u_camera_up;
+uniform vec3            u_world_origin;
+uniform vec3            u_world_up;
+uniform float           u_camera_altitude;
+uniform float           u_atmosphere_altitude;
 
-uniform vec3			u_global_ambient;
+uniform vec3            u_global_ambient;
 
-uniform int				u_num_lights;
-uniform int     		u_light_is_sun[8];
-uniform vec3			u_light_position[8];
-uniform vec3			u_light_screen_position[8];
-uniform vec3			u_light_direction[8];
-uniform vec3			u_light_color[8];
-uniform float			u_light_distance_to_camera[8];
-uniform float			u_light_distance[8];
-uniform float			u_light_spot_angle[8];
-uniform float			u_light_occlusion[8];
+uniform int             u_num_lights;
+uniform int             u_light_is_sun[8];
+uniform vec3            u_light_position[8];
+uniform vec3            u_light_screen_position[8];
+uniform vec3            u_light_direction[8];
+uniform vec3            u_light_color[8];
+uniform float           u_light_distance_to_camera[8];
+uniform float           u_light_distance[8];
+uniform float           u_light_spot_angle[8];
+uniform float           u_light_occlusion[8];
 
-uniform int				u_texture_diffuse_enable;
-uniform sampler2D		u_texture_diffuse_0;
-uniform sampler2D		u_texture_diffuse_1;
-uniform sampler2D		u_texture_diffuse_2;
-uniform sampler2D		u_texture_diffuse_3;
-uniform sampler2D		u_texture_diffuse_4;
-uniform sampler2D		u_texture_diffuse_5;
-uniform sampler2D		u_texture_diffuse_6;
-uniform sampler2D		u_texture_diffuse_7;
-uniform sampler2D		u_shadow_texture;
+uniform int             u_texture_diffuse_enable;
+uniform sampler2D       u_texture_diffuse_0;
+uniform sampler2D       u_texture_diffuse_1;
+uniform sampler2D       u_texture_diffuse_2;
+uniform sampler2D       u_texture_diffuse_3;
+uniform sampler2D       u_texture_diffuse_4;
+uniform sampler2D       u_texture_diffuse_5;
+uniform sampler2D       u_texture_diffuse_6;
+uniform sampler2D       u_texture_diffuse_7;
+uniform sampler2D       u_shadow_texture;
 
 uniform vec4			u_material_ambient;
 uniform vec4			u_material_diffuse;
@@ -93,7 +93,7 @@ varying vec3			vo_position;
 varying vec3			vo_normal;
 varying vec3			vo_tangent;
 varying vec3			vo_binormal;
-varying vec2			vo_texcoord;
+varying vec3			vo_texcoord;
 varying vec4			vo_shadow_coord;
 varying float			vo_distance;
 varying float			vo_altitude;
@@ -764,14 +764,14 @@ vec4 getTexture()
 
     if (bool(u_texture_diffuse_enable) && u_shaderQuality >= 0.20)
     {
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_0, vo_texcoord), vo_difftex_weight_0);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_1, vo_texcoord), vo_difftex_weight_1);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_2, vo_texcoord), vo_difftex_weight_2);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_3, vo_texcoord), vo_difftex_weight_3);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_4, vo_texcoord), vo_difftex_weight_4);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_5, vo_texcoord), vo_difftex_weight_5);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_6, vo_texcoord), vo_difftex_weight_6);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_7, vo_texcoord), vo_difftex_weight_7);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_0, vo_texcoord.xy), vo_difftex_weight_0);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_1, vo_texcoord.xy), vo_difftex_weight_1);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_2, vo_texcoord.xy), vo_difftex_weight_2);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_3, vo_texcoord.xy), vo_difftex_weight_3);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_4, vo_texcoord.xy), vo_difftex_weight_4);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_5, vo_texcoord.xy), vo_difftex_weight_5);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_6, vo_texcoord.xy), vo_difftex_weight_6);
+        texture_color = mix(texture_color, texture2D(u_texture_diffuse_7, vo_texcoord.xy), vo_difftex_weight_7);
     }
     else
     {

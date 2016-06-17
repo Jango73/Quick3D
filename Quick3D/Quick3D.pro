@@ -90,6 +90,7 @@ SOURCES += \
     Source/CMan.cpp \
     Source/CMaterial.cpp \
     Source/CMesh.cpp \
+    Source/CMeshByMaterial.cpp \
     Source/CMeshGeometry.cpp \
     Source/CMeshInstance.cpp \
     Source/CMJPEGClient.cpp \
@@ -272,6 +273,7 @@ HEADERS  += \
     Source/CMan.h \
     Source/CMaterial.h \
     Source/CMesh.h \
+    Source/CMeshByMaterial.h \
     Source/CMeshGeometry.h \
     Source/CMeshInstance.h \
     Source/CMJPEGClient.h \

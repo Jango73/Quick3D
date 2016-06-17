@@ -60,163 +60,159 @@ void CGLMeshData::paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolu
 
         pContext->m_iNumMeshesDrawn++;
 
-        // If program ok...
-        if (pProgram != NULL)
+        if (m_iCurrentVBO != m_iVBO[0])
         {
-            if (m_iCurrentVBO != m_iVBO[0])
+            m_iCurrentVBO = m_iVBO[0];
+
+            pProgram->setUniformValue("u_camera_projection_matrix", pContext->cameraProjectionMatrix());
+            pProgram->setUniformValue("u_camera_matrix", pContext->cameraMatrix());
+            pProgram->setUniformValue("u_shadow_projection_matrix", pContext->shadowProjectionMatrix());
+            pProgram->setUniformValue("u_shadow_matrix", pContext->shadowMatrix());
+            pProgram->setUniformValue("u_model_matrix", mModelAbsolute);
+
+            GL_glBindBuffer(GL_ARRAY_BUFFER, m_iVBO[0]);
+            GL_glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iVBO[1]);
+
+            if (m_bNeedTransferBuffers)
             {
-                m_iCurrentVBO = m_iVBO[0];
+                // Transfer vertex data to VBO 0
+                GL_glBufferData(GL_ARRAY_BUFFER, m_iNumRenderPoints * sizeof(CVertex), m_vRenderPoints, GL_STATIC_DRAW);
 
-                pProgram->setUniformValue("u_camera_projection_matrix", pContext->cameraProjectionMatrix());
-                pProgram->setUniformValue("u_camera_matrix", pContext->cameraMatrix());
-                pProgram->setUniformValue("u_shadow_projection_matrix", pContext->shadowProjectionMatrix());
-                pProgram->setUniformValue("u_shadow_matrix", pContext->shadowMatrix());
-                pProgram->setUniformValue("u_model_matrix", mModelAbsolute);
+                // Transfer index data to VBO 1
+                GL_glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_iNumRenderIndices * sizeof(GLuint), m_vRenderIndices, GL_STATIC_DRAW);
 
-                GL_glBindBuffer(GL_ARRAY_BUFFER, m_iVBO[0]);
-                GL_glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iVBO[1]);
-
-                if (m_bNeedTransferBuffers)
-                {
-                    // Transfer vertex data to VBO 0
-                    GL_glBufferData(GL_ARRAY_BUFFER, m_iNumRenderPoints * sizeof(CVertex), m_vRenderPoints, GL_STATIC_DRAW);
-
-                    // Transfer index data to VBO 1
-                    GL_glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_iNumRenderIndices * sizeof(GLuint), m_vRenderIndices, GL_STATIC_DRAW);
-
-                    m_bNeedTransferBuffers = false;
-                }
-
-                // Tell OpenGL how to locate vertex position data
-                int vertexLocation = pProgram->attributeLocation("a_position");
-                pProgram->enableAttributeArray(vertexLocation);
-                GL_glVertexAttribPointer(
-                            vertexLocation, 3, GL_DOUBLE, GL_FALSE, sizeof(CVertex), (const void*) CVertex::positionOffset()
-                            );
-
-                // Tell OpenGL how to locate vertex texture coordinate data
-                int texcoordLocation = pProgram->attributeLocation("a_texcoord");
-                pProgram->enableAttributeArray(texcoordLocation);
-                GL_glVertexAttribPointer(
-                            texcoordLocation, 3, GL_DOUBLE, GL_FALSE, sizeof(CVertex), (const void*) CVertex::texCoordOffset()
-                            );
-
-                // Tell OpenGL how to locate vertex diffuse texture weight data
-                int diffTexWeight_0_1_2Location = pProgram->attributeLocation("a_difftext_weight_0_1_2");
-                pProgram->enableAttributeArray(diffTexWeight_0_1_2Location);
-                GL_glVertexAttribPointer(
-                            diffTexWeight_0_1_2Location, 3, GL_DOUBLE, GL_FALSE, sizeof(CVertex), (const void*) CVertex::diffTexWeight_0_1_2Offset()
-                            );
-
-                // Tell OpenGL how to locate vertex diffuse texture weight data
-                int diffTexWeight_3_4_5Location = pProgram->attributeLocation("a_difftext_weight_3_4_5");
-                pProgram->enableAttributeArray(diffTexWeight_3_4_5Location);
-                GL_glVertexAttribPointer(
-                            diffTexWeight_3_4_5Location, 3, GL_DOUBLE, GL_FALSE, sizeof(CVertex), (const void*) CVertex::diffTexWeight_3_4_5Offset()
-                            );
-
-                // Tell OpenGL how to locate vertex diffuse texture weight data
-                int diffTexWeight_6_7_8Location = pProgram->attributeLocation("a_difftext_weight_6_7_8");
-                pProgram->enableAttributeArray(diffTexWeight_6_7_8Location);
-                GL_glVertexAttribPointer(
-                            diffTexWeight_6_7_8Location, 3, GL_DOUBLE, GL_FALSE, sizeof(CVertex), (const void*) CVertex::diffTexWeight_6_7_8Offset()
-                            );
-
-                // Tell OpenGL how to locate vertex normal data
-                int normalLocation = pProgram->attributeLocation("a_normal");
-                pProgram->enableAttributeArray(normalLocation);
-                GL_glVertexAttribPointer(
-                            normalLocation, 3, GL_DOUBLE, GL_FALSE, sizeof(CVertex), (const void*) CVertex::normalOffset()
-                            );
-
-                // Tell OpenGL how to locate vertex tangent data
-                int tangentLocation = pProgram->attributeLocation("a_tangent");
-                pProgram->enableAttributeArray(tangentLocation);
-                GL_glVertexAttribPointer(
-                            tangentLocation, 3, GL_DOUBLE, GL_FALSE, sizeof(CVertex), (const void*) CVertex::tangentOffset()
-                            );
-
-                // Tell OpenGL how to locate altitude data
-                int altitudeLocation = pProgram->attributeLocation("a_altitude");
-                pProgram->enableAttributeArray(altitudeLocation);
-                GL_glVertexAttribPointer(
-                            altitudeLocation, 1, GL_DOUBLE, GL_FALSE, sizeof(CVertex), (const void*) CVertex::altitudeOffset()
-                            );
+                m_bNeedTransferBuffers = false;
             }
 
-            switch (iGLType)
+            // Tell OpenGL how to locate vertex position data
+            int vertexLocation = pProgram->attributeLocation("a_position");
+            pProgram->enableAttributeArray(vertexLocation);
+            GL_glVertexAttribPointer(
+                        vertexLocation, 3, GL_DOUBLE, GL_FALSE, sizeof(CVertex), (const void*) CVertex::positionOffset()
+                        );
+
+            // Tell OpenGL how to locate vertex texture coordinate data
+            int texcoordLocation = pProgram->attributeLocation("a_texcoord");
+            pProgram->enableAttributeArray(texcoordLocation);
+            GL_glVertexAttribPointer(
+                        texcoordLocation, 3, GL_DOUBLE, GL_FALSE, sizeof(CVertex), (const void*) CVertex::texCoordOffset()
+                        );
+
+            // Tell OpenGL how to locate vertex diffuse texture weight data
+            int diffTexWeight_0_1_2Location = pProgram->attributeLocation("a_difftext_weight_0_1_2");
+            pProgram->enableAttributeArray(diffTexWeight_0_1_2Location);
+            GL_glVertexAttribPointer(
+                        diffTexWeight_0_1_2Location, 3, GL_DOUBLE, GL_FALSE, sizeof(CVertex), (const void*) CVertex::diffTexWeight_0_1_2Offset()
+                        );
+
+            // Tell OpenGL how to locate vertex diffuse texture weight data
+            int diffTexWeight_3_4_5Location = pProgram->attributeLocation("a_difftext_weight_3_4_5");
+            pProgram->enableAttributeArray(diffTexWeight_3_4_5Location);
+            GL_glVertexAttribPointer(
+                        diffTexWeight_3_4_5Location, 3, GL_DOUBLE, GL_FALSE, sizeof(CVertex), (const void*) CVertex::diffTexWeight_3_4_5Offset()
+                        );
+
+            // Tell OpenGL how to locate vertex diffuse texture weight data
+            int diffTexWeight_6_7_8Location = pProgram->attributeLocation("a_difftext_weight_6_7_8");
+            pProgram->enableAttributeArray(diffTexWeight_6_7_8Location);
+            GL_glVertexAttribPointer(
+                        diffTexWeight_6_7_8Location, 3, GL_DOUBLE, GL_FALSE, sizeof(CVertex), (const void*) CVertex::diffTexWeight_6_7_8Offset()
+                        );
+
+            // Tell OpenGL how to locate vertex normal data
+            int normalLocation = pProgram->attributeLocation("a_normal");
+            pProgram->enableAttributeArray(normalLocation);
+            GL_glVertexAttribPointer(
+                        normalLocation, 3, GL_DOUBLE, GL_FALSE, sizeof(CVertex), (const void*) CVertex::normalOffset()
+                        );
+
+            // Tell OpenGL how to locate vertex tangent data
+            int tangentLocation = pProgram->attributeLocation("a_tangent");
+            pProgram->enableAttributeArray(tangentLocation);
+            GL_glVertexAttribPointer(
+                        tangentLocation, 3, GL_DOUBLE, GL_FALSE, sizeof(CVertex), (const void*) CVertex::tangentOffset()
+                        );
+
+            // Tell OpenGL how to locate altitude data
+            int altitudeLocation = pProgram->attributeLocation("a_altitude");
+            pProgram->enableAttributeArray(altitudeLocation);
+            GL_glVertexAttribPointer(
+                        altitudeLocation, 1, GL_DOUBLE, GL_FALSE, sizeof(CVertex), (const void*) CVertex::altitudeOffset()
+                        );
+        }
+
+        switch (iGLType)
+        {
+            case GL_POINTS:
             {
-                case GL_POINTS:
+                try
                 {
-                    try
-                    {
-                        // Draw quads
-                        glDrawElements(GL_POINTS, m_iNumRenderIndices, GL_UNSIGNED_INT, 0);
-                    }
-                    catch (...)
-                    {
-                        // LOG_ERROR(QString("CMesh::paint() : Exception while rendering %1").arg(m_sName));
-                    }
-
-                    pContext->m_iNumPolysDrawn += (m_iNumRenderIndices);
-
-                    break;
+                    // Draw quads
+                    glDrawElements(GL_POINTS, m_iNumRenderIndices, GL_UNSIGNED_INT, 0);
+                }
+                catch (...)
+                {
+                    // LOG_ERROR(QString("CMesh::paint() : Exception while rendering %1").arg(m_sName));
                 }
 
-                case GL_LINES:
-                {
-                    try
-                    {
-                        // Draw quads
-                        glDrawElements(GL_LINES, m_iNumRenderIndices, GL_UNSIGNED_INT, 0);
-                    }
-                    catch (...)
-                    {
-                        // LOG_ERROR(QString("CMesh::paint() : Exception while rendering %1").arg(m_sName));
-                    }
+                pContext->m_iNumPolysDrawn += (m_iNumRenderIndices);
 
-                    pContext->m_iNumPolysDrawn += (m_iNumRenderIndices);
-
-                    break;
-                }
-
-                case GL_TRIANGLES:
-                {
-                    try
-                    {
-                        // Draw triangles
-                        glDrawElements(GL_TRIANGLES, m_iNumRenderIndices, GL_UNSIGNED_INT, 0);
-                    }
-                    catch (...)
-                    {
-                        // LOG_ERROR(QString("CMesh::paint() : Exception while rendering %1").arg(m_sName));
-                    }
-
-                    pContext->m_iNumPolysDrawn += (m_iNumRenderIndices / 3);
-
-                    break;
-                }
-
-                case GL_QUADS:
-                {
-                    try
-                    {
-                        // Draw quads
-                        glDrawElements(GL_QUADS, m_iNumRenderIndices, GL_UNSIGNED_INT, 0);
-                    }
-                    catch (...)
-                    {
-                        // LOG_ERROR(QString("CMesh::paint() : Exception while rendering %1").arg(m_sName));
-                    }
-
-                    pContext->m_iNumPolysDrawn += (m_iNumRenderIndices / 4);
-
-                    break;
-                }
-
-                default:
-                    break;
+                break;
             }
+
+            case GL_LINES:
+            {
+                try
+                {
+                    // Draw quads
+                    glDrawElements(GL_LINES, m_iNumRenderIndices, GL_UNSIGNED_INT, 0);
+                }
+                catch (...)
+                {
+                    // LOG_ERROR(QString("CMesh::paint() : Exception while rendering %1").arg(m_sName));
+                }
+
+                pContext->m_iNumPolysDrawn += (m_iNumRenderIndices);
+
+                break;
+            }
+
+            case GL_TRIANGLES:
+            {
+                try
+                {
+                    // Draw triangles
+                    glDrawElements(GL_TRIANGLES, m_iNumRenderIndices, GL_UNSIGNED_INT, 0);
+                }
+                catch (...)
+                {
+                    // LOG_ERROR(QString("CMesh::paint() : Exception while rendering %1").arg(m_sName));
+                }
+
+                pContext->m_iNumPolysDrawn += (m_iNumRenderIndices / 3);
+
+                break;
+            }
+
+            case GL_QUADS:
+            {
+                try
+                {
+                    // Draw quads
+                    glDrawElements(GL_QUADS, m_iNumRenderIndices, GL_UNSIGNED_INT, 0);
+                }
+                catch (...)
+                {
+                    // LOG_ERROR(QString("CMesh::paint() : Exception while rendering %1").arg(m_sName));
+                }
+
+                pContext->m_iNumPolysDrawn += (m_iNumRenderIndices / 4);
+
+                break;
+            }
+
+            default:
+                break;
         }
     }
 }

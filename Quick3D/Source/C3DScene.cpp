@@ -474,6 +474,8 @@ void C3DScene::paintComponents(CRenderContext* pContext)
         }
     }
 
+    pContext->meshByMaterial()->paint(pContext);
+
     m_mSegments.paint(pContext, NULL);
 }
 

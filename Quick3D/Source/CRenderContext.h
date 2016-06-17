@@ -1,6 +1,5 @@
 
-#ifndef CRENDERCONTEXT_H
-#define CRENDERCONTEXT_H
+#pragma once
 
 #include "quick3d_global.h"
 
@@ -19,7 +18,10 @@
 //-------------------------------------------------------------------------------------------------
 
 class C3DScene;
+class CComponent;
 class CMaterial;
+class CMeshByMaterial;
+class CMeshGeometry;
 class CCamera;
 
 //-------------------------------------------------------------------------------------------------
@@ -43,15 +45,18 @@ public:
     //!
     ~CRenderContext();
 
-    QMatrix4x4&			cameraProjectionMatrix()    { return m_mCameraProjectionMatrix; }
-    QMatrix4x4&			cameraMatrix()              { return m_mCameraMatrix; }
-    QMatrix4x4&			shadowProjectionMatrix()    { return m_mShadowProjectionMatrix; }
-    QMatrix4x4&			shadowMatrix()              { return m_mShadowMatrix; }
-    Math::CMatrix4&		internalCameraMatrix()      { return m_mInternalCameraMatrix; }
-    Math::CMatrix4&		internalProjectionMatrix()  { return m_mInternalProjectionMatrix; }
-    C3DScene*			scene()                     { return m_pScene; }
-    CCamera*			camera()                    { return m_pCamera; }
-    CFog*				fog()                       { return m_pFog; }
+    QMatrix4x4&         cameraProjectionMatrix()    { return m_mCameraProjectionMatrix; }
+    QMatrix4x4&         cameraMatrix()              { return m_mCameraMatrix; }
+    QMatrix4x4&         shadowProjectionMatrix()    { return m_mShadowProjectionMatrix; }
+    QMatrix4x4&         shadowMatrix()              { return m_mShadowMatrix; }
+    Math::CMatrix4&     internalCameraMatrix()      { return m_mInternalCameraMatrix; }
+    Math::CMatrix4&     internalProjectionMatrix()  { return m_mInternalProjectionMatrix; }
+    C3DScene*           scene()                     { return m_pScene; }
+    CCamera*            camera()                    { return m_pCamera; }
+    CFog*               fog()                       { return m_pFog; }
+    CMeshByMaterial*    meshByMaterial()            { return m_pMeshByMaterial; }
+
+    void                addGeometry(CComponent* pContainer, CMeshGeometry* pGeometry);
 
     bool                bUseIR;
     bool                bUseInversePolarity;
@@ -72,7 +77,6 @@ protected:
     Math::CMatrix4      m_mInternalProjectionMatrix;
     C3DScene*           m_pScene;
     CCamera*            m_pCamera;
+    CMeshByMaterial*    m_pMeshByMaterial;
     CFog*               m_pFog;
 };
-
-#endif // CRENDERCONTEXT_H

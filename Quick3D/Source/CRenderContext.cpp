@@ -2,6 +2,7 @@
 // Application
 #include "CRenderContext.h"
 #include "C3DScene.h"
+#include "CComponent.h"
 #include "CMaterial.h"
 
 //-------------------------------------------------------------------------------------------------
@@ -28,6 +29,7 @@ CRenderContext::CRenderContext(
     , m_mInternalProjectionMatrix(internalProjectionMatrix)
     , m_pScene(pScene)
     , m_pCamera(pCamera)
+    , m_pMeshByMaterial(new CMeshByMaterial())
     , m_pFog(NULL)
     , bUseIR(false)
     , bUseInversePolarity(false)
@@ -42,4 +44,12 @@ CRenderContext::CRenderContext(
 
 CRenderContext::~CRenderContext()
 {
+    delete m_pMeshByMaterial;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CRenderContext::addGeometry(CComponent* pContainer, CMeshGeometry* pGeometry)
+{
+    m_pMeshByMaterial->addGeometry(pContainer, pGeometry);
 }

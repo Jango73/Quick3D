@@ -216,24 +216,11 @@ void CAutoTerrain::paint(CRenderContext* pContext)
 
     qSort(vChunkCollect.begin(), vChunkCollect.end());
 
-    if (pContext->scene()->isRenderingShadows() == false)
-    {
-        foreach (CWorldChunk* pChunk, vChunkCollect)
-        {
-            pContext->m_iNumChunksDrawn++;
-
-            pChunk->paint(pContext, ttGround);
-        }
-
-        foreach (CWorldChunk* pChunk, vChunkCollect)
-        {
-            pChunk->paint(pContext, ttWater);
-        }
-    }
-
     foreach (CWorldChunk* pChunk, vChunkCollect)
     {
-        pChunk->paint(pContext, ttVegetation);
+        pContext->m_iNumChunksDrawn++;
+
+        pChunk->paint(pContext);
     }
 
     // Garbage collection

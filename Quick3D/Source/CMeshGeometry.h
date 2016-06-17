@@ -12,6 +12,7 @@
 
 // Application
 #include "CQ3DConstants.h"
+#include "CBoundingBox.h"
 #include "CComponent.h"
 #include "CVertex.h"
 #include "CFace.h"
@@ -167,6 +168,9 @@ public:
 
     //!
     double getMaxDistance() const { return m_dMaxDistance; }
+
+    //!
+    QVector<CGLMeshData*>& getGLMeshData() { return m_vGLMeshData; }
 
     //! Return number of triangles needed for this mesh
     int getNumTriangleCount();

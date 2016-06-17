@@ -26,13 +26,6 @@ class CAutoTerrain;
 
 //-------------------------------------------------------------------------------------------------
 
-enum ETerrainType
-{
-    ttGround,
-    ttWater,
-    ttVegetation
-};
-
 class QUICK3D_EXPORT CWorldChunk : public CWorker, public CComponent, public CHeightField
 {
     Q_OBJECT
@@ -129,7 +122,7 @@ public:
     bool operator < (const CWorldChunk& other);
 
     //!
-    void paint(CRenderContext* pContext, ETerrainType eType);
+    void paint(CRenderContext* pContext);
 
     //!
     bool drawable();

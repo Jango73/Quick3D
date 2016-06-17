@@ -223,7 +223,7 @@ bool CWorldChunk::operator < (const CWorldChunk& other)
 
 //-------------------------------------------------------------------------------------------------
 
-void CWorldChunk::paint(CRenderContext* pContext, ETerrainType eType)
+void CWorldChunk::paint(CRenderContext* pContext)
 {
     CVector3 vPosition = pContext->internalCameraMatrix() * getWorldBounds().center();
     double dRadius = getWorldBounds().radius();
@@ -231,78 +231,48 @@ void CWorldChunk::paint(CRenderContext* pContext, ETerrainType eType)
     m_tLastUsed = QDateTime::currentDateTime();
 
     /*
-    if (eType == ttGround)
+    if (vPosition.getMagnitude() < 10000.0)
     {
-        if (vPosition.getMagnitude() < 10000.0)
-        {
-            getWorldBounds().addSegments(pContext->scene());
-        }
+        getWorldBounds().addSegments(pContext->scene());
     }
     */
 
     // Paint chunk if containing sphere is within the viewing frustum
     if (pContext->scene()->getFrustumCheck() == false || pContext->camera()->contains(vPosition, dRadius))
     {
-        switch (eType)
+        if (m_pTerrain != NULL && m_pTerrain->isOK())
         {
-            case ttGround:
+            CMaterial* pMaterial = m_pAutoTerrain->getMaterial();
+
+            CTiledMaterial* pTiled = dynamic_cast<CTiledMaterial*>(pMaterial);
+
+            if (pTiled != NULL)
             {
-                if (pContext->scene()->getDebugMode() == false || pContext->scene()->getBoundsOnly() == false)
-                {
-                    if (m_pTerrain != NULL && m_pTerrain->isOK())
-                    {
-                        CMaterial* pMaterial = m_pAutoTerrain->getMaterial();
-
-                        CTiledMaterial* pTiled = dynamic_cast<CTiledMaterial*>(pMaterial);
-
-                        if (pTiled != NULL)
-                        {
-                            pTiled->setCurrentPositionAndLevel(m_gOriginalGeoloc, m_pTerrain->getLevel());
-                        }
-
-                        m_pTerrain->paint(pContext);
-                    }
-                }
-
-                break;
+                pTiled->setCurrentPositionAndLevel(m_gOriginalGeoloc, m_pTerrain->getLevel());
             }
 
-            case ttWater:
+            m_pTerrain->paint(pContext);
+        }
+
+        if (m_pWater != NULL && m_pWater->isOK())
+        {
+            glDisable(GL_CULL_FACE);
+
+            m_pWater->paint(pContext);
+
+            glEnable(GL_CULL_FACE);
+        }
+
+        if (m_bOK)
+        {
+            foreach (CBoundedMeshInstances* pBoundedMeshInstance, m_vMeshes)
             {
-                if (pContext->scene()->getDebugMode() == false || pContext->scene()->getBoundsOnly() == false)
-                {
-                    if (m_pWater != NULL && m_pWater->isOK())
-                    {
-                        glDisable(GL_CULL_FACE);
-
-                        m_pWater->paint(pContext);
-
-                        glEnable(GL_CULL_FACE);
-                    }
-                }
-
-                break;
+                pBoundedMeshInstance->paint(pContext);
             }
 
-            case ttVegetation:
+            foreach (QString sBushName, m_vBushMeshes.keys())
             {
-                if (pContext->scene()->getDebugMode() == false || pContext->scene()->getBoundsOnly() == false)
-                {
-                    if (m_bOK)
-                    {
-                        foreach (CBoundedMeshInstances* pBoundedMeshInstance, m_vMeshes)
-                        {
-                            pBoundedMeshInstance->paint(pContext);
-                        }
-
-                        foreach (QString sBushName, m_vBushMeshes.keys())
-                        {
-                            m_vBushMeshes[sBushName]->paint(pContext, this);
-                        }
-                    }
-                }
-
-                break;
+                m_vBushMeshes[sBushName]->paint(pContext, this);
             }
         }
     }

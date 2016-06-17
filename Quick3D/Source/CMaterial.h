@@ -15,12 +15,12 @@
 #include "ILoadable.h"
 #include "CQ3DConstants.h"
 #include "CVertex.h"
-#include "CRenderContext.h"
 #include "CTexture.h"
 
 //-------------------------------------------------------------------------------------------------
 
 class C3DScene;
+class CRenderContext;
 
 //-------------------------------------------------------------------------------------------------
 

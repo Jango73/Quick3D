@@ -26,6 +26,7 @@
 #include "CRain.h"
 #include "CRenderContext.h"
 #include "CViewport.h"
+#include "CMeshByMaterial.h"
 
 //-------------------------------------------------------------------------------------------------
 

@@ -160,7 +160,9 @@ void CMeshGeometry::checkAndUpdateGeometry()
 
                 for (int iMaterialIndex = 0; iMaterialIndex < m_vMaterials.count(); iMaterialIndex++)
                 {
-                    m_vGLMeshData.append(new CGLMeshData(m_pScene));
+                    CGLMeshData* pData = new CGLMeshData(m_pScene);
+                    pData->m_iGLType = m_iGLType;
+                    m_vGLMeshData.append(pData);
                 }
             }
 
@@ -1616,36 +1618,7 @@ void CMeshGeometry::paint(CRenderContext* pContext, CComponent* pContainer)
 
         if (bFrustumCheck)
         {
-            QMatrix4x4 mModelAbsolute;
-            mModelAbsolute.setToIdentity();
-
-            if (pContainer != NULL)
-            {
-                // Set transform matrix
-                CVector3 WorldPosition = pContainer->getWorldPosition() - pContext->scene()->getWorldOrigin();
-                CVector3 WorldRotation = pContainer->getWorldRotation();
-                CVector3 WorldScale = pContainer->getWorldScale();
-
-                mModelAbsolute.translate(WorldPosition.X, WorldPosition.Y, WorldPosition.Z);
-                mModelAbsolute.rotate(Math::Angles::toDeg(WorldRotation.Y), QVector3D(0, 1, 0));
-                mModelAbsolute.rotate(Math::Angles::toDeg(WorldRotation.X), QVector3D(1, 0, 0));
-                mModelAbsolute.rotate(Math::Angles::toDeg(WorldRotation.Z), QVector3D(0, 0, 1));
-                mModelAbsolute.scale(WorldScale.X, WorldScale.Y, WorldScale.Z);
-            }
-
-            for (int iMaterialIndex = 0; iMaterialIndex < m_vMaterials.count(); iMaterialIndex++)
-            {
-                CGLMeshData* pData = m_vGLMeshData[iMaterialIndex];
-
-                // Get a program from object material
-                QGLShaderProgram* pProgram = m_vMaterials[iMaterialIndex]->activate(pContext);
-
-                // If program ok...
-                if (pProgram != NULL)
-                {
-                    pData->paint(pContext, mModelAbsolute, pProgram, m_iGLType);
-                }
-            }
+            pContext->addGeometry(pContainer, this);
         }
     }
 }

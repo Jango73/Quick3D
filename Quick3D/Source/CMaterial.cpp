@@ -2,6 +2,7 @@
 // Application
 #include "CRessourcesManager.h"
 #include "C3DScene.h"
+#include "CRenderContext.h"
 #include "CMaterial.h"
 #include "CGLExtension.h"
 

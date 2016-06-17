@@ -30,7 +30,7 @@
 
 		<Component Name="Terrain" Class="CAutoTerrain">
 			<Parameters>
-				<General Levels="18" Resolution="21"/>
+				<General Levels="18" Resolution="31"/>
 				<Functions>
 					<Function Name="ContinentsFactor">
 						<Value Type="Turbulence" InputScale="0.000001" MinClamp="0.0" MaxClamp="1.0" OutputScale="1.0"/>
@@ -46,6 +46,21 @@
 					</Function>
 					<Function Name="Continents_Tiny">
 						<Value Type="Turbulence" InputScale="0.01" MinClamp="-1.0" MaxClamp="1.0" OutputScale="4.0"/>
+					</Function>
+					<Function Name="Land_Grass">
+						<Value Type="Mul">
+							<Operand>
+								<Value Type="Function" Name="ContinentsFactor"/>
+							</Operand>
+							<Operand>
+								<!-- Probability -->
+								<Value Type="Turbulence" InputScale="0.01" MinClamp="0.0" MaxClamp="1.0" OutputScale="1.0"/>
+							</Operand>
+							<Operand>
+								<!-- Probability -->
+								<Value Type="Turbulence" InputScale="2.0" MinClamp="-1.0" MaxClamp="1.0" OutputScale="1.0"/>
+							</Operand>
+						</Value>
 					</Function>
 				</Functions>
 				<Material Type="blend">
@@ -403,62 +418,24 @@
 						</Coverage>
 					</Tree>
 					<Bush>
-						<General Spread="0.000008"/>
+						<General Spread="0.00001"/>
 						<Coverage>
-							<Value Type="Mul">
-								<Operand>
-									<!-- Coverage -->
-									<Value Type="Perlin" InputScale="0.0001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="1.0"/>
-								</Operand>
-								<Operand>
-									<!-- Probability -->
-									<Value Type="Turbulence" InputScale="2.0" MinClamp="-1.0" MaxClamp="1.0" OutputScale="10.0"/>
-								</Operand>
-							</Value>
-						</Coverage>
-						<Material Name="Bush01">
-							<Ambient g="0.5000" b="0.5000" r="0.5000"/>
-							<Diffuse g="0.0000" b="0.0000" Map="Textures/GrassDecal01.png" r="0.0000"/>
-							<Specular g="1.0000" b="1.0000" Hardness="50" Intensity="0.2" r="1.0000"/>
-						</Material>
-					</Bush>
-					<Bush>
-						<General Spread="0.000010"/>
-						<Coverage>
-							<Value Type="Mul">
-								<Operand>
-									<!-- Coverage -->
-									<Value Type="Perlin" InputScale="0.0001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="1.0"/>
-								</Operand>
-								<Operand>
-									<!-- Probability -->
-									<Value Type="Turbulence" InputScale="2.0" MinClamp="-1.0" MaxClamp="1.0" OutputScale="10.0"/>
-								</Operand>
-							</Value>
+							<Value Type="Function" Name="Land_Grass"/>
 						</Coverage>
 						<Material Name="Bush02">
-							<Ambient g="0.5000" b="0.5000" r="0.5000"/>
-							<Diffuse g="0.0000" b="0.0000" Map="Textures/GrassDecal02.png" r="0.0000"/>
+							<Ambient g="0.0300" b="0.0300" r="0.0300"/>
+							<Diffuse g="1.0000" b="1.0000" Map="Textures/GrassDecal02.png" r="1.0000"/>
 							<Specular g="1.0000" b="1.0000" Hardness="50" Intensity="0.2" r="1.0000"/>
 						</Material>
 					</Bush>
 					<Bush>
-						<General Spread="0.0001"/>
+						<General Spread="0.00010"/>
 						<Coverage>
-							<Value Type="Mul">
-								<Operand>
-									<!-- Coverage -->
-									<Value Type="Perlin" InputScale="0.0001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="1.0"/>
-								</Operand>
-								<Operand>
-									<!-- Probability -->
-									<Value Type="Turbulence" InputScale="0.1" MinClamp="-1.0" MaxClamp="1.0" OutputScale="10.0"/>
-								</Operand>
-							</Value>
+							<Value Type="Function" Name="Land_Grass"/>
 						</Coverage>
 						<Material Name="Flower01">
-							<Ambient g="0.5000" b="0.5000" r="0.5000"/>
-							<Diffuse g="0.0000" b="0.0000" Map="Textures/FlowerDecal01.png" r="0.0000"/>
+							<Ambient g="0.0300" b="0.0300" r="0.0300"/>
+							<Diffuse g="1.0000" b="1.0000" Map="Textures/FlowerDecal01.png" r="1.0000"/>
 							<Specular g="1.0000" b="1.0000" Hardness="50" Intensity="0.2" r="1.0000"/>
 						</Material>
 					</Bush>
@@ -485,11 +462,8 @@
 		</Component>
 
 		<Component Name="Man1" Class="CMan">
-			<!-- <Geoloc Latitude="19.237430" Longitude="10.895480" Altitude="0.0"/> -->
 			<Geoloc Latitude="19.237731" Longitude="10.896700" Altitude="0.0"/>
-			<!-- <Geoloc Latitude="48.995702" Longitude="2.552500" Altitude="0.0"/> -->
 			<Rotation x="0.0" y="-30.0" z="0.0"/>
-			<!-- <Mesh Name="Axis.obj"/> -->
 			<Physics PhysicsActive="0" MassKG="80" Drag="0.01" Friction="2.0"/>
 			<Component Name="Head" Class="CCamera">
 				<Position x="0.0" y="1.8" z="0.0"/>
@@ -502,11 +476,12 @@
 			<Geoloc Latitude="19.2379" Longitude="10.896700" Altitude="0.0"/>
 			<Rotation x="0.0" y="180.0" z="0.0"/>
 			<Mesh Name="SmoothingTest.obj"/>
-			<Physics PhysicsActive="0" MassKG="80" Drag="0.01" Friction="2.0"/>
+			<Physics PhysicsActive="1" MassKG="80" Drag="0.01" Friction="2.0"/>
 			<Component Name="Head" Class="CCamera">
 				<Position x="0.0" y="1.8" z="0.0"/>
 				<Rotation x="0.0" y="0.0" z="0.0"/>
 			</Component>
+			<Controller Class="CStandardController"/>
 		</Component>
 
 		<Component Name="VBCI" Class="CTerrestrialVehicle">
@@ -628,22 +603,6 @@
 
 		<Component Name="Visitor4" Class="CTerrestrialVehicle">
 			<Geoloc Latitude="19.2380" Longitude="10.8950" Altitude="0.0"/>
-			<Rotation x="0.0" y="0.0" z="0.0"/>
-			<Mesh Name="PVP.obj"/>
-			<IR Factor="0.8"/>
-			<Physics SpeedMS="4.0" TurnSpeedDS="30.0" PhysicsActive="0"/>
-		</Component>
-
-		<Component Name="Visitor5" Class="CTerrestrialVehicle">
-			<Geoloc Latitude="19.2380" Longitude="10.8945" Altitude="0.0"/>
-			<Rotation x="0.0" y="0.0" z="0.0"/>
-			<Mesh Name="PVP.obj"/>
-			<IR Factor="0.8"/>
-			<Physics SpeedMS="4.0" TurnSpeedDS="30.0" PhysicsActive="0"/>
-		</Component>
-
-		<Component Name="Visitor6" Class="CTerrestrialVehicle">
-			<Geoloc Latitude="19.2380" Longitude="10.8940" Altitude="0.0"/>
 			<Rotation x="0.0" y="0.0" z="0.0"/>
 			<Mesh Name="PVP.obj"/>
 			<IR Factor="0.8"/>

@@ -676,23 +676,6 @@ vec4 computeLinearFog(vec4 color)
 }
 
 //-------------------------------------------------------------------------------------------------
-// Effects
-
-vec3 postEffects(vec3 rgb, vec2 xy)
-{
-    // Contrast / saturation / brightness
-#define CONTRAST 1.2
-#define SATURATION 1.0
-#define BRIGHTNESS 1.0
-    rgb = mix(vec3(0.5), mix(vec3(dot(vec3(0.2125, 0.7154, 0.0721), rgb * BRIGHTNESS)), rgb * BRIGHTNESS, SATURATION), CONTRAST);
-
-    // Vignette
-    rgb *= 0.4 + 0.5 * pow(40.0 * xy.x * xy.y * (1.0 - xy.x) * (1.0 - xy.y), 0.2);
-
-    return rgb;
-}
-
-//-------------------------------------------------------------------------------------------------
 // Compute normal
 
 vec3 getNormal()
@@ -739,9 +722,9 @@ vec3 getNormal()
     else
     {
         mat3 toLocalTangent = inverse(mat3(
-                                          v_tangent.x, v_normal.x, v_binormal.x,
-                                          v_tangent.y, v_normal.y, v_binormal.y,
-                                          v_tangent.z, v_normal.z, v_binormal.z
+                                          vo_tangent.x, vo_normal.x, vo_binormal.x,
+                                          vo_tangent.y, vo_normal.y, vo_binormal.y,
+                                          vo_tangent.z, vo_normal.z, vo_binormal.z
                                           ));
 
         // Perturbate normal
@@ -814,6 +797,26 @@ vec3 getShadow()
     }
 
     return color;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Effects
+
+vec3 postEffects(vec3 rgb, vec2 xy)
+{
+    // Contrast / saturation / brightness
+#define CONTRAST 1.3
+#define SATURATION 1.0
+#define BRIGHTNESS 0.8
+
+    rgb = mix(vec3(0.5), mix(vec3(dot(vec3(0.2125, 0.7154, 0.0721), rgb * BRIGHTNESS)), rgb * BRIGHTNESS, SATURATION), CONTRAST);
+
+    // Vignette
+    // rgb *= 0.4 + 0.5 * pow(40.0 * xy.x * xy.y * (1.0 - xy.x) * (1.0 - xy.y), 0.2);
+
+    // rgb = (1.0 - exp(-rgb * 6.0)) * 1.0024;
+
+    return rgb;
 }
 
 //-------------------------------------------------------------------------------------------------

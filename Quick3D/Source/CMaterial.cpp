@@ -31,6 +31,7 @@ CMaterial::CMaterial(C3DScene* pScene, QString sName)
     , m_dSSSRadius(0.02)
     , m_pShadowBuffer(NULL)
     , m_dIRFactor(0.8)
+    , m_bHasAlpha(false)
     , m_bUseSky(false)
     , m_bUseWaves(false)
     , m_bBillBoard(false)
@@ -62,6 +63,13 @@ Math::CVector2 CMaterial::getTexCoords(const CGeoloc& gPosition, int iLevel)
                 fmod(gPosition.Latitude * 111000.0, 1000.0) * 0.05,
                 fmod(gPosition.Longitude * 111000.0, 1000.0) * 0.05
                 );
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool CMaterial::hasAlpha() const
+{
+    return m_bHasAlpha;
 }
 
 //-------------------------------------------------------------------------------------------------

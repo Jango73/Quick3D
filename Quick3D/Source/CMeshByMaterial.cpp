@@ -46,9 +46,25 @@ void CMeshByMaterial::addGeometry(CComponent* pContainer, CMeshGeometry* pGeomet
 
 //-------------------------------------------------------------------------------------------------
 
+bool compareMaterialsByAlpha(CMaterial* pMat1, CMaterial* pMat2)
+{
+    return (int) pMat1->hasAlpha() < (int) pMat2->hasAlpha();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CMeshByMaterial::paint(CRenderContext* pContext)
 {
+    QList<CMaterial*> vMaterials;
+
     foreach (CMaterial* pMaterial, m_vGeometry.keys())
+    {
+        vMaterials.append(pMaterial);
+    }
+
+    qSort(vMaterials.begin(), vMaterials.end(), compareMaterialsByAlpha);
+
+    foreach (CMaterial* pMaterial, vMaterials)
     {
         // Get a program from object material
         QGLShaderProgram* pProgram = pMaterial->activate(pContext);

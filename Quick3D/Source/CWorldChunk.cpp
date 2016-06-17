@@ -216,7 +216,7 @@ void CWorldChunk::flatten(const CGeoloc& gPosition, double dRadius)
 
 //-------------------------------------------------------------------------------------------------
 
-bool CWorldChunk::operator < (const CWorldChunk& other)
+bool CWorldChunk::operator < (const CWorldChunk& other) const
 {
     return m_dDistance < other.m_dDistance;
 }

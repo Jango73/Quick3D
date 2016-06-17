@@ -575,14 +575,6 @@ void CMeshGeometry::computeNormals()
 {
     if (m_iGLType == GL_POINTS)
     {
-        /*
-        for (int Index = 0; Index < m_vVertices.count(); Index++)
-        {
-            m_vVertices[Index].normal() = CVector3(0.0, 1.0, 0.0);
-            m_vVertices[Index].tangent() = CVector3(0.0, 1.0, 0.0);
-            m_vVertices[Index].normalDivider() = 0.0;
-        }
-        */
     }
     else
     {

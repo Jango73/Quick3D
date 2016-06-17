@@ -246,5 +246,5 @@ void emitQuad(vec3 position, vec3 normal, vec3 tangent, float distance, float al
 void main()
 {
     vec3 center = v_position[0];
-    emitQuad(center, v_normal[0], v_tangent[0], v_distance[0], v_altitude[0], 2.0);
+    emitQuad(center, v_normal[0], v_tangent[0], v_distance[0], v_altitude[0], 1.0);
 }

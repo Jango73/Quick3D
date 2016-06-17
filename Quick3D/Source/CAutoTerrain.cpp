@@ -773,6 +773,7 @@ void CAutoTerrain::readVegetationParameters(const QString& sBaseFile, CXMLNode x
                 CMaterial* pMaterial = new CMaterial(m_pScene);
                 pMaterial->loadParameters(sBaseFile, xMaterial);
                 pMaterial->setBillBoard(true);
+                pMaterial->setHasAlpha(true);
                 m_vVegetation.append(new CVegetation(CVegetation::evtBush, dSpread, pFunction, NULL, pMaterial));
             }
         }

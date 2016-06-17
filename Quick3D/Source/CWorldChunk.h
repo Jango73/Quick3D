@@ -119,7 +119,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    bool operator < (const CWorldChunk& other);
+    bool operator < (const CWorldChunk& other) const;
 
     //!
     void paint(CRenderContext* pContext);

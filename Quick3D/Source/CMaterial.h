@@ -63,6 +63,9 @@ public:
     //! Définit le taux de reflectance IR
     void setIRFactor(double value) { m_dIRFactor = value; }
 
+    //!
+    void setHasAlpha(bool value) { m_bHasAlpha = value; }
+
     //! Définit si ce matériau représente le ciel
     void setUseSky(bool value) { m_bUseSky = value; }
 
@@ -98,13 +101,16 @@ public:
     Math::Vector4& getSubdermal() { return m_cSubdermal; }
 
     //! Retourne le taux de rélection
-    double getReflection() { return m_dReflection; }
+    double getReflection() const { return m_dReflection; }
 
     //! Retourne le taux de reflectance IR
-    double getIRFactor() { return m_dIRFactor; }
+    double getIRFactor() const { return m_dIRFactor; }
 
     //! Est-ce un matériau de ciel?
-    bool getUseSky() { return m_bUseSky; }
+    bool getUseSky() const { return m_bUseSky; }
+
+    //!
+    bool hasAlpha() const;
 
     //!
     QVector<CTexture*>& getDiffuseTextures() { return m_vDiffuseTextures; }
@@ -194,6 +200,7 @@ protected:
     QVector<CTexture*>      m_vDiffuseTextures;
     QGLFramebufferObject*   m_pShadowBuffer;
     double                  m_dIRFactor;
+    bool                    m_bHasAlpha;
     bool                    m_bUseSky;
     bool                    m_bUseWaves;
     bool                    m_bBillBoard;

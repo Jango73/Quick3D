@@ -236,6 +236,9 @@ public:
     void paintComponents(CRenderContext* pContext);
 
     //!
+    void paintShadowCastingComponents(CRenderContext* pContext);
+
+    //!
     void addComponent(QSharedPointer<CComponent> pComponent);
 
     //!

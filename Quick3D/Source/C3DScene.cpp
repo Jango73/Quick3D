@@ -481,6 +481,22 @@ void C3DScene::paintComponents(CRenderContext* pContext)
 
 //-------------------------------------------------------------------------------------------------
 
+void C3DScene::paintShadowCastingComponents(CRenderContext* pContext)
+{
+    foreach(QSharedPointer<CComponent> pComponent, m_vComponents)
+    {
+        if (pComponent->isVisible() && pComponent->castsShadows())
+        {
+            pComponent->paint(pContext);
+            pComponent->postPaint(pContext);
+        }
+    }
+
+    pContext->meshByMaterial()->paint(pContext);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void C3DScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram* pProgram, bool bBackgroundItem)
 {
 }

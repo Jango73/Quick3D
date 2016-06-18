@@ -170,14 +170,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
             glEnable(GL_CULL_FACE);
             glCullFace(GL_FRONT);
 
-            foreach(QSharedPointer<CComponent> pComponent, pScene->getComponents())
-            {
-                if (pComponent->isVisible() && pComponent->castsShadows())
-                {
-                    pComponent->paint(&Context);
-                    pComponent->postPaint(&Context);
-                }
-            }
+            pScene->paintShadowCastingComponents(&Context);
 
             pLight->getMaterial()->disableFrameBuffer();
 

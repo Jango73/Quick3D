@@ -15,6 +15,7 @@ CWaterMaterial::CWaterMaterial(C3DScene* pScene)
     m_dReflectionSteepness = 4.0;
 	m_dIRFactor = 0.2;
 	m_dRigidness = 0.75;
+    m_bHasAlpha = true;
 }
 
 CWaterMaterial::~CWaterMaterial()

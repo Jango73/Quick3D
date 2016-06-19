@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scene>
 
-	<Camera1 Name="Man1.Head"/>
+	<Camera1 Name="Man2.Head"/>
 	<Camera2 Name="VBCI.Pilot"/>
 	<ControlledComponent Name="Man1"/>
 
@@ -35,6 +35,20 @@
 					<Function Name="ContinentsFactor">
 						<Value Type="Turbulence" InputScale="0.000001" MinClamp="0.0" MaxClamp="1.0" OutputScale="1.0"/>
 					</Function>
+					<Function Name="ContinentsFactor_Inverse">
+						<Value Type="Pow" Value="4.0">
+							<Operand>
+								<Value Type="Sub">
+									<Operand>
+										<Value Type="Constant" Value="1.0"/>
+									</Operand>
+									<Operand>
+										<Value Type="Function" Name="ContinentsFactor"/>
+									</Operand>
+								</Value>
+							</Operand>
+						</Value>
+					</Function>
 					<Function Name="Continents_Large">
 						<Value Type="Turbulence" InputScale="0.000001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="1500.0"/>
 					</Function>
@@ -49,9 +63,11 @@
 					</Function>
 					<Function Name="Land_Grass">
 						<Value Type="Mul">
+							<!--
 							<Operand>
 								<Value Type="Function" Name="ContinentsFactor"/>
 							</Operand>
+							-->
 							<Operand>
 								<!-- Probability -->
 								<Value Type="Turbulence" InputScale="0.01" MinClamp="0.0" MaxClamp="1.0" OutputScale="1.0"/>
@@ -94,6 +110,23 @@
 								</Operand>
 								<Operand>
 									<Value Type="Turbulence" InputScale="0.1" MinClamp="-1.0" MaxClamp="1.0" OutputScale="2.0"/>
+								</Operand>
+								<Operand>
+									<Value Type="Mul">
+										<Operand>
+											<Value Type="Function" Name="ContinentsFactor_Inverse"/>
+										</Operand>
+										<Operand>
+											<Value Type="Add">
+												<Operand>
+													<Value Type="Function" Name="Continents_Medium"/>
+												</Operand>
+												<Operand>
+													<Value Type="Turbulence" InputScale="0.0001" MinClamp="0.0" MaxClamp="1.0" OutputScale="1000.0"/>
+												</Operand>
+											</Value>
+										</Operand>
+									</Value>
 								</Operand>
 								<Operand>
 									<!-- Detail -->
@@ -473,8 +506,9 @@
 		</Component>
 
 		<Component Name="Man2" Class="CMan">
-			<Geoloc Latitude="19.2379" Longitude="10.896700" Altitude="0.0"/>
-			<Rotation x="0.0" y="180.0" z="0.0"/>
+			<!-- <Geoloc Latitude="19.2379" Longitude="10.896700" Altitude="0.0"/> -->
+			<Geoloc Latitude="31.898053" Longitude="-10.668458" Altitude="0.0"/>
+			<Rotation x="0.0" y="114.0" z="0.0"/>
 			<Mesh Name="SmoothingTest.obj"/>
 			<Physics PhysicsActive="1" MassKG="80" Drag="0.01" Friction="2.0"/>
 			<Component Name="Head" Class="CCamera">

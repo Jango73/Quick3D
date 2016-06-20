@@ -90,9 +90,9 @@ CComponent::~CComponent()
 
     m_iNumComponents--;
 
-    foreach (CComponent* pChild, m_vChildren)
+    foreach (QSP<CComponent> pChild, m_vChildren)
     {
-        delete pChild;
+        // TODO : Dispose of children
     }
 }
 
@@ -172,21 +172,21 @@ void CComponent::setSelected(bool bValue)
 /*!
     Sets the component's parent to \a pParent.
 */
-void CComponent::setParent(CComponent* pParent)
+void CComponent::setParent(QSP<CComponent> pParent)
 {
     // Si l'objet a déjà un parent, on le supprime de la liste d'enfants du parent
-    if (m_pParent != NULL)
+    if (m_pParent)
     {
-        m_pParent->m_vChildren.remove(m_pParent->m_vChildren.indexOf(this));
+        m_pParent->m_vChildren.remove(m_pParent->m_vChildren.indexOf(QSP<CComponent>(this)));
     }
 
     // Assignation du nom de parent et du parent
     m_sParentName = pParent->m_sName;
     m_pParent = pParent;
 
-    if (m_bInheritTransform && m_pParent != NULL)
+    if (m_bInheritTransform && m_pParent)
     {
-        m_pParent->m_vChildren.append(this);
+        m_pParent->m_vChildren.append(QSP<CComponent>(this));
     }
 }
 
@@ -197,7 +197,7 @@ void CComponent::setParent(CComponent* pParent)
 */
 void CComponent::solveLinks(C3DScene* pScene)
 {
-    foreach (CComponent* pChild, m_vChildren)
+    foreach (QSP<CComponent> pChild, m_vChildren)
     {
         pChild->solveLinks(pScene);
     }
@@ -209,11 +209,11 @@ void CComponent::solveLinks(C3DScene* pScene)
     Looks for a component specified by \a sName, in this components tree. \br\br
     \a sName is like a file system path, it can contain '.' characters to separate component names. \br
 */
-CComponent* CComponent::findComponent(QString sName, CComponent* pCaller)
+QSP<CComponent> CComponent::findComponent(QString sName, QSP<CComponent> pCaller)
 {
     QStringList lNames = sName.split(".", QString::KeepEmptyParts);
 
-    if (lNames[0].isEmpty() && pCaller != NULL)
+    if (lNames[0].isEmpty() && pCaller)
     {
         lNames[0] = pCaller->getRoot()->getName();
     }
@@ -222,7 +222,7 @@ CComponent* CComponent::findComponent(QString sName, CComponent* pCaller)
     {
         if (lNames.count() == 1)
         {
-            return this;
+            return QSP<CComponent>(this);
         }
 
         QString sRemaining;
@@ -239,18 +239,18 @@ CComponent* CComponent::findComponent(QString sName, CComponent* pCaller)
             }
         }
 
-        foreach (CComponent* pChild, m_vChildren)
+        foreach (QSP<CComponent> pChild, m_vChildren)
         {
-            CComponent* pFound = pChild->findComponent(sRemaining);
+            QSP<CComponent> pFound = pChild->findComponent(sRemaining);
 
-            if (pFound != NULL)
+            if (pFound)
             {
                 return pFound;
             }
         }
     }
 
-    return NULL;
+    return QSP<CComponent>(NULL);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -258,13 +258,13 @@ CComponent* CComponent::findComponent(QString sName, CComponent* pCaller)
 /*!
     Returns the path name of this component.
 */
-QString CComponent::getQualifiedName() const
+QString CComponent::getQualifiedName()
 {
     QString sReturnValue = m_sName;
 
-    const CComponent* pParent = m_pParent;
+    QSP<CComponent> pParent = m_pParent;
 
-    while (pParent != NULL)
+    while (pParent)
     {
         sReturnValue = pParent->m_sName + "." + sReturnValue;
         pParent = pParent->m_pParent;
@@ -624,7 +624,7 @@ void CComponent::addItems(C3DScene* pScene)
 void CComponent::updateContext(CRenderContext* pContext)
 {
     // Appel de la méthode updateContext de chaque enfant
-    foreach (CComponent* pChild, m_vChildren)
+    foreach (QSP<CComponent> pChild, m_vChildren)
     {
         pChild->updateContext(pContext);
     }
@@ -635,7 +635,7 @@ void CComponent::updateContext(CRenderContext* pContext)
 void CComponent::updateItems(C3DScene* pScene)
 {
     // Appel de la méthode updateItems de chaque enfant
-    foreach (CComponent* pChild, m_vChildren)
+    foreach (QSP<CComponent> pChild, m_vChildren)
     {
         pChild->updateItems(pScene);
     }
@@ -659,7 +659,7 @@ void CComponent::paint(CRenderContext* pContext)
 void CComponent::postPaint(CRenderContext* pContext)
 {
     // Appel de la méthode paint de chaque enfant
-    foreach (CComponent* pChild, m_vChildren)
+    foreach (QSP<CComponent> pChild, m_vChildren)
     {
         pChild->paint(pContext);
         pChild->postPaint(pContext);
@@ -710,7 +710,7 @@ RayTracingResult CComponent::intersect(Math::CRay3 ray)
 void CComponent::flipNormals()
 {
     // Appel de la méthode flipNormals de chaque enfant
-    foreach (CComponent* pChild, m_vChildren)
+    foreach (QSP<CComponent> pChild, m_vChildren)
     {
         pChild->flipNormals();
     }
@@ -724,7 +724,7 @@ void CComponent::flipNormals()
 void CComponent::transformVertices(const Math::CMatrix4& matrix)
 {
     // Appel de la méthode transformVertices de chaque enfant
-    foreach (CComponent* pChild, m_vChildren)
+    foreach (QSP<CComponent> pChild, m_vChildren)
     {
         pChild->transformVertices(matrix);
     }
@@ -749,12 +749,12 @@ void CComponent::postUpdate(double dDeltaTimeS)
     // Calcul de la matrice de transformation
     computeWorldTransform();
 
-    foreach (CComponent* pChild, m_vChildren)
+    foreach (QSP<CComponent> pChild, m_vChildren)
     {
         pChild->update(dDeltaTimeS);
     }
 
-    foreach (CComponent* pChild, m_vChildren)
+    foreach (QSP<CComponent> pChild, m_vChildren)
     {
         pChild->postUpdate(dDeltaTimeS);
     }
@@ -949,28 +949,11 @@ void CComponent::computeWorldTransform()
 /*!
     Returns the root object of this component, meaning the start of the chain.
 */
-const CComponent* CComponent::getRoot() const
+QSP<CComponent> CComponent::getRoot()
 {
-    const CComponent* pReturnValue = this;
+    QSP<CComponent> pReturnValue = QSP<CComponent>(this);
 
-    while (pReturnValue->m_pParent != NULL)
-    {
-        pReturnValue = pReturnValue->m_pParent;
-    }
-
-    return pReturnValue;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/*!
-    Returns the root object of this component, meaning the start of the chain.
-*/
-CComponent* CComponent::getRoot()
-{
-    CComponent* pReturnValue = this;
-
-    while (pReturnValue->m_pParent != NULL)
+    while (pReturnValue->m_pParent)
     {
         pReturnValue = pReturnValue->m_pParent;
     }
@@ -1061,7 +1044,7 @@ void CComponent::dump(QTextStream& stream, int iIdent)
     dumpIdent(stream, iIdent, QString("Children :"));
 
     dumpOpenBlock(stream, iIdent);
-    foreach (CComponent* pChild, m_vChildren)
+    foreach (QSP<CComponent> pChild, m_vChildren)
     {
         pChild->dump(stream, iIdent + 1);
     }

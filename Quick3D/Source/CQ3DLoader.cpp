@@ -58,7 +58,7 @@ void CQ3DLoader::loadComponent(
     // Assignation du parent
     if (pParent != NULL)
     {
-        pContainer->setParent(pParent);
+        pContainer->setParent(QSP<CComponent>(pParent));
     }
 
     // Assignation du nom
@@ -209,13 +209,13 @@ void CQ3DLoader::addBounds(CComponent* pContainer, CBoundingBox& bBox, CMatrix4 
 
     bBox = bBox & pContainer->getBounds().transformed(mTransform);
 
-    foreach (CComponent* pChild, pContainer->getChildren())
+    foreach (QSP<CComponent> pChild, pContainer->getChildren())
     {
-        CMesh* pChildMesh = dynamic_cast<CMesh*>(pChild);
+        QSP<CMesh> pChildMesh = QSP_CAST(CMesh, pChild);
 
         if (pChildMesh != NULL)
         {
-            addBounds(pChildMesh, bBox, mTransform);
+            addBounds(pChildMesh.data(), bBox, mTransform);
         }
     }
 }

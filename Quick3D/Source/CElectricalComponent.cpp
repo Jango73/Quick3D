@@ -54,17 +54,17 @@ void CElectricalComponent::solveLinks(C3DScene* pScene)
 
     foreach (QString sName, m_vPowerInputNames)
     {
-        foreach (QSharedPointer<CComponent> pComponent, pScene->getComponents())
+        foreach (QSP<CComponent> pComponent, pScene->getComponents())
         {
-            CComponent* pFound = pComponent->findComponent(sName, this);
+            QSP<CComponent> pFound = pComponent->findComponent(sName, QSP<CComponent>(this));
 
-            if (pFound != NULL)
+            if (pFound)
             {
-                CElectricalComponent* pInput = dynamic_cast<CElectricalComponent*>(pFound);
+                QSP<CElectricalComponent> pInput = QSP_CAST(CElectricalComponent, pFound);
 
-                if (pInput != NULL)
+                if (pInput)
                 {
-                    m_vPowerInputs.append(pInput);
+                    m_vPowerInputs.append(pInput.data());
                     pInput->m_vPowerOutputs.append(this);
                 }
 

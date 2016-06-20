@@ -34,44 +34,44 @@
 
 class QUICK3D_EXPORT CQuick3DUtilities : public CSingleton<CQuick3DUtilities>
 {
-	friend class CSingleton<CQuick3DUtilities>;
+    friend class CSingleton<CQuick3DUtilities>;
 
 public:
 
-	//!
-	void prepareSceneForMatrices_CubeMapped(CPanoramicMatrixParams& tParams);
+    //!
+    void prepareSceneForMatrices_CubeMapped(CPanoramicMatrixParams& tParams);
 
-	//!
-	void computeSphericalDetectionMatrices_RayTraced(
-		CPanoramicMatrixParams& tParams,
-		IProgressListener* pProgressListener
-		);
+    //!
+    void computeSphericalDetectionMatrices_RayTraced(
+            CPanoramicMatrixParams& tParams,
+            IProgressListener* pProgressListener
+            );
 
-	//!
-	void computeSphericalDetectionMatrices_CubeMapped(
-		CPanoramicMatrixParams& tParams,
-		IProgressListener* pProgressListener
-		);
+    //!
+    void computeSphericalDetectionMatrices_CubeMapped(
+            CPanoramicMatrixParams& tParams,
+            IProgressListener* pProgressListener
+            );
 
-	//!
-	void computeMatrixImages(CPanoramicMatrixParams& tParams);
+    //!
+    void computeMatrixImages(CPanoramicMatrixParams& tParams);
 
 protected:
 
-	//! Conctructeur
-	CQuick3DUtilities();
+    //! Conctructeur
+    CQuick3DUtilities();
 
-	//! Destructeur
-	virtual ~CQuick3DUtilities();
+    //! Destructeur
+    virtual ~CQuick3DUtilities();
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
-	CGLWidgetScene*	m_pCMScene;
-	CHeightField*	m_pCMField;
-	CAutoTerrain*	m_pCMTerrain;
-	CCamera*		m_pCMCamera;
+    CGLWidgetScene*     m_pCMScene;
+    CHeightField*       m_pCMField;
+    QSP<CAutoTerrain>   m_pCMTerrain;
+    QSP<CCamera>        m_pCMCamera;
 };
 
 #endif // CQUICK3DUTILITIES_H

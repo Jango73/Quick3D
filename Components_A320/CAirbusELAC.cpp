@@ -57,9 +57,9 @@ void CAirbusELAC::solveLinks(C3DScene* pScene)
 {
     CAirbusFlightComputer::solveLinks(pScene);
 
-    m_rLeftWingTarget.solve(pScene, this);
-    m_rRightWingTarget.solve(pScene, this);
-    m_rElevatorTarget.solve(pScene, this);
+    m_rLeftWingTarget.solve(pScene, QSP<CComponent>(this));
+    m_rRightWingTarget.solve(pScene, QSP<CComponent>(this));
+    m_rElevatorTarget.solve(pScene, QSP<CComponent>(this));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -77,9 +77,9 @@ void CAirbusELAC::work(double dDeltaTime)
 
     if (m_iUnitIndex == 0)
     {
-        CWing* pLeftWing = dynamic_cast<CWing*>(m_rLeftWingTarget.component());
-        CWing* pRightWing = dynamic_cast<CWing*>(m_rRightWingTarget.component());
-        CElevator* pElevator = dynamic_cast<CElevator*>(m_rElevatorTarget.component());
+        QSP<CWing> pLeftWing = QSP_CAST(CWing, m_rLeftWingTarget.component());
+        QSP<CWing> pRightWing = QSP_CAST(CWing, m_rRightWingTarget.component());
+        QSP<CElevator> pElevator = QSP_CAST(CElevator, m_rElevatorTarget.component());
 
         CAirbusData* pInertial_Roll_deg = getData(adInertial_Roll_deg);
         CAirbusData* pInertial_Pitch_deg = getData(adInertial_Pitch_deg);
@@ -200,7 +200,7 @@ void CAirbusELAC::work(double dDeltaTime)
 
         double dRollOutput = m_pidRoll.getOutput();
 
-        if (pLeftWing != NULL && pRightWing != NULL)
+        if (pLeftWing && pRightWing)
         {
             pLeftWing->setAileronAngle_norm(-dRollOutput);
             pRightWing->setAileronAngle_norm(dRollOutput);
@@ -213,7 +213,7 @@ void CAirbusELAC::work(double dDeltaTime)
 
         double dPitchOutput = m_pidPitch.getOutput();
 
-        if (pElevator != NULL)
+        if (pElevator)
         {
             pElevator->setAileronAngle_norm(-dPitchOutput);
         }

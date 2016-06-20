@@ -110,10 +110,10 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    void setPositionTarget(CComponent* pComponent);
+    void setPositionTarget(QSP<CComponent> pComponent);
 
     //!
-    void setRotationTarget(CComponent* pComponent);
+    void setRotationTarget(QSP<CComponent> pComponent);
 
     //!
     virtual void setMoveSpeed(double value) { m_dMoveSpeed = value; }
@@ -123,10 +123,10 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    CComponent* getPositionTarget() { return m_rPositionTarget.component(); }
+    QSP<CComponent> getPositionTarget() { return m_rPositionTarget.component(); }
 
     //!
-    CComponent* getRotationTarget() { return m_rRotationTarget.component(); }
+    QSP<CComponent> getRotationTarget() { return m_rRotationTarget.component(); }
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes de contrôle

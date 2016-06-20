@@ -51,8 +51,8 @@ void CTankController::solveLinks(C3DScene* pScene)
 {
     CForceController::solveLinks(pScene);
 
-    m_rTurretYawTarget.solve(pScene, this);
-    m_rTurretPitchTarget.solve(pScene, this);
+    m_rTurretYawTarget.solve(pScene, QSP<CComponent>(this));
+    m_rTurretPitchTarget.solve(pScene, QSP<CComponent>(this));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -61,8 +61,8 @@ void CTankController::update(double dDeltaTime)
 {
     CForceController::update(dDeltaTime);
 
-    CComponent* m_pTurretYawTarget = m_rTurretYawTarget.component();
-    CComponent* m_pTurretPitchTarget = m_rTurretPitchTarget.component();
+    QSP<CComponent> m_pTurretYawTarget(m_rTurretYawTarget.component());
+    QSP<CComponent> m_pTurretPitchTarget(m_rTurretPitchTarget.component());
 
     if (m_pTurretYawTarget)
     {

@@ -75,7 +75,7 @@ public:
 protected:
 
     //!
-    void updateSingleMesh(CMesh* pMesh, double dDeltaTime);
+    void updateSingleMesh(QSP<CMesh> pMesh, double dDeltaTime);
 
     //-------------------------------------------------------------------------------------------------
     // Propriétés

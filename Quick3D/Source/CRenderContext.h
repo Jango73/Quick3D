@@ -17,6 +17,10 @@
 
 //-------------------------------------------------------------------------------------------------
 
+#define QSP QExplicitlySharedDataPointer
+
+//-------------------------------------------------------------------------------------------------
+
 class C3DScene;
 class CComponent;
 class CMaterial;
@@ -76,7 +80,8 @@ protected:
     Math::CMatrix4      m_mInternalCameraMatrix;
     Math::CMatrix4      m_mInternalProjectionMatrix;
     C3DScene*           m_pScene;
-    CCamera*            m_pCamera;
     CMeshByMaterial*    m_pMeshByMaterial;
+    CCamera*            m_pCamera;
     CFog*               m_pFog;
+
 };

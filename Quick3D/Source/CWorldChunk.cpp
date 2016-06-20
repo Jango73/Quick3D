@@ -291,11 +291,11 @@ bool CWorldChunk::drawable()
     }
     else
     {
-        foreach (CComponent* pChildComponent, m_vChildren)
+        foreach (QSP<CComponent> pChildComponent, m_vChildren)
         {
-            CWorldChunk* pChild = dynamic_cast<CWorldChunk*>(pChildComponent);
+            QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 
-            if (pChild->drawable() == false)
+            if (pChild && pChild->drawable() == false)
             {
                 bChildrenDrawable = false;
                 break;
@@ -314,11 +314,11 @@ bool CWorldChunk::isEmpty()
     bool bSelfEmpty = (bWaitingForBuild == false && m_pTerrain == NULL);
     bool bChildrenEmpty = true;
 
-    foreach (CComponent* pChildComponent, m_vChildren)
+    foreach (QSP<CComponent> pChildComponent, m_vChildren)
     {
-        CWorldChunk* pChild = dynamic_cast<CWorldChunk*>(pChildComponent);
+        QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 
-        if (pChild->isEmpty() == false)
+        if (pChild && pChild->isEmpty() == false)
         {
             bChildrenEmpty = false;
             break;

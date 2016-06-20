@@ -42,7 +42,7 @@ void CAirbusController::solveLinks(C3DScene* pScene)
 {
     CAircraftController::solveLinks(pScene);
 
-    m_rFCU.solve(pScene, this);
+    m_rFCU.solve(pScene, QSP<CComponent>(this));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -168,11 +168,14 @@ void CAirbusController::wheelEvent(QWheelEvent *event)
 
     if (m_rPositionTarget.component() && m_rPositionTarget.component()->isCamera())
     {
-        CCamera* pCamera = dynamic_cast<CCamera*>(m_rPositionTarget.component());
+        QSP<CCamera> pCamera = QSP_CAST(CCamera, m_rPositionTarget.component());
 
-        double dFOV = Math::Angles::clipDouble(pCamera->getFOV() + dDelta, 5.0, 120.0);
+        if (pCamera)
+        {
+            double dFOV = Math::Angles::clipDouble(pCamera->getFOV() + dDelta, 5.0, 120.0);
 
-        pCamera->setFOV(dFOV);
+            pCamera->setFOV(dFOV);
+        }
     }
 }
 
@@ -182,17 +185,17 @@ void CAirbusController::q3dEvent(CQ3DEvent* event)
 {
     CAircraftController::q3dEvent(event);
 
-    CAirbusFCU* pFCU = m_rFCU.component();
+    QSP<CAirbusFCU> pFCU = QSP_CAST(CAirbusFCU, m_rFCU.component());
 
     if (event->getName() == EventName_Jump500)
     {
-        CComponent* pRoot = getRoot();
+        QSP<CComponent> pRoot = getRoot();
 
-        if (pRoot != NULL)
+        if (pRoot)
         {
-            CPhysicalComponent* pPhysicalRoot = dynamic_cast<CPhysicalComponent*>(pRoot);
+            QSP<CPhysicalComponent> pPhysicalRoot = QSP_CAST(CPhysicalComponent, pRoot);
 
-            if (pPhysicalRoot != NULL)
+            if (pPhysicalRoot)
             {
                 CGeoloc gGeoloc = pPhysicalRoot->getGeoloc();
                 gGeoloc.Altitude += 500.0;
@@ -204,7 +207,7 @@ void CAirbusController::q3dEvent(CQ3DEvent* event)
     {
         if (event->getAction() == CQ3DEvent::Press)
         {
-            if (pFCU != NULL)
+            if (pFCU)
             {
                 pFCU->toggle_AutoPilot1_Engaged();
             }
@@ -214,7 +217,7 @@ void CAirbusController::q3dEvent(CQ3DEvent* event)
     {
         if (event->getAction() == CQ3DEvent::Press)
         {
-            if (pFCU != NULL)
+            if (pFCU)
             {
                 pFCU->toggle_AutoPilot2_Engaged();
             }
@@ -224,7 +227,7 @@ void CAirbusController::q3dEvent(CQ3DEvent* event)
     {
         if (event->getAction() == CQ3DEvent::Press)
         {
-            if (pFCU != NULL)
+            if (pFCU)
             {
                 pFCU->toggle_AutoThrust_Engaged();
             }
@@ -234,7 +237,7 @@ void CAirbusController::q3dEvent(CQ3DEvent* event)
     {
         if (event->getAction() == CQ3DEvent::Press)
         {
-            if (pFCU != NULL)
+            if (pFCU)
             {
                 pFCU->increment_SelectedHeading(false);
             }
@@ -244,7 +247,7 @@ void CAirbusController::q3dEvent(CQ3DEvent* event)
     {
         if (event->getAction() == CQ3DEvent::Press)
         {
-            if (pFCU != NULL)
+            if (pFCU)
             {
                 pFCU->decrement_SelectedHeading(false);
             }

@@ -32,7 +32,7 @@ protected:
 public:
 
     //! Charge une scène
-    QVector<CComponent*> load(const QString& sBaseFile, C3DScene* pScene);
+    QVector<QSP<CComponent> > load(const QString& sBaseFile, C3DScene* pScene);
 
     //! Charge un composant
     CComponent* loadComponent(const QString& sBaseFile, C3DScene* pScene);

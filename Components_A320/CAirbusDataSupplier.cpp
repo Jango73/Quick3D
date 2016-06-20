@@ -47,13 +47,13 @@ void CAirbusDataSupplier::solveLinks(C3DScene* pScene, CComponent* pCaller)
 {
     foreach (QString sName, m_vDataInputNames)
     {
-        foreach (QSharedPointer<CComponent> pComponent, pScene->getComponents())
+        foreach (QSP<CComponent> pComponent, pScene->getComponents())
         {
-            CComponent* pFound = pComponent->findComponent(sName, pCaller);
+            QSP<CComponent> pFound = pComponent->findComponent(sName, QSP<CComponent>(pCaller));
 
             if (pFound != NULL)
             {
-                CAirbusDataSupplier* pInput = dynamic_cast<CAirbusDataSupplier*>(pFound);
+                CAirbusDataSupplier* pInput = dynamic_cast<CAirbusDataSupplier*>(pFound.data());
 
                 if (pInput != NULL)
                 {

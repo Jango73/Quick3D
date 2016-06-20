@@ -15,76 +15,76 @@ class CComponentReference
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	CComponentReference()
-		: m_pComponent(NULL)
-	{
-	}
+    //!
+    CComponentReference()
+        : m_pComponent(NULL)
+    {
+    }
 
-	//!
-	CComponentReference(QString sName)
-		: m_pComponent(NULL)
-		, m_sName(sName)
-	{
-	}
+    //!
+    CComponentReference(QString sName)
+        : m_pComponent(NULL)
+        , m_sName(sName)
+    {
+    }
 
-	//!
-	virtual ~CComponentReference()
-	{
-	}
+    //!
+    virtual ~CComponentReference()
+    {
+    }
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	void setName(const QString& sName) { m_sName = sName; }
+    //!
+    void setName(const QString& sName) { m_sName = sName; }
 
-	//!
-	void setComponent(CComponent* pComponent) { m_pComponent = pComponent; }
+    //!
+    void setComponent(QSP<CComponent> pComponent) { m_pComponent = pComponent; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	const QString& getName() const { return m_sName; }
+    //!
+    const QString& getName() const { return m_sName; }
 
-	//!
-	T* component() { return dynamic_cast<T*>(m_pComponent); }
+    //!
+    QSP<CComponent> component() { return m_pComponent; }
 
-	//!
-	const CComponent* component() const { return dynamic_cast<T*>(m_pComponent); }
+    //!
+    const QSP<CComponent> component() const { return m_pComponent; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	void solve(C3DScene* pScene, CComponent* pCaller)
-	{
-		foreach (QSharedPointer<CComponent> pComponent, pScene->getComponents())
-		{
-			CComponent* pFound = pComponent->findComponent(m_sName, pCaller);
+    //!
+    void solve(C3DScene* pScene, QSP<CComponent> pCaller)
+    {
+        foreach (QSP<CComponent> pComponent, pScene->getComponents())
+        {
+            QSP<CComponent> pFound = pComponent->findComponent(m_sName, pCaller);
 
-			if (pFound != NULL)
-			{
-				m_pComponent = pFound;
-				break;
-			}
-		}
-	}
+            if (pFound)
+            {
+                m_pComponent = pFound;
+                break;
+            }
+        }
+    }
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	QString			m_sName;
-	CComponent*		m_pComponent;
+    QString             m_sName;
+    QSP<CComponent>     m_pComponent;
 };

@@ -36,9 +36,9 @@ CAirbusStaticPort::~CAirbusStaticPort()
 
 void CAirbusStaticPort::update(double dDeltaTime)
 {
-    CAircraft* pAircraft = dynamic_cast<CAircraft*>(getRoot());
+    QSP<CAircraft> pAircraft = QSP_CAST(CAircraft, getRoot());
 
-    if (pAircraft != NULL)
+    if (pAircraft)
     {
         double dPressure = CAtmosphere::getInstance()->getPressure_Nm2(pAircraft->getGeoloc().Altitude) * N_TO_KG;
 

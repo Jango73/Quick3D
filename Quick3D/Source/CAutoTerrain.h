@@ -185,22 +185,22 @@ protected:
     void buildRoot();
 
     //!
-    bool enoughDetail(CWorldChunk* pChunk, CRenderContext* pContext, int iLevel);
+    bool enoughDetail(QSP<CWorldChunk> pChunk, CRenderContext* pContext, int iLevel);
 
     //!
-    void paintRecurse(QVector<CWorldChunk*>& vChunkCollect, CRenderContext* pContext, CWorldChunk* pChunk, int iLevel, bool bForcePaint);
+    void paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRenderContext* pContext, QSP<CWorldChunk> pChunk, int iLevel, bool bForcePaint);
 
     //!
-    void buildRecurse(CWorldChunk* pChunk, CRenderContext* pContext, int iLevel);
+    void buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pContext, int iLevel);
 
     //!
-    double getHeightAtRecurse(const CGeoloc& gPosition, CWorldChunk* pChunk, double* pRigidness = NULL);
+    double getHeightAtRecurse(const CGeoloc& gPosition, QSP<CWorldChunk> pChunk, double* pRigidness = NULL);
 
     //!
     void collectGarbage();
 
     //!
-    void collectGarbageRecurse(CWorldChunk* pChunk);
+    void collectGarbageRecurse(QSP<CWorldChunk> pChunk);
 
     //!
     void readVegetationParameters(const QString& sBaseFile, CXMLNode xFunctions);
@@ -209,7 +209,7 @@ protected:
     void readBuildingParameters(const QString& sBaseFile, CXMLNode xFunctions);
 
     //! Calcul d'intersection avec un rayon
-    Math::RayTracingResult intersectRecurse(CWorldChunk* pChunk, const Math::CRay3& ray) const;
+    Math::RayTracingResult intersectRecurse(QSP<CWorldChunk> pChunk, const Math::CRay3& ray) const;
 
     //-------------------------------------------------------------------------------------------------
     // Propriétés
@@ -218,11 +218,14 @@ protected:
 protected:
 
     bool                            m_bGenerateNow;
-    CWorldChunk*                    m_pRoot;
     CHeightField*                   m_pHeights;
     int                             m_iLevels;
     int                             m_iTerrainResolution;
     CXMLNode                        m_xParameters;
     QSharedPointer<CMaterial>       m_pMaterial;
     QVector<CVegetation*>           m_vVegetation;
+
+    // Shared data
+
+    QSP<CWorldChunk>                m_pRoot;
 };

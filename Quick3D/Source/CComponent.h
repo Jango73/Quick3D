@@ -9,6 +9,8 @@
 #include <QGraphicsScene>
 #include <QPainter>
 #include <QImage>
+#include <QSharedData>
+#include <QExplicitlySharedDataPointer>
 #include <QtOpenGL>
 
 // Application
@@ -28,6 +30,11 @@
 #include "CBoundingBox.h"
 #include "CHeightField.h"
 #include "CTexture.h"
+
+//-------------------------------------------------------------------------------------------------
+
+#define     QSP             QExplicitlySharedDataPointer
+#define     QSP_CAST(T,O)   QSP<T>(dynamic_cast<T*>(O.data()))
 
 //-------------------------------------------------------------------------------------------------
 
@@ -67,7 +74,7 @@ class CController;
 
 //-------------------------------------------------------------------------------------------------
 
-class QUICK3D_EXPORT CComponent : public CNamed, public CParented, public CExpendable, public CDumpable, public ILoadable
+class QUICK3D_EXPORT CComponent : public QSharedData, public CNamed, public CParented, public CExpendable, public CDumpable, public ILoadable
 {
 public:
 
@@ -110,7 +117,7 @@ public:
     void setSelected(bool bValue);
 
     //! Définit le parent
-    void setParent(CComponent* pParent);
+    void setParent(QSP<CComponent> pParent);
 
     //! Définit la géolocalisation
     virtual void setGeoloc(CGeoloc gGeoloc);
@@ -150,7 +157,7 @@ public:
     QString getTag() const { return m_sTag; }
 
     //!
-    QString getQualifiedName() const;
+    QString getQualifiedName();
 
     //!
     CController* getController();
@@ -189,16 +196,13 @@ public:
     virtual bool isTrajectorable() const { return false; }
 
     //! Retourne le parent
-    virtual CComponent* getParent() const { return m_pParent; }
+    virtual QSP<CComponent> getParent() const { return m_pParent; }
 
     //! Retourne les enfants
-    QVector<CComponent*>& getChildren() { return m_vChildren; }
+    QVector<QSP<CComponent> >& getChildren() { return m_vChildren; }
 
     //! Retourne l'objet racine
-    const CComponent* getRoot() const;
-
-    //! Retourne l'objet racine
-    CComponent* getRoot();
+    QSP<CComponent> getRoot();
 
     //! Retourne la géolocalisation
     virtual CGeoloc getGeoloc() const;
@@ -265,7 +269,7 @@ public:
     virtual void solveLinks(C3DScene* pScene);
 
     //! Recherche un composant dans la hiérarchie de cet objet
-    virtual CComponent* findComponent(QString sName, CComponent* pCaller = NULL);
+    virtual QSP<CComponent> findComponent(QString sName, QSP<CComponent> pCaller = QSP<CComponent>(NULL));
 
     //! Cette méthode permet à l'objet de rajouter des items dans la scène qui le contient
     virtual void addItems(C3DScene* pScene);
@@ -352,27 +356,30 @@ private:
 
 protected:
 
-    QString					m_sTag;
-    C3DScene*				m_pScene;						// La scène à laquelle l'objet appartient
-    CController*			m_pController;
-    CComponent*				m_pParent;						// Parent de l'objet
-    QVector<CComponent*>	m_vChildren;					// Liste d'objets enfants
-    Math::CMatrix4			m_mWorldTransform;				// Transformation "monde" de l'objet
-    Math::CMatrix4			m_mWorldTransformInverse;		// Transformation "monde" inverse de l'objet
-    Math::CMatrix4			m_mPreviousWorldTransform;
-    CGeoloc                 m_gSavedGeoloc;
-    Math::CVector3			m_vSavedOriginPosition;
-    Math::CVector3			m_vSavedOriginRotation;
-    Math::CVector3			m_vSavedOriginScale;
-    QVector<CHeightField*>	m_pFields;						// Les champs de hauteurs dont dépend cet objet
-    bool					m_bVisible;						// Est visible?
-    bool					m_bCastShadows;					// Génère des ombres portées
-    bool					m_bReceiveShadows;				// Recoit des ombres portées
-    bool					m_bRaytracable;					// Ce composant doit-il être traité en ray-tracing?
-    bool					m_bInheritTransform;			// L'objet hérite des transformations de son parent si vrai
-    bool					m_bSelected;					// Est-ce que l'objet est sélectionné
+    QString                     m_sTag;
+    C3DScene*                   m_pScene;						// La scène à laquelle l'objet appartient
+    CController*                m_pController;
+    Math::CMatrix4              m_mWorldTransform;				// Transformation "monde" de l'objet
+    Math::CMatrix4              m_mWorldTransformInverse;		// Transformation "monde" inverse de l'objet
+    Math::CMatrix4              m_mPreviousWorldTransform;
+    CGeoloc                     m_gSavedGeoloc;
+    Math::CVector3              m_vSavedOriginPosition;
+    Math::CVector3              m_vSavedOriginRotation;
+    Math::CVector3              m_vSavedOriginScale;
+    QVector<CHeightField*>      m_pFields;						// Les champs de hauteurs dont dépend cet objet
+    bool                        m_bVisible;						// Est visible?
+    bool                        m_bCastShadows;					// Génère des ombres portées
+    bool                        m_bReceiveShadows;				// Recoit des ombres portées
+    bool                        m_bRaytracable;					// Ce composant doit-il être traité en ray-tracing?
+    bool                        m_bInheritTransform;			// L'objet hérite des transformations de son parent si vrai
+    bool                        m_bSelected;					// Est-ce que l'objet est sélectionné
 
-    double					m_dStatus;						// Etat de l'objet (0.0 = HS, 1.0 = Fonctionnel)
+    double                      m_dStatus;						// Etat de l'objet (0.0 = HS, 1.0 = Fonctionnel)
 
-    static int				m_iNumComponents;
+    // Shared data
+
+    QSP<CComponent>             m_pParent;						// Parent de l'objet
+    QVector<QSP<CComponent> >   m_vChildren;					// Liste d'objets enfants
+
+    static int                  m_iNumComponents;
 };

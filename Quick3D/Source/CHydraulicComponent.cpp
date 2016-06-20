@@ -53,7 +53,7 @@ void CHydraulicComponent::solveLinks(C3DScene* pScene)
 
     for (int iIndex = 0; iIndex < m_vInputs.count(); iIndex++)
     {
-        m_vInputs[iIndex].solve(pScene, this);
+        m_vInputs[iIndex].solve(pScene, QSP<CComponent>(this));
     }
 }
 
@@ -61,10 +61,15 @@ void CHydraulicComponent::solveLinks(C3DScene* pScene)
 
 void CHydraulicComponent::update(double dDeltaTime)
 {
-    if (m_vInputs.count() > 0 && m_vInputs[0].component() != NULL)
+    if (m_vInputs.count() > 0)
     {
-        double dPressure = m_vInputs[0].component()->pull(0.0, dDeltaTime);
-        push(dPressure, dDeltaTime);
+        QSP<CHydraulicComponent> pHydraulic = QSP_CAST(CHydraulicComponent, m_vInputs[0].component());
+
+        if (pHydraulic)
+        {
+            double dPressure = pHydraulic->pull(0.0, dDeltaTime);
+            push(dPressure, dDeltaTime);
+        }
     }
 
     /*

@@ -64,7 +64,7 @@ CAutoTerrain::CAutoTerrain(C3DScene* pScene, CGeoloc gCameraPosition, CHeightFie
     {
         LOG_DEBUG("CAutoTerrain::CAutoTerrain() : Generating terrain now");
 
-        if (pScene->getViewports().count() > 0 && pScene->getViewports()[0]->getCamera() != NULL)
+        if (pScene->getViewports().count() > 0 && pScene->getViewports()[0]->getCamera())
         {
             buildRoot();
 
@@ -76,7 +76,7 @@ CAutoTerrain::CAutoTerrain(C3DScene* pScene, CGeoloc gCameraPosition, CHeightFie
                         Math::CMatrix4(),
                         Math::CMatrix4(),
                         pScene,
-                        pScene->getViewports()[0]->getCamera()
+                        pScene->getViewports()[0]->getCamera().data()
                     );
 
             buildRecurse(m_pRoot, &context, m_iLevels);
@@ -95,8 +95,6 @@ CAutoTerrain::CAutoTerrain(C3DScene* pScene, CGeoloc gCameraPosition, CHeightFie
 */
 CAutoTerrain::~CAutoTerrain()
 {
-    if (m_pRoot) delete m_pRoot;
-
     foreach (CVegetation* pVegetation, m_vVegetation)
     {
         delete pVegetation;
@@ -210,13 +208,13 @@ void CAutoTerrain::paint(CRenderContext* pContext)
         buildRecurse(m_pRoot, pContext, m_iLevels);
     }
 
-    QVector<CWorldChunk*> vChunkCollect;
+    QVector<QSP<CWorldChunk> > vChunkCollect;
 
     paintRecurse(vChunkCollect, pContext, m_pRoot, m_iLevels, false);
 
     qSort(vChunkCollect.begin(), vChunkCollect.end());
 
-    foreach (CWorldChunk* pChunk, vChunkCollect)
+    foreach (QSP<CWorldChunk> pChunk, vChunkCollect)
     {
         pContext->m_iNumChunksDrawn++;
 
@@ -259,11 +257,11 @@ void CAutoTerrain::postUpdate(double dDeltaTime)
 */
 void CAutoTerrain::buildRoot()
 {
-    if (m_pRoot == NULL)
+    if (!m_pRoot)
     {
-        m_pRoot = new CWorldChunk(m_pScene, this, this);
+        m_pRoot = QSP<CWorldChunk>(new CWorldChunk(m_pScene, this, this));
         m_pRoot->setInheritTransform(false);
-        m_pRoot->CComponent::setParent(this);
+        m_pRoot->CComponent::setParent(QSP<CComponent>(this));
         m_pRoot->setGeoloc(CGeoloc(0.0, 180.0, 0.0));
         m_pRoot->computeWorldTransform();
         m_pRoot->setSize(CGeoloc(LAT_MAX * 2.0, 360.0, 0.0));
@@ -272,7 +270,7 @@ void CAutoTerrain::buildRoot()
 
 //-------------------------------------------------------------------------------------------------
 
-bool CAutoTerrain::enoughDetail(CWorldChunk* pChunk, CRenderContext* pContext, int iLevel)
+bool CAutoTerrain::enoughDetail(QSP<CWorldChunk> pChunk, CRenderContext* pContext, int iLevel)
 {
     // double dDistance = (pContext->camera()->getWorldPosition() - pChunk->getWorldBounds().center()).getMagnitude();
     // return pChunk->getWorldBounds().radius() / dDistance < 2.0;
@@ -292,7 +290,7 @@ bool CAutoTerrain::enoughDetail(CWorldChunk* pChunk, CRenderContext* pContext, i
     \a pContext is the rendering context.
     \a iLevel is the depth in the chunk tree.
 */
-void CAutoTerrain::buildRecurse(CWorldChunk* pChunk, CRenderContext* pContext, int iLevel)
+void CAutoTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pContext, int iLevel)
 {
     CGeoloc gOriginalChunkPosition = pChunk->getOriginalGeoloc();
     CGeoloc gOriginalChunkSize = pChunk->getOriginalSize();
@@ -389,10 +387,10 @@ void CAutoTerrain::buildRecurse(CWorldChunk* pChunk, CRenderContext* pContext, i
                         );
 
             // Create for child chunks
-            CWorldChunk* pChild1 = new CWorldChunk(m_pScene, this, this);
-            CWorldChunk* pChild2 = new CWorldChunk(m_pScene, this, this);
-            CWorldChunk* pChild3 = new CWorldChunk(m_pScene, this, this);
-            CWorldChunk* pChild4 = new CWorldChunk(m_pScene, this, this);
+            QSP<CWorldChunk> pChild1(new CWorldChunk(m_pScene, this, this));
+            QSP<CWorldChunk> pChild2(new CWorldChunk(m_pScene, this, this));
+            QSP<CWorldChunk> pChild3(new CWorldChunk(m_pScene, this, this));
+            QSP<CWorldChunk> pChild4(new CWorldChunk(m_pScene, this, this));
 
             // Children don't inherit transforms
             pChild1->setInheritTransform(false);
@@ -401,10 +399,10 @@ void CAutoTerrain::buildRecurse(CWorldChunk* pChunk, CRenderContext* pContext, i
             pChild4->setInheritTransform(false);
 
             // Children's parent are the given chunk
-            pChild1->CComponent::setParent((CComponent*) pChunk);
-            pChild2->CComponent::setParent((CComponent*) pChunk);
-            pChild3->CComponent::setParent((CComponent*) pChunk);
-            pChild4->CComponent::setParent((CComponent*) pChunk);
+            pChild1->CComponent::setParent(QSP<CComponent>(pChunk));
+            pChild2->CComponent::setParent(QSP<CComponent>(pChunk));
+            pChild3->CComponent::setParent(QSP<CComponent>(pChunk));
+            pChild4->CComponent::setParent(QSP<CComponent>(pChunk));
 
             // Append the chlidren to the given chunk
             pChunk->getChildren().append(pChild1);
@@ -438,9 +436,9 @@ void CAutoTerrain::buildRecurse(CWorldChunk* pChunk, CRenderContext* pContext, i
         }
 
         // Recurse in child chunks
-        foreach (CComponent* pChildComponent, pChunk->getChildren())
+        foreach (QSP<CComponent> pChildComponent, pChunk->getChildren())
         {
-            CWorldChunk* pChild = dynamic_cast<CWorldChunk*>(pChildComponent);
+            QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 
             buildRecurse(pChild, pContext, iLevel - 1);
         }
@@ -449,7 +447,7 @@ void CAutoTerrain::buildRecurse(CWorldChunk* pChunk, CRenderContext* pContext, i
 
 //-------------------------------------------------------------------------------------------------
 
-void CAutoTerrain::paintRecurse(QVector<CWorldChunk*>& vChunkCollect, CRenderContext* pContext, CWorldChunk* pChunk, int iLevel, bool bForcePaint)
+void CAutoTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRenderContext* pContext, QSP<CWorldChunk> pChunk, int iLevel, bool bForcePaint)
 {
     CGeoloc gChunkPosition = pChunk->getGeoloc();
 
@@ -459,9 +457,9 @@ void CAutoTerrain::paintRecurse(QVector<CWorldChunk*>& vChunkCollect, CRenderCon
 
     bool bChildrenDrawable = true;
 
-    foreach (CComponent* pChildComponent, pChunk->getChildren())
+    foreach (QSP<CComponent> pChildComponent, pChunk->getChildren())
     {
-        CWorldChunk* pChild = dynamic_cast<CWorldChunk*>(pChildComponent);
+        QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 
         if (pChild->drawable() == false)
         {
@@ -495,11 +493,10 @@ void CAutoTerrain::paintRecurse(QVector<CWorldChunk*>& vChunkCollect, CRenderCon
             // Get rid of empty nodes
             for (int iIndex = 0; iIndex < pChunk->getChildren().count(); iIndex++)
             {
-                CWorldChunk* pChild = dynamic_cast<CWorldChunk*>(pChunk->getChildren()[iIndex]);
+                QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChunk->getChildren()[iIndex]);
 
-                if (pChild->isEmpty())
+                if (pChild && pChild->isEmpty())
                 {
-                    delete pChild;
                     pChunk->getChildren().remove(iIndex);
                     iIndex--;
                 }
@@ -508,9 +505,9 @@ void CAutoTerrain::paintRecurse(QVector<CWorldChunk*>& vChunkCollect, CRenderCon
         else if (bChildrenDrawable)
         {
             // Paint children
-            foreach (CComponent* pChildComponent, pChunk->getChildren())
+            foreach (QSP<CComponent> pChildComponent, pChunk->getChildren())
             {
-                CWorldChunk* pChild = dynamic_cast<CWorldChunk*>(pChildComponent);
+                QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 
                 paintRecurse(vChunkCollect, pContext, pChild, iLevel - 1, false);
             }
@@ -521,9 +518,9 @@ void CAutoTerrain::paintRecurse(QVector<CWorldChunk*>& vChunkCollect, CRenderCon
         if (bChildrenDrawable)
         {
             // Paint children
-            foreach (CComponent* pChildComponent, pChunk->getChildren())
+            foreach (QSP<CComponent> pChildComponent, pChunk->getChildren())
             {
-                CWorldChunk* pChild = dynamic_cast<CWorldChunk*>(pChildComponent);
+                QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 
                 paintRecurse(vChunkCollect, pContext, pChild, iLevel - 1, false);
             }
@@ -551,7 +548,7 @@ void CAutoTerrain::paintRecurse(QVector<CWorldChunk*>& vChunkCollect, CRenderCon
 */
 void CAutoTerrain::collectGarbage()
 {
-    if (m_pRoot != NULL)
+    if (m_pRoot)
     {
         collectGarbageRecurse(m_pRoot);
     }
@@ -562,7 +559,7 @@ void CAutoTerrain::collectGarbage()
 /*!
     Destroys \a pChunk 's terrain if it has not been used since 60 seconds and collects garbage on child chunks.
 */
-void CAutoTerrain::collectGarbageRecurse(CWorldChunk* pChunk)
+void CAutoTerrain::collectGarbageRecurse(QSP<CWorldChunk> pChunk)
 {
     if (pChunk->getTerrain() != NULL)
     {
@@ -572,9 +569,9 @@ void CAutoTerrain::collectGarbageRecurse(CWorldChunk* pChunk)
         }
     }
 
-    foreach (CComponent* pChildComponent, pChunk->getChildren())
+    foreach (QSP<CComponent> pChildComponent, pChunk->getChildren())
     {
-        CWorldChunk* pChild = dynamic_cast<CWorldChunk*>(pChildComponent);
+        QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 
         collectGarbageRecurse(pChild);
     }
@@ -584,7 +581,7 @@ void CAutoTerrain::collectGarbageRecurse(CWorldChunk* pChunk)
 
 double CAutoTerrain::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 {
-    if (m_pRoot != NULL)
+    if (m_pRoot)
     {
         return getHeightAtRecurse(gPosition, m_pRoot, pRigidness);
     }
@@ -594,7 +591,7 @@ double CAutoTerrain::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 
 //-------------------------------------------------------------------------------------------------
 
-double CAutoTerrain::getHeightAtRecurse(const CGeoloc& gPosition, CWorldChunk* pChunk, double* pRigidness)
+double CAutoTerrain::getHeightAtRecurse(const CGeoloc& gPosition, QSP<CWorldChunk> pChunk, double* pRigidness)
 {
     double dDiffLatitude = Math::Angles::angleDifferenceDegree(gPosition.Latitude, pChunk->getGeoloc().Latitude);
     double dDiffLongitude = Math::Angles::angleDifferenceDegree(gPosition.Longitude, pChunk->getGeoloc().Longitude);
@@ -606,9 +603,9 @@ double CAutoTerrain::getHeightAtRecurse(const CGeoloc& gPosition, CWorldChunk* p
             fabs(dDiffLongitude) < pChunk->getSize().Longitude * 0.5
             )
     {
-        foreach (CComponent* pChildComponent, pChunk->getChildren())
+        foreach (QSP<CComponent> pChildComponent, pChunk->getChildren())
         {
-            CWorldChunk* pChild = dynamic_cast<CWorldChunk*>(pChildComponent);
+            QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 
             double dNewRigidness = 0.0;
             double dNewAltitude = getHeightAtRecurse(gPosition, pChild, &dNewRigidness);
@@ -806,7 +803,7 @@ void CAutoTerrain::readBuildingParameters(const QString& sBaseFile, CXMLNode xFu
 
 RayTracingResult CAutoTerrain::intersect(Math::CRay3 ray)
 {
-    if (m_pRoot != NULL)
+    if (m_pRoot)
     {
         return intersectRecurse(m_pRoot, ray);
     }
@@ -819,13 +816,13 @@ RayTracingResult CAutoTerrain::intersect(Math::CRay3 ray)
 /*!
     Checks if \a ray intersects this terrain.
 */
-RayTracingResult CAutoTerrain::intersectRecurse(CWorldChunk* pChunk, const Math::CRay3& ray) const
+RayTracingResult CAutoTerrain::intersectRecurse(QSP<CWorldChunk> pChunk, const Math::CRay3& ray) const
 {
     RayTracingResult dResult(Q3D_INFINITY);
 
-    foreach (CComponent* pChildComponent, pChunk->getChildren())
+    foreach (QSP<CComponent> pChildComponent, pChunk->getChildren())
     {
-        CWorldChunk* pChild = dynamic_cast<CWorldChunk*>(pChildComponent);
+        QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 
         if (pChild)
         {
@@ -860,7 +857,7 @@ void CAutoTerrain::dump(QTextStream& stream, int iIdent)
     dumpIdent(stream, iIdent, QString("Terrain res : %1").arg(m_iTerrainResolution));
     dumpIdent(stream, iIdent, QString("Root :"));
 
-    if (m_pRoot != NULL)
+    if (m_pRoot)
     {
         dumpOpenBlock(stream, iIdent); iIdent++;
         m_pRoot->dump(stream, iIdent);

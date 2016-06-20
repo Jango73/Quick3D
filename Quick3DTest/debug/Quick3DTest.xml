@@ -3,7 +3,7 @@
 
 	<Camera1 Name="Man2.Head"/>
 	<Camera2 Name="VBCI.Pilot"/>
-	<ControlledComponent Name="Man1"/>
+	<ControlledComponent Name="Man2"/>
 
 	<!--
 	<Camera1 Name="Plascoa01Pilot"/>

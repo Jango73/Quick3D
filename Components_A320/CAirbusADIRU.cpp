@@ -45,9 +45,9 @@ void CAirbusADIRU::work(double dDeltaTime)
 {
     CAirbusFlightComputer::work(dDeltaTime);
 
-    CAircraft* pAircraft = dynamic_cast<CAircraft*>(getRoot());
+    QSP<CAircraft> pAircraft = QSP_CAST(CAircraft, getRoot());
 
-    if (pAircraft != NULL)
+    if (pAircraft)
     {
         // Calcul du tanguage
         double dPitch_deg = pAircraft->getPitch_deg();

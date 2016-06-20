@@ -180,11 +180,11 @@ double CPhysicalComponent::getTotalMass_kg() const
 {
     double dTotalMass_kg = m_dMass_kg;
 
-    foreach (CComponent* pChild, m_vChildren)
+    foreach (const QSP<CComponent> pChild, m_vChildren)
     {
-        CPhysicalComponent* pPhysical = dynamic_cast<CPhysicalComponent*>(pChild);
+        const QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, pChild);
 
-        if (pPhysical != NULL)
+        if (pPhysical)
         {
             dTotalMass_kg += pPhysical->getTotalMass_kg();
         }
@@ -445,7 +445,7 @@ void CPhysicalComponent::update(double dDeltaTimeS)
     {
         if (m_dStickToNOLL > 0.0)
         {
-            if (m_pParent != NULL)
+            if (m_pParent)
             {
                 CMatrix4 mParentPrevious = m_pParent->getPreviousWorldTransform();
 
@@ -503,14 +503,14 @@ void CPhysicalComponent::postUpdate(double dDeltaTimeS)
 /*!
     Computes collisions for the components in \a vComponents using \a dDeltaTimeS, which is the elapsed seconds since the last frame.
 */
-void CPhysicalComponent::computeCollisions(QVector<QSharedPointer<CComponent> >& vComponents, double dDeltaTimeS)
+void CPhysicalComponent::computeCollisions(QVector<QSP<CComponent> >& vComponents, double dDeltaTimeS)
 {
-    foreach (QSharedPointer<CComponent> pComponent, vComponents)
+    foreach (QSP<CComponent> pComponent, vComponents)
     {
-        CPhysicalComponent* pPhysical = dynamic_cast<CPhysicalComponent*>(pComponent.data());
+        QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, pComponent);
 
         // Pour l'instant les terrains sont ignorés car traités dans update
-        if (pPhysical != NULL && pPhysical->getClassName() != ClassName_CAutoTerrain)
+        if (pPhysical && pPhysical->getClassName() != ClassName_CAutoTerrain)
         {
             if (pPhysical->isRootObject() && pPhysical->getCollisionsActive() == true)
             {
@@ -530,15 +530,15 @@ void CPhysicalComponent::computeCollisions(QVector<QSharedPointer<CComponent> >&
     Computes collisions for \a pComponent using \a dDeltaTimeS, which is the elapsed seconds since the last frame. \br\br
     \a vOtherComponents is the list of components which it can interact with.
 */
-void CPhysicalComponent::computeCollisionsForComponent(CPhysicalComponent* pComponent, QVector<QSharedPointer<CComponent> >& vOtherComponents, double dDeltaTimeS)
+void CPhysicalComponent::computeCollisionsForComponent(QSP<CPhysicalComponent> pComponent, QVector<QSP<CComponent> >& vOtherComponents, double dDeltaTimeS)
 {
     // On parcourt chacun des autres composants
     // Iterate through each other components
-    foreach (QSharedPointer<CComponent> pOtherComponent, vOtherComponents)
+    foreach (QSP<CComponent> pOtherComponent, vOtherComponents)
     {
-        CPhysicalComponent* pOtherPhysical = dynamic_cast<CPhysicalComponent*>(pOtherComponent.data());
+        QSP<CPhysicalComponent> pOtherPhysical = QSP_CAST(CPhysicalComponent, pOtherComponent);
 
-        if (pOtherPhysical != NULL)
+        if (pOtherPhysical)
         {
             if (pComponent != pOtherPhysical && pOtherPhysical->isRootObject() && pOtherPhysical->getCollisionsActive() == true)
             {

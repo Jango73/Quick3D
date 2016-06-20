@@ -15,8 +15,6 @@
 
 class COMPONENTS_A320_EXPORT CAirbusDataSupplier : public ILoadable
 {
-    friend class CAirbusDataConsumer;
-
 public:
 
     //-------------------------------------------------------------------------------------------------

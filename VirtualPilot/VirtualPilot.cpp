@@ -103,7 +103,7 @@ void VirtualPilot::loadScene(QString sFileName)
 
     LOG_DEBUG("VirtualPilot::VirtualPilot() : loading components...");
 
-    QVector<CComponent*> vComponents = CComponentLoader::getInstance()->load(sFileName, m_pScene);
+    QVector<QSP<CComponent> > vComponents = CComponentLoader::getInstance()->load(sFileName, m_pScene);
 
     m_pScene->init(vComponents);
 
@@ -121,9 +121,9 @@ void VirtualPilot::loadVehicle(QString sFileName)
     CGeoloc playerGeoloc;
     CVector3 playerRotation;
 
-    QSharedPointer<CComponent> pComponent(CComponentLoader::getInstance()->loadComponent(sFileName, m_pScene));
+    QSP<CComponent> pComponent(CComponentLoader::getInstance()->loadComponent(sFileName, m_pScene));
 
-    QVector<QSharedPointer<CComponent> > vComponents = m_pScene->getComponentsByTag("PLAYER");
+    QVector<QSP<CComponent> > vComponents = m_pScene->getComponentsByTag("PLAYER");
 
     if (vComponents.count() > 0)
     {
@@ -145,17 +145,17 @@ void VirtualPilot::loadVehicle(QString sFileName)
         pComponent->setOriginRotation(playerRotation);
     }
 
-    CComponent* pCamera = pComponent->findComponent(".Pilot", pComponent.data());
+    QSP<CComponent> pCamera = pComponent->findComponent(".Pilot", pComponent);
 
-    if (pCamera != NULL)
+    if (pCamera)
     {
-        m_pScene->getViewports()[0]->setCamera(dynamic_cast<CCamera*>(pCamera));
+        m_pScene->getViewports()[0]->setCamera(QSP_CAST(CCamera, pCamera));
     }
     else
     {
         LOG_ERROR("VirtualPilot::loadVehicle() : camera not found");
 
-        m_pScene->getViewports()[0]->setCamera(NULL);
+        m_pScene->getViewports()[0]->setCamera(QSP<CCamera>());
     }
 }
 
@@ -206,9 +206,9 @@ void VirtualPilot::onTimer()
         CVector3 TorqueAcceleration;
         double dSpeedMS = 0.0;
 
-        if (m_pScene->getController() != NULL && m_pScene->getController()->getPositionTarget() != NULL)
+        if (m_pScene->getController() != NULL && m_pScene->getController()->getPositionTarget())
         {
-            CPhysicalComponent* pPhysical = dynamic_cast<CPhysicalComponent*>(m_pScene->getController()->getPositionTarget()->getRoot());
+            QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, m_pScene->getController()->getPositionTarget()->getRoot());
 
             if (pPhysical != NULL)
             {
@@ -219,9 +219,9 @@ void VirtualPilot::onTimer()
             }
         }
 
-        if (m_pScene->getController() != NULL && m_pScene->getController()->getRotationTarget() != NULL)
+        if (m_pScene->getController() != NULL && m_pScene->getController()->getRotationTarget())
         {
-            CPhysicalComponent* pPhysical = dynamic_cast<CPhysicalComponent*>(m_pScene->getController()->getPositionTarget()->getRoot());
+            QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, m_pScene->getController()->getRotationTarget()->getRoot());
 
             if (pPhysical != NULL)
             {

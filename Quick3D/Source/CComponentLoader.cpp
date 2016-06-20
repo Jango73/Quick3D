@@ -24,11 +24,11 @@ CComponentLoader::CComponentLoader()
 
 //-------------------------------------------------------------------------------------------------
 
-QVector<CComponent*> CComponentLoader::load(const QString& sBaseFile, C3DScene* pScene)
+QVector<QSP<CComponent> > CComponentLoader::load(const QString& sBaseFile, C3DScene* pScene)
 {
     LOG_DEBUG("CComponentLoader::load()");
 
-    QVector<CComponent*> vOutput;
+    QVector<QSP<CComponent> > vOutput;
 
     CXMLNode tDoc = CXMLNode::loadXMLFromFile(sBaseFile);
 
@@ -60,35 +60,35 @@ QVector<CComponent*> CComponentLoader::load(const QString& sBaseFile, C3DScene* 
 
                 if (pComponent != NULL)
                 {
-                    vOutput.append(pComponent);
+                    vOutput.append(QSP<CComponent>(pComponent));
                 }
             }
         }
     }
 
-    foreach (CComponent* pComponent, vOutput)
+    foreach (QSP<CComponent> pComponent, vOutput)
     {
-        CComponent* pCamera1Found = pComponent->findComponent(sCamera1);
-        CComponent* pCamera2Found = pComponent->findComponent(sCamera2);
-        CComponent* pControlledFound = pComponent->findComponent(sControlled);
+        QSP<CComponent> pCamera1Found = pComponent->findComponent(sCamera1);
+        QSP<CComponent> pCamera2Found = pComponent->findComponent(sCamera2);
+        QSP<CComponent> pControlledFound = pComponent->findComponent(sControlled);
 
-        if (pCamera1Found != NULL && pCamera1Found->isCamera())
+        if (pCamera1Found && pCamera1Found->isCamera())
         {
             if (pScene->getViewports().contains(0))
             {
-                pScene->getViewports()[0]->setCamera(dynamic_cast<CCamera*>(pCamera1Found));
+                pScene->getViewports()[0]->setCamera(QSP_CAST(CCamera, pCamera1Found));
             }
         }
 
-        if (pCamera2Found != NULL && pCamera2Found->isCamera())
+        if (pCamera2Found && pCamera2Found->isCamera())
         {
             if (pScene->getViewports().contains(1))
             {
-                pScene->getViewports()[1]->setCamera(dynamic_cast<CCamera*>(pCamera2Found));
+                pScene->getViewports()[1]->setCamera(QSP_CAST(CCamera, pCamera2Found));
             }
         }
 
-        if (pControlledFound != NULL && pControlledFound->getController() != NULL)
+        if (pControlledFound && pControlledFound->getController() != NULL)
         {
             pScene->setController(pControlledFound->getController());
         }
@@ -139,7 +139,7 @@ CComponent* CComponentLoader::loadComponent(const QString& sBaseFile, C3DScene* 
 
             if (pChildComponent != NULL)
             {
-                pChildComponent->setParent(pComponent);
+                pChildComponent->setParent(QSP<CComponent>(pComponent));
             }
         }
 
@@ -158,7 +158,7 @@ CComponent* CComponentLoader::loadComponent(const QString& sBaseFile, C3DScene* 
                 pControllerComponent->loadParameters(sBaseFile, xController);
 
                 pComponent->setController(dynamic_cast<CController*>(pControllerComponent));
-                pControllerComponent->setParent(pComponent);
+                pControllerComponent->setParent(QSP<CComponent>(pComponent));
             }
         }
 

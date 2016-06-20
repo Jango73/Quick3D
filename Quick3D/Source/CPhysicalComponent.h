@@ -162,10 +162,10 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    static void computeCollisions(QVector<QSharedPointer<CComponent> >& vComponents, double dDeltaTimeS);
+    static void computeCollisions(QVector<QSP<CComponent> >& vComponents, double dDeltaTimeS);
 
     //!
-    static void computeCollisionsForComponent(CPhysicalComponent* pComponent, QVector<QSharedPointer<CComponent> >& vOtherComponents, double dDeltaTimeS);
+    static void computeCollisionsForComponent(QSP<CPhysicalComponent> pComponent, QVector<QSP<CComponent> >& vOtherComponents, double dDeltaTimeS);
 
     //-------------------------------------------------------------------------------------------------
     // Propriétés

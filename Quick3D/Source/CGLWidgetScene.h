@@ -46,7 +46,7 @@ public:
     virtual void paintGL();
 
     //!
-    virtual void init(QVector<CComponent*> vComponents);
+    virtual void init(QVector<QSP<CComponent> > vComponents);
 
     //!
     virtual void initShaders();

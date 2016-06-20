@@ -132,13 +132,13 @@ void CMesh::solveLinks(C3DScene* pScene)
         {
             bool bFound = false;
 
-            foreach (QSharedPointer<CComponent> pComponent, pScene->getComponents())
+            foreach (QSP<CComponent> pComponent, pScene->getComponents())
             {
                 QString sUpdaterName = m_pGeometry->getDynTexUpdaters()[sTextureName];
 
-                CComponent* pFound = pComponent->findComponent(sUpdaterName, this);
+                QSP<CComponent> pFound = pComponent->findComponent(sUpdaterName, QSP<CComponent>(this));
 
-                if (pFound != NULL)
+                if (pFound)
                 {
                     foreach (QSharedPointer<CMaterial> pMaterial, m_pGeometry->getMaterials())
                     {
@@ -148,7 +148,7 @@ void CMesh::solveLinks(C3DScene* pScene)
                             {
                                 bFound = true;
 
-                                pTexture->setUpdater(pFound);
+                                pTexture->setUpdater(pFound.data());
                             }
                         }
 
@@ -244,7 +244,7 @@ CComponent* CMesh::createMultiTextureSphere(C3DScene* pScene, int iNumSegments, 
                         ((double) iTiltIndex * dTiltPartSpanDegrees) + dTiltPartSpanDegrees
                         );
 
-            pMesh->setParent(pComponent);
+            pMesh->setParent(QSP<CComponent>(pComponent));
         }
     }
 

@@ -114,10 +114,10 @@ void CWing::update(double dDeltaTime)
 {
     CPhysicalComponent::update(dDeltaTime);
 
-    CComponent* pRoot = getRoot();
-    CAircraft* pAircraft = dynamic_cast<CAircraft*>(pRoot);
+    QSP<CComponent> pRoot = getRoot();
+    QSP<CAircraft> pAircraft = QSP_CAST(CAircraft, pRoot);
 
-    if (pAircraft != NULL)
+    if (pAircraft)
     {
         // Compute lift
 

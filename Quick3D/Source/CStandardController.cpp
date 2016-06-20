@@ -53,8 +53,8 @@ void CStandardController::update(double dDeltaTime)
 
     double dMoveSpeed = 1.5 + (m_dMoveSpeed * 300.0);
 
-    CComponent* m_pPositionTarget = m_rPositionTarget.component();
-    CComponent* m_pRotationTarget = m_rRotationTarget.component();
+    QSP<CComponent> m_pPositionTarget = m_rPositionTarget.component();
+    QSP<CComponent> m_pRotationTarget = m_rRotationTarget.component();
 
     if (m_pPositionTarget)
     {
@@ -300,8 +300,8 @@ void CStandardController::keyReleaseEvent(QKeyEvent *event)
 
 void CStandardController::mouseMoveEvent(QMouseEvent* event)
 {
-    CComponent* m_pPositionTarget = m_rPositionTarget.component();
-    CComponent* m_pRotationTarget = m_rRotationTarget.component();
+    QSP<CComponent> m_pPositionTarget = m_rPositionTarget.component();
+    QSP<CComponent> m_pRotationTarget = m_rRotationTarget.component();
 
     if (m_bUseMouse)
     {

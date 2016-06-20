@@ -36,9 +36,9 @@ CAirbusAOASensor::~CAirbusAOASensor()
 
 void CAirbusAOASensor::update(double dDeltaTime)
 {
-    CAircraft* pAircraft = dynamic_cast<CAircraft*>(getRoot());
+    QSP<CAircraft> pAircraft = QSP_CAST(CAircraft, getRoot());
 
-    if (pAircraft != NULL)
+    if (pAircraft)
     {
         double dAngleOfAttack = pAircraft->getAngleOfAttack_rad();
 

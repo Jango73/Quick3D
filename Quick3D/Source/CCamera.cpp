@@ -114,7 +114,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
 
     //-------------------------------------------------------------------------------------------------
 
-    QVector<CLight*> vSuns = pScene->getLightsByTag("SUN");
+    QVector<QSP<CLight> > vSuns = pScene->getLightsByTag("SUN");
 
     QMatrix4x4 mShadowProjectionMatrix;
     QMatrix4x4 mShadowMatrix;
@@ -125,7 +125,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
 
         if (vSuns.count() > 0 && vSuns[0]->castShadows())
         {
-            CLight* pLight = vSuns[0];
+            QSP<CLight> pLight = vSuns[0];
 
             pLight->setMinDistance(1.0);
             pLight->setMaxDistance(2000.0);
@@ -151,7 +151,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
                         mInternalCameraMatrix,
                         mInternalProjectionMatrix,
                         pScene,
-                        pLight
+                        pLight.data()
                         );
 
             pLight->computeFrustum(Math::Angles::toRad(pLight->getFOV()), 1.0, pLight->getMinDistance(), pLight->getMaxDistance());
@@ -206,7 +206,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     {
         if (vSuns.count() > 0 && vSuns[0]->castShadows())
         {
-            CLight* pLight = vSuns[0];
+            QSP<CLight> pLight = vSuns[0];
 
             pLight->saveTransform();
 
@@ -283,7 +283,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     //-------------------------------------------------------------------------------------------------
     // Mise à jour des objets
 
-    foreach(QSharedPointer<CComponent> pComponent, pScene->getComponents())
+    foreach(QSP<CComponent> pComponent, pScene->getComponents())
     {
         if (pComponent->isVisible())
         {
@@ -389,7 +389,7 @@ void CCamera::renderDepth_RayTraced
             // Initialisation de la distance trouvée pour ce point
             RayTracingResult dResult(Q3D_INFINITY);
 
-            foreach (QSharedPointer<CComponent> pComponent, pScene->getComponents())
+            foreach (QSP<CComponent> pComponent, pScene->getComponents())
             {
                 // Est-ce que le composant doit être pris en compte par le ray-tracing?
                 if (pComponent->isVisible() && pComponent->isRaytracable())
@@ -535,7 +535,7 @@ void CCamera::renderDepth_CubeMapped
         pGLWidgetScene->setGeometry(0, 0, sMapSize.width(), sMapSize.height());
         pGLWidgetScene->getViewports()[0] = pNewViewport;
         pGLWidgetScene->getViewports()[0]->setSize(vMapSize);
-        pGLWidgetScene->getViewports()[0]->setCamera(this);
+        pGLWidgetScene->getViewports()[0]->setCamera(QSP<CCamera>(this));
         pGLWidgetScene->getViewports()[0]->setEnabled(true);
         pGLWidgetScene->setDepthComputing(true);
         pGLWidgetScene->setShaderQuality(0.0);

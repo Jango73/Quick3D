@@ -120,7 +120,7 @@ void Quick3DTest::loadScene(QString sFileName)
 
     LOG_DEBUG("Quick3DTest::Quick3DTest() : loading components...");
 
-    QVector<CComponent*> vComponents = CComponentLoader::getInstance()->load(sFileName, m_pScene);
+    QVector<QSP<CComponent> > vComponents = CComponentLoader::getInstance()->load(sFileName, m_pScene);
 
     m_pScene->init(vComponents);
 
@@ -162,14 +162,14 @@ void Quick3DTest::fillObjectsCombo()
     ui.m_cbViews1->clear();
     ui.m_cbControllable->clear();
 
-    foreach (QSharedPointer<CComponent> pComponent, m_pScene->getComponents())
+    foreach (QSP<CComponent> pComponent, m_pScene->getComponents())
     {
         fillCameraCombo(pComponent.data());
     }
 
     ui.m_cbViews1->setCurrentIndex(-1);
 
-    foreach (QSharedPointer<CComponent> pComponent, m_pScene->getComponents())
+    foreach (QSP<CComponent> pComponent, m_pScene->getComponents())
     {
         fillControlableCombo(pComponent.data());
     }
@@ -190,9 +190,9 @@ void Quick3DTest::fillCameraCombo(CComponent* pComponent)
         ui.m_cbViews1->addItem(sQualifiedName);
     }
 
-    foreach (CComponent* pChild, pComponent->getChildren())
+    foreach (QSP<CComponent> pChild, pComponent->getChildren())
     {
-        fillCameraCombo(pChild);
+        fillCameraCombo(pChild.data());
     }
 }
 
@@ -207,9 +207,9 @@ void Quick3DTest::fillControlableCombo(CComponent* pComponent)
         ui.m_cbControllable->addItem(sQualifiedName);
     }
 
-    foreach (CComponent* pChild, pComponent->getChildren())
+    foreach (QSP<CComponent> pChild, pComponent->getChildren())
     {
-        fillControlableCombo(pChild);
+        fillControlableCombo(pChild.data());
     }
 }
 
@@ -260,11 +260,11 @@ void Quick3DTest::onTimer()
         CVector3 TorqueAcceleration;
         double dSpeedMS = 0.0;
 
-        if (m_pScene->getController() != NULL && m_pScene->getController()->getPositionTarget() != NULL)
+        if (m_pScene->getController() != NULL && m_pScene->getController()->getPositionTarget())
         {
-            CPhysicalComponent* pPhysical = dynamic_cast<CPhysicalComponent*>(m_pScene->getController()->getPositionTarget()->getRoot());
+            QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, m_pScene->getController()->getPositionTarget()->getRoot());
 
-            if (pPhysical != NULL)
+            if (pPhysical)
             {
                 ViewGeoloc = pPhysical->getGeoloc();
                 ControledVelocity = pPhysical->getVelocity_ms();
@@ -273,11 +273,11 @@ void Quick3DTest::onTimer()
             }
         }
 
-        if (m_pScene->getController() != NULL && m_pScene->getController()->getRotationTarget() != NULL)
+        if (m_pScene->getController() != NULL && m_pScene->getController()->getRotationTarget())
         {
-            CPhysicalComponent* pPhysical = dynamic_cast<CPhysicalComponent*>(m_pScene->getController()->getPositionTarget()->getRoot());
+            QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, m_pScene->getController()->getPositionTarget()->getRoot());
 
-            if (pPhysical != NULL)
+            if (pPhysical)
             {
                 ViewRotation = pPhysical->getOriginRotation();
             }
@@ -351,7 +351,7 @@ void Quick3DTest::onExportTerrainClicked()
     {
         CAutoTerrain* pTerrain = NULL;
 
-        foreach (QSharedPointer<CComponent> pComponent, m_pScene->getComponents())
+        foreach (QSP<CComponent> pComponent, m_pScene->getComponents())
         {
             if (pComponent->getClassName() == ClassName_CAutoTerrain)
             {
@@ -437,7 +437,7 @@ void Quick3DTest::onGenerateMatrixClicked()
 {
     CCamera* pCamera = NULL;
 
-    foreach (QSharedPointer<CComponent> pComponent, m_pScene->getComponents())
+    foreach (QSP<CComponent> pComponent, m_pScene->getComponents())
     {
         if (pComponent->isCamera())
         {
@@ -554,7 +554,7 @@ void Quick3DTest::onShaderQualityChanged(int iValue)
 
 void Quick3DTest::onTerrainResChanged(int iValue)
 {
-    foreach (QSharedPointer<CComponent> pComponent, m_pScene->getComponents())
+    foreach (QSP<CComponent> pComponent, m_pScene->getComponents())
     {
         if (pComponent->getClassName() == ClassName_CAutoTerrain)
         {
@@ -619,13 +619,13 @@ void Quick3DTest::onViews1IndexChanged(const QString& sName)
 {
     if (m_bProcessEvents)
     {
-        foreach (QSharedPointer<CComponent> pComponent, m_pScene->getComponents())
+        foreach (QSP<CComponent> pComponent, m_pScene->getComponents())
         {
-            CComponent* pFound = pComponent->findComponent(sName);
+            QSP<CComponent> pFound = pComponent->findComponent(sName);
 
-            if (pFound != NULL && pFound->isCamera())
+            if (pFound && pFound->isCamera())
             {
-                m_pScene->getViewports()[0]->setCamera(dynamic_cast<CCamera*>(pFound));
+                m_pScene->getViewports()[0]->setCamera(QSP_CAST(CCamera, pFound));
                 break;
             }
         }
@@ -638,17 +638,13 @@ void Quick3DTest::onControllableIndexChanged(const QString& sName)
 {
     if (m_bProcessEvents)
     {
-        foreach (QSharedPointer<CComponent> pComponent, m_pScene->getComponents())
+        foreach (QSP<CComponent> pComponent, m_pScene->getComponents())
         {
-            CComponent* pFound = pComponent->findComponent(sName);
+            QSP<CComponent> pFound = pComponent->findComponent(sName);
 
-            if (pFound != NULL)
+            if (pFound && pFound->getController() != NULL)
             {
-                if (pFound->getController() != NULL)
-                {
-                    m_pScene->setController(pFound->getController());
-                }
-
+                m_pScene->setController(pFound->getController());
                 break;
             }
         }
@@ -659,13 +655,13 @@ void Quick3DTest::onControllableIndexChanged(const QString& sName)
 
 void Quick3DTest::onResetClicked()
 {
-    foreach (QSharedPointer<CComponent> pComponent, m_pScene->getComponents())
+    foreach (QSP<CComponent> pComponent, m_pScene->getComponents())
     {
         if (pComponent->getClassName() == ClassName_CTerrestrialVehicle || pComponent->getClassName() == ClassName_CSeaVehicle)
         {
-            CVehicle* pVehicle = dynamic_cast<CVehicle*>(pComponent.data());
+            QSP<CVehicle> pVehicle = QSP_CAST(CVehicle, pComponent);
 
-            if (pVehicle != NULL)
+            if (pVehicle)
             {
                 pVehicle->resetTrajectory();
             }

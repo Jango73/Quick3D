@@ -67,15 +67,15 @@ void CController::solveLinks(C3DScene* pScene)
 {
     CComponent::solveLinks(pScene);
 
-    m_rPositionTarget.solve(pScene, this);
-    m_rRotationTarget.solve(pScene, this);
+    m_rPositionTarget.solve(pScene, QSP<CComponent>(this));
+    m_rRotationTarget.solve(pScene, QSP<CComponent>(this));
 
-    if (m_rPositionTarget.component() == NULL && m_pParent != NULL)
+    if (!m_rPositionTarget.component() && m_pParent)
     {
         m_rPositionTarget.setComponent(m_pParent);
     }
 
-    if (m_rRotationTarget.component() == NULL && m_pParent != NULL)
+    if (!m_rRotationTarget.component() && m_pParent)
     {
         m_rRotationTarget.setComponent(m_pParent);
     }
@@ -98,14 +98,18 @@ void CController::update(double dDeltaTime)
 
 //-------------------------------------------------------------------------------------------------
 
-void CController::setPositionTarget(CComponent* pComponent)
+void CController::setPositionTarget(QSP<CComponent> pComponent)
 {
     if (m_rPositionTarget.component())
     {
         if (m_rPositionTarget.component()->isTrajectorable())
         {
-            CTrajectorable* pTraj = dynamic_cast<CTrajectorable*>(m_rPositionTarget.component());
-            pTraj->setTrajectoryEnabled(true);
+            QSP<CTrajectorable> pTraj = QSP_CAST(CTrajectorable, m_rPositionTarget.component());
+
+            if (pTraj)
+            {
+                pTraj->setTrajectoryEnabled(true);
+            }
         }
     }
 
@@ -113,14 +117,18 @@ void CController::setPositionTarget(CComponent* pComponent)
 
     if (m_rPositionTarget.component()->isTrajectorable())
     {
-        CTrajectorable* pTraj = dynamic_cast<CTrajectorable*>(m_rPositionTarget.component());
-        pTraj->setTrajectoryEnabled(false);
+        QSP<CTrajectorable> pTraj = QSP_CAST(CTrajectorable, m_rPositionTarget.component());
+
+        if (pTraj)
+        {
+            pTraj->setTrajectoryEnabled(false);
+        }
     }
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void CController::setRotationTarget(CComponent* pComponent)
+void CController::setRotationTarget(QSP<CComponent> pComponent)
 {
     m_rRotationTarget.setComponent(pComponent);
 }
@@ -237,9 +245,9 @@ void CController::mousePressEvent(QMouseEvent* event)
                             point.y() < pViewport->getPosition().Y + pViewport->getSize().Y
                             )
                     {
-                        CCamera* pCamera = pViewport->getCamera();
+                        QSP<CCamera> pCamera = pViewport->getCamera();
 
-                        if (pCamera != NULL)
+                        if (pCamera)
                         {
                             CVector2 normalizedPoint(
                                         (point.x() - pViewport->getPosition().X) / pViewport->getSize().X,

@@ -54,8 +54,8 @@ void CAirbusFADEC::solveLinks(C3DScene* pScene)
 {
     CAirbusFlightComputer::solveLinks(pScene);
 
-    m_rEngine1Target.solve(pScene, this);
-    m_rEngine2Target.solve(pScene, this);
+    m_rEngine1Target.solve(pScene, QSP<CComponent>(this));
+    m_rEngine2Target.solve(pScene, QSP<CComponent>(this));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -71,10 +71,10 @@ void CAirbusFADEC::work(double dDeltaTime)
 {
     CAirbusFlightComputer::work(dDeltaTime);
 
-    CJetEngine* pEngine1 = dynamic_cast<CJetEngine*>(m_rEngine1Target.component());
-    CJetEngine* pEngine2 = dynamic_cast<CJetEngine*>(m_rEngine2Target.component());
+    QSP<CJetEngine> pEngine1 = QSP_CAST(CJetEngine, m_rEngine1Target.component());
+    QSP<CJetEngine> pEngine2 = QSP_CAST(CJetEngine, m_rEngine2Target.component());
 
-    if (pEngine1 != NULL && pEngine2 != NULL)
+    if (pEngine1 && pEngine2)
     {
         CAirbusData* pFG_CommandedThrust_norm = getData(adFG_CommandedThrust_norm);
         CAirbusData* pFCU_AutoThrust_Engaged = getData(adFCU_AutoThrust_Engaged);

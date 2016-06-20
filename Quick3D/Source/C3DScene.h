@@ -148,19 +148,19 @@ public:
     CController* getController() { return m_pController; }
 
     //!
-    QVector<CLight*> getLights();
+    QVector<QSP<CLight> > getLights();
 
     //!
-    QVector<QSharedPointer<CComponent> >& getComponents() { return m_vComponents; }
+    QVector<QSP<CComponent> >& getComponents() { return m_vComponents; }
 
     //!
-    const QVector<QSharedPointer<CComponent> >& getComponents() const { return m_vComponents; }
+    const QVector<QSP<CComponent> >& getComponents() const { return m_vComponents; }
 
     //!
-    QVector<QSharedPointer<CComponent> > getComponentsByTag(const QString& sTag);
+    QVector<QSP<CComponent> > getComponentsByTag(const QString& sTag);
 
     //!
-    QVector<CLight*> getLightsByTag(const QString& sTag);
+    QVector<QSP<CLight> > getLightsByTag(const QString& sTag);
 
     //!
     CFog& getFog() { return m_tFog; }
@@ -212,7 +212,7 @@ public:
     void clearViewports();
 
     //! Initialise la scène
-    virtual void init(QVector<CComponent*> vComponents);
+    virtual void init(QVector<QSP<CComponent> > vComponents);
 
     //! Initialise les shaders
     virtual void initShaders();
@@ -239,7 +239,7 @@ public:
     void paintShadowCastingComponents(CRenderContext* pContext);
 
     //!
-    void addComponent(QSharedPointer<CComponent> pComponent);
+    void addComponent(QSP<CComponent> pComponent);
 
     //!
     void deleteComponentsByTag(const QString& sTag);
@@ -251,10 +251,10 @@ public:
     virtual Math::RayTracingResult intersect(Math::CRay3 aRay) const;
 
     //! Calcul d'intersection avec un rayon
-    virtual Math::RayTracingResult intersectComponentHierarchy(CComponent* pComponent, Math::CRay3 aRay) const;
+    virtual Math::RayTracingResult intersectComponentHierarchy(QSP<CComponent> pComponent, Math::CRay3 aRay) const;
 
     //! Calcul d'intersection avec un rayon
-    Math::RayTracingResult intersectRecurse(CComponent* pComponent, const Math::CRay3& aRay) const;
+    Math::RayTracingResult intersectRecurse(QSP<CComponent> pComponent, const Math::CRay3& aRay) const;
 
     //!
     void addSegment(Math::CVector3 vStart, Math::CVector3 vEnd);
@@ -270,10 +270,10 @@ public:
 protected:
 
     //!
-    static void getLightsRecurse(QVector<CLight*>& vLights, CComponent* pComponent);
+    static void getLightsRecurse(QVector<QSP<CLight> >& vLights, QSP<CComponent> pComponent);
 
     //!
-    static void getLightsByTagRecurse(QVector<CLight*>& vLights, const QString &sTag, CComponent* pComponent);
+    static void getLightsByTagRecurse(QVector<QSP<CLight> >& vLights, const QString &sTag, QSP<CComponent> pComponent);
 
     //-------------------------------------------------------------------------------------------------
     // Propriétés
@@ -294,7 +294,6 @@ protected:
     CBuildingGenerator*                     m_pBuildingGenerator;
     CTreeGenerator*                         m_pTreeGenerator;
     CShaderCollection*                      m_vShaders;
-    QVector<QSharedPointer<CComponent> >    m_vComponents;
     CController*                            m_pController;
     CController*                            m_pDefaultController;
     Math::CVector3                          m_vWorldOrigin;
@@ -319,6 +318,10 @@ protected:
     double                                  m_dTime;
     double                                  m_dSunIntensity;
     QImage                                  m_imgFrameBuffer;
+
+    // Shared data
+
+    QVector<QSP<CComponent> >               m_vComponents;
 };
 
 #endif // C3DSCENE_H

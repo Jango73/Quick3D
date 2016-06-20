@@ -43,11 +43,11 @@ void CArmature::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 
 void CArmature::update(double dDeltaTime)
 {
-    foreach (CComponent* pChild, m_vChildren)
+    foreach (QSP<CComponent> pChild, m_vChildren)
     {
-        CMesh* pMesh = dynamic_cast<CMesh*>(pChild);
+        QSP<CMesh> pMesh = QSP_CAST(CMesh, pChild);
 
-        if (pMesh != NULL)
+        if (pMesh)
         {
             updateSingleMesh(pMesh, dDeltaTime);
         }
@@ -56,7 +56,7 @@ void CArmature::update(double dDeltaTime)
 
 //-------------------------------------------------------------------------------------------------
 
-void CArmature::updateSingleMesh(CMesh* pMesh, double dDeltaTime)
+void CArmature::updateSingleMesh(QSP<CMesh> pMesh, double dDeltaTime)
 {
 }
 

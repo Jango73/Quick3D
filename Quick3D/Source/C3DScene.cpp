@@ -136,7 +136,7 @@ void C3DScene::clearViewports()
 /*!
     Initializes the scene using components in \a vComponents.
 */
-void C3DScene::init(QVector<CComponent*> vComponents)
+void C3DScene::init(QVector<QSP<CComponent> > vComponents)
 {
     LOG_DEBUG("C3DScene::init()");
 
@@ -162,12 +162,9 @@ void C3DScene::init(QVector<CComponent*> vComponents)
     //-----------------------------------------------
     // Chargement des composants
 
-    foreach(CComponent* pComponent, vComponents)
-    {
-        m_vComponents.append(QSharedPointer<CComponent>(pComponent));
-    }
+    m_vComponents = vComponents;
 
-    foreach(QSharedPointer<CComponent> pComponent, m_vComponents)
+    foreach(QSP<CComponent> pComponent, m_vComponents)
     {
         pComponent->addItems(this);
     }
@@ -175,10 +172,10 @@ void C3DScene::init(QVector<CComponent*> vComponents)
     //-----------------------------------------------
     // Ajout soleil
 
-    QVector<CLight*> vLights = getLights();
+    QVector<QSP<CLight> > vLights = getLights();
     bool bFoundSun = false;
 
-    foreach (CLight* pLight, vLights)
+    foreach (QSP<CLight> pLight, vLights)
     {
         if (pLight->getTag() == "SUN")
         {
@@ -189,14 +186,14 @@ void C3DScene::init(QVector<CComponent*> vComponents)
 
     if (bFoundSun == false)
     {
-        CLight* pLight = new CLight(this);
+        QSP<CLight> pLight = QSP<CLight>(new CLight(this));
 
         pLight->setName("SUN");
         pLight->setTag("SUN");
         pLight->setCastShadows(true);
         pLight->setFOV(10.0);
 
-        m_vComponents.append(QSharedPointer<CLight>(pLight));
+        m_vComponents.append(pLight);
     }
 
     //-----------------------------------------------
@@ -206,7 +203,7 @@ void C3DScene::init(QVector<CComponent*> vComponents)
         m_pController->solveLinks(this);
     }
 
-    foreach (QSharedPointer<CComponent> pComponent, m_vComponents)
+    foreach (QSP<CComponent> pComponent, m_vComponents)
     {
         pComponent->solveLinks(this);
     }
@@ -343,13 +340,13 @@ void C3DScene::forceIR(bool value)
 
 //-------------------------------------------------------------------------------------------------
 
-QVector<CLight *> C3DScene::getLights()
+QVector<QSP<CLight> > C3DScene::getLights()
 {
-    QVector<CLight*> vLights;
+    QVector<QSP<CLight> > vLights;
 
-    foreach (QSharedPointer<CComponent> pComponent, m_vComponents)
+    foreach (QSP<CComponent> pComponent, m_vComponents)
     {
-        getLightsRecurse(vLights, pComponent.data());
+        getLightsRecurse(vLights, pComponent);
     }
 
     return vLights;
@@ -357,19 +354,19 @@ QVector<CLight *> C3DScene::getLights()
 
 //-------------------------------------------------------------------------------------------------
 
-void C3DScene::getLightsRecurse(QVector<CLight*>& vLights, CComponent* pComponent)
+void C3DScene::getLightsRecurse(QVector<QSP<CLight> >& vLights, QSP<CComponent> pComponent)
 {
     if (pComponent->isLight())
     {
-        CLight* pLight = dynamic_cast<CLight*>(pComponent);
+        QSP<CLight> pLight = QSP_CAST(CLight, pComponent);
 
-        if (pLight != NULL)
+        if (pLight)
         {
             vLights.append(pLight);
         }
     }
 
-    foreach (CComponent* pChild, pComponent->getChildren())
+    foreach (QSP<CComponent> pChild, pComponent->getChildren())
     {
         getLightsRecurse(vLights, pChild);
     }
@@ -377,11 +374,11 @@ void C3DScene::getLightsRecurse(QVector<CLight*>& vLights, CComponent* pComponen
 
 //-------------------------------------------------------------------------------------------------
 
-QVector<QSharedPointer<CComponent> > C3DScene::getComponentsByTag(const QString& sTag)
+QVector<QSP<CComponent> > C3DScene::getComponentsByTag(const QString& sTag)
 {
-    QVector<QSharedPointer<CComponent> > vReturnValue;
+    QVector<QSP<CComponent> > vReturnValue;
 
-    foreach(QSharedPointer<CComponent> pComponent, m_vComponents)
+    foreach(QSP<CComponent> pComponent, m_vComponents)
     {
         if (pComponent->getTag() == sTag)
         {
@@ -394,13 +391,13 @@ QVector<QSharedPointer<CComponent> > C3DScene::getComponentsByTag(const QString&
 
 //-------------------------------------------------------------------------------------------------
 
-QVector<CLight*> C3DScene::getLightsByTag(const QString& sTag)
+QVector<QSP<CLight> > C3DScene::getLightsByTag(const QString& sTag)
 {
-    QVector<CLight*> vLights;
+    QVector<QSP<CLight> > vLights;
 
-    foreach (QSharedPointer<CComponent> pComponent, m_vComponents)
+    foreach (QSP<CComponent> pComponent, m_vComponents)
     {
-        getLightsByTagRecurse(vLights, sTag, pComponent.data());
+        getLightsByTagRecurse(vLights, sTag, pComponent);
     }
 
     return vLights;
@@ -408,19 +405,19 @@ QVector<CLight*> C3DScene::getLightsByTag(const QString& sTag)
 
 //-------------------------------------------------------------------------------------------------
 
-void C3DScene::getLightsByTagRecurse(QVector<CLight*>& vLights, const QString& sTag, CComponent* pComponent)
+void C3DScene::getLightsByTagRecurse(QVector<QSP<CLight> >& vLights, const QString& sTag, QSP<CComponent> pComponent)
 {
     if (pComponent->isLight() && pComponent->getTag() == sTag)
     {
-        CLight* pLight = dynamic_cast<CLight*>(pComponent);
+        QSP<CLight> pLight = QSP_CAST(CLight, pComponent);
 
-        if (pLight != NULL)
+        if (pLight)
         {
             vLights.append(pLight);
         }
     }
 
-    foreach (CComponent* pChild, pComponent->getChildren())
+    foreach (QSP<CComponent> pChild, pComponent->getChildren())
     {
         getLightsByTagRecurse(vLights, sTag, pChild);
     }
@@ -448,12 +445,12 @@ void C3DScene::updateScene(double dDeltaTimeS)
         dDeltaTimeS = 0.0;
     }
 
-    foreach (QSharedPointer<CComponent> pComponent, m_vComponents)
+    foreach (QSP<CComponent> pComponent, m_vComponents)
     {
         pComponent->update(dDeltaTimeS);
     }
 
-    foreach (QSharedPointer<CComponent> pComponent, m_vComponents)
+    foreach (QSP<CComponent> pComponent, m_vComponents)
     {
         pComponent->postUpdate(dDeltaTimeS);
     }
@@ -465,7 +462,7 @@ void C3DScene::updateScene(double dDeltaTimeS)
 
 void C3DScene::paintComponents(CRenderContext* pContext)
 {
-    foreach(QSharedPointer<CComponent> pComponent, m_vComponents)
+    foreach(QSP<CComponent> pComponent, m_vComponents)
     {
         if (pComponent->isVisible())
         {
@@ -483,7 +480,7 @@ void C3DScene::paintComponents(CRenderContext* pContext)
 
 void C3DScene::paintShadowCastingComponents(CRenderContext* pContext)
 {
-    foreach(QSharedPointer<CComponent> pComponent, m_vComponents)
+    foreach(QSP<CComponent> pComponent, m_vComponents)
     {
         if (pComponent->isVisible() && pComponent->castsShadows())
         {
@@ -515,7 +512,7 @@ void C3DScene::makeCurrentRenderingContext()
 
 //-------------------------------------------------------------------------------------------------
 
-void C3DScene::addComponent(QSharedPointer<CComponent> pComponent)
+void C3DScene::addComponent(QSP<CComponent> pComponent)
 {
     m_vComponents.append(pComponent);
     pComponent->solveLinks(this);
@@ -528,7 +525,7 @@ void C3DScene::autoResolveHeightFields()
 {
     CHeightField* pTerrain = NULL;
 
-    foreach (QSharedPointer<CComponent> pComponent, m_vComponents)
+    foreach (QSP<CComponent> pComponent, m_vComponents)
     {
         if (dynamic_cast<CAutoTerrain*>(pComponent.data()) != NULL)
         {
@@ -577,9 +574,9 @@ RayTracingResult C3DScene::intersect(Math::CRay3 aRay) const
 {
     RayTracingResult dReturnResult(Q3D_INFINITY);
 
-    foreach (QSharedPointer<CComponent> pComponent, m_vComponents)
+    foreach (QSP<CComponent> pComponent, m_vComponents)
     {
-        RayTracingResult dNewResult = intersectRecurse(pComponent.data(), aRay);
+        RayTracingResult dNewResult = intersectRecurse(pComponent, aRay);
 
         if (dNewResult.m_dDistance < dReturnResult.m_dDistance)
         {
@@ -595,7 +592,7 @@ RayTracingResult C3DScene::intersect(Math::CRay3 aRay) const
 /*!
     Checks if \a ray intersects the component specified by \a pComponent, or any of its children.
 */
-RayTracingResult C3DScene::intersectComponentHierarchy(CComponent* pComponent, Math::CRay3 aRay) const
+RayTracingResult C3DScene::intersectComponentHierarchy(QSP<CComponent> pComponent, Math::CRay3 aRay) const
 {
     RayTracingResult aResult = intersectRecurse(pComponent, aRay);
     return aResult;
@@ -603,11 +600,11 @@ RayTracingResult C3DScene::intersectComponentHierarchy(CComponent* pComponent, M
 
 //-------------------------------------------------------------------------------------------------
 
-RayTracingResult C3DScene::intersectRecurse(CComponent* pComponent, const Math::CRay3& aRay) const
+RayTracingResult C3DScene::intersectRecurse(QSP<CComponent> pComponent, const Math::CRay3& aRay) const
 {
     RayTracingResult dReturnResult = pComponent->intersect(aRay);
 
-    foreach (CComponent* pChild, pComponent->getChildren())
+    foreach (QSP<CComponent> pChild, pComponent->getChildren())
     {
         RayTracingResult dChildResult = intersectRecurse(pChild, aRay);
 
@@ -643,7 +640,7 @@ void C3DScene::dump(QTextStream& stream, int iIdent)
     dumpIdent(stream, iIdent, QString("[C3DScene]"));
     dumpIdent(stream, iIdent, QString("CComponent::getNumComponents() : %1").arg(CComponent::getNumComponents()));
 
-    foreach (QSharedPointer<CComponent> pComponent, m_vComponents)
+    foreach (QSP<CComponent> pComponent, m_vComponents)
     {
         dumpOpenBlock(stream, iIdent);
         pComponent->dump(stream, iIdent + 1);

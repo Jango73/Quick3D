@@ -120,7 +120,7 @@ void CGLWidgetScene::paintGL()
 
 //-------------------------------------------------------------------------------------------------
 
-void CGLWidgetScene::init(QVector<CComponent*> vComponents)
+void CGLWidgetScene::init(QVector<QSP<CComponent> > vComponents)
 {
     LOG_DEBUG("CGLWidgetScene::init()");
 
@@ -320,8 +320,8 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
 
         m_dSunIntensity = Math::Angles::_max(m_dSunIntensity, 1.0 - dAtmosphereFactor);
 
-        QVector<CLight*> vLights = getLights();
-        QVector<CLight*> vSuns = getLightsByTag("SUN");
+        QVector<QSP<CLight> > vLights = getLights();
+        QVector<QSP<CLight> > vSuns = getLightsByTag("SUN");
 
         if (vSuns.count() > 0)
         {
@@ -417,9 +417,9 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
 
 void CGLWidgetScene::computeLightsOcclusion(CRenderContext* pContext)
 {
-    QVector<CLight*> vLights = getLights();
+    QVector<QSP<CLight> > vLights = getLights();
 
-    foreach (CLight* pLight, vLights)
+    foreach (QSP<CLight> pLight, vLights)
     {
         CRay3 aRay;
         aRay.vOrigin = pLight->getWorldPosition();

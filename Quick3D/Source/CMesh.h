@@ -74,6 +74,9 @@ public:
     //! Recherche les liens de cet objet
     virtual void solveLinks(C3DScene* pScene);
 
+    //! Efface les liens de cet objet
+    virtual void clearLinks(C3DScene* pScene);
+
     //! Dessine l'objet
     virtual void paint(CRenderContext* pContext);
 

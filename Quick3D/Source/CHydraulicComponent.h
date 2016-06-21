@@ -20,63 +20,66 @@ class QUICK3D_EXPORT CHydraulicComponent : public CComponent
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	static CComponent* instanciator(C3DScene* pScene);
+    //!
+    static CComponent* instanciator(C3DScene* pScene);
 
-	//!
-	CHydraulicComponent(C3DScene* pScene);
+    //!
+    CHydraulicComponent(C3DScene* pScene);
 
-	//!
-	virtual ~CHydraulicComponent();
+    //!
+    virtual ~CHydraulicComponent();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	double getPressure() const { return m_dPressure; }
+    //!
+    double getPressure() const { return m_dPressure; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes héritées
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes héritées
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual QString getClassName() const { return ClassName_CHydraulicComponent; }
+    //!
+    virtual QString getClassName() const { return ClassName_CHydraulicComponent; }
 
-	//! Charge les paramètres de cet objet
+    //! Charge les paramètres de cet objet
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
-	//! Recherche les liens de cet objet
-	virtual void solveLinks(C3DScene* pScene);
+    //! Recherche les liens de cet objet
+    virtual void solveLinks(C3DScene* pScene);
 
-	//!
-	virtual void update(double dDeltaTime);
+    //! Efface les liens de cet objet
+    virtual void clearLinks(C3DScene* pScene);
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //!
+    virtual void update(double dDeltaTime);
 
-	//!
-	virtual void push(double dPressure, double dDeltaTime);
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual double pull(double dPressure, double dDeltaTime);
+    //!
+    virtual void push(double dPressure, double dDeltaTime);
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //!
+    virtual double pull(double dPressure, double dDeltaTime);
+
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	double												m_dPressure;
-	QVector<CComponentReference<CHydraulicComponent> >	m_vInputs;
-	QVector<CComponentReference<CHydraulicComponent> >	m_vOutputs;
+    double                                              m_dPressure;
+    QVector<CComponentReference<CHydraulicComponent> >  m_vInputs;
+    QVector<CComponentReference<CHydraulicComponent> >  m_vOutputs;
 };

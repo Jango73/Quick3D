@@ -57,6 +57,16 @@ void CTankController::solveLinks(C3DScene* pScene)
 
 //-------------------------------------------------------------------------------------------------
 
+void CTankController::clearLinks(C3DScene* pScene)
+{
+    CForceController::clearLinks(pScene);
+
+    m_rTurretYawTarget.clear();
+    m_rTurretPitchTarget.clear();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CTankController::update(double dDeltaTime)
 {
     CForceController::update(dDeltaTime);

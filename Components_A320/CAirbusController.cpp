@@ -47,6 +47,15 @@ void CAirbusController::solveLinks(C3DScene* pScene)
 
 //-------------------------------------------------------------------------------------------------
 
+void CAirbusController::clearLinks(C3DScene* pScene)
+{
+    CAircraftController::clearLinks(pScene);
+
+    m_rFCU.clear();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CAirbusController::update(double dDeltaTime)
 {
     CController::update(dDeltaTime);

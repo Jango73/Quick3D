@@ -43,6 +43,12 @@ void CAirbusDataSupplier::solveLinks(C3DScene* pScene)
 
 //-------------------------------------------------------------------------------------------------
 
+void CAirbusDataSupplier::clearLinks(C3DScene* pScene)
+{
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CAirbusDataSupplier::solveLinks(C3DScene* pScene, CComponent* pCaller)
 {
     foreach (QString sName, m_vDataInputNames)

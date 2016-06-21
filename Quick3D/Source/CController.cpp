@@ -83,6 +83,16 @@ void CController::solveLinks(C3DScene* pScene)
 
 //-------------------------------------------------------------------------------------------------
 
+void CController::clearLinks(C3DScene* pScene)
+{
+    CComponent::clearLinks(pScene);
+
+    m_rPositionTarget.clear();
+    m_rRotationTarget.clear();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CController::update(double dDeltaTime)
 {
     CComponent::update(dDeltaTime);

@@ -64,6 +64,20 @@ void CAircraftController::solveLinks(C3DScene* pScene)
 
 //-------------------------------------------------------------------------------------------------
 
+void CAircraftController::clearLinks(C3DScene* pScene)
+{
+    CStandardController::clearLinks(pScene);
+
+    m_rLeftWingTarget.clear();
+    m_rRightWingTarget.clear();
+    m_rElevatorTarget.clear();
+    m_rRudderTarget.clear();
+    m_rEngine1Target.clear();
+    m_rEngine2Target.clear();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CAircraftController::update(double dDeltaTime)
 {
     CController::update(dDeltaTime);

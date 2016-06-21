@@ -60,6 +60,16 @@ void CAirbusFADEC::solveLinks(C3DScene* pScene)
 
 //-------------------------------------------------------------------------------------------------
 
+void CAirbusFADEC::clearLinks(C3DScene* pScene)
+{
+    CAirbusFlightComputer::clearLinks(pScene);
+
+    m_rEngine1Target.clear();
+    m_rEngine2Target.clear();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CAirbusFADEC::update(double dDeltaTime)
 {
     CAirbusFlightComputer::update(dDeltaTime);

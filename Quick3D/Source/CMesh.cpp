@@ -171,6 +171,13 @@ void CMesh::solveLinks(C3DScene* pScene)
 
 //-------------------------------------------------------------------------------------------------
 
+void CMesh::clearLinks(C3DScene* pScene)
+{
+    CPhysicalComponent::clearLinks(pScene);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CMesh::flipNormals()
 {
     CPhysicalComponent::flipNormals();

@@ -15,4 +15,7 @@ public:
 
     //! Recherche les liens de cet objet
     virtual void solveLinks(C3DScene* pScene) = 0;
+
+    //! Efface les liens de cet objet
+    virtual void clearLinks(C3DScene* pScene) = 0;
 };

@@ -132,6 +132,12 @@ void CMaterial::solveLinks(C3DScene* pScene)
 
 //-------------------------------------------------------------------------------------------------
 
+void CMaterial::clearLinks(C3DScene* pScene)
+{
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CMaterial::update(double dDeltaTime)
 {
     for (int iIndex = 0; iIndex < m_vDiffuseTextures.count(); iIndex++)

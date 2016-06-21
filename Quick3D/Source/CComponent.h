@@ -268,6 +268,9 @@ public:
     //! Recherche les liens de cet objet
     virtual void solveLinks(C3DScene* pScene);
 
+    //! Efface les liens de cet objet
+    virtual void clearLinks(C3DScene* pScene);
+
     //! Recherche un composant dans la hiérarchie de cet objet
     virtual QSP<CComponent> findComponent(QString sName, QSP<CComponent> pCaller = QSP<CComponent>(NULL));
 

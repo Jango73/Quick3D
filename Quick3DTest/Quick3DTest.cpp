@@ -101,6 +101,8 @@ Quick3DTest::~Quick3DTest()
 {
     LOG_DEBUG("Quick3DTest::~Quick3DTest()");
 
+    delete m_pScene;
+
     CComponentFactory::killInstance();
 }
 

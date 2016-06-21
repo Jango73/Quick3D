@@ -76,6 +76,12 @@ void CElectricalComponent::solveLinks(C3DScene* pScene)
 
 //-------------------------------------------------------------------------------------------------
 
+void CElectricalComponent::clearLinks(C3DScene* pScene)
+{
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CElectricalComponent::update(double dDeltaTime)
 {
     if (m_vPowerInputs.count() > 0)

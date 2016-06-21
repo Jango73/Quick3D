@@ -111,6 +111,11 @@ void C3DScene::clearComponents()
 {
     // Destruction des composants
 
+    foreach (QSP<CComponent> pComponent, m_vComponents)
+    {
+        pComponent->clearLinks(this);
+    }
+
     m_vComponents.clear();
 }
 
@@ -559,6 +564,7 @@ void C3DScene::deleteComponentsByTag(const QString& sTag)
     {
         if (m_vComponents[iIndex]->getTag() == sTag)
         {
+            m_vComponents[iIndex]->clearLinks(this);
             m_vComponents.remove(iIndex);
             iIndex--;
         }

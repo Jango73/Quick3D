@@ -65,6 +65,12 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
+    void clear()
+    {
+        m_pComponent.reset();
+    }
+
+    //!
     void solve(C3DScene* pScene, QSP<CComponent> pCaller)
     {
         foreach (QSP<CComponent> pComponent, pScene->getComponents())

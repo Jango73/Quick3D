@@ -17,123 +17,126 @@ class C3DScene;
 
 enum ECurrentType
 {
-	ctNone,
-	ctAC,
-	ctDC
+    ctNone,
+    ctAC,
+    ctDC
 };
 
 class CElectricalLoad
 {
 public:
 
-	//!
-	CElectricalLoad()
-		: m_eType(ctAC)
-		, m_dVoltage(200.0)
-		, m_dAmperage(0.0)
-		, m_dFrequency(400.0)
-	{
-	}
+    //!
+    CElectricalLoad()
+        : m_eType(ctAC)
+        , m_dVoltage(200.0)
+        , m_dAmperage(0.0)
+        , m_dFrequency(400.0)
+    {
+    }
 
-	//!
-	CElectricalLoad(ECurrentType eType, double dVoltage, double dAmperage, double dFrequency)
-		: m_eType(eType)
-		, m_dVoltage(dVoltage)
-		, m_dAmperage(dAmperage)
-		, m_dFrequency(dFrequency)
-	{
-	}
+    //!
+    CElectricalLoad(ECurrentType eType, double dVoltage, double dAmperage, double dFrequency)
+        : m_eType(eType)
+        , m_dVoltage(dVoltage)
+        , m_dAmperage(dAmperage)
+        , m_dFrequency(dFrequency)
+    {
+    }
 
-	//!
-	CElectricalLoad(const CElectricalLoad& target)
-	{
-		*this = target;
-	}
+    //!
+    CElectricalLoad(const CElectricalLoad& target)
+    {
+        *this = target;
+    }
 
-	//!
-	CElectricalLoad& operator = (const CElectricalLoad& target)
-	{
-		m_eType			= target.m_eType;
-		m_dVoltage		= target.m_dVoltage;
-		m_dAmperage		= target.m_dAmperage;
-		m_dFrequency	= target.m_dFrequency;
+    //!
+    CElectricalLoad& operator = (const CElectricalLoad& target)
+    {
+        m_eType			= target.m_eType;
+        m_dVoltage		= target.m_dVoltage;
+        m_dAmperage		= target.m_dAmperage;
+        m_dFrequency	= target.m_dFrequency;
 
-		return *this;
-	}
+        return *this;
+    }
 
-	ECurrentType	m_eType;
-	double			m_dVoltage;
-	double			m_dAmperage;
-	double			m_dFrequency;
+    ECurrentType	m_eType;
+    double			m_dVoltage;
+    double			m_dAmperage;
+    double			m_dFrequency;
 };
 
 class QUICK3D_EXPORT CElectricalComponent : public CComponent
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	static CComponent* instanciator(C3DScene* pScene);
+    //!
+    static CComponent* instanciator(C3DScene* pScene);
 
-	//!
-	CElectricalComponent(C3DScene* pScene);
+    //!
+    CElectricalComponent(C3DScene* pScene);
 
-	//!
-	virtual ~CElectricalComponent();
+    //!
+    virtual ~CElectricalComponent();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	const CElectricalLoad& getLoad() const { return m_tLoad; }
+    //!
+    const CElectricalLoad& getLoad() const { return m_tLoad; }
 
-	//!
-	bool isShortCircuited() const { return m_bShortCircuited; }
+    //!
+    bool isShortCircuited() const { return m_bShortCircuited; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes héritées
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes héritées
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual QString getClassName() const { return ClassName_CElectricalComponent; }
+    //!
+    virtual QString getClassName() const { return ClassName_CElectricalComponent; }
 
-	//! Charge les paramètres de cet objet
+    //! Charge les paramètres de cet objet
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
-	//! Recherche les liens de cet objet
-	virtual void solveLinks(C3DScene* pScene);
+    //! Recherche les liens de cet objet
+    virtual void solveLinks(C3DScene* pScene);
 
-	//!
-	virtual void update(double dDeltaTime);
+    //! Efface les liens de cet objet
+    virtual void clearLinks(C3DScene* pScene);
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //!
+    virtual void update(double dDeltaTime);
 
-	//!
-	virtual void push(const CElectricalLoad& tLoad, double dDeltaTime);
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual CElectricalLoad pull(double dAmperage, double dDeltaTime);
+    //!
+    virtual void push(const CElectricalLoad& tLoad, double dDeltaTime);
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //!
+    virtual CElectricalLoad pull(double dAmperage, double dDeltaTime);
+
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	double							m_dMaxAmperage;
-	bool							m_bShortCircuited;
-	CElectricalLoad					m_tLoad;
-	QVector<QString>				m_vPowerInputNames;
-	QVector<CElectricalComponent*>	m_vPowerInputs;
-	QVector<CElectricalComponent*>	m_vPowerOutputs;
+    double							m_dMaxAmperage;
+    bool							m_bShortCircuited;
+    CElectricalLoad					m_tLoad;
+    QVector<QString>				m_vPowerInputNames;
+    QVector<CElectricalComponent*>	m_vPowerInputs;
+    QVector<CElectricalComponent*>	m_vPowerOutputs;
 };

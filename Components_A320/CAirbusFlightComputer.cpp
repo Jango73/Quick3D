@@ -63,6 +63,14 @@ void CAirbusFlightComputer::solveLinks(C3DScene* pScene)
 
 //-------------------------------------------------------------------------------------------------
 
+void CAirbusFlightComputer::clearLinks(C3DScene* pScene)
+{
+    CElectricalConsumer::clearLinks(pScene);
+    CAirbusDataSupplier::clearLinks(pScene);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CAirbusFlightComputer::update(double dDeltaTime)
 {
     CElectricalConsumer::update(dDeltaTime);

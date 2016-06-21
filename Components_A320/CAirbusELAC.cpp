@@ -64,6 +64,17 @@ void CAirbusELAC::solveLinks(C3DScene* pScene)
 
 //-------------------------------------------------------------------------------------------------
 
+void CAirbusELAC::clearLinks(C3DScene* pScene)
+{
+    CAirbusFlightComputer::clearLinks(pScene);
+
+    m_rLeftWingTarget.clear();
+    m_rRightWingTarget.clear();
+    m_rElevatorTarget.clear();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CAirbusELAC::update(double dDeltaTime)
 {
     CAirbusFlightComputer::update(dDeltaTime);

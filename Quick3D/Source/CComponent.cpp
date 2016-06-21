@@ -206,6 +206,23 @@ void CComponent::solveLinks(C3DScene* pScene)
 //-------------------------------------------------------------------------------------------------
 
 /*!
+    Clears the links in this component.
+*/
+void CComponent::clearLinks(C3DScene* pScene)
+{
+    foreach (QSP<CComponent> pChild, m_vChildren)
+    {
+        pChild->clearLinks(pScene);
+    }
+
+    m_vChildren.clear();
+    m_sParentName.clear();
+    m_pParent.reset();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
     Looks for a component specified by \a sName, in this components tree. \br\br
     \a sName is like a file system path, it can contain '.' characters to separate component names. \br
 */

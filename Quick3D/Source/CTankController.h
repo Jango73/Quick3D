@@ -52,6 +52,9 @@ public:
     //! Recherche les liens de cet objet
     virtual void solveLinks(C3DScene* pScene);
 
+    //! Efface les liens de cet objet
+    virtual void clearLinks(C3DScene* pScene);
+
     //! Met l'objet à jour d'après le temps écoulé depuis la dernière image
     virtual void update(double dDeltaTime);
 

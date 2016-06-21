@@ -59,6 +59,23 @@ void CHydraulicComponent::solveLinks(C3DScene* pScene)
 
 //-------------------------------------------------------------------------------------------------
 
+void CHydraulicComponent::clearLinks(C3DScene* pScene)
+{
+    CComponent::clearLinks(pScene);
+
+    for (int iIndex = 0; iIndex < m_vInputs.count(); iIndex++)
+    {
+        m_vInputs[iIndex].clear();
+    }
+
+    for (int iIndex = 0; iIndex < m_vOutputs.count(); iIndex++)
+    {
+        m_vOutputs[iIndex].clear();
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CHydraulicComponent::update(double dDeltaTime)
 {
     if (m_vInputs.count() > 0)

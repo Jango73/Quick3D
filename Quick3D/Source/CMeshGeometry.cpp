@@ -1612,7 +1612,43 @@ void CMeshGeometry::paint(CRenderContext* pContext, CComponent* pContainer)
 
         if (bFrustumCheck)
         {
+#ifdef DRAW_BY_MATERIAL
             pContext->addGeometry(pContainer, this);
+#else
+
+            for (int iIndex = 0; iIndex < m_vMaterials.count(); iIndex++)
+            {
+                CGLMeshData* pData = m_vGLMeshData[iIndex];
+                CMaterial* pMaterial = m_vMaterials[iIndex].data();
+
+                // Get a program from object material
+                QGLShaderProgram* pProgram = pMaterial->activate(pContext);
+
+                // If program ok...
+                if (pProgram != NULL)
+                {
+                    QMatrix4x4 mModelAbsolute;
+                    mModelAbsolute.setToIdentity();
+
+                    if (pContainer != NULL)
+                    {
+                        // Set transform matrix
+                        CVector3 WorldPosition = pContainer->getWorldPosition() - pContext->scene()->getWorldOrigin();
+                        CVector3 WorldRotation = pContainer->getWorldRotation();
+                        CVector3 WorldScale = pContainer->getWorldScale();
+
+                        mModelAbsolute.translate(WorldPosition.X, WorldPosition.Y, WorldPosition.Z);
+                        mModelAbsolute.rotate(Math::Angles::toDeg(WorldRotation.Y), QVector3D(0, 1, 0));
+                        mModelAbsolute.rotate(Math::Angles::toDeg(WorldRotation.X), QVector3D(1, 0, 0));
+                        mModelAbsolute.rotate(Math::Angles::toDeg(WorldRotation.Z), QVector3D(0, 0, 1));
+                        mModelAbsolute.scale(WorldScale.X, WorldScale.Y, WorldScale.Z);
+                    }
+
+                    pData->paint(pContext, mModelAbsolute, pProgram, pData->m_iGLType);
+                }
+            }
+
+#endif
         }
     }
 }

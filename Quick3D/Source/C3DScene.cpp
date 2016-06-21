@@ -478,7 +478,9 @@ void C3DScene::paintComponents(CRenderContext* pContext)
         }
     }
 
+#ifdef DRAW_BY_MATERIAL
     pContext->meshByMaterial()->paint(pContext);
+#endif
 
     m_pSegments->paint(pContext, NULL);
 }
@@ -496,7 +498,9 @@ void C3DScene::paintShadowCastingComponents(CRenderContext* pContext)
         }
     }
 
+#ifdef DRAW_BY_MATERIAL
     pContext->meshByMaterial()->paint(pContext);
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------

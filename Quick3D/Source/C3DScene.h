@@ -5,7 +5,6 @@
 #include "quick3d_global.h"
 
 // Qt
-#include <QSharedPointer>
 #include <QGLWidget>
 #include <QImage>
 #include <QTime>

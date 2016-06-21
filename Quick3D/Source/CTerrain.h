@@ -135,7 +135,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    void setMaterial(QSharedPointer<CMaterial> pMaterial);
+    void setMaterial(QSP<CMaterial> pMaterial);
 
     //!
     int getPointIndexForXZ(int X, int Z) const;

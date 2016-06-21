@@ -236,7 +236,7 @@ void CController::mousePressEvent(QMouseEvent* event)
     m_bUseMouse = true;
     m_pPreviousMousePos = event->globalPos();
 
-    if (m_pParent != NULL) // && event->button() == Qt::RightButton)
+    if (m_pParent) // && event->button() == Qt::RightButton)
     {
         C3DScene* pScene = m_pParent->getScene();
 

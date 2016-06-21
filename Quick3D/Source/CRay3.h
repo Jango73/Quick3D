@@ -38,9 +38,9 @@ public:
         return *this;
     }
 
-    double			m_dDistance;
-    const void*		m_pObject;
-    CVector3		m_vNormal;
+    double          m_dDistance;
+    const void*     m_pObject;
+    CVector3        m_vNormal;
 };
 
 class CRay3

@@ -23,7 +23,7 @@ QSharedPointer<CMeshGeometry> CQ3DLoader::load(const QString& sBaseFile, CCompon
 {
     CXMLNode xNode = CXMLNode::parseXML(sText);
 
-    QVector<QSharedPointer<CMaterial> > vMaterials;
+    QVector<QSP<CMaterial> > vMaterials;
 
     QSharedPointer<CMeshGeometry> pMesh = QSharedPointer<CMeshGeometry>(new CMeshGeometry(pContainer->getScene()));
 
@@ -48,7 +48,7 @@ void CQ3DLoader::loadComponent(
         CComponent* pContainer,
         QSharedPointer<CMeshGeometry> pMesh,
         CXMLNode xComponent,
-        QVector<QSharedPointer<CMaterial> >& vMaterials,
+        QVector<QSP<CMaterial> >& vMaterials,
         CComponent* pParent
         )
 {
@@ -96,7 +96,7 @@ void CQ3DLoader::loadComponent(
 
         pNewMaterial->loadParameters(sBaseFile, xMaterial);
 
-        vMaterials.append(QSharedPointer<CMaterial>(pNewMaterial));
+        vMaterials.append(QSP<CMaterial>(pNewMaterial));
     }
 
     // Lecture des vertex
@@ -213,7 +213,7 @@ void CQ3DLoader::addBounds(CComponent* pContainer, CBoundingBox& bBox, CMatrix4 
     {
         QSP<CMesh> pChildMesh = QSP_CAST(CMesh, pChild);
 
-        if (pChildMesh != NULL)
+        if (pChildMesh)
         {
             addBounds(pChildMesh.data(), bBox, mTransform);
         }

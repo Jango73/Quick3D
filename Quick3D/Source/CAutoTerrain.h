@@ -47,7 +47,7 @@ public:
         , m_dSpread(dSpread)
         , m_pFunction(pFunction)
         , m_pMesh(pMesh)
-        , m_pMaterial(QSharedPointer<CMaterial>(pMaterial))
+        , m_pMaterial(QSP<CMaterial>(pMaterial))
     {
     }
 
@@ -57,11 +57,11 @@ public:
         if (m_pMesh != NULL) delete m_pMesh;
     }
 
-    EVegetationType             m_eType;
-    double                      m_dSpread;
-    CGenerateFunction*          m_pFunction;
-    CMeshInstance*              m_pMesh;
-    QSharedPointer<CMaterial>   m_pMaterial;
+    EVegetationType     m_eType;
+    double              m_dSpread;
+    CGenerateFunction*  m_pFunction;
+    CMeshInstance*      m_pMesh;
+    QSP<CMaterial>      m_pMaterial;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -222,10 +222,10 @@ protected:
     int                             m_iLevels;
     int                             m_iTerrainResolution;
     CXMLNode                        m_xParameters;
-    QSharedPointer<CMaterial>       m_pMaterial;
     QVector<CVegetation*>           m_vVegetation;
 
     // Shared data
 
     QSP<CWorldChunk>                m_pRoot;
+    QSP<CMaterial>                  m_pMaterial;
 };

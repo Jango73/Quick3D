@@ -140,7 +140,7 @@ void CMesh::solveLinks(C3DScene* pScene)
 
                 if (pFound)
                 {
-                    foreach (QSharedPointer<CMaterial> pMaterial, m_pGeometry->getMaterials())
+                    foreach (QSP<CMaterial> pMaterial, m_pGeometry->getMaterials())
                     {
                         foreach (CTexture* pTexture, pMaterial->getDiffuseTextures())
                         {

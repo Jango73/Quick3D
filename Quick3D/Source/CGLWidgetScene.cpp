@@ -36,7 +36,7 @@ CGLWidgetScene::CGLWidgetScene(bool bForDisplay)
         CMaterial* pMaterial = new CMaterial(this);
         pMaterial->getDiffuse() = Vector4(1.0, 0.0, 0.0, 1.0);
         pMaterial->setLines(true);
-        m_mSegments.setMaterial(QSharedPointer<CMaterial>(pMaterial));
+        m_mSegments.setMaterial(QSP<CMaterial>(pMaterial));
         m_mSegments.setGLType(GL_LINES);
     }
 }

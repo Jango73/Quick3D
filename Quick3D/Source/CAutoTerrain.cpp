@@ -58,7 +58,7 @@ CAutoTerrain::CAutoTerrain(C3DScene* pScene, CGeoloc gCameraPosition, CHeightFie
     setName("AutoTerrain");
     setInheritTransform(false);
 
-    m_pMaterial = pScene->getRessourcesManager()->shareMaterial(QSharedPointer<CMaterial>(new CMaterial(m_pScene)));
+    m_pMaterial = pScene->getRessourcesManager()->shareMaterial(QSP<CMaterial>(new CMaterial(m_pScene)));
 
     if (m_bGenerateNow)
     {
@@ -163,7 +163,7 @@ void CAutoTerrain::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 
     if (sMaterialType.toLower() == "blend")
     {
-        m_pMaterial = m_pScene->getRessourcesManager()->shareMaterial(QSharedPointer<CMaterial>(new CMaterial(m_pScene)));
+        m_pMaterial = m_pScene->getRessourcesManager()->shareMaterial(QSP<CMaterial>(new CMaterial(m_pScene)));
 
         m_pMaterial->setIRFactor(0.2);
 
@@ -184,7 +184,7 @@ void CAutoTerrain::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
         pTiled->setIRFactor(0.2);
         pTiled->setLevels(m_iLevels);
 
-        m_pMaterial = m_pScene->getRessourcesManager()->shareMaterial(QSharedPointer<CMaterial>(pTiled));
+        m_pMaterial = m_pScene->getRessourcesManager()->shareMaterial(QSP<CMaterial>(pTiled));
     }
 }
 

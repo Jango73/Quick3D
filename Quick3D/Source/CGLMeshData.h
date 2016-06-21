@@ -4,7 +4,6 @@
 #include "quick3d_global.h"
 
 // Qt
-#include <QSharedPointer>
 #include <QImage>
 #include <QMutex>
 #include <QMutexLocker>

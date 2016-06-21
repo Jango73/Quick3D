@@ -46,5 +46,8 @@ protected:
 
     QMutex                  m_mMutex;
     C3DScene*               m_pScene;
+
+    // Shared data
+
     QSharedPointer<CMesh>   m_pBuilding1;
 };

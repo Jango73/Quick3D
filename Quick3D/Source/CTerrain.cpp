@@ -92,7 +92,7 @@ CTerrain::CTerrain(
     else
     {
         // Delete default material and create a water material
-        m_pMesh->setMaterial(QSharedPointer<CWaterMaterial>(new CWaterMaterial(pScene)));
+        m_pMesh->setMaterial(QSP<CWaterMaterial>(new CWaterMaterial(pScene)));
 
         // Set material IR factor
         m_pMesh->getMaterials()[0]->setIRFactor(0.2);
@@ -152,7 +152,7 @@ CBoundingBox CTerrain::getWorldBounds()
 
 //-------------------------------------------------------------------------------------------------
 
-void CTerrain::setMaterial(QSharedPointer<CMaterial> pMaterial)
+void CTerrain::setMaterial(QSP<CMaterial> pMaterial)
 {
     m_pMesh->setMaterial(pMaterial);
 }

@@ -83,7 +83,7 @@ void CEngine::update(double dDeltaTime)
     QSP<CComponent> pRoot = getRoot();
     QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, pRoot);
 
-    if (pPhysical != NULL)
+    if (pPhysical)
     {
         double dAirFactor = CAtmosphere::getInstance()->getAirDragFactor(pPhysical->getGeoloc().Altitude);
         dAirFactor = Math::Angles::clipDouble((dAirFactor * 2.0) * 40.0, 0.0, 40.0);

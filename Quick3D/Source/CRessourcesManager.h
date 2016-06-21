@@ -54,19 +54,19 @@ public:
     QPixmap* getPixmapByFilePathName(const QString& filePathName);
 
     //!
-    QSharedPointer<CMaterial> shareMaterial(QSharedPointer<CMaterial> pMaterial);
+    QSP<CMaterial> shareMaterial(QSP<CMaterial> pMaterial);
 
     //!
-    QSharedPointer<CMaterial> getDefaultMaterial() { return m_pDefaultMaterial; }
+    QSP<CMaterial> getDefaultMaterial() { return m_pDefaultMaterial; }
 
     //!
-    QSharedPointer<CMaterial> getWaterMaterial() { return m_pWaterMaterial; }
+    QSP<CMaterial> getWaterMaterial() { return m_pWaterMaterial; }
 
     //!
-    QSharedPointer<CMaterial> getSkyboxMaterial() { return m_pSkyboxMaterial; }
+    QSP<CMaterial> getSkyboxMaterial() { return m_pSkyboxMaterial; }
 
     //!
-    QSharedPointer<CMaterial> getTreeMaterial() { return m_pTreeMaterial; }
+    QSP<CMaterial> getTreeMaterial() { return m_pTreeMaterial; }
 
 protected:
 
@@ -86,17 +86,17 @@ protected:
     QVector<QSharedPointer<CMeshGeometry> > m_vGeometry;
 
     //! Material table
-    QVector<QSharedPointer<CMaterial> > m_vMaterials;
+    QVector<QSP<CMaterial> > m_vMaterials;
 
     //!
-    QSharedPointer<CMaterial> m_pDefaultMaterial;
+    QSP<CMaterial> m_pDefaultMaterial;
 
     //!
-    QSharedPointer<CMaterial> m_pWaterMaterial;
+    QSP<CMaterial> m_pWaterMaterial;
 
     //!
-    QSharedPointer<CMaterial> m_pSkyboxMaterial;
+    QSP<CMaterial> m_pSkyboxMaterial;
 
     //!
-    QSharedPointer<CMaterial> m_pTreeMaterial;
+    QSP<CMaterial> m_pTreeMaterial;
 };

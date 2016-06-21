@@ -5,6 +5,8 @@
 
 // Qt
 #include <QImage>
+#include <QSharedData>
+#include <QExplicitlySharedDataPointer>
 #include <QtOpenGL>
 #include <QtOpenGL/QGLShaderProgram>
 #include <QGLFramebufferObject>
@@ -19,12 +21,19 @@
 
 //-------------------------------------------------------------------------------------------------
 
+#ifndef QSP
+#define     QSP             QExplicitlySharedDataPointer
+#define     QSP_CAST(T,O)   QSP<T>(dynamic_cast<T*>(O.data()))
+#endif
+
+//-------------------------------------------------------------------------------------------------
+
 class C3DScene;
 class CRenderContext;
 
 //-------------------------------------------------------------------------------------------------
 
-class QUICK3D_EXPORT CMaterial : public QObject, public ILoadable
+class QUICK3D_EXPORT CMaterial : public QObject, public QSharedData, public ILoadable
 {
     Q_OBJECT
 

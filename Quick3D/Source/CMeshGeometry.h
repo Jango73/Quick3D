@@ -118,7 +118,7 @@ public:
     void setURL(const QString& sURL);
 
     //!
-    void setMaterial(QSharedPointer<CMaterial> pMaterial);
+    void setMaterial(QSP<CMaterial> pMaterial);
 
     //!
     void setBounds(CBoundingBox bBox);
@@ -155,10 +155,10 @@ public:
     const QVector<CVertexGroup>& getVertexGroups() const { return m_vVertexGroups; }
 
     //!
-    const QVector<QSharedPointer<CMaterial> >& getMaterials() const { return m_vMaterials; }
+    const QVector<QSP<CMaterial> >& getMaterials() const { return m_vMaterials; }
 
     //!
-    QVector<QSharedPointer<CMaterial> >& getMaterials() { return m_vMaterials; }
+    QVector<QSP<CMaterial> >& getMaterials() { return m_vMaterials; }
 
     //!
     QMap<QString, QString>& getDynTexUpdaters() { return m_mDynTexUpdaters; }
@@ -294,23 +294,23 @@ protected:
 
     // Owned data
 
-    QMutex                                  m_mMutex;                   // Mutex de protection des données entre threads
-    C3DScene*                               m_pScene;
-    QString                                 m_sURL;
-    CBoundingBox                            m_bBounds;                  // Boite englobante du maillage
-    QVector<CVertex>                        m_vVertices;                // Sommets du maillage
-    QVector<CFace>                          m_vFaces;                   // Polygones du maillage
-    QVector<CVertexGroup>                   m_vVertexGroups;            // Groupes de sommets pour skinning
-    QVector<CGLMeshData*>                   m_vGLMeshData;
-    QMap<QString, QString>                  m_mDynTexUpdaters;
-    CMeshPartition                          m_mpPartitions;             // Partitions pour accélerer le ray-tracing
-    double                                  m_dMaxDistance;             // Distance maximale à laquelle ce maillage est visible
-    int                                     m_iGLType;
-    bool                                    m_bUseSpacePartitionning;   // Si vrai, le partionnement des polygones est utilisé via m_mpPartitions
-    bool                                    m_bAutomaticBounds;
-    bool                                    m_bGeometryDirty;
+    QMutex                          m_mMutex;                   // Mutex de protection des données entre threads
+    C3DScene*                       m_pScene;
+    QString                         m_sURL;
+    CBoundingBox                    m_bBounds;                  // Boite englobante du maillage
+    QVector<CVertex>                m_vVertices;                // Sommets du maillage
+    QVector<CFace>                  m_vFaces;                   // Polygones du maillage
+    QVector<CVertexGroup>           m_vVertexGroups;            // Groupes de sommets pour skinning
+    QVector<CGLMeshData*>           m_vGLMeshData;
+    QMap<QString, QString>          m_mDynTexUpdaters;
+    CMeshPartition                  m_mpPartitions;             // Partitions pour accélerer le ray-tracing
+    double                          m_dMaxDistance;             // Distance maximale à laquelle ce maillage est visible
+    int                             m_iGLType;
+    bool                            m_bUseSpacePartitionning;   // Si vrai, le partionnement des polygones est utilisé via m_mpPartitions
+    bool                            m_bAutomaticBounds;
+    bool                            m_bGeometryDirty;
 
     // Shared data
 
-    QVector<QSharedPointer<CMaterial> >     m_vMaterials;               // Matériaux du maillage
+    QVector<QSP<CMaterial> >        m_vMaterials;               // Matériaux du maillage
 };

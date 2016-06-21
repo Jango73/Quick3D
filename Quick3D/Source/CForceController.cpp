@@ -45,7 +45,7 @@ void CForceController::update(double dDeltaTime)
     {
         QSP<CPhysicalComponent> pPhysicalPositionTarget = QSP_CAST(CPhysicalComponent, m_rPositionTarget.component());
 
-        if (pPhysicalPositionTarget != NULL)
+        if (pPhysicalPositionTarget)
         {
             double dMoveFactor = pPhysicalPositionTarget->getGeoloc().Altitude / 500.0;
             if (dMoveFactor < 1.0) dMoveFactor = 1.0;

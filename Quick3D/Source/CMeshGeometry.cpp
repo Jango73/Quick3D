@@ -57,7 +57,7 @@ void CMeshGeometry::setURL(const QString& sURL)
 
 //-------------------------------------------------------------------------------------------------
 
-void CMeshGeometry::setMaterial(QSharedPointer<CMaterial> pMaterial)
+void CMeshGeometry::setMaterial(QSP<CMaterial> pMaterial)
 {
     deleteMaterials();
 
@@ -123,9 +123,9 @@ CBoundingBox CMeshGeometry::getWorldBounds(CComponent* pContainer)
 
 void CMeshGeometry::update(double dDeltaTime)
 {
-    foreach (QSharedPointer<CMaterial> pMaterial, m_vMaterials)
+    foreach (QSP<CMaterial> pMaterial, m_vMaterials)
     {
-        if (pMaterial != NULL)
+        if (pMaterial)
         {
             pMaterial->update(dDeltaTime);
         }

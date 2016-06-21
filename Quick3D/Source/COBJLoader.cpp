@@ -208,7 +208,7 @@ void COBJLoader::loadMaterials(const QString& sBaseFile, C3DScene* pScene, CMesh
                 {
                     pMaterial = new CMaterial(pScene, lWords.at(1));
 
-                    pMesh->getMaterials().append(pScene->getRessourcesManager()->shareMaterial(QSharedPointer<CMaterial>(pMaterial)));
+                    pMesh->getMaterials().append(pScene->getRessourcesManager()->shareMaterial(QSP<CMaterial>(pMaterial)));
                 }
                 else if (sFirstWord == TOKEN_material_ambient && lWords.count() > 3)
                 {

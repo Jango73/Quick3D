@@ -24,15 +24,15 @@ CRessourcesManager::CRessourcesManager(C3DScene* pScene)
     , m_pSkyboxMaterial(NULL)
     , m_pTreeMaterial(NULL)
 {
-    m_pDefaultMaterial = QSharedPointer<CMaterial>(new CMaterial(pScene));
+    m_pDefaultMaterial = QSP<CMaterial>(new CMaterial(pScene));
 
-    m_pWaterMaterial = QSharedPointer<CMaterial>(new CWaterMaterial(pScene));
+    m_pWaterMaterial = QSP<CMaterial>(new CWaterMaterial(pScene));
 
-    m_pSkyboxMaterial = QSharedPointer<CMaterial>(new CMaterial(pScene));
+    m_pSkyboxMaterial = QSP<CMaterial>(new CMaterial(pScene));
     m_pSkyboxMaterial->setIRFactor(0.2);
     m_pSkyboxMaterial->setUseSky(true);
 
-    m_pTreeMaterial = QSharedPointer<CMaterial>(new CMaterial(pScene));
+    m_pTreeMaterial = QSP<CMaterial>(new CMaterial(pScene));
     m_pTreeMaterial->getDiffuse() = Vector4(0.5, 0.3, 0.1, 1.0);
     m_pTreeMaterial->addDiffuseTexture(QString(""),"Textures/Tree01.jpg");
     m_pTreeMaterial->setIRFactor(0.2);
@@ -197,7 +197,7 @@ QIcon* CRessourcesManager::getIconByFilePathName(const QString& filePathName)
 
 //-------------------------------------------------------------------------------------------------
 
-QSharedPointer<CMaterial> CRessourcesManager::shareMaterial(QSharedPointer<CMaterial> pMaterial)
+QSP<CMaterial> CRessourcesManager::shareMaterial(QSP<CMaterial> pMaterial)
 {
     QMutexLocker locker(&m_mMutex);
 

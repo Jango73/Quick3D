@@ -190,6 +190,18 @@ void CAutoTerrain::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 
 //-------------------------------------------------------------------------------------------------
 
+void CAutoTerrain::clearLinks(C3DScene* pScene)
+{
+    if (m_pRoot)
+    {
+        m_pRoot->clearLinks(pScene);
+    }
+
+    m_pRoot.reset();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /*!
     Paints the terrain using \a pContext.
 */

@@ -154,6 +154,9 @@ public:
     //!
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
+    //! Efface les liens de cet objet
+    virtual void clearLinks(C3DScene* pScene);
+
     //!
     virtual void paint(CRenderContext* pContext);
 

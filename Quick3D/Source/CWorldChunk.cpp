@@ -550,7 +550,7 @@ void CWorldChunk::placeTree(CGeoloc gPosition, double dRadius, int iVegetIndex)
 
 void CWorldChunk::placeBush(CGeoloc gPosition, double dRadius, int iVegetIndex)
 {
-    if (m_pAutoTerrain->getVegetation()[iVegetIndex]->m_pMaterial != NULL)
+    if (m_pAutoTerrain->getVegetation()[iVegetIndex]->m_pMaterial)
     {
         QString sMaterialName = m_pAutoTerrain->getVegetation()[iVegetIndex]->m_pMaterial->getName();
 

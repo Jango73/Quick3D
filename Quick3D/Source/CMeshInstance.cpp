@@ -30,7 +30,6 @@ CMeshInstance::CMeshInstance(const QVector<QSP<CMesh> >& vMeshes)
 
 CMeshInstance::~CMeshInstance()
 {
-    // Don't delete the contained mesh
 }
 
 //-------------------------------------------------------------------------------------------------

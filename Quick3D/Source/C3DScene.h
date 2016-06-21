@@ -299,7 +299,6 @@ protected:
     QTime                                   m_tTimeOfDay;
     CFog                                    m_tFog;
     Math::Interpolator<Math::Vector4>       m_vSunColor;
-    CMeshGeometry                           m_mSegments;
     bool                                    m_bForDisplay;
     bool                                    m_bFrustumCheck;
     bool                                    m_bEditMode;
@@ -321,6 +320,7 @@ protected:
     // Shared data
 
     QVector<QSP<CComponent> >               m_vComponents;
+    QSP<CMeshGeometry>                      m_pSegments;
 };
 
 #endif // C3DSCENE_H

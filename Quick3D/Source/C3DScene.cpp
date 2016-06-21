@@ -47,7 +47,6 @@ C3DScene::C3DScene(bool bForDisplay)
     , m_vShaders(NULL)
     , m_pController(NULL)
     , m_pDefaultController(NULL)
-    , m_mSegments(this)
     , m_bForDisplay(bForDisplay)
     , m_bFrustumCheck(true)
     , m_bEditMode(false)
@@ -70,6 +69,8 @@ C3DScene::C3DScene(bool bForDisplay)
     , m_iNumChunksDrawn(0)
 {
     LOG_DEBUG("C3DScene::C3DScene()");
+
+    m_pSegments = QSP<CMeshGeometry>(new CMeshGeometry(this));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -438,7 +439,7 @@ void C3DScene::updateScene(double dDeltaTimeS)
 
     if (m_bEditMode == false)
     {
-        m_mSegments.clear();
+        m_pSegments->clear();
     }
 
     if (m_pController != NULL)
@@ -479,7 +480,7 @@ void C3DScene::paintComponents(CRenderContext* pContext)
 
     pContext->meshByMaterial()->paint(pContext);
 
-    m_mSegments.paint(pContext, NULL);
+    m_pSegments->paint(pContext, NULL);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -628,12 +629,12 @@ RayTracingResult C3DScene::intersectRecurse(QSP<CComponent> pComponent, const Ma
 
 void C3DScene::addSegment(Math::CVector3 vStart, Math::CVector3 vEnd)
 {
-    if (m_mSegments.getVertices().count() > 400) return;
+    if (m_pSegments->getVertices().count() > 400) return;
 
     if (m_bEditMode == false)
     {
-        m_mSegments.getVertices().append(CVertex(vStart - m_vWorldOrigin));
-        m_mSegments.getVertices().append(CVertex(vEnd - m_vWorldOrigin));
+        m_pSegments->getVertices().append(CVertex(vStart - m_vWorldOrigin));
+        m_pSegments->getVertices().append(CVertex(vEnd - m_vWorldOrigin));
     }
 }
 

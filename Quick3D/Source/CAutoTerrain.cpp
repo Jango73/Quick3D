@@ -325,7 +325,7 @@ void CAutoTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pContex
                       .arg(iLevel)
                       );
 
-            CTerrain* pTerrain = new CTerrain(
+            QSP<CTerrain> pTerrain = QSP<CTerrain>(new CTerrain(
                         m_pScene,
                         m_pHeights,
                         gOriginalChunkPosition,
@@ -337,7 +337,7 @@ void CAutoTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pContex
                         m_iLevels,
                         false,
                         m_bGenerateNow
-                        );
+                        ));
 
             pTerrain->setMaterial(m_pMaterial);
             pTerrain->setInheritTransform(false);
@@ -351,7 +351,7 @@ void CAutoTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pContex
 
                 if (pTiled == NULL)
                 {
-                    CTerrain* pWater = new CTerrain(
+                    QSP<CTerrain> pWater = QSP<CTerrain>(new CTerrain(
                                 m_pScene,
                                 m_pHeights,
                                 gOriginalChunkPosition,
@@ -363,7 +363,7 @@ void CAutoTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pContex
                                 m_iLevels,
                                 true,
                                 m_bGenerateNow
-                                );
+                                ));
 
                     pWater->setInheritTransform(false);
                     pWater->setGeoloc(gChunkPosition);
@@ -496,10 +496,9 @@ void CAutoTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRend
             vChunkCollect.append(pChunk);
 
             // Get rid of unneeded water
-            if (pChunk->getWater() != NULL && pChunk->getTerrain()->getAllHeightsOverSea())
+            if (pChunk->getWater() && pChunk->getTerrain()->getAllHeightsOverSea())
             {
-                delete pChunk->getWater();
-                pChunk->setWater(NULL);
+                pChunk->setWater(QSP<CTerrain>());
             }
 
             // Get rid of empty nodes
@@ -575,7 +574,7 @@ void CAutoTerrain::collectGarbageRecurse(QSP<CWorldChunk> pChunk)
 {
     if (pChunk->getTerrain() != NULL)
     {
-        if (pChunk->getTerrain()->isOK() && pChunk->isExpendable())
+        if (pChunk->isExpendable())
         {
             pChunk->clearTerrain();
         }
@@ -585,7 +584,10 @@ void CAutoTerrain::collectGarbageRecurse(QSP<CWorldChunk> pChunk)
     {
         QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 
-        collectGarbageRecurse(pChild);
+        if (pChild)
+        {
+            collectGarbageRecurse(pChild);
+        }
     }
 }
 

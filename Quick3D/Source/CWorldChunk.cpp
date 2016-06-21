@@ -47,16 +47,6 @@ CWorldChunk::~CWorldChunk()
     // Remove this from workers
     CWorkerManager::getInstance()->removeWorker(this);
 
-    if (m_pTerrain != NULL)
-    {
-        delete m_pTerrain;
-    }
-
-    if (m_pWater != NULL)
-    {
-        delete m_pWater;
-    }
-
     {
         QMutexLocker locker(&m_mMutex);
 
@@ -74,11 +64,11 @@ CWorldChunk::~CWorldChunk()
 
 //-------------------------------------------------------------------------------------------------
 
-void CWorldChunk::setTerrain(CTerrain* value, bool bGenerateNow)
+void CWorldChunk::setTerrain(QSP<CTerrain> value, bool bGenerateNow)
 {
     m_pTerrain = value;
 
-    if (m_pTerrain != NULL && m_pTerrain->getLevel() < 2)
+    if (m_pTerrain && m_pTerrain->getLevel() < 2)
     {
         if (bGenerateNow)
         {
@@ -94,20 +84,20 @@ void CWorldChunk::setTerrain(CTerrain* value, bool bGenerateNow)
 
 //-------------------------------------------------------------------------------------------------
 
-void CWorldChunk::setWater(CTerrain* value)
+void CWorldChunk::setWater(QSP<CTerrain> value)
 {
     m_pWater = value;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void CWorldChunk::setGeoloc(CGeoloc gGeoloc)
+void CWorldChunk::setGeoloc(CGeoloc value)
 {
-    CComponent::setGeoloc(gGeoloc);
+    CComponent::setGeoloc(value);
 
     computeWorldTransform();
 
-    m_gOriginalGeoloc = gGeoloc;
+    m_gOriginalGeoloc = value;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -155,7 +145,7 @@ void CWorldChunk::build()
 
 CBoundingBox CWorldChunk::getBounds()
 {
-    if (m_pTerrain != NULL && m_pTerrain->isOK())
+    if (m_pTerrain && m_pTerrain->isOK())
     {
         return m_pTerrain->getBounds();
     }
@@ -181,12 +171,12 @@ CBoundingBox CWorldChunk::getBuildWorldBounds()
 
 void CWorldChunk::update(double dDeltaTime)
 {
-    if (m_pTerrain != NULL && m_pTerrain->isOK())
+    if (m_pTerrain && m_pTerrain->isOK())
     {
         m_pTerrain->update(dDeltaTime);
     }
 
-    if (m_pWater != NULL && m_pWater->isOK())
+    if (m_pWater && m_pWater->isOK())
     {
         m_pWater->update(dDeltaTime);
     }
@@ -196,7 +186,7 @@ void CWorldChunk::update(double dDeltaTime)
 
 double CWorldChunk::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 {
-    if (m_pTerrain != NULL && m_pTerrain->isOK())
+    if (m_pTerrain && m_pTerrain->isOK())
     {
         return m_pTerrain->getHeightAt(gPosition, pRigidness);
     }
@@ -208,7 +198,7 @@ double CWorldChunk::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 
 void CWorldChunk::flatten(const CGeoloc& gPosition, double dRadius)
 {
-    if (m_pTerrain != NULL && m_pTerrain->isOK())
+    if (m_pTerrain && m_pTerrain->isOK())
     {
         return m_pTerrain->flatten(gPosition, dRadius);
     }
@@ -240,7 +230,7 @@ void CWorldChunk::paint(CRenderContext* pContext)
     // Paint chunk if containing sphere is within the viewing frustum
     if (pContext->scene()->getFrustumCheck() == false || pContext->camera()->contains(vPosition, dRadius))
     {
-        if (m_pTerrain != NULL && m_pTerrain->isOK())
+        if (m_pTerrain && m_pTerrain->isOK())
         {
             CMaterial* pMaterial = m_pAutoTerrain->getMaterial();
 
@@ -254,7 +244,7 @@ void CWorldChunk::paint(CRenderContext* pContext)
             m_pTerrain->paint(pContext);
         }
 
-        if (m_pWater != NULL && m_pWater->isOK())
+        if (m_pWater && m_pWater->isOK())
         {
             glDisable(GL_CULL_FACE);
 
@@ -282,7 +272,7 @@ void CWorldChunk::paint(CRenderContext* pContext)
 
 bool CWorldChunk::drawable()
 {
-    bool bSelfDrawable = m_pTerrain != NULL && m_pTerrain->isOK();
+    bool bSelfDrawable = m_pTerrain && m_pTerrain->isOK();
     bool bChildrenDrawable = true;
 
     if (m_vChildren.count() == 0)
@@ -311,7 +301,7 @@ bool CWorldChunk::drawable()
 bool CWorldChunk::isEmpty()
 {
     bool bWaitingForBuild = CWorkerManager::getInstance()->containsWorker(this);
-    bool bSelfEmpty = (bWaitingForBuild == false && m_pTerrain == NULL);
+    bool bSelfEmpty = (bWaitingForBuild == false && (!m_pTerrain));
     bool bChildrenEmpty = true;
 
     foreach (QSP<CComponent> pChildComponent, m_vChildren)
@@ -374,7 +364,7 @@ void CWorldChunk::clearTerrain()
 {
     CGeoloc gChunkPosition = getGeoloc();
 
-    if (m_pTerrain != NULL)
+    if (m_pTerrain)
     {
         LOG_DEBUG(QString("Deleting terrain for chunk at %1, %2 (%3)")
                   .arg(gChunkPosition.Latitude)
@@ -382,14 +372,12 @@ void CWorldChunk::clearTerrain()
                   .arg(m_pTerrain->getName())
                   );
 
-        delete m_pTerrain;
-        m_pTerrain = NULL;
+        m_pTerrain.reset();
     }
 
-    if (m_pWater != NULL)
+    if (m_pWater)
     {
-        delete m_pWater;
-        m_pWater = NULL;
+        m_pWater.reset();
     }
 }
 
@@ -399,13 +387,13 @@ void CWorldChunk::work()
 {
     while (true)
     {
-        if (m_pTerrain == NULL) return;
+        if (!m_pTerrain) return;
         if (m_bStopRequested) return;
         if (m_pTerrain->isOK() == true) break;
         msleep(50);
     }
 
-    if (m_pTerrain != NULL)
+    if (m_pTerrain)
     {
         CPerlin* perlin = CPerlin::getInstance();
 
@@ -639,7 +627,7 @@ bool CWorldChunk::checkPositionFree(CGeoloc gPosition, double dRadius)
 
 RayTracingResult CWorldChunk::intersect(Math::CRay3 ray)
 {
-    if (m_pTerrain != NULL && m_pTerrain->isOK())
+    if (m_pTerrain && m_pTerrain->isOK())
     {
         RayTracingResult dResult = getWorldBounds().intersect(ray);
 
@@ -650,6 +638,13 @@ RayTracingResult CWorldChunk::intersect(Math::CRay3 ray)
     }
 
     return RayTracingResult(Q3D_INFINITY);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool CWorldChunk::isReallyExpendable() const
+{
+    return m_pTerrain && m_pTerrain->isOK();
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -34,5 +34,17 @@ void CExpendable::setUsedNow()
 
 bool CExpendable::isExpendable() const
 {
-    return m_tLastUsed.secsTo(QDateTime::currentDateTime()) > m_iSecondsToExpendability;
+    if (isReallyExpendable())
+    {
+        return m_tLastUsed.secsTo(QDateTime::currentDateTime()) > m_iSecondsToExpendability;
+    }
+
+    return false;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool CExpendable::isReallyExpendable() const
+{
+    return true;
 }

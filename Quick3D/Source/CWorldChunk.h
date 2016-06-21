@@ -47,16 +47,16 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    virtual void setGeoloc(CGeoloc gGeoloc);
+    virtual void setGeoloc(CGeoloc value);
 
     //!
     virtual void setSize(CGeoloc value);
 
     //!
-    void setTerrain(CTerrain* value, bool bGenerateNow = false);
+    void setTerrain(QSP<CTerrain> value, bool bGenerateNow = false);
 
     //!
-    void setWater(CTerrain* value);
+    void setWater(QSP<CTerrain> value);
 
     //!
     void setDistance(double value) { m_dDistance = value; }
@@ -75,10 +75,10 @@ public:
     CGeoloc getSize() const { return m_gSize; }
 
     //!
-    CTerrain* getTerrain() const { return m_pTerrain; }
+    QSP<CTerrain> getTerrain() const { return m_pTerrain; }
 
     //!
-    CTerrain* getWater() const { return m_pWater; }
+    QSP<CTerrain> getWater() const { return m_pWater; }
 
     //!
     bool isOK() const { return m_bOK; }
@@ -110,6 +110,9 @@ public:
 
     //! Calcul d'intersection avec un rayon
     virtual Math::RayTracingResult intersect(Math::CRay3 ray);
+
+    //!
+    virtual bool isReallyExpendable() const;
 
     //! Dump du contenu dans un flux
     virtual void dump(QTextStream& stream, int iIdent);
@@ -166,8 +169,6 @@ protected:
     CGeoloc                         m_gOriginalSize;
     CGeoloc                         m_gSize;
     CBoundingBox                    m_bWorldBounds;
-    CTerrain*                       m_pTerrain;
-    CTerrain*                       m_pWater;
     QVector<CBoundedMeshInstances*> m_vMeshes;
     QMap<QString, CMeshGeometry*>   m_vBushMeshes;
     QMutex                          m_mMutex;
@@ -175,4 +176,10 @@ protected:
     bool                            m_bOK;
 
     static int                      m_iNumWorldChunks;
+
+    // Shared data
+
+    QSP<CTerrain>                   m_pTerrain;
+    QSP<CTerrain>                   m_pWater;
+
 };

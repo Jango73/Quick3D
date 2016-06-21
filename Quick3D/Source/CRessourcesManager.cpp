@@ -93,9 +93,9 @@ QString CRessourcesManager::locateResource(const QString& sBaseFile, const QStri
 
 //-------------------------------------------------------------------------------------------------
 
-QSharedPointer<CMeshGeometry> CRessourcesManager::findMesh(const QString& sFullFileName)
+QSP<CMeshGeometry> CRessourcesManager::findMesh(const QString& sFullFileName)
 {
-    foreach (QSharedPointer<CMeshGeometry> pMesh, m_vGeometry)
+    foreach (QSP<CMeshGeometry> pMesh, m_vGeometry)
     {
         if (pMesh->getURL() == sFullFileName)
         {
@@ -103,18 +103,18 @@ QSharedPointer<CMeshGeometry> CRessourcesManager::findMesh(const QString& sFullF
         }
     }
 
-    return QSharedPointer<CMeshGeometry>(NULL);
+    return QSP<CMeshGeometry>(NULL);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-QSharedPointer<CMeshGeometry> CRessourcesManager::loadMesh(const QString& sBaseFile, const QString& sMeshFileName, CComponent *pContainer)
+QSP<CMeshGeometry> CRessourcesManager::loadMesh(const QString& sBaseFile, const QString& sMeshFileName, CComponent *pContainer)
 {
     QString sFullFileName = locateResource(sBaseFile, sMeshFileName);
 
-    QSharedPointer<CMeshGeometry> pLoadedMesh = findMesh(sFullFileName);
+    QSP<CMeshGeometry> pLoadedMesh = findMesh(sFullFileName);
 
-    if (pLoadedMesh.isNull() == false)
+    if (pLoadedMesh)
     {
         return pLoadedMesh;
     }

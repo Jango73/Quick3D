@@ -4,7 +4,6 @@
 #include "quick3d_global.h"
 
 // Qt
-#include <QSharedPointer>
 #include <QImage>
 #include <QMutex>
 #include <QMutexLocker>
@@ -43,14 +42,14 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    void setGeometry(QSharedPointer<CMeshGeometry> pGeometry);
+    void setGeometry(QSP<CMeshGeometry> pGeometry);
 
     //-------------------------------------------------------------------------------------------------
     // Getters
     //-------------------------------------------------------------------------------------------------
 
     //!
-    QSharedPointer<CMeshGeometry> geometry() { return m_pGeometry; }
+    QSP<CMeshGeometry> geometry() { return m_pGeometry; }
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes héritées
@@ -120,5 +119,5 @@ protected:
 
 protected:
 
-    QSharedPointer<CMeshGeometry>   m_pGeometry;
+    QSP<CMeshGeometry>      m_pGeometry;
 };

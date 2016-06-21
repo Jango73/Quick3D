@@ -718,7 +718,7 @@ void CAutoTerrain::readVegetationParameters(const QString& sBaseFile, CXMLNode x
                     ));
         }
 
-        QVector<QSharedPointer<CMesh> > vMeshes;
+        QVector<QSP<CMesh> > vMeshes;
 
         CVector3 vNoisePosition(
                     ((double) rand() / 32768.0) * 2.0,
@@ -744,8 +744,8 @@ void CAutoTerrain::readVegetationParameters(const QString& sBaseFile, CXMLNode x
                         vFFDTo
                         );
 
-            pMesh->setGeometry(QSharedPointer<CMeshGeometry>(pMeshGeometry));
-            vMeshes.append(QSharedPointer<CMesh>(pMesh));
+            pMesh->setGeometry(QSP<CMeshGeometry>(pMeshGeometry));
+            vMeshes.append(QSP<CMesh>(pMesh));
         }
 
         m_vVegetation.append(new CVegetation(CVegetation::evtTree, dSpread, pFunction, new CMeshInstance(vMeshes), NULL));

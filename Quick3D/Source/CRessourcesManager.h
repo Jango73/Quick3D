@@ -36,10 +36,10 @@ public:
     QString locateResource(const QString& sBaseFile, const QString& sFileToLocate);
 
     //!
-    QSharedPointer<CMeshGeometry> findMesh(const QString& sFullFileName);
+    QSP<CMeshGeometry> findMesh(const QString& sFullFileName);
 
     //!
-    QSharedPointer<CMeshGeometry> loadMesh(const QString& sBaseFile, const QString& sMeshFileName, CComponent* pContainer);
+    QSP<CMeshGeometry> loadMesh(const QString& sBaseFile, const QString& sMeshFileName, CComponent* pContainer);
 
     //! Recupere un shader par son nom
     QString getShaderByFilePathName(const QString& filePathName);
@@ -83,7 +83,7 @@ protected:
     QHash<QString, QIcon*> m_Icons;
 
     //! Table des mesh
-    QVector<QSharedPointer<CMeshGeometry> > m_vGeometry;
+    QVector<QSP<CMeshGeometry> > m_vGeometry;
 
     //! Material table
     QVector<QSP<CMaterial> > m_vMaterials;

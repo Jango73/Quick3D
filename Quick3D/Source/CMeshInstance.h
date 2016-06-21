@@ -27,10 +27,10 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Constructeur avec un mesh cible
-    CMeshInstance(QSharedPointer<CMesh> pMesh);
+    CMeshInstance(QSP<CMesh> pMesh);
 
     //! Constructeur avec une liste de meshs cibles
-    CMeshInstance(const QVector<QSharedPointer<CMesh> >& vMeshes);
+    CMeshInstance(const QVector<QSP<CMesh> >& vMeshes);
 
     //! Destructeur
     virtual ~CMeshInstance();
@@ -48,7 +48,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    void addMesh(QSharedPointer<CMesh> pMesh);
+    void addMesh(QSP<CMesh> pMesh);
 
     //!
     CMeshInstance* clone();
@@ -71,5 +71,5 @@ public:
 
 protected:
 
-    QVector<QSharedPointer<CMesh> >     m_vMeshes;
+    QVector<QSP<CMesh> >    m_vMeshes;
 };

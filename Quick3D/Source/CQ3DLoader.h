@@ -16,10 +16,10 @@ class QUICK3D_EXPORT CQ3DLoader : public CSingleton<CQ3DLoader>
 public:
 
     //!
-    QSharedPointer<CMeshGeometry> load(const QString& sBaseFile, CComponent* pContainer, QString sText);
+    QSP<CMeshGeometry> load(const QString& sBaseFile, CComponent* pContainer, QString sText);
 
     //!
-    void loadComponent(const QString& sBaseFile, CComponent* pContainer, QSharedPointer<CMeshGeometry> pMesh, CXMLNode xNode, QVector<QSP<CMaterial> > &vMaterials, CComponent* pParent = NULL);
+    void loadComponent(const QString& sBaseFile, CComponent* pContainer, QSP<CMeshGeometry> pMesh, CXMLNode xNode, QVector<QSP<CMaterial> > &vMaterials, CComponent* pParent = NULL);
 
     //!
     void addBounds(CComponent* pContainer, CBoundingBox& bBox, Math::CMatrix4 mTransform);

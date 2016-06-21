@@ -36,11 +36,11 @@ COBJLoader::COBJLoader()
 
 //-------------------------------------------------------------------------------------------------
 
-QSharedPointer<CMeshGeometry> COBJLoader::load(const QString& sBaseFile, CComponent *pContainer, QString sText)
+QSP<CMeshGeometry> COBJLoader::load(const QString& sBaseFile, CComponent *pContainer, QString sText)
 {
     QTextStream sInput(&sText, QIODevice::ReadOnly);
 
-    QSharedPointer<CMeshGeometry> pMesh = QSharedPointer<CMeshGeometry>(new CMeshGeometry(pContainer->getScene()));
+    QSP<CMeshGeometry> pMesh = QSP<CMeshGeometry>(new CMeshGeometry(pContainer->getScene()));
 
     pMesh->getFaces().clear();
     pMesh->getVertices().clear();

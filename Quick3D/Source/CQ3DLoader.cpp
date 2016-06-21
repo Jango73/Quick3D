@@ -19,13 +19,13 @@ CQ3DLoader::CQ3DLoader()
 
 //-------------------------------------------------------------------------------------------------
 
-QSharedPointer<CMeshGeometry> CQ3DLoader::load(const QString& sBaseFile, CComponent* pContainer, QString sText)
+QSP<CMeshGeometry> CQ3DLoader::load(const QString& sBaseFile, CComponent* pContainer, QString sText)
 {
     CXMLNode xNode = CXMLNode::parseXML(sText);
 
     QVector<QSP<CMaterial> > vMaterials;
 
-    QSharedPointer<CMeshGeometry> pMesh = QSharedPointer<CMeshGeometry>(new CMeshGeometry(pContainer->getScene()));
+    QSP<CMeshGeometry> pMesh = QSP<CMeshGeometry>(new CMeshGeometry(pContainer->getScene()));
 
     loadComponent(sBaseFile, pContainer, pMesh, xNode, vMaterials);
 
@@ -46,7 +46,7 @@ QSharedPointer<CMeshGeometry> CQ3DLoader::load(const QString& sBaseFile, CCompon
 void CQ3DLoader::loadComponent(
         const QString& sBaseFile,
         CComponent* pContainer,
-        QSharedPointer<CMeshGeometry> pMesh,
+        QSP<CMeshGeometry> pMesh,
         CXMLNode xComponent,
         QVector<QSP<CMaterial> >& vMaterials,
         CComponent* pParent

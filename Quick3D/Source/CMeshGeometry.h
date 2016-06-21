@@ -4,7 +4,6 @@
 #include "quick3d_global.h"
 
 // Qt
-#include <QSharedPointer>
 #include <QImage>
 #include <QMutex>
 #include <QMutexLocker>
@@ -96,7 +95,7 @@ protected:
 
 //-------------------------------------------------------------------------------------------------
 
-class QUICK3D_EXPORT CMeshGeometry : public CDumpable
+class QUICK3D_EXPORT CMeshGeometry : public QSharedData, public CDumpable
 {
 public:
 

@@ -21,7 +21,7 @@ CComponent* CMesh::instanciator(C3DScene* pScene)
 CMesh::CMesh(C3DScene* pScene, double dMaxDistance, bool bUseSpacePartitionning)
     : CPhysicalComponent(pScene)
 {
-    m_pGeometry = QSharedPointer<CMeshGeometry>(new CMeshGeometry(pScene, dMaxDistance, bUseSpacePartitionning));
+    m_pGeometry = QSP<CMeshGeometry>(new CMeshGeometry(pScene, dMaxDistance, bUseSpacePartitionning));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -32,7 +32,7 @@ CMesh::~CMesh()
 
 //-------------------------------------------------------------------------------------------------
 
-void CMesh::setGeometry(QSharedPointer<CMeshGeometry> pGeometry)
+void CMesh::setGeometry(QSP<CMeshGeometry> pGeometry)
 {
     m_pGeometry = pGeometry;
 }
@@ -41,7 +41,7 @@ void CMesh::setGeometry(QSharedPointer<CMeshGeometry> pGeometry)
 
 CBoundingBox CMesh::getBounds()
 {
-    if (m_pGeometry != NULL)
+    if (m_pGeometry)
     {
         return m_pGeometry->getBounds();
     }
@@ -53,7 +53,7 @@ CBoundingBox CMesh::getBounds()
 
 CBoundingBox CMesh::getWorldBounds()
 {
-    if (m_pGeometry != NULL)
+    if (m_pGeometry)
     {
         return m_pGeometry->getWorldBounds(this);
     }
@@ -67,7 +67,7 @@ void CMesh::update(double dDeltaTime)
 {
     CPhysicalComponent::update(dDeltaTime);
 
-    if (m_pGeometry != NULL)
+    if (m_pGeometry)
     {
         m_pGeometry->update(dDeltaTime);
     }
@@ -126,7 +126,7 @@ void CMesh::solveLinks(C3DScene* pScene)
 {
     CPhysicalComponent::solveLinks(pScene);
 
-    if (m_pGeometry != NULL)
+    if (m_pGeometry)
     {
         foreach (QString sTextureName, m_pGeometry->getDynTexUpdaters().keys())
         {
@@ -182,7 +182,7 @@ void CMesh::flipNormals()
 {
     CPhysicalComponent::flipNormals();
 
-    if (m_pGeometry != NULL)
+    if (m_pGeometry)
     {
         m_pGeometry->flipNormals();
     }
@@ -194,7 +194,7 @@ void CMesh::transformVertices(const CMatrix4& matrix)
 {
     CPhysicalComponent::transformVertices(matrix);
 
-    if (m_pGeometry != NULL)
+    if (m_pGeometry)
     {
         m_pGeometry->transformVertices(matrix);
     }
@@ -204,7 +204,7 @@ void CMesh::transformVertices(const CMatrix4& matrix)
 
 RayTracingResult CMesh::intersect(CRay3 ray)
 {
-    if (m_pGeometry != NULL)
+    if (m_pGeometry)
     {
         return m_pGeometry->intersect(this, ray);
     }
@@ -216,7 +216,7 @@ RayTracingResult CMesh::intersect(CRay3 ray)
 
 void CMesh::paint(CRenderContext* pContext)
 {
-    if (m_pGeometry != NULL)
+    if (m_pGeometry)
     {
         m_pGeometry->paint(pContext, this);
     }
@@ -264,7 +264,7 @@ void CMesh::dump(QTextStream& stream, int iIdent)
 {
     dumpIdent(stream, iIdent, QString("[CMesh]"));
 
-    if (m_pGeometry != NULL)
+    if (m_pGeometry)
     {
         m_pGeometry->dump(stream, iIdent);
     }

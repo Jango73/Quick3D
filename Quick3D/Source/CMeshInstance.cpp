@@ -9,7 +9,7 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-CMeshInstance::CMeshInstance(QSharedPointer<CMesh> pMesh)
+CMeshInstance::CMeshInstance(QSP<CMesh> pMesh)
     : CComponent(pMesh->getScene())
 {
     m_vMeshes.append(pMesh);
@@ -17,10 +17,10 @@ CMeshInstance::CMeshInstance(QSharedPointer<CMesh> pMesh)
 
 //-------------------------------------------------------------------------------------------------
 
-CMeshInstance::CMeshInstance(const QVector<QSharedPointer<CMesh> >& vMeshes)
+CMeshInstance::CMeshInstance(const QVector<QSP<CMesh> >& vMeshes)
     : CComponent(vMeshes[0]->getScene())
 {
-    foreach (QSharedPointer<CMesh> pMesh, vMeshes)
+    foreach (QSP<CMesh> pMesh, vMeshes)
     {
         m_vMeshes.append(pMesh);
     }
@@ -35,7 +35,7 @@ CMeshInstance::~CMeshInstance()
 
 //-------------------------------------------------------------------------------------------------
 
-void CMeshInstance::addMesh(QSharedPointer<CMesh> pMesh)
+void CMeshInstance::addMesh(QSP<CMesh> pMesh)
 {
     m_vMeshes.append(pMesh);
 }
@@ -81,7 +81,7 @@ void CMeshInstance::paint(CRenderContext* pContext)
     {
         CVector3 vPosition = pContext->internalCameraMatrix() * getWorldBounds().center();
 
-        foreach (QSharedPointer<CMesh> pMesh, m_vMeshes)
+        foreach (QSP<CMesh> pMesh, m_vMeshes)
         {
             if (vPosition.getMagnitude() <= pMesh->geometry()->getMaxDistance())
             {

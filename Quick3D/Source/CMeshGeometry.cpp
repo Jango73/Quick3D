@@ -1595,6 +1595,8 @@ void CMeshGeometry::paint(CRenderContext* pContext, CComponent* pContainer)
             CVector3 vPosition = pContext->internalCameraMatrix() * bWorldBounds.center();
             double dRadius = bWorldBounds.radius();
 
+            pContext->tStatistics.m_iNumFrustumTests++;
+
             if (
                     pContext->camera()->contains(vPosition, dRadius) &&
                     vPosition.getMagnitude() < m_dMaxDistance

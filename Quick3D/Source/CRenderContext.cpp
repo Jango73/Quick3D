@@ -34,9 +34,6 @@ CRenderContext::CRenderContext(
     , bUseIR(false)
     , bUseInversePolarity(false)
     , pActiveMaterial(NULL)
-    , m_iNumMeshesDrawn(0)
-    , m_iNumPolysDrawn(0)
-    , m_iNumChunksDrawn(0)
 {
 }
 

@@ -288,7 +288,7 @@ void Quick3DTest::onTimer()
         QString sInfo = QString(
                     "FPS %1 - LLA (%2, %3, %4) Rotation (%5, %6, %7) Kts %8 \n"
                     "Physics Vel (%9, %10, %11) Torque (%12, %13, %14) \n"
-                    "Drawn : meshes %15 polys %16 chunks %17 (Existing: components %18, chunks %19, terrains %20) \n"
+                    "Drawn : meshes %15 polys %16 chunks %17 frustum %18 (Existing: components %19, chunks %20, terrains %21) \n"
                     )
                 .arg((int) m_FPS.getAverage())
                 .arg(QString::number(ViewGeoloc.Latitude, 'f', 6))
@@ -308,9 +308,10 @@ void Quick3DTest::onTimer()
                 .arg(QString::number(Math::Angles::toDeg(ControledTorque.Y), 'f', 2))
                 .arg(QString::number(Math::Angles::toDeg(ControledTorque.Z), 'f', 2))
 
-                .arg(m_pScene->m_iNumMeshesDrawn)
-                .arg(m_pScene->m_iNumPolysDrawn)
-                .arg(m_pScene->m_iNumChunksDrawn)
+                .arg(m_pScene->m_tStatistics.m_iNumMeshesDrawn)
+                .arg(m_pScene->m_tStatistics.m_iNumPolysDrawn)
+                .arg(m_pScene->m_tStatistics.m_iNumChunksDrawn)
+                .arg(m_pScene->m_tStatistics.m_iNumFrustumTests)
                 .arg(CComponent::getNumComponents())
                 .arg(CWorldChunk::getNumWorldChunks())
                 .arg(CTerrain::getNumTerrains())

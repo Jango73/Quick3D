@@ -215,8 +215,8 @@ bool CWorldChunk::operator < (const CWorldChunk& other) const
 
 void CWorldChunk::paint(CRenderContext* pContext)
 {
-    CVector3 vPosition = pContext->internalCameraMatrix() * getWorldBounds().center();
-    double dRadius = getWorldBounds().radius();
+    // CVector3 vPosition = pContext->internalCameraMatrix() * getWorldBounds().center();
+    // double dRadius = getWorldBounds().radius();
 
     m_tLastUsed = QDateTime::currentDateTime();
 
@@ -228,8 +228,10 @@ void CWorldChunk::paint(CRenderContext* pContext)
     */
 
     // Paint chunk if containing sphere is within the viewing frustum
-    if (pContext->scene()->getFrustumCheck() == false || pContext->camera()->contains(vPosition, dRadius))
+    // if (pContext->scene()->getFrustumCheck() == false || pContext->camera()->contains(vPosition, dRadius))
     {
+        // pContext->tStatistics.m_iNumFrustumTests++;
+
         if (m_pTerrain && m_pTerrain->isOK())
         {
             CMaterial* pMaterial = m_pAutoTerrain->getMaterial();

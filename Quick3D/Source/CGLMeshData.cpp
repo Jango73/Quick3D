@@ -58,7 +58,7 @@ void CGLMeshData::paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolu
     {
         m_pScene->makeCurrentRenderingContext();
 
-        pContext->m_iNumMeshesDrawn++;
+        pContext->tStatistics.m_iNumMeshesDrawn++;
 
         if (m_iCurrentVBO != m_iVBO[0])
         {
@@ -155,7 +155,7 @@ void CGLMeshData::paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolu
                     // LOG_ERROR(QString("CMesh::paint() : Exception while rendering %1").arg(m_sName));
                 }
 
-                pContext->m_iNumPolysDrawn += (m_iNumRenderIndices);
+                pContext->tStatistics.m_iNumPolysDrawn += (m_iNumRenderIndices);
 
                 break;
             }
@@ -172,7 +172,7 @@ void CGLMeshData::paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolu
                     // LOG_ERROR(QString("CMesh::paint() : Exception while rendering %1").arg(m_sName));
                 }
 
-                pContext->m_iNumPolysDrawn += (m_iNumRenderIndices);
+                pContext->tStatistics.m_iNumPolysDrawn += (m_iNumRenderIndices);
 
                 break;
             }
@@ -189,7 +189,7 @@ void CGLMeshData::paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolu
                     // LOG_ERROR(QString("CMesh::paint() : Exception while rendering %1").arg(m_sName));
                 }
 
-                pContext->m_iNumPolysDrawn += (m_iNumRenderIndices / 3);
+                pContext->tStatistics.m_iNumPolysDrawn += (m_iNumRenderIndices / 3);
 
                 break;
             }
@@ -206,7 +206,7 @@ void CGLMeshData::paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolu
                     // LOG_ERROR(QString("CMesh::paint() : Exception while rendering %1").arg(m_sName));
                 }
 
-                pContext->m_iNumPolysDrawn += (m_iNumRenderIndices / 4);
+                pContext->tStatistics.m_iNumPolysDrawn += (m_iNumRenderIndices / 4);
 
                 break;
             }

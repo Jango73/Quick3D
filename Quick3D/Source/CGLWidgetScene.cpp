@@ -54,9 +54,7 @@ void CGLWidgetScene::paintGL()
 {
     if (m_bForDisplay)
     {
-        m_iNumMeshesDrawn = 0;
-        m_iNumPolysDrawn = 0;
-        m_iNumChunksDrawn = 0;
+        m_tStatistics.reset();
 
         makeCurrentRenderingContext();
 

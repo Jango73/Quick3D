@@ -64,9 +64,6 @@ C3DScene::C3DScene(bool bForDisplay)
     , m_bForceIR(false)
     , m_bStreamView(false)
     , m_bDepthComputing(false)
-    , m_iNumMeshesDrawn(0)
-    , m_iNumPolysDrawn(0)
-    , m_iNumChunksDrawn(0)
 {
     LOG_DEBUG("C3DScene::C3DScene()");
 
@@ -101,6 +98,7 @@ void C3DScene::clear()
 {
     clearComponents();
     clearViewports();
+
     m_pRessourcesManager->clear();
 }
 
@@ -148,7 +146,7 @@ void C3DScene::init(QVector<QSP<CComponent> > vComponents)
     LOG_DEBUG("C3DScene::init()");
 
     //-----------------------------------------------
-    // Initialisation brume et couleurs du soleil
+    // Init fog and sun color
 
     m_tFog.enabled() = true;
     m_tFog.level() = 0.0;
@@ -162,12 +160,12 @@ void C3DScene::init(QVector<QSP<CComponent> > vComponents)
     m_vSunColor.addValue( 1.00, Vector4(1.4, 1.4, 1.2, 1.0));
 
     //-----------------------------------------------
-    // Création des éléments de décor
+    // Create particles
 
     // m_pRain = new CRain(this);
 
     //-----------------------------------------------
-    // Chargement des composants
+    // Assign components
 
     m_vComponents = vComponents;
 
@@ -177,7 +175,7 @@ void C3DScene::init(QVector<QSP<CComponent> > vComponents)
     }
 
     //-----------------------------------------------
-    // Ajout soleil
+    // Add sun
 
     QVector<QSP<CLight> > vLights = getLights();
     bool bFoundSun = false;
@@ -205,10 +203,12 @@ void C3DScene::init(QVector<QSP<CComponent> > vComponents)
 
     //-----------------------------------------------
 
+    /*
     if (m_pController != NULL)
     {
         m_pController->solveLinks(this);
     }
+    */
 
     foreach (QSP<CComponent> pComponent, m_vComponents)
     {

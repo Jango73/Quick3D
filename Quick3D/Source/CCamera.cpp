@@ -181,9 +181,11 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
             //-------------------------------------------------------------------------------------------------
             // Get statistics
 
-            pScene->m_iNumMeshesDrawn += Context.m_iNumMeshesDrawn;
-            pScene->m_iNumPolysDrawn += Context.m_iNumPolysDrawn;
-            pScene->m_iNumChunksDrawn += Context.m_iNumChunksDrawn;
+            pScene->m_tStatistics.m_iNumMeshesDrawn += Context.tStatistics.m_iNumMeshesDrawn;
+            pScene->m_tStatistics.m_iNumPolysDrawn += Context.tStatistics.m_iNumPolysDrawn;
+            pScene->m_tStatistics.m_iNumChunksDrawn += Context.tStatistics.m_iNumChunksDrawn;
+            pScene->m_tStatistics.m_iNumFrustumTests += Context.tStatistics.m_iNumFrustumTests;
+            pScene->m_tStatistics.m_iNumRayIntersectionTests += Context.tStatistics.m_iNumRayIntersectionTests;
         }
 
         pScene->setRenderingShadows(false);
@@ -325,9 +327,11 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     //-------------------------------------------------------------------------------------------------
     // Get statistics
 
-    pScene->m_iNumMeshesDrawn += Context.m_iNumMeshesDrawn;
-    pScene->m_iNumPolysDrawn += Context.m_iNumPolysDrawn;
-    pScene->m_iNumChunksDrawn += Context.m_iNumChunksDrawn;
+    pScene->m_tStatistics.m_iNumMeshesDrawn += Context.tStatistics.m_iNumMeshesDrawn;
+    pScene->m_tStatistics.m_iNumPolysDrawn += Context.tStatistics.m_iNumPolysDrawn;
+    pScene->m_tStatistics.m_iNumChunksDrawn += Context.tStatistics.m_iNumChunksDrawn;
+    pScene->m_tStatistics.m_iNumFrustumTests += Context.tStatistics.m_iNumFrustumTests;
+    pScene->m_tStatistics.m_iNumRayIntersectionTests += Context.tStatistics.m_iNumRayIntersectionTests;
 }
 
 //-------------------------------------------------------------------------------------------------

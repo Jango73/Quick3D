@@ -1,6 +1,5 @@
 
-#ifndef C3DSCENE_H
-#define C3DSCENE_H
+#pragma once
 
 #include "quick3d_global.h"
 
@@ -10,6 +9,7 @@
 #include <QTime>
 
 // Application
+#include "C3DSceneStatistics.h"
 #include "CVector3.h"
 #include "CMatrix4.h"
 #include "Interpolator.h"
@@ -280,9 +280,7 @@ protected:
 
 public:
 
-    int                                     m_iNumMeshesDrawn;
-    int                                     m_iNumPolysDrawn;
-    int                                     m_iNumChunksDrawn;
+    C3DSceneStatistics                      m_tStatistics;
     CRain*                                  m_pRain;
 
 protected:
@@ -322,5 +320,3 @@ protected:
     QVector<QSP<CComponent> >               m_vComponents;
     QSP<CMeshGeometry>                      m_pSegments;
 };
-
-#endif // C3DSCENE_H

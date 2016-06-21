@@ -228,7 +228,7 @@ void CAutoTerrain::paint(CRenderContext* pContext)
 
     foreach (QSP<CWorldChunk> pChunk, vChunkCollect)
     {
-        pContext->m_iNumChunksDrawn++;
+        pContext->tStatistics.m_iNumChunksDrawn++;
 
         pChunk->paint(pContext);
     }

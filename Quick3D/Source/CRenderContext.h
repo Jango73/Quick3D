@@ -12,6 +12,7 @@
 #include "CMatrix4.h"
 
 // Application
+#include "C3DSceneStatistics.h"
 #include "CShaderCollection.h"
 #include "CFog.h"
 
@@ -66,10 +67,7 @@ public:
     bool                bUseInversePolarity;
     CMaterial*          pActiveMaterial;
 
-    //! Statistiques
-    int                 m_iNumMeshesDrawn;
-    int                 m_iNumPolysDrawn;
-    int                 m_iNumChunksDrawn;
+    C3DSceneStatistics  tStatistics;
 
 protected:
 

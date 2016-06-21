@@ -77,7 +77,7 @@ void CGLWidgetScene::paintGL()
         //-------------------------------------------------------------------------------------------------
         // Compute world origin
 
-        if (m_pViewports.count() > 0 && m_pViewports[0]->getCamera() != NULL)
+        if (m_pViewports.count() > 0 && m_pViewports[0]->getCamera())
         {
             m_vWorldOrigin = m_pViewports[0]->getCamera()->getWorldPosition();
 
@@ -91,7 +91,7 @@ void CGLWidgetScene::paintGL()
 
         foreach (int iIndex, m_pViewports.keys())
         {
-            if (m_pViewports[iIndex]->isEnabled() && m_pViewports[iIndex]->getCamera() != NULL)
+            if (m_pViewports[iIndex]->isEnabled() && m_pViewports[iIndex]->getCamera())
             {
                 m_pViewports[iIndex]->getCamera()->render(this, m_pViewports[iIndex], m_bforceWideFOV, m_bforceSmallFOV, m_bForceIR);
             }

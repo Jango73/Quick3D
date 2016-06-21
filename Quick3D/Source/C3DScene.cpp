@@ -100,6 +100,7 @@ void C3DScene::clear()
 {
     clearComponents();
     clearViewports();
+    m_pRessourcesManager->clear();
 }
 
 //-------------------------------------------------------------------------------------------------

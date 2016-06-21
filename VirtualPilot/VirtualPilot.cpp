@@ -210,7 +210,7 @@ void VirtualPilot::onTimer()
         {
             QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, m_pScene->getController()->getPositionTarget()->getRoot());
 
-            if (pPhysical != NULL)
+            if (pPhysical)
             {
                 ViewGeoloc = pPhysical->getGeoloc();
                 ControledVelocity = pPhysical->getVelocity_ms();
@@ -223,7 +223,7 @@ void VirtualPilot::onTimer()
         {
             QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, m_pScene->getController()->getRotationTarget()->getRoot());
 
-            if (pPhysical != NULL)
+            if (pPhysical)
             {
                 ViewRotation = pPhysical->getOriginRotation();
             }

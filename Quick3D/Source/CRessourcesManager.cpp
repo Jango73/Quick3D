@@ -54,6 +54,14 @@ CRessourcesManager::~CRessourcesManager()
 
 //-------------------------------------------------------------------------------------------------
 
+void CRessourcesManager::clear()
+{
+    m_vMaterials.clear();
+    m_vGeometry.clear();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 QString CRessourcesManager::locateResource(const QString& sBaseFile, const QString& sFileToLocate)
 {
     // Check in file system, relative to base file

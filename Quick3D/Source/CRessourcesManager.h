@@ -33,6 +33,9 @@ public:
     virtual ~CRessourcesManager();
 
     //!
+    void clear();
+
+    //!
     QString locateResource(const QString& sBaseFile, const QString& sFileToLocate);
 
     //!

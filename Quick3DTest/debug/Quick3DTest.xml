@@ -112,6 +112,7 @@
 									<Value Type="Turbulence" InputScale="0.1" MinClamp="-1.0" MaxClamp="1.0" OutputScale="2.0"/>
 								</Operand>
 								<Operand>
+									<!-- Islands -->
 									<Value Type="Mul">
 										<Operand>
 											<Value Type="Function" Name="ContinentsFactor_Inverse"/>

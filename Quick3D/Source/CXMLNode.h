@@ -87,6 +87,14 @@ public:
     // High level control methods
     //-------------------------------------------------------------------------------------------------
 
+    //! Charge un CXMLNode depuis un fichier XML ou JSON selon son extension
+    //! Loads a CXMLNode from a XML or JSON file based on the extension
+    static CXMLNode load(const QString& sFileName);
+
+    //! Ecrit le contenu dans un fichier XML ou JSON selon son extension
+    //! Saves content to a XML or JSON file based on the extension
+    bool save(const QString& sFileName);
+
     //! Lit un fichier XML d'après un nom de fichier
     //! Reads a XML file given a file name
     static CXMLNode loadXMLFromFile(const QString& sFileName);
@@ -150,14 +158,24 @@ public:
     void merge(const CXMLNode& target);
 
     //-------------------------------------------------------------------------------------------------
+    // Propriétés statiques publiques
+    // Static public properties
+    //-------------------------------------------------------------------------------------------------
+
+public:
+
+    static const QString sExtension_XML;
+    static const QString sExtension_JSON;
+
+    //-------------------------------------------------------------------------------------------------
     // Propriétés
     // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:
 
-    QString                 m_sTag;         // Tag du noeud - Node's tag
-    QString                 m_sValue;       // Valeur du noeud - Node's value
-    QMap<QString, QString>  m_vAttributes;  // Attributs du noeuds - Node's attributes
-    QVector<CXMLNode>       m_vNodes;       // Noeuds enfants - Child nodes
+    QString					m_sTag;			// Tag du noeud - Node's tag
+    QString					m_sValue;		// Valeur du noeud - Node's value
+    QMap<QString, QString>	m_vAttributes;	// Attributs du noeuds - Node's attributes
+    QVector<CXMLNode>		m_vNodes;		// Noeuds enfants - Child nodes
 };

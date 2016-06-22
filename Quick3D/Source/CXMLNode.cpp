@@ -15,6 +15,11 @@
 
 //-------------------------------------------------------------------------------------------------
 
+QString const CXMLNode::sExtension_XML = ".xml";
+QString const CXMLNode::sExtension_JSON = ".json";
+
+//-------------------------------------------------------------------------------------------------
+
 /*!
     Constructs a CXMLNode.
 */
@@ -124,7 +129,46 @@ QVector<CXMLNode>& CXMLNode::nodes()
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Loads a CXMLNode hierarchy from the XML file named \a sFileName.
+    Returns a CXMLNode hierarchy loaded from the file named \a sFileName (XML or JSON).
+*/
+CXMLNode CXMLNode::load(const QString& sFileName)
+{
+    if (sFileName.toLower().endsWith(sExtension_XML))
+    {
+        return loadXMLFromFile(sFileName);
+    }
+    else if (sFileName.toLower().endsWith(sExtension_JSON))
+    {
+        return loadJSONFromFile(sFileName);
+    }
+
+    return CXMLNode();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Saves this CXMLNode tree to the file named \a sFileName (XML or JSON). \br
+    Returns \c true if successful, \c false otherwise.
+*/
+bool CXMLNode::save(const QString& sFileName)
+{
+    if (sFileName.toLower().endsWith(sExtension_XML))
+    {
+        return saveXMLToFile(sFileName);
+    }
+    else if (sFileName.toLower().endsWith(sExtension_JSON))
+    {
+        return saveJSONToFile(sFileName);
+    }
+
+    return false;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Returns a CXMLNode hierarchy loaded from the XML file named \a sFileName.
 */
 CXMLNode CXMLNode::loadXMLFromFile(const QString& sFileName)
 {
@@ -147,7 +191,7 @@ CXMLNode CXMLNode::loadXMLFromFile(const QString& sFileName)
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Loads a CXMLNode hierarchy from the JSON file named \a sFileName.
+    Returns a CXMLNode hierarchy loaded from the JSON file named \a sFileName.
 */
 CXMLNode CXMLNode::loadJSONFromFile(const QString& sFileName)
 {
@@ -170,7 +214,7 @@ CXMLNode CXMLNode::loadJSONFromFile(const QString& sFileName)
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Parses a xml tree from the \a node.
+    Returns a CXMLNode tree parsed from the \a node.
 */
 CXMLNode CXMLNode::parseXMLNode(QDomNode node)
 {
@@ -211,7 +255,7 @@ CXMLNode CXMLNode::parseXMLNode(QDomNode node)
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Parses a xml tree from the \a sText string.
+    Returns a CXMLNode tree parsed from the \a sText string.
 */
 CXMLNode CXMLNode::parseXML(QString sText)
 {
@@ -273,6 +317,9 @@ CXMLNode CXMLNode::parseJSONNode(QJsonObject jObject, QString sTagName)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Returns a list of CXMLNode that is parsed from \a jArray, using \a sTagName as a tag name.
+*/
 QVector<CXMLNode> CXMLNode::parseJSONArray(QJsonArray jArray, QString sTagName)
 {
     QVector<CXMLNode> vNodes;
@@ -287,6 +334,9 @@ QVector<CXMLNode> CXMLNode::parseJSONArray(QJsonArray jArray, QString sTagName)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Returns a JSON hierarchy from \a sText, as a CXMLNode tree.
+*/
 CXMLNode CXMLNode::parseJSON(QString sText)
 {
     CXMLNode tNode;
@@ -303,6 +353,9 @@ CXMLNode CXMLNode::parseJSON(QString sText)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Returns a string containing the textual XML equivalent of this CXMLNode tree.
+*/
 QString CXMLNode::toString() const
 {
     return toQDomDocument().toString();
@@ -310,6 +363,9 @@ QString CXMLNode::toString() const
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Returns the QDomDocument equivalent of this CXMLNode tree.
+*/
 QDomDocument CXMLNode::toQDomDocument() const
 {
     QDomDocument doc;
@@ -323,6 +379,9 @@ QDomDocument CXMLNode::toQDomDocument() const
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Returns the QDomElement equivalent of this CXMLNode tree, using \a xDocument.
+*/
 QDomElement CXMLNode::toQDomElement(QDomDocument& xDocument) const
 {
     QDomElement thisElement = xDocument.createElement(m_sTag);
@@ -351,6 +410,9 @@ QDomElement CXMLNode::toQDomElement(QDomDocument& xDocument) const
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Returns the QJsonDocument equivalent of this CXMLNode tree.
+*/
 QJsonDocument CXMLNode::toJsonDocument() const
 {
     QJsonDocument doc;
@@ -362,6 +424,9 @@ QJsonDocument CXMLNode::toJsonDocument() const
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Returns the QJsonObject equivalent of this CXMLNode tree.
+*/
 QJsonObject CXMLNode::toJsonObject() const
 {
     QJsonObject object;
@@ -400,7 +465,8 @@ QJsonObject CXMLNode::toJsonObject() const
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Saves this CXMLNode tree as xml in the file named \a sFileName.
+    Saves this CXMLNode tree as XML in the file named \a sFileName. \br
+    Returns \c true if successful, \c false otherwise.
 */
 bool CXMLNode::saveXMLToFile(const QString& sFileName)
 {
@@ -420,7 +486,8 @@ bool CXMLNode::saveXMLToFile(const QString& sFileName)
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Saves this CXMLNode tree as json in the file named \a sFileName.
+    Saves this CXMLNode tree as JSON in the file named \a sFileName. \br
+    Returns \c true if successful, \c false otherwise.
 */
 bool CXMLNode::saveJSONToFile(const QString& sFileName)
 {
@@ -440,7 +507,7 @@ bool CXMLNode::saveJSONToFile(const QString& sFileName)
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Returns the child node who's tag is \a sTagName.
+    Returns the child node whose tag is \a sTagName.
 */
 CXMLNode CXMLNode::getNodeByTagName(QString sTagName)
 {
@@ -455,7 +522,7 @@ CXMLNode CXMLNode::getNodeByTagName(QString sTagName)
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Returns the child node who's tag is \a sTagName.
+    Returns the child node whose tag is \a sTagName.
 */
 CXMLNode CXMLNode::getNodeByTagName(QString sTagName) const
 {
@@ -470,7 +537,7 @@ CXMLNode CXMLNode::getNodeByTagName(QString sTagName) const
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Returns a list of child nodes who's tag is \a sTagName.
+    Returns a list of child nodes whose tag is \a sTagName.
 */
 QVector<CXMLNode> CXMLNode::getNodesByTagName(QString sTagName) const
 {

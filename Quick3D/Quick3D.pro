@@ -71,6 +71,7 @@ SOURCES += \
     Source/CGLMeshData.cpp \
     Source/CGeneratedField.cpp \
     Source/CGenerateFunction.cpp \
+    Source/CGeoBounds.cpp \
     Source/CGeoloc.cpp \
     Source/CGLExtension.cpp \
     Source/CGLWidgetScene.cpp \
@@ -253,6 +254,7 @@ HEADERS  += \
     Source/CGLMeshData.h \
     Source/CGeneratedField.h \
     Source/CGenerateFunction.h \
+    Source/CGeoBounds.h \
     Source/CGeoloc.h \
     Source/CGeoZone.h \
     Source/CGLExtension.h \

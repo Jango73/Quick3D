@@ -286,6 +286,8 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
     {
         m_tFog.color() = CVector3(0.2, 0.6, 1.0);
 
+        m_tTimeOfDay = QDateTime::currentDateTime().time();
+
         double dNormalizedTime = fabs(((double) m_tTimeOfDay.secsTo(QTime(0, 0, 0)) /  86400.0));
         double dSunAngle = (dNormalizedTime * -360.0) + 180.0;
 

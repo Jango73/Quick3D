@@ -567,7 +567,7 @@ vec3 doLighting(vec3 position, vec3 normal, vec3 eye, vec2 xy)
             }
 
             // Compute spot attenuation
-            if (u_light_direction[index] != vec3(0.0, 0.0, 0.0))
+            if (u_light_direction[index] != vec3(0.0, 0.0, 0.0) && u_light_spot_angle[index] != 0.0)
             {
                 float spotCutoff = cos(u_light_spot_angle[index]);
                 float dotDirectionRay = dot(-u_light_direction[index], ray);

@@ -7,10 +7,24 @@
 
 		<Component Name="Terrain" Class="CAutoTerrain">
 			<Parameters>
-				<General Levels="18" Resolution="21"/>
+				<General Levels="18" Resolution="31"/>
 				<Functions>
 					<Function Name="ContinentsFactor">
 						<Value Type="Turbulence" InputScale="0.000001" MinClamp="0.0" MaxClamp="1.0" OutputScale="1.0"/>
+					</Function>
+					<Function Name="ContinentsFactor_Inverse">
+						<Value Type="Pow" Value="4.0">
+							<Operand>
+								<Value Type="Sub">
+									<Operand>
+										<Value Type="Constant" Value="1.0"/>
+									</Operand>
+									<Operand>
+										<Value Type="Function" Name="ContinentsFactor"/>
+									</Operand>
+								</Value>
+							</Operand>
+						</Value>
 					</Function>
 					<Function Name="Continents_Large">
 						<Value Type="Turbulence" InputScale="0.000001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="1500.0"/>
@@ -23,6 +37,23 @@
 					</Function>
 					<Function Name="Continents_Tiny">
 						<Value Type="Turbulence" InputScale="0.01" MinClamp="-1.0" MaxClamp="1.0" OutputScale="4.0"/>
+					</Function>
+					<Function Name="Land_Grass">
+						<Value Type="Mul">
+							<!--
+							<Operand>
+								<Value Type="Function" Name="ContinentsFactor"/>
+							</Operand>
+							-->
+							<Operand>
+								<!-- Probability -->
+								<Value Type="Turbulence" InputScale="0.01" MinClamp="0.0" MaxClamp="1.0" OutputScale="1.0"/>
+							</Operand>
+							<Operand>
+								<!-- Probability -->
+								<Value Type="Turbulence" InputScale="2.0" MinClamp="-1.0" MaxClamp="1.0" OutputScale="1.0"/>
+							</Operand>
+						</Value>
 					</Function>
 				</Functions>
 				<Material Type="blend">
@@ -56,6 +87,24 @@
 								</Operand>
 								<Operand>
 									<Value Type="Turbulence" InputScale="0.1" MinClamp="-1.0" MaxClamp="1.0" OutputScale="2.0"/>
+								</Operand>
+								<Operand>
+									<!-- Islands -->
+									<Value Type="Mul">
+										<Operand>
+											<Value Type="Function" Name="ContinentsFactor_Inverse"/>
+										</Operand>
+										<Operand>
+											<Value Type="Add">
+												<Operand>
+													<Value Type="Function" Name="Continents_Medium"/>
+												</Operand>
+												<Operand>
+													<Value Type="Turbulence" InputScale="0.0001" MinClamp="0.0" MaxClamp="1.0" OutputScale="1000.0"/>
+												</Operand>
+											</Value>
+										</Operand>
+									</Value>
 								</Operand>
 								<Operand>
 									<!-- Detail -->
@@ -380,62 +429,24 @@
 						</Coverage>
 					</Tree>
 					<Bush>
-						<General Spread="0.000008"/>
+						<General Spread="0.00001"/>
 						<Coverage>
-							<Value Type="Mul">
-								<Operand>
-									<!-- Coverage -->
-									<Value Type="Perlin" InputScale="0.0001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="1.0"/>
-								</Operand>
-								<Operand>
-									<!-- Probability -->
-									<Value Type="Turbulence" InputScale="2.0" MinClamp="-1.0" MaxClamp="1.0" OutputScale="10.0"/>
-								</Operand>
-							</Value>
-						</Coverage>
-						<Material Name="Bush01">
-							<Ambient g="0.5000" b="0.5000" r="0.5000"/>
-							<Diffuse g="0.0000" b="0.0000" Map="Textures/GrassDecal01.png" r="0.0000"/>
-							<Specular g="1.0000" b="1.0000" Hardness="50" Intensity="0.2" r="1.0000"/>
-						</Material>
-					</Bush>
-					<Bush>
-						<General Spread="0.000010"/>
-						<Coverage>
-							<Value Type="Mul">
-								<Operand>
-									<!-- Coverage -->
-									<Value Type="Perlin" InputScale="0.0001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="1.0"/>
-								</Operand>
-								<Operand>
-									<!-- Probability -->
-									<Value Type="Turbulence" InputScale="2.0" MinClamp="-1.0" MaxClamp="1.0" OutputScale="10.0"/>
-								</Operand>
-							</Value>
+							<Value Type="Function" Name="Land_Grass"/>
 						</Coverage>
 						<Material Name="Bush02">
-							<Ambient g="0.5000" b="0.5000" r="0.5000"/>
-							<Diffuse g="0.0000" b="0.0000" Map="Textures/GrassDecal02.png" r="0.0000"/>
+							<Ambient g="0.0300" b="0.0300" r="0.0300"/>
+							<Diffuse g="1.0000" b="1.0000" Map="Textures/GrassDecal02.png" r="1.0000"/>
 							<Specular g="1.0000" b="1.0000" Hardness="50" Intensity="0.2" r="1.0000"/>
 						</Material>
 					</Bush>
 					<Bush>
-						<General Spread="0.0001"/>
+						<General Spread="0.00010"/>
 						<Coverage>
-							<Value Type="Mul">
-								<Operand>
-									<!-- Coverage -->
-									<Value Type="Perlin" InputScale="0.0001" MinClamp="-1.0" MaxClamp="1.0" OutputScale="1.0"/>
-								</Operand>
-								<Operand>
-									<!-- Probability -->
-									<Value Type="Turbulence" InputScale="0.1" MinClamp="-1.0" MaxClamp="1.0" OutputScale="10.0"/>
-								</Operand>
-							</Value>
+							<Value Type="Function" Name="Land_Grass"/>
 						</Coverage>
 						<Material Name="Flower01">
-							<Ambient g="0.5000" b="0.5000" r="0.5000"/>
-							<Diffuse g="0.0000" b="0.0000" Map="Textures/FlowerDecal01.png" r="0.0000"/>
+							<Ambient g="0.0300" b="0.0300" r="0.0300"/>
+							<Diffuse g="1.0000" b="1.0000" Map="Textures/FlowerDecal01.png" r="1.0000"/>
 							<Specular g="1.0000" b="1.0000" Hardness="50" Intensity="0.2" r="1.0000"/>
 						</Material>
 					</Bush>

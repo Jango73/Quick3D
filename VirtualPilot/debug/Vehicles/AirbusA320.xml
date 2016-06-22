@@ -16,6 +16,26 @@
 		FCU=".FCU"
 	/>
 
+	<Component Name="CockpitLight01" Class="CLight">
+		<Position x="0.0" y="1.10" z="13.70"/>
+		<Rotation x="0.0" y="0.0" z="0.0"/>
+		<General FOV="0.0" Distance="4.0" CastShadows="1"/>
+		<Color r="1.0" g="1.0" b="1.0"/>
+	</Component>
+
+	<Component Name="FrontPanelLight01" Class="CLight">
+		<Position x="-0.2" y="0.41" z="15.03"/>
+		<Rotation x="75.0" y="0.0" z="0.0"/>
+		<General FOV="35.0" Distance="0.8" CastShadows="0"/>
+		<Color r="1.0" g="1.0" b="0.9"/>
+	</Component>
+	<Component Name="FrontPanelLight02" Class="CLight">
+		<Position x="0.2" y="0.41" z="15.03"/>
+		<Rotation x="75.0" y="0.0" z="0.0"/>
+		<General FOV="35.0" Distance="0.8" CastShadows="0"/>
+		<Color r="1.0" g="1.0" b="0.9"/>
+	</Component>
+
 	<Component Name="Pilot" Class="CCamera">
 		<Position x="-0.55" y="0.7" z="14.3"/>
 		<Rotation x="0.0" y="0.0" z="0.0"/>

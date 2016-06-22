@@ -44,7 +44,7 @@ VirtualPilot::VirtualPilot(QString sSceneFileName, QWidget *parent, Qt::WFlags f
     m_pView = new CView(ui.Render1);
     m_pScene = new CGLWidgetScene();
     m_pView->setScene(m_pScene);
-    m_pScene->setShaderQuality(0.75);
+    m_pScene->setShaderQuality(0.8);
 
     // Gestion des évènements
     connect(&m_tTimer, SIGNAL(timeout()), this, SLOT(onTimer()));
@@ -123,39 +123,42 @@ void VirtualPilot::loadVehicle(QString sFileName)
 
     QSP<CComponent> pComponent(CComponentLoader::getInstance()->loadComponent(sFileName, m_pScene));
 
-    QVector<QSP<CComponent> > vComponents = m_pScene->getComponentsByTag("PLAYER");
-
-    if (vComponents.count() > 0)
+    if (pComponent)
     {
-        playerGeoloc = vComponents[0]->getGeoloc();
-        playerRotation = vComponents[0]->getOriginRotation();
-    }
+        QVector<QSP<CComponent> > vComponents = m_pScene->getComponentsByTag("PLAYER");
 
-    LOG_DEBUG("VirtualPilot::loadVehicle() : adding component to scene...");
+        if (vComponents.count() > 0)
+        {
+            playerGeoloc = vComponents[0]->getGeoloc();
+            playerRotation = vComponents[0]->getOriginRotation();
+        }
 
-    m_pScene->deleteComponentsByTag("PLAYER");
-    m_pScene->addComponent(pComponent);
-    m_pScene->setController(pComponent->getController());
+        LOG_DEBUG("VirtualPilot::loadVehicle() : adding component to scene...");
 
-    pComponent->setTag("PLAYER");
+        m_pScene->deleteComponentsByTag("PLAYER");
+        m_pScene->addComponent(pComponent);
+        m_pScene->setController(pComponent->getController());
 
-    if (playerGeoloc.valid())
-    {
-        pComponent->setGeoloc(playerGeoloc);
-        pComponent->setOriginRotation(playerRotation);
-    }
+        pComponent->setTag("PLAYER");
 
-    QSP<CComponent> pCamera = pComponent->findComponent(".Pilot", pComponent);
+        if (playerGeoloc.valid())
+        {
+            pComponent->setGeoloc(playerGeoloc);
+            pComponent->setOriginRotation(playerRotation);
+        }
 
-    if (pCamera)
-    {
-        m_pScene->getViewports()[0]->setCamera(QSP_CAST(CCamera, pCamera));
-    }
-    else
-    {
-        LOG_ERROR("VirtualPilot::loadVehicle() : camera not found");
+        QSP<CComponent> pCamera = pComponent->findComponent(".Pilot", pComponent);
 
-        m_pScene->getViewports()[0]->setCamera(QSP<CCamera>());
+        if (pCamera)
+        {
+            m_pScene->getViewports()[0]->setCamera(QSP_CAST(CCamera, pCamera));
+        }
+        else
+        {
+            LOG_ERROR("VirtualPilot::loadVehicle() : camera not found");
+
+            m_pScene->getViewports()[0]->setCamera(QSP<CCamera>());
+        }
     }
 }
 

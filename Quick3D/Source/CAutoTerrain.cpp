@@ -287,6 +287,8 @@ bool CAutoTerrain::enoughDetail(QSP<CWorldChunk> pChunk, CRenderContext* pContex
     // double dDistance = (pContext->camera()->getWorldPosition() - pChunk->getWorldBounds().center()).getMagnitude();
     // return pChunk->getWorldBounds().radius() / dDistance < 2.0;
 
+    // if (iLevel > m_iLevels - (m_iLevels / 5)) return false;
+
     return (
                 pChunk->getWorldBounds().containsSpherical(pContext->camera()->getGeoloc()) == false ||
                 iLevel == 0

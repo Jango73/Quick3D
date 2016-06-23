@@ -198,6 +198,7 @@ void VirtualPilot::onTimer()
 
         m_FPS.append(1.0 / dDeltaTime);
 
+        m_pScene->setTimeOfDay(QDateTime::currentDateTime().time());
         m_pScene->updateScene(dDeltaTime);
         m_pView->update(dDeltaTime);
 

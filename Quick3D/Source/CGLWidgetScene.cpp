@@ -286,8 +286,6 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
     {
         m_tFog.color() = CVector3(0.2, 0.6, 1.0);
 
-        m_tTimeOfDay = QDateTime::currentDateTime().time();
-
         double dNormalizedTime = fabs(((double) m_tTimeOfDay.secsTo(QTime(0, 0, 0)) /  86400.0));
         double dSunAngle = (dNormalizedTime * -360.0) + 180.0;
 
@@ -362,33 +360,36 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
                 CVector3 vWorldPosition = vLightPosition - m_vWorldOrigin;
                 CVector3 vWorldDirection = vLights[iLightIndex]->getWorldDirection();
 
-                QVector4D vRelativePosition(vWorldPosition.X, vWorldPosition.Y, vWorldPosition.Z, 1.0);
-                vRelativePosition = pContext->cameraMatrix() * vRelativePosition;
-                QVector4D vProjectedPosition = pContext->cameraProjectionMatrix() * vRelativePosition;
-                if (vProjectedPosition.w() != 0.0)
+                // if (vLights[iLightIndex]->getTag() == "SUN" || vLightPosition.getMagnitude() < 2000.0)
                 {
-                    vProjectedPosition.setX(vProjectedPosition.x() / (vProjectedPosition.w() * 2.0) + 0.5);
-                    vProjectedPosition.setY(vProjectedPosition.y() / (vProjectedPosition.w() * 2.0) + 0.5);
-                    vProjectedPosition.setZ(vProjectedPosition.z() / (vProjectedPosition.w() * 2.0));
+                    QVector4D vRelativePosition(vWorldPosition.X, vWorldPosition.Y, vWorldPosition.Z, 1.0);
+                    vRelativePosition = pContext->cameraMatrix() * vRelativePosition;
+                    QVector4D vProjectedPosition = pContext->cameraProjectionMatrix() * vRelativePosition;
+                    if (vProjectedPosition.w() != 0.0)
+                    {
+                        vProjectedPosition.setX(vProjectedPosition.x() / (vProjectedPosition.w() * 2.0) + 0.5);
+                        vProjectedPosition.setY(vProjectedPosition.y() / (vProjectedPosition.w() * 2.0) + 0.5);
+                        vProjectedPosition.setZ(vProjectedPosition.z() / (vProjectedPosition.w() * 2.0));
+                    }
+                    CVector3 vScreenPosition(vProjectedPosition.x(), vProjectedPosition.y(), vProjectedPosition.z());
+
+                    if (vLights[iLightIndex]->getTag() == "SUN")
+                    {
+                        vWorldDirection = CVector3();
+                    }
+
+                    u_light_is_sun[iOpenGLLightIndex]               = (GLint) (vLights[iLightIndex]->getTag() == "SUN");
+                    u_light_position[iOpenGLLightIndex]             = QVector3D(vWorldPosition.X, vWorldPosition.Y, vWorldPosition.Z);
+                    u_light_screen_position[iOpenGLLightIndex]      = QVector3D(vScreenPosition.X, vScreenPosition.Y, vScreenPosition.Z);
+                    u_light_direction[iOpenGLLightIndex]            = QVector3D(vWorldDirection.X, vWorldDirection.Y, vWorldDirection.Z);
+                    u_light_color[iOpenGLLightIndex]                = QVector3D(vColor.X, vColor.Y, vColor.Z);
+                    u_light_distance_to_camera[iOpenGLLightIndex]   = (GLfloat) vRelativePosition.length();
+                    u_light_distance[iOpenGLLightIndex]             = (GLfloat) vLights[iLightIndex]->getDistance();
+                    u_light_spot_angle[iOpenGLLightIndex]           = (GLfloat) Math::Angles::toRad(vLights[iLightIndex]->getFOV());
+                    u_light_occlusion[iOpenGLLightIndex]            = (GLfloat) vLights[iLightIndex]->getOcclusion();
+
+                    iOpenGLLightIndex++;
                 }
-                CVector3 vScreenPosition(vProjectedPosition.x(), vProjectedPosition.y(), vProjectedPosition.z());
-
-                if (vLights[iLightIndex]->getTag() == "SUN")
-                {
-                    vWorldDirection = CVector3();
-                }
-
-                u_light_is_sun[iOpenGLLightIndex]               = (GLint) (vLights[iLightIndex]->getTag() == "SUN");
-                u_light_position[iOpenGLLightIndex]             = QVector3D(vWorldPosition.X, vWorldPosition.Y, vWorldPosition.Z);
-                u_light_screen_position[iOpenGLLightIndex]      = QVector3D(vScreenPosition.X, vScreenPosition.Y, vScreenPosition.Z);
-                u_light_direction[iOpenGLLightIndex]            = QVector3D(vWorldDirection.X, vWorldDirection.Y, vWorldDirection.Z);
-                u_light_color[iOpenGLLightIndex]                = QVector3D(vColor.X, vColor.Y, vColor.Z);
-                u_light_distance_to_camera[iOpenGLLightIndex]   = (GLfloat) vRelativePosition.length();
-                u_light_distance[iOpenGLLightIndex]             = (GLfloat) vLights[iLightIndex]->getDistance();
-                u_light_spot_angle[iOpenGLLightIndex]           = (GLfloat) Math::Angles::toRad(vLights[iLightIndex]->getFOV());
-                u_light_occlusion[iOpenGLLightIndex]            = (GLfloat) vLights[iLightIndex]->getOcclusion();
-
-                iOpenGLLightIndex++;
             }
         }
 

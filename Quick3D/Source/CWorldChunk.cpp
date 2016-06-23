@@ -70,14 +70,17 @@ void CWorldChunk::setTerrain(QSP<CTerrain> value, bool bGenerateNow)
 
     if (m_pTerrain && m_pTerrain->getLevel() < 2)
     {
-        if (bGenerateNow)
+        if (m_pScene->getShaderQuality() > 0.8)
         {
-            work();
-        }
-        else
-        {
-            // Add this to workers for detail generation
-            CWorkerManager::getInstance()->addWorker(this);
+            if (bGenerateNow)
+            {
+                work();
+            }
+            else
+            {
+                // Add this to workers for detail generation
+                CWorkerManager::getInstance()->addWorker(this);
+            }
         }
     }
 }

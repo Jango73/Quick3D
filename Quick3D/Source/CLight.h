@@ -50,17 +50,17 @@ public:
     void setCastShadows(bool value) { m_bCastShadows = value; }
 
     //!
-    void setDistance(double value) { m_dDistance = value; }
+    void setLightingDistance(double value) { m_dLightingDistance = value; }
 
     //-------------------------------------------------------------------------------------------------
     // Getters
     //-------------------------------------------------------------------------------------------------
 
     //!
-    double getDistance() const { return m_dDistance; }
+    double getLightingDistance() const { return m_dLightingDistance; }
 
     //!
-    CMaterial* getMaterial() const { return m_pMaterial; }
+    QSP<CMaterial> getMaterial() const { return m_pMaterial; }
 
     //!
     double getOcclusion() const { return m_dOcclusion; }
@@ -94,8 +94,11 @@ public:
 
 protected:
 
-    double          m_dDistance;
+    double          m_dLightingDistance;
     double          m_dOcclusion;
     bool            m_bCastShadows;
-    CMaterial*      m_pMaterial;
+
+    // Shared data
+
+    QSP<CMaterial>  m_pMaterial;
 };

@@ -360,7 +360,9 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
                 CVector3 vWorldPosition = vLightPosition - m_vWorldOrigin;
                 CVector3 vWorldDirection = vLights[iLightIndex]->getWorldDirection();
 
-                // if (vLights[iLightIndex]->getTag() == "SUN" || vLightPosition.getMagnitude() < 2000.0)
+                double dLightDistance = (vLightPosition - pContext->camera()->getWorldPosition()).getMagnitude();
+
+                if (vLights[iLightIndex]->getTag() == "SUN" || dLightDistance < 2000.0)
                 {
                     QVector4D vRelativePosition(vWorldPosition.X, vWorldPosition.Y, vWorldPosition.Z, 1.0);
                     vRelativePosition = pContext->cameraMatrix() * vRelativePosition;
@@ -384,7 +386,7 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
                     u_light_direction[iOpenGLLightIndex]            = QVector3D(vWorldDirection.X, vWorldDirection.Y, vWorldDirection.Z);
                     u_light_color[iOpenGLLightIndex]                = QVector3D(vColor.X, vColor.Y, vColor.Z);
                     u_light_distance_to_camera[iOpenGLLightIndex]   = (GLfloat) vRelativePosition.length();
-                    u_light_distance[iOpenGLLightIndex]             = (GLfloat) vLights[iLightIndex]->getDistance();
+                    u_light_distance[iOpenGLLightIndex]             = (GLfloat) vLights[iLightIndex]->getLightingDistance();
                     u_light_spot_angle[iOpenGLLightIndex]           = (GLfloat) Math::Angles::toRad(vLights[iLightIndex]->getFOV());
                     u_light_occlusion[iOpenGLLightIndex]            = (GLfloat) vLights[iLightIndex]->getOcclusion();
 

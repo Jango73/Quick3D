@@ -22,14 +22,13 @@ CComponent* CLight::instanciator(C3DScene* pScene)
 
 CLight::CLight(C3DScene* pScene)
     : CCamera(pScene)
-    , m_dDistance(0.0)
+    , m_dLightingDistance(0.0)
     , m_dOcclusion(0.0)
     , m_bCastShadows(false)
-    , m_pMaterial(NULL)
 {
     setRaytracable(false);
 
-    m_pMaterial = new CMaterial(pScene);
+    m_pMaterial = QSP<CMaterial>(new CMaterial(pScene));
     m_pMaterial->createShadowTexture();
 }
 
@@ -37,7 +36,6 @@ CLight::CLight(C3DScene* pScene)
 
 CLight::CLight(const CLight& target)
     : CCamera(target)
-    , m_pMaterial(NULL)
 {
     *this = target;
 }
@@ -46,10 +44,6 @@ CLight::CLight(const CLight& target)
 
 CLight::~CLight()
 {
-    if (m_pMaterial != NULL)
-    {
-        delete m_pMaterial;
-    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -58,14 +52,9 @@ CLight& CLight::operator = (const CLight& target)
 {
     CCamera::operator = (target);
 
-    m_dDistance         = target.m_dDistance;
+    m_dLightingDistance = target.m_dLightingDistance;
     m_dOcclusion        = target.m_dOcclusion;
     m_bCastShadows      = target.m_bCastShadows;
-
-    if (m_pMaterial != NULL && target.m_pMaterial != NULL)
-    {
-        // *m_pMaterial = *target.m_pMaterial;
-    }
 
     return *this;
 }
@@ -81,7 +70,7 @@ void CLight::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 
     CXMLNode tColorNode = xComponent.getNodeByTagName(ParamName_Color);
 
-    if (m_pMaterial != NULL)
+    if (m_pMaterial)
     {
         if (tColorNode.isEmpty() == false)
         {
@@ -97,7 +86,7 @@ void CLight::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
     {
         if (xGeneralNode.attributes()[ParamName_Distance].isEmpty() == false)
         {
-            m_dDistance = xGeneralNode.attributes()[ParamName_Distance].toDouble();
+            m_dLightingDistance = xGeneralNode.attributes()[ParamName_Distance].toDouble();
         }
 
         if (xGeneralNode.attributes()[ParamName_Cast_Shadows].isEmpty() == false)

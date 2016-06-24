@@ -139,7 +139,7 @@ void CVehicle::update(double dDeltaTime)
 
                     CVector3 torque(-dDiffX * 4.0, 0.0, -dDiffZ);
 
-                    addLocalTorque_kg(torque * getTotalMass_kg());
+                    addLocalTorque_kg(torque * getTotalMass_kg() * 0.5);
                 }
             }
         }

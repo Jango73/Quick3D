@@ -553,9 +553,15 @@ void CPhysicalComponent::computeCollisionsForComponent(QSP<CPhysicalComponent> p
                     // Est-ce que les deux sphères se recoupent?
                     if (vPosition.getMagnitude() < dRadiusSum)
                     {
-                        // Si oui, on fait rebondir l'objet
-                        double dForces = pComponent->m_vVelocity_ms.getMagnitude();
-                        pComponent->m_vVelocity_ms += vPosition.Normalize() * dForces * 0.5;
+                        // Si oui, on fait rebondir les objets
+
+                        double dForce = pComponent->m_vVelocity_ms.getMagnitude() * pComponent->getTotalMass_kg() * 4.0;
+                        CVector3 vForceDirection = vPosition.Normalize() * 0.5 * dForce;
+                        double dTotalMass = pComponent->getTotalMass_kg() + pOtherPhysical->getTotalMass_kg();
+                        double dForceThisComponent = 1.0 - (pComponent->getTotalMass_kg() / dTotalMass);
+                        double dForceOtherComponent = 1.0 - (pOtherPhysical->getTotalMass_kg() / dTotalMass);
+                        pComponent->addForce_kg(vForceDirection * dForceThisComponent);
+                        pOtherPhysical->addForce_kg(vForceDirection * dForceOtherComponent * -1.0);
                     }
                 }
             }

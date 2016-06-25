@@ -228,41 +228,44 @@ void CComponent::clearLinks(C3DScene* pScene)
 */
 QSP<CComponent> CComponent::findComponent(QString sName, QSP<CComponent> pCaller)
 {
-    QStringList lNames = sName.split(".", QString::KeepEmptyParts);
-
-    if (lNames[0].isEmpty() && pCaller)
+    if (sName.isEmpty() == false)
     {
-        lNames[0] = pCaller->getRoot()->getName();
-    }
+        QStringList lNames = sName.split(".", QString::KeepEmptyParts);
 
-    if (lNames[0] == m_sName)
-    {
-        if (lNames.count() == 1)
+        if (lNames[0].isEmpty() && pCaller)
         {
-            return QSP<CComponent>(this);
+            lNames[0] = pCaller->getRoot()->getName();
         }
 
-        QString sRemaining;
-
-        for (int iIndex = 1; iIndex < lNames.count(); iIndex++)
+        if (lNames[0] == m_sName)
         {
-            if (sRemaining.length() > 0)
+            if (lNames.count() == 1)
             {
-                sRemaining = sRemaining + "." + lNames[iIndex];
+                return QSP<CComponent>(this);
             }
-            else
+
+            QString sRemaining;
+
+            for (int iIndex = 1; iIndex < lNames.count(); iIndex++)
             {
-                sRemaining = lNames[iIndex];
+                if (sRemaining.length() > 0)
+                {
+                    sRemaining = sRemaining + "." + lNames[iIndex];
+                }
+                else
+                {
+                    sRemaining = lNames[iIndex];
+                }
             }
-        }
 
-        foreach (QSP<CComponent> pChild, m_vChildren)
-        {
-            QSP<CComponent> pFound = pChild->findComponent(sRemaining);
-
-            if (pFound)
+            foreach (QSP<CComponent> pChild, m_vChildren)
             {
-                return pFound;
+                QSP<CComponent> pFound = pChild->findComponent(sRemaining);
+
+                if (pFound)
+                {
+                    return pFound;
+                }
             }
         }
     }

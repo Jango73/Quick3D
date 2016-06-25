@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scene>
 
-	<Camera1 Name="Man2.Head"/>
+	<Camera1 Name="Man1.Head"/>
 	<Camera2 Name="VBCI.Pilot"/>
-	<ControlledComponent Name="Man2"/>
+	<ControlledComponent Name="Man1"/>
 
 	<!--
 	<Camera1 Name="Plascoa01Pilot"/>
@@ -522,10 +522,10 @@
 		<Component Name="VBCI" Class="CTerrestrialVehicle">
 			<Geoloc Latitude="19.237430" Longitude="10.895408" Altitude="0.0"/>
 			<Rotation x="0.0" y="0.0" z="0.0"/>
-			<Mesh Name="VBCI.obj"/>
+			<Mesh Name="VBCI.q3d"/>
 			<IR Factor="0.8"/>
 			<Physics MassKG="26000" SpeedMS="4.0" TurnSpeedDS="30.0" Drag="0.1" Friction="2.0" PhysicsActive="1"/>
-			<Controller Class="CTankController" ForceFactor="1000.0" TurretYawTarget=".Turret" TurretPitchTarget=".Turret.Gun"/>
+			<Controller Class="CTankController" ForceFactor="1000.0" TurretYawTarget=".VBCI.VBCI_Turret" TurretPitchTarget=".VBCI.VBCI_Turret.VBCI_Gun"/>
 			<Component Name="FrontRightWheel" Class="CWheel">
 				<Position x="0.8" y="0.4" z="3.0"/>
 				<SpringAxis x="0.0" y="1.0" z="0.0"/>
@@ -549,26 +549,6 @@
 			<Component Name="Pilot" Class="CCamera">
 				<Position x="0.0" y="3.0" z="-8"/>
 				<Rotation x="10.0" y="0.0" z="0.0"/>
-			</Component>
-			<Component Name="Turret" Class="CMesh">
-				<Position x="0.0" y="2.0" z="-0.4"/>
-				<Rotation x="0.0" y="0.0" z="0.0"/>
-				<RotationFactor x="0.0" y="1.0" z="0.0"/>
-				<Mesh Name="VBCI_Turret.obj"/>
-				<IR Factor="0.8"/>
-				<Physics StickToNOLL="1.0"/>
-				<Component Name="Gun" Class="CMesh">
-					<Position x="0.0" y="0.4" z="0.5"/>
-					<Rotation x="0.0" y="0.0" z="0.0"/>
-					<RotationFactor x="1.0" y="0.0" z="0.0"/>
-					<Mesh Name="VBCI_Gun.obj"/>
-					<IR Factor="0.8"/>
-					<Physics StickToNOLL="1.0"/>
-					<Component Name="VTC" Class="CCamera">
-						<Position x="0.0" y="0.2" z="0.3"/>
-						<Rotation x="0.0" y="0.0" z="0.0"/>
-					</Component>
-				</Component>
 			</Component>
 			<Component Name="Light1" Class="CLight">
 				<Position x="0.8" y="1.0" z="4.0"/>
@@ -621,27 +601,12 @@
 			<Rotation x="0.0" y="0.0" z="0.0"/>
 			<Mesh Name="PVP.obj"/>
 			<IR Factor="0.8"/>
-			<Physics SpeedMS="4.0" TurnSpeedDS="30.0" PhysicsActive="0"/>
+			<Physics MassKG="7500" SpeedMS="4.0" TurnSpeedDS="30.0" PhysicsActive="1"/>
+			<Controller Class="CForceController" ForceFactor="1000.0"/>
 			<Component Name="Driver" Class="CCamera">
 				<Position x="0.0" y="3.2" z="-4"/>
 				<Rotation x="10.0" y="0.0" z="0.0"/>
 			</Component>
-		</Component>
-
-		<Component Name="Visitor3" Class="CTerrestrialVehicle">
-			<Geoloc Latitude="19.2380" Longitude="10.8955" Altitude="0.0"/>
-			<Rotation x="0.0" y="0.0" z="0.0"/>
-			<Mesh Name="PVP.obj"/>
-			<IR Factor="0.8"/>
-			<Physics SpeedMS="4.0" TurnSpeedDS="30.0" PhysicsActive="0"/>
-		</Component>
-
-		<Component Name="Visitor4" Class="CTerrestrialVehicle">
-			<Geoloc Latitude="19.2380" Longitude="10.8950" Altitude="0.0"/>
-			<Rotation x="0.0" y="0.0" z="0.0"/>
-			<Mesh Name="PVP.obj"/>
-			<IR Factor="0.8"/>
-			<Physics SpeedMS="4.0" TurnSpeedDS="30.0" PhysicsActive="0"/>
 		</Component>
 
 		<Component Name="PCC" Class="CTerrestrialVehicle">
@@ -649,7 +614,7 @@
 			<Rotation x="0.0" y="90.0" z="0.0"/>
 			<Mesh Name="PCC.obj"/>
 			<IR Factor="0.8"/>
-			<Physics SpeedMS="4.5" TurnSpeedDS="30.0" PhysicsActive="0"/>
+			<Physics SpeedMS="4.5" TurnSpeedDS="30.0" PhysicsActive="1"/>
 			<Component Name="Light1" Class="CLight">
 				<Position x="0.8" y="1.0" z="3.0"/>
 				<Rotation x="4.0" y="0.0" z="0.0"/>

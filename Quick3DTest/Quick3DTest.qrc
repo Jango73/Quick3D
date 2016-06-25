@@ -20,12 +20,6 @@
         <file>Resources/BDD_Mat03.obj</file>
         <file>Resources/BDD_Mat04.obj</file>
         <file>Resources/BDD_Mat05.obj</file>
-        <file>Resources/VBCI.mtl</file>
-        <file>Resources/VBCI.obj</file>
-        <file>Resources/VBCI_Gun.mtl</file>
-        <file>Resources/VBCI_Gun.obj</file>
-        <file>Resources/VBCI_Turret.mtl</file>
-        <file>Resources/VBCI_Turret.obj</file>
         <file>Resources/SmoothingTest.mtl</file>
         <file>Resources/SmoothingTest.obj</file>
     </qresource>

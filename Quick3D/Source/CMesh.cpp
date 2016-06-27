@@ -82,6 +82,7 @@ void CMesh::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
     CXMLNode xMeshNode = xComponent.getNodeByTagName(ParamName_Mesh);
     CXMLNode xProceduralMeshNode = xComponent.getNodeByTagName(ParamName_ProceduralMesh);
     CXMLNode xIRNode = xComponent.getNodeByTagName(ParamName_IR);
+    CXMLNode xBoundsNode = xMeshNode.getNodeByTagName(ParamName_Bounds);
     QVector<CXMLNode> xDynTexNodes = xComponent.getNodesByTagName(ParamName_DynamicTexture);
 
     if (xMeshNode.isEmpty() == false)
@@ -106,6 +107,29 @@ void CMesh::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
                 QString sUpdaterName = xDynTexNode.attributes()[ParamName_Updater];
 
                 m_pGeometry->getDynTexUpdaters()[sTextureName] = sUpdaterName;
+            }
+        }
+
+        if (xBoundsNode.isEmpty() == false && m_pGeometry)
+        {
+            CXMLNode xMinimum = xBoundsNode.getNodeByTagName(ParamName_Minimum);
+            CXMLNode xMaximum = xBoundsNode.getNodeByTagName(ParamName_Maximum);
+
+            if (xMinimum.isEmpty() == false && xMaximum.isEmpty() == false)
+            {
+                CVector3 vMinimum(
+                            xMinimum.attributes()[ParamName_x].toDouble(),
+                            xMinimum.attributes()[ParamName_y].toDouble(),
+                            xMinimum.attributes()[ParamName_z].toDouble()
+                            );
+
+                CVector3 vMaximum(
+                            xMaximum.attributes()[ParamName_x].toDouble(),
+                            xMaximum.attributes()[ParamName_y].toDouble(),
+                            xMaximum.attributes()[ParamName_z].toDouble()
+                            );
+
+                m_pGeometry->setBounds(CBoundingBox(vMinimum, vMaximum));
             }
         }
     }

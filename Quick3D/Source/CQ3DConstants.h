@@ -5,6 +5,7 @@
 
 //-------------------------------------------------------------------------------------------------
 // Noms de classe des composants
+// Component class names
 
 #define ClassName_CComponent				"CComponent"
 #define ClassName_CPhysicalComponent		"CPhysicalComponent"
@@ -79,6 +80,7 @@
 
 //-------------------------------------------------------------------------------------------------
 // Paramètres communs
+// Common parameters
 
 #define ParamName_Acceleration				"Acceleration"
 #define ParamName_AccelerationFactor		"AccelerationFactor"
@@ -86,6 +88,7 @@
 #define ParamName_AileronPosition			"AileronPosition"
 #define ParamName_Altitude					"Altitude"
 #define ParamName_Ambient					"Ambient"
+#define ParamName_Bounds                    "Bounds"
 #define ParamName_BranchLengthScale         "BranchLengthScale"
 #define ParamName_BranchRadiusScale         "BranchRadiusScale"
 #define ParamName_Building                  "Building"
@@ -116,31 +119,33 @@
 #define ParamName_FOV                       "FOV"
 #define ParamName_Function                  "Function"
 #define ParamName_Functions                 "Functions"
-#define ParamName_General					"General"
-#define ParamName_Geoloc					"Geoloc"
+#define ParamName_General                   "General"
+#define ParamName_Geoloc                    "Geoloc"
 #define ParamName_GravityFactor             "GravityFactor"
 #define ParamName_Hardness                  "Hardness"
-#define ParamName_Height					"Height"
-#define ParamName_Ignore					"Ignore"
+#define ParamName_Height                    "Height"
+#define ParamName_Ignore                    "Ignore"
 #define ParamName_InputScale                "InputScale"
 #define ParamName_Intensity                 "Intensity"
-#define ParamName_IR						"IR"
+#define ParamName_IR                        "IR"
 #define ParamName_Iterations                "Iterations"
-#define ParamName_Latitude					"Latitude"
+#define ParamName_Latitude                  "Latitude"
 #define ParamName_Leaf                      "Leaf"
 #define ParamName_LeafScale                 "LeafScale"
-#define ParamName_Level						"Level"
-#define ParamName_Levels					"Levels"
-#define ParamName_Longitude					"Longitude"
-#define ParamName_Map						"Map"
-#define ParamName_Material					"Material"
-#define ParamName_MaxThrustKG				"MaxThrustKG"
-#define ParamName_Mesh						"Mesh"
+#define ParamName_Level                     "Level"
+#define ParamName_Levels                    "Levels"
+#define ParamName_Longitude                 "Longitude"
+#define ParamName_Map                       "Map"
+#define ParamName_Material                  "Material"
+#define ParamName_Maximum                   "Maximum"
+#define ParamName_MaxThrustKG               "MaxThrustKG"
+#define ParamName_Mesh                      "Mesh"
 #define ParamName_MeshList                  "MeshList"
 #define ParamName_MaxClamp                  "MaxClamp"
 #define ParamName_MinClamp                  "MinClamp"
-#define ParamName_Name						"Name"
-#define ParamName_Operand   				"Operand"
+#define ParamName_Minimum                   "Minimum"
+#define ParamName_Name                      "Name"
+#define ParamName_Operand                   "Operand"
 #define ParamName_OutputScale               "OutputScale"
 #define ParamName_Parameters				"Parameters"
 #define ParamName_Parent					"Parent"
@@ -190,6 +195,7 @@
 
 //-------------------------------------------------------------------------------------------------
 // Noms de shaders
+// Shader names
 
 #define SP_Standard_Billboard               "Standard_Billboard"
 #define SP_Standard_Mesh                    "Standard_Mesh"
@@ -197,6 +203,7 @@
 
 //-------------------------------------------------------------------------------------------------
 // Evènements Q3D
+// Q3D events
 
 #define Q3D_Event							"Event"
 #define Q3D_LeftMouseButton					"LMB"

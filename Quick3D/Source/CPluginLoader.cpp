@@ -6,7 +6,7 @@
 
 CPluginLoader::CPluginLoader()
 {
-	m_sPluginPath = QCoreApplication::applicationDirPath() + "/Plugins";
+    m_sPluginPath = QCoreApplication::applicationDirPath() + "/Plugins";
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -16,25 +16,25 @@ CPluginLoader::CPluginLoader()
 
 void CPluginLoader::loadPlugins()
 {
-	QStringList slNameFilter;
+    QStringList slNameFilter;
 
-	slNameFilter.append(QString("*.dll"));
+    slNameFilter.append(QString("*.dll"));
 
-	QDir dDirectory(m_sPluginPath);
-	QStringList lFiles = dDirectory.entryList(slNameFilter);
+    QDir dDirectory(m_sPluginPath);
+    QStringList lFiles = dDirectory.entryList(slNameFilter);
 
-	foreach (QString sFile, lFiles)
-	{
-		QLibrary library(m_sPluginPath + "/" + sFile);
+    foreach (QString sFile, lFiles)
+    {
+        QLibrary library(m_sPluginPath + "/" + sFile);
 
-		if (library.load())
-		{
-			PluginEntry pEntry = (PluginEntry) library.resolve(STR(PLUGIN_ENTRY_NAME));
+        if (library.load())
+        {
+            PluginEntry pEntry = (PluginEntry) library.resolve(STR(PLUGIN_ENTRY_NAME));
 
-			if (pEntry != NULL)
-			{
-				pEntry(CPluginInterface::getInstance());
-			}
-		}
-	}
+            if (pEntry != NULL)
+            {
+                pEntry(CPluginInterface::getInstance());
+            }
+        }
+    }
 }

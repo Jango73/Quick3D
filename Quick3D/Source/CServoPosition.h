@@ -8,76 +8,76 @@ class QUICK3D_EXPORT CServoPosition
 
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//! Constructeur par défaut
-	CServoPosition();
+    //! Constructeur par défaut
+    CServoPosition();
 
-	//! Constructeur avec paramètres
-	CServoPosition(double dMaximumAcceleration, double dMaximumVelocity, double dAccelerationFactor = 10.0, double dVelocityFactor = 2.0);
+    //! Constructeur avec paramètres
+    CServoPosition(double dMaximumAcceleration, double dMaximumVelocity, double dAccelerationFactor = 10.0, double dVelocityFactor = 2.0);
 
-	//! Destructeur
-	virtual ~CServoPosition();
+    //! Destructeur
+    virtual ~CServoPosition();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//! Règle la position courante
-	void setPosition(double value) { m_dPosition = value; }
+    //! Règle la position courante
+    void setPosition(double value) { m_dPosition = value; }
 
-	//! Règle la position cible
-	void setTargetPosition(double value) { m_dTargetPosition = value; }
+    //! Règle la position cible
+    void setTargetPosition(double value) { m_dTargetPosition = value; }
 
-	//! Règle l'accélération maximum
-	void setMaximumAcceleration(double value) { m_dMaximumAcceleration = value; }
+    //! Règle l'accélération maximum
+    void setMaximumAcceleration(double value) { m_dMaximumAcceleration = value; }
 
-	//! Règle la vitesse maximum
-	void setMaximumVelocity(double value) { m_dMaximumVelocity = value; }
+    //! Règle la vitesse maximum
+    void setMaximumVelocity(double value) { m_dMaximumVelocity = value; }
 
-	//! Règle le facteur d'accélération
-	void setAccelerationFactor(double value) { m_dAccelerationFactor = value; }
+    //! Règle le facteur d'accélération
+    void setAccelerationFactor(double value) { m_dAccelerationFactor = value; }
 
-	//! Règle le facteur de vitesse
-	void setVelocityFactor(double value) { m_dVelocityFactor = value; }
+    //! Règle le facteur de vitesse
+    void setVelocityFactor(double value) { m_dVelocityFactor = value; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//! Retourne la position
-	double getPosition() const { return m_dPosition; }
+    //! Retourne la position
+    double getPosition() const { return m_dPosition; }
 
-	//! Retourne l'acceleration
-	double getAcceleration() const { return m_dAcceleration; }
+    //! Retourne l'acceleration
+    double getAcceleration() const { return m_dAcceleration; }
 
-	//! Retourne la vitesse
-	double getVelocity() const { return m_dVelocity; }
+    //! Retourne la vitesse
+    double getVelocity() const { return m_dVelocity; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	CServoPosition& operator = (const CServoPosition& target);
+    //!
+    CServoPosition& operator = (const CServoPosition& target);
 
-	//!
-	void update(double dDeltaTime);
+    //!
+    void update(double dDeltaTime);
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	double		m_dPosition;
-	double		m_dTargetPosition;
-	double		m_dMaximumAcceleration;
-	double		m_dMaximumVelocity;
-	double		m_dAccelerationFactor;
-	double		m_dVelocityFactor;
-	double		m_dAcceleration;
-	double		m_dVelocity;
+    double		m_dPosition;
+    double		m_dTargetPosition;
+    double		m_dMaximumAcceleration;
+    double		m_dMaximumVelocity;
+    double		m_dAccelerationFactor;
+    double		m_dVelocityFactor;
+    double		m_dAcceleration;
+    double		m_dVelocity;
 };

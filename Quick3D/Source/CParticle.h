@@ -13,37 +13,37 @@ class QUICK3D_EXPORT CParticle
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//! Constructeur par défaut
-	CParticle();
+    //! Constructeur par défaut
+    CParticle();
 
-	//! Constructeur avec paramètres
-	CParticle(Math::CVector3 NewPosition, Math::CVector3 NewVelocity = Math::CVector3());
+    //! Constructeur avec paramètres
+    CParticle(Math::CVector3 NewPosition, Math::CVector3 NewVelocity = Math::CVector3());
 
-	//! Opérateur de copie
-	CParticle& operator=(const CParticle& target);
+    //! Opérateur de copie
+    CParticle& operator=(const CParticle& target);
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	Math::CVector3& position() { return m_vPosition; }
+    //!
+    Math::CVector3& position() { return m_vPosition; }
 
-	//!
-	Math::CVector3 position() const { return m_vPosition; }
+    //!
+    Math::CVector3 position() const { return m_vPosition; }
 
-	//!
-	Math::CVector3& velocity() { return m_vVelocity; }
+    //!
+    Math::CVector3& velocity() { return m_vVelocity; }
 
-	//!
-	Math::CVector3 velocity() const { return m_vVelocity; }
+    //!
+    Math::CVector3 velocity() const { return m_vVelocity; }
 
 protected:
 
-	Math::CVector3	m_vPosition;
-	Math::CVector3	m_vVelocity;
+    Math::CVector3	m_vPosition;
+    Math::CVector3	m_vVelocity;
 };

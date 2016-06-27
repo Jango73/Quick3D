@@ -13,5 +13,5 @@ CPluginInterface::CPluginInterface()
 
 void CPluginInterface::registerComponent(QString sClassName, MComponentInstanciator pInstanciator)
 {
-	CComponentFactory::getInstance()->registerComponent(sClassName, pInstanciator);
+    CComponentFactory::getInstance()->registerComponent(sClassName, pInstanciator);
 }

@@ -16,19 +16,19 @@
 
 class QUICK3D_EXPORT CPluginInterface : public CSingleton<CPluginInterface>
 {
-	friend class CSingleton<CPluginInterface>;
+    friend class CSingleton<CPluginInterface>;
 
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//! Constructeur par défaut
-	CPluginInterface();
+    //! Constructeur par défaut
+    CPluginInterface();
 
-	//!
-	void registerComponent(QString sClassName, MComponentInstanciator pInstanciator);
+    //!
+    void registerComponent(QString sClassName, MComponentInstanciator pInstanciator);
 };
 
 //-------------------------------------------------------------------------------------------------

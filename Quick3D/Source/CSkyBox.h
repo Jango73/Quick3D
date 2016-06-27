@@ -34,7 +34,7 @@ public:
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //!
-    virtual void paint(CRenderContext* pContext);
+    virtual void paint(CRenderContext* pContext) Q_DECL_OVERRIDE;
 
     //!
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);

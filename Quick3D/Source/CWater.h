@@ -43,7 +43,7 @@ public:
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //! Dans cette méthode, l'objet doit faire son rendu
-    virtual void paint(CRenderContext* pContext);
+    virtual void paint(CRenderContext* pContext) Q_DECL_OVERRIDE;
 
     //!
     virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);

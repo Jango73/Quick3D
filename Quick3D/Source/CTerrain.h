@@ -113,7 +113,7 @@ public:
     virtual CBoundingBox getWorldBounds();
 
     //!
-    virtual void paint(CRenderContext* pContext);
+    virtual void paint(CRenderContext* pContext) Q_DECL_OVERRIDE;
 
     //!
     virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);

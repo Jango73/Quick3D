@@ -67,7 +67,7 @@ public:
     virtual CBoundingBox getWorldBounds();
 
     //! Renders the mesh
-    virtual void paint(CRenderContext* pContext);
+    virtual void paint(CRenderContext* pContext) Q_DECL_OVERRIDE;
 
 protected:
 

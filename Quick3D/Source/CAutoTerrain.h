@@ -158,7 +158,7 @@ public:
     virtual void clearLinks(C3DScene* pScene);
 
     //!
-    virtual void paint(CRenderContext* pContext);
+    virtual void paint(CRenderContext* pContext) Q_DECL_OVERRIDE;
 
     //! Méthode de mise à jour avec temps delta depuis la dernière itération
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;

@@ -77,7 +77,7 @@ public:
     virtual void clearLinks(C3DScene* pScene);
 
     //! Dessine l'objet
-    virtual void paint(CRenderContext* pContext);
+    virtual void paint(CRenderContext* pContext) Q_DECL_OVERRIDE;
 
     //! Calcul d'intersection avec un rayon
     virtual Math::RayTracingResult intersect(Math::CRay3 ray) Q_DECL_OVERRIDE;

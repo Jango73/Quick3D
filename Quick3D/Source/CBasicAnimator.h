@@ -69,7 +69,7 @@ public:
     virtual QString getClassName() const { return ClassName_CBasicAnimator; }
 
     //! Charge les paramètres de cet objet d'après le noeud XML fourni
-    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
+    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
 
     //! Met l'objet à jour d'après le temps écoulé depuis la dernière image
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;

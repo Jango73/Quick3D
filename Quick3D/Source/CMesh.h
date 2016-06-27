@@ -68,7 +68,7 @@ public:
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //! Charge les paramètres de l'objet
-    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
+    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
 
     //! Recherche les liens de cet objet
     virtual void solveLinks(C3DScene* pScene);

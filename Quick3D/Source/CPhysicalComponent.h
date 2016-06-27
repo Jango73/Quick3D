@@ -121,13 +121,13 @@ public:
     CPhysicalComponent& operator = (const CPhysicalComponent& target);
 
     //! Charge les paramètres de cet objet
-    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
+    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
 
     //! Méthode de mise à jour avec temps delta depuis la dernière itération
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //! Appel de la méthode update des enfants
-    virtual void postUpdate(double dDeltaTimeS);
+    virtual void postUpdate(double dDeltaTimeS) Q_DECL_OVERRIDE;
 
     //! Dump du contenu dans un flux
     virtual void dump(QTextStream& stream, int iIdent);

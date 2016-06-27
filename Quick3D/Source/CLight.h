@@ -76,7 +76,7 @@ public:
     virtual QString getClassName() const { return ClassName_CLight; }
 
     //! Charge les paramètres de cet objet
-    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
+    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
 
     //! Est-ce que l'objet est une lumière?
     virtual bool isLight() const { return true; }

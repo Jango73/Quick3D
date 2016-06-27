@@ -152,7 +152,7 @@ public:
     virtual QString getClassName() const { return ClassName_CAutoTerrain; }
 
     //!
-    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
+    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
 
     //! Efface les liens de cet objet
     virtual void clearLinks(C3DScene* pScene);
@@ -164,7 +164,7 @@ public:
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //! Méthode de mise à jour avec temps delta depuis la dernière itération
-    virtual void postUpdate(double dDeltaTime);
+    virtual void postUpdate(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //!
     virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);

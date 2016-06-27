@@ -55,7 +55,7 @@ public:
     virtual QString getClassName() const { return ClassName_CAirbusELAC; }
 
     //! Charge les paramètres de cet objet
-    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
+    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
 
     //! Recherche les liens de cet objet
     virtual void solveLinks(C3DScene* pScene);

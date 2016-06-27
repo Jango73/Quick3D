@@ -56,7 +56,7 @@ public:
     virtual void clearLinks(C3DScene* pScene);
 
     //! Met l'objet à jour d'après le temps écoulé depuis la dernière image
-    virtual void update(double dDeltaTime);
+    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //!
     virtual void keyPressEvent(QKeyEvent* event);

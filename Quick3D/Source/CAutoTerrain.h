@@ -161,7 +161,7 @@ public:
     virtual void paint(CRenderContext* pContext);
 
     //! Méthode de mise à jour avec temps delta depuis la dernière itération
-    virtual void update(double dDeltaTime);
+    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //! Méthode de mise à jour avec temps delta depuis la dernière itération
     virtual void postUpdate(double dDeltaTime);
@@ -173,7 +173,7 @@ public:
     virtual void flatten(const CGeoloc& gPosition, double dRadius);
 
     //! Calcul d'intersection avec un rayon
-    virtual Math::RayTracingResult intersect(Math::CRay3 ray);
+    virtual Math::RayTracingResult intersect(Math::CRay3 ray) Q_DECL_OVERRIDE;
 
     //! Dump du contenu dans un flux
     virtual void dump(QTextStream& stream, int iIdent);

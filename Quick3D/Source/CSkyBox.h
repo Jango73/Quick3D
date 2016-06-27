@@ -13,36 +13,36 @@ class QUICK3D_EXPORT CSkyBox : public CBox
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	CSkyBox(C3DScene* pScene);
+    //!
+    CSkyBox(C3DScene* pScene);
 
-	//!
-	virtual ~CSkyBox();
+    //!
+    virtual ~CSkyBox();
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes héritées
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes héritées
+    //-------------------------------------------------------------------------------------------------
 
-	//! Retourne le nom de classe de cet objet
-	virtual QString getClassName() const { return ClassName_CSkyBox; }
+    //! Retourne le nom de classe de cet objet
+    virtual QString getClassName() const { return ClassName_CSkyBox; }
 
-	//!
-	virtual void update(double dDeltaTime);
+    //!
+    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
-	//!
-	virtual void paint(CRenderContext* pContext);
+    //!
+    virtual void paint(CRenderContext* pContext);
 
-	//!
+    //!
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	static CComponent* instanciator(C3DScene* pScene);
+    //!
+    static CComponent* instanciator(C3DScene* pScene);
 };

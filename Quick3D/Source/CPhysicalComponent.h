@@ -124,7 +124,7 @@ public:
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
     //! Méthode de mise à jour avec temps delta depuis la dernière itération
-    virtual void update(double dDeltaTime);
+    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //! Appel de la méthode update des enfants
     virtual void postUpdate(double dDeltaTimeS);

@@ -40,7 +40,7 @@ public:
     virtual QString getClassName() const { return ClassName_CWater; }
 
     //! Méthode de mise à jour avec temps delta depuis la dernière itération
-    virtual void update(double dDeltaTime);
+    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //! Dans cette méthode, l'objet doit faire son rendu
     virtual void paint(CRenderContext* pContext);

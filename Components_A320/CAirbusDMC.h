@@ -53,7 +53,7 @@ public:
     virtual QString getClassName() const { return ClassName_CAirbusDMC; }
 
     //!
-    virtual void update(double dDeltaTime);
+    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //!
     virtual void updateTexture(CTexture* pTexture, double dDeltaTime);

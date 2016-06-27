@@ -22,71 +22,71 @@ class QUICK3D_EXPORT CTrajectorable : public CMesh
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//! Constructeur
-	CTrajectorable(C3DScene* pScene);
+    //! Constructeur
+    CTrajectorable(C3DScene* pScene);
 
-	//!
-	virtual ~CTrajectorable();
+    //!
+    virtual ~CTrajectorable();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	void setSpeedMS(double value) { m_dSpeedMS = value; }
+    //!
+    void setSpeedMS(double value) { m_dSpeedMS = value; }
 
-	//!
-	void setTurnSpeedDS(double value) { m_dTurnSpeedDS = value; }
+    //!
+    void setTurnSpeedDS(double value) { m_dTurnSpeedDS = value; }
 
-	//!
-	void setTrajectoryEnabled(bool value) { m_bTrajectoryEnabled = value; }
+    //!
+    void setTrajectoryEnabled(bool value) { m_bTrajectoryEnabled = value; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	double getSpeedMS() const { return m_dSpeedMS; }
+    //!
+    double getSpeedMS() const { return m_dSpeedMS; }
 
-	//!
-	double getTurnSpeedDS() const { return m_dTurnSpeedDS; }
+    //!
+    double getTurnSpeedDS() const { return m_dTurnSpeedDS; }
 
-	//!
-	CTrajectory& getTrajectory() { return m_tTrajectory; }
+    //!
+    CTrajectory& getTrajectory() { return m_tTrajectory; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes héritées
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes héritées
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual QString getClassName() const { return ClassName_CTrajectorable; }
+    //!
+    virtual QString getClassName() const { return ClassName_CTrajectorable; }
 
-	//!
-	virtual void update(double dDeltaTime);
+    //!
+    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
-	//!
-	virtual bool isTrajectorable() const { return true; }
+    //!
+    virtual bool isTrajectorable() const { return true; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	void resetTrajectory();
+    //!
+    void resetTrajectory();
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	bool						m_bTrajectoryEnabled;
-	double						m_dSpeedMS;
-	double						m_dTurnSpeedDS;
-	CTrajectory					m_tTrajectory;
-	CAverager<Math::CVector3>	m_aRotation;
+    bool                        m_bTrajectoryEnabled;
+    double                      m_dSpeedMS;
+    double                      m_dTurnSpeedDS;
+    CTrajectory                 m_tTrajectory;
+    CAverager<Math::CVector3>   m_aRotation;
 };

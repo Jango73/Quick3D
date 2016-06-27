@@ -20,26 +20,26 @@ class QUICK3D_EXPORT CParticleSystem : public CMesh
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//! Constructeur
-	CParticleSystem(C3DScene* pScene);
+    //! Constructeur
+    CParticleSystem(C3DScene* pScene);
 
-	//! Destructeur
-	virtual ~CParticleSystem();
+    //! Destructeur
+    virtual ~CParticleSystem();
 
-	//!
-	virtual void update(double dDeltaTime);
+    //!
+    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
-	//!
-	virtual void paint(CRenderContext* pContext);
+    //!
+    virtual void paint(CRenderContext* pContext);
 
-	//!
-	QVector<CParticle>& getParticles() { return m_vParticles; }
+    //!
+    QVector<CParticle>& getParticles() { return m_vParticles; }
 
 protected:
 
-	QVector<CParticle>	m_vParticles;
+    QVector<CParticle>  m_vParticles;
 };

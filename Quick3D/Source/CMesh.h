@@ -65,7 +65,7 @@ public:
     virtual CBoundingBox getWorldBounds();
 
     //!
-    virtual void update(double dDeltaTime);
+    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //! Charge les paramètres de l'objet
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
@@ -80,7 +80,7 @@ public:
     virtual void paint(CRenderContext* pContext);
 
     //! Calcul d'intersection avec un rayon
-    virtual Math::RayTracingResult intersect(Math::CRay3 ray);
+    virtual Math::RayTracingResult intersect(Math::CRay3 ray) Q_DECL_OVERRIDE;
 
     //! Inverse les vecteurs normaux des polygones
     virtual void flipNormals();

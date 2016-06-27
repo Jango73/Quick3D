@@ -100,7 +100,7 @@ public:
     virtual CBoundingBox getBuildWorldBounds();
 
     //!
-    virtual void update(double dDeltaTime);
+    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //!
     virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);
@@ -109,7 +109,7 @@ public:
     virtual void flatten(const CGeoloc& gPosition, double dRadius);
 
     //! Calcul d'intersection avec un rayon
-    virtual Math::RayTracingResult intersect(Math::CRay3 ray);
+    virtual Math::RayTracingResult intersect(Math::CRay3 ray) Q_DECL_OVERRIDE;
 
     //!
     virtual bool isReallyExpendable() const;

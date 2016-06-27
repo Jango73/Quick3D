@@ -43,7 +43,7 @@ public:
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
     //!
-    virtual void update(double dDeltaTime);
+    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes de contrôle

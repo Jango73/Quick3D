@@ -122,7 +122,7 @@ public:
     virtual void flatten(const CGeoloc& gPosition, double dRadius);
 
     //! Calcul d'intersection avec un rayon
-    virtual Math::RayTracingResult intersect(Math::CRay3 ray);
+    virtual Math::RayTracingResult intersect(Math::CRay3 ray) Q_DECL_OVERRIDE;
 
     //!
     virtual void work();

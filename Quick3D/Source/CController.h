@@ -179,7 +179,7 @@ public:
     virtual void clearLinks(C3DScene* pScene);
 
     //!
-    virtual void update(double dDeltaTime);
+    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Propriétés

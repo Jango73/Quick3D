@@ -52,7 +52,7 @@ public:
     virtual CBoundingBox getWorldBounds();
 
     //!
-    virtual void update(double dDeltaTime);
+    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //! Renders the mesh
     virtual void paint(CRenderContext* pContext);
@@ -66,6 +66,6 @@ public:
 
 protected:
 
-    CBoundingBox				m_bBounds;
-    QVector<CMeshInstance*>		m_vMeshes;
+    CBoundingBox                m_bBounds;
+    QVector<CMeshInstance*>     m_vMeshes;
 };

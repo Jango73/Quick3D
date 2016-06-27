@@ -42,7 +42,7 @@ public:
     virtual QString getClassName() const { return ClassName_CAirbusStaticPort; }
 
     //!
-    virtual void update(double dDeltaTime);
+    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes de contrôle

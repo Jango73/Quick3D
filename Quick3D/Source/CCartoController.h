@@ -18,62 +18,62 @@ class QUICK3D_EXPORT CCartoController : public CController
 
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//! Retourne une nouvelle instance de cet objet
-	static CComponent* instanciator(C3DScene* pScene);
+    //! Retourne une nouvelle instance de cet objet
+    static CComponent* instanciator(C3DScene* pScene);
 
-	//! Constructeur d'après une scène
-	CCartoController(C3DScene* pScene);
+    //! Constructeur d'après une scène
+    CCartoController(C3DScene* pScene);
 
-	//! Destructeur
-	virtual ~CCartoController();
+    //! Destructeur
+    virtual ~CCartoController();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes héritées
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes héritées
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual QString getClassName() const { return ClassName_CCartoController; }
+    //!
+    virtual QString getClassName() const { return ClassName_CCartoController; }
 
-	//!
-	virtual void update(double dDeltaTime);
+    //!
+    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
-	//!
-	virtual void keyPressEvent(QKeyEvent* event);
+    //!
+    virtual void keyPressEvent(QKeyEvent* event);
 
-	//!
-	virtual void keyReleaseEvent(QKeyEvent *event);
+    //!
+    virtual void keyReleaseEvent(QKeyEvent *event);
 
-	//!
-	virtual void mousePressEvent(QMouseEvent* event);
+    //!
+    virtual void mousePressEvent(QMouseEvent* event);
 
-	//!
-	virtual void mouseReleaseEvent(QMouseEvent* event);
+    //!
+    virtual void mouseReleaseEvent(QMouseEvent* event);
 
-	//!
-	virtual void mouseMoveEvent(QMouseEvent* event);
+    //!
+    virtual void mouseMoveEvent(QMouseEvent* event);
 
-	//!
-	virtual void wheelEvent(QWheelEvent *event);
+    //!
+    virtual void wheelEvent(QWheelEvent *event);
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	QPoint	m_pPreviousMousePos;
-	bool	m_bUseMouse;
-	bool	m_bPanTilt;
+    QPoint	m_pPreviousMousePos;
+    bool	m_bUseMouse;
+    bool	m_bPanTilt;
 };

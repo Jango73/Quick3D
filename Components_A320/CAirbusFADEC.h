@@ -58,7 +58,7 @@ public:
     virtual void clearLinks(C3DScene* pScene);
 
     //!
-    virtual void update(double dDeltaTime);
+    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //!
     virtual void work(double dDeltaTime);
@@ -73,6 +73,6 @@ public:
 
 protected:
 
-    CComponentReference<CJetEngine>		m_rEngine1Target;
-    CComponentReference<CJetEngine>		m_rEngine2Target;
+    CComponentReference<CJetEngine>     m_rEngine1Target;
+    CComponentReference<CJetEngine>     m_rEngine2Target;
 };

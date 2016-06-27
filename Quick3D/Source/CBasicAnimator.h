@@ -72,7 +72,7 @@ public:
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
     //! Met l'objet à jour d'après le temps écoulé depuis la dernière image
-    virtual void update(double dDeltaTime);
+    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Propriétés

@@ -115,7 +115,7 @@ public:
     virtual void clearLinks(C3DScene* pScene);
 
     //!
-    virtual void update(double dDeltaTime);
+    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes de contrôle
@@ -133,10 +133,10 @@ public:
 
 protected:
 
-    double							m_dMaxAmperage;
-    bool							m_bShortCircuited;
-    CElectricalLoad					m_tLoad;
-    QVector<QString>				m_vPowerInputNames;
-    QVector<CElectricalComponent*>	m_vPowerInputs;
-    QVector<CElectricalComponent*>	m_vPowerOutputs;
+    double                          m_dMaxAmperage;
+    bool                            m_bShortCircuited;
+    CElectricalLoad                 m_tLoad;
+    QVector<QString>                m_vPowerInputNames;
+    QVector<CElectricalComponent*>  m_vPowerInputs;
+    QVector<CElectricalComponent*>  m_vPowerOutputs;
 };

@@ -13,61 +13,61 @@ class QUICK3D_EXPORT CElectricalContactor : public CElectricalComponent
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	static CComponent* instanciator(C3DScene* pScene);
+    //!
+    static CComponent* instanciator(C3DScene* pScene);
 
-	//!
-	CElectricalContactor(C3DScene* pScene);
+    //!
+    CElectricalContactor(C3DScene* pScene);
 
-	//!
-	virtual ~CElectricalContactor();
+    //!
+    virtual ~CElectricalContactor();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	void setClosed(bool bValue) { m_bClosed = bValue; }
+    //!
+    void setClosed(bool bValue) { m_bClosed = bValue; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	bool getClosed() const { return m_bClosed; }
+    //!
+    bool getClosed() const { return m_bClosed; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes héritées
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes héritées
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	virtual QString getClassName() const { return ClassName_CElectricalContactor; }
+    //!
+    virtual QString getClassName() const { return ClassName_CElectricalContactor; }
 
-	//! Charge les paramètres de cet objet
+    //! Charge les paramètres de cet objet
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
-	//!
-	virtual void update(double dDeltaTime);
+    //!
+    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
-	//!
-	virtual void push(const CElectricalLoad& tLoad, double dDeltaTime);
+    //!
+    virtual void push(const CElectricalLoad& tLoad, double dDeltaTime);
 
-	//!
-	virtual CElectricalLoad pull(double dAmperage, double dDeltaTime);
+    //!
+    virtual CElectricalLoad pull(double dAmperage, double dDeltaTime);
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	bool	m_bClosed;
+    bool    m_bClosed;
 };

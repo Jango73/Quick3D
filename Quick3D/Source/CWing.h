@@ -58,7 +58,7 @@ public:
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
     //!
-    virtual void update(double dDeltaTime);
+    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes de contrôle
@@ -70,13 +70,13 @@ public:
 
 protected:
 
-    double						m_dArea_m2;
-    double						m_dWingAngle_rad;
-    double						m_dAileronArea_m2;
-    double						m_dAileronMaxPositiveAngle_rad;
-    double						m_dAileronAngle_rad;
-    double						m_dFlapsPosition_norm;
-    Math::CVector3				m_vAileronPosition;
-    Math::Interpolator<double>	m_iBodyAirflowDotLiftFactor;
-    Math::Interpolator<double>	m_iBodyAirflowDotAileronLiftFactor;
+    double                      m_dArea_m2;
+    double                      m_dWingAngle_rad;
+    double                      m_dAileronArea_m2;
+    double                      m_dAileronMaxPositiveAngle_rad;
+    double                      m_dAileronAngle_rad;
+    double                      m_dFlapsPosition_norm;
+    Math::CVector3              m_vAileronPosition;
+    Math::Interpolator<double>  m_iBodyAirflowDotLiftFactor;
+    Math::Interpolator<double>  m_iBodyAirflowDotAileronLiftFactor;
 };

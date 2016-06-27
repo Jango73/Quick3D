@@ -56,7 +56,7 @@ public:
     virtual QString getClassName() const { return ClassName_CJetEngine; }
 
     //!
-    virtual void update(double dDeltaTime);
+    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes de contrôle
@@ -68,6 +68,6 @@ public:
 
 protected:
 
-    CServoPosition				m_dN1;
-    double						m_dN2_norm;
+    CServoPosition              m_dN1;
+    double                      m_dN2_norm;
 };

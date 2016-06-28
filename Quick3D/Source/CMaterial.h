@@ -137,10 +137,10 @@ public:
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
     //! Recherche les liens de cet objet
-    virtual void solveLinks(C3DScene* pScene);
+    virtual void solveLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
 
     //! Efface les liens de cet objet
-    virtual void clearLinks(C3DScene* pScene);
+    virtual void clearLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes de contrôle

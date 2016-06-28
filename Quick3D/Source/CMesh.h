@@ -71,10 +71,10 @@ public:
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
 
     //! Recherche les liens de cet objet
-    virtual void solveLinks(C3DScene* pScene);
+    virtual void solveLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
 
     //! Efface les liens de cet objet
-    virtual void clearLinks(C3DScene* pScene);
+    virtual void clearLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
 
     //! Dessine l'objet
     virtual void paint(CRenderContext* pContext) Q_DECL_OVERRIDE;

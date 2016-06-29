@@ -62,32 +62,29 @@ void CForceController::update(double dDeltaTime)
                 {
                     pPhysicalPositionTarget->addLocalForce_kg(CVector3(0.0, 0.0, dMoveSpeed));
                 }
-                else
-                    if (m_bGoBackward)
-                    {
-                        pPhysicalPositionTarget->addLocalForce_kg(CVector3(0.0, 0.0, -dMoveSpeed));
-                    }
+                else if (m_bGoBackward)
+                {
+                    pPhysicalPositionTarget->addLocalForce_kg(CVector3(0.0, 0.0, -dMoveSpeed));
+                }
             }
 
             if (m_bGoUp)
             {
                 pPhysicalPositionTarget->addLocalForce_kg(CVector3(0.0, dMoveSpeed, 0.0));
             }
-            else
-                if (m_bGoDown)
-                {
-                    pPhysicalPositionTarget->addLocalForce_kg(CVector3(0.0, -dMoveSpeed, 0.0));
-                }
+            else if (m_bGoDown)
+            {
+                pPhysicalPositionTarget->addLocalForce_kg(CVector3(0.0, -dMoveSpeed, 0.0));
+            }
 
             if (m_bStrafeRight)
             {
                 pPhysicalPositionTarget->addLocalForce_kg(CVector3(dMoveSpeed, 0.0, 0.0));
             }
-            else
-                if (m_bStrafeLeft)
-                {
-                    pPhysicalPositionTarget->addLocalForce_kg(CVector3(-dMoveSpeed, 0.0, 0.0));
-                }
+            else if (m_bStrafeLeft)
+            {
+                pPhysicalPositionTarget->addLocalForce_kg(CVector3(-dMoveSpeed, 0.0, 0.0));
+            }
         }
     }
 
@@ -105,13 +102,12 @@ void CForceController::update(double dDeltaTime)
 
                 pPhysicalRotationTarget->setOriginRotation(m_rRotationTarget.component()->getOriginRotation() + vRotation);
             }
-            else
-                if (m_bLookDown)
-                {
-                    CVector3 vRotation = CVector3(Math::Angles::toRad(-TURN_SPEED) * dDeltaTime, 0.0, 0.0);
+            else if (m_bLookDown)
+            {
+                CVector3 vRotation = CVector3(Math::Angles::toRad(-TURN_SPEED) * dDeltaTime, 0.0, 0.0);
 
-                    pPhysicalRotationTarget->setOriginRotation(m_rRotationTarget.component()->getOriginRotation() + vRotation);
-                }
+                pPhysicalRotationTarget->setOriginRotation(m_rRotationTarget.component()->getOriginRotation() + vRotation);
+            }
 
             if (m_pJoystick != NULL && m_pJoystick->connected())
             {
@@ -132,20 +128,19 @@ void CForceController::update(double dDeltaTime)
                         pPhysicalRotationTarget->setOriginRotation(m_rRotationTarget.component()->getOriginRotation() + vRotation);
                     }
                 }
-                else
-                    if (m_bTurnLeft)
+                else if (m_bTurnLeft)
+                {
+                    if (pPhysicalRotationTarget->isRootObject())
                     {
-                        if (pPhysicalRotationTarget->isRootObject())
-                        {
-                            pPhysicalRotationTarget->addLocalTorque_kg(CVector3(0.0, -dRotationSpeed, 0.0));
-                        }
-                        else
-                        {
-                            CVector3 vRotation = CVector3(0.0, Math::Angles::toRad(-TURN_SPEED) * dDeltaTime, 0.0);
-
-                            pPhysicalRotationTarget->setOriginRotation(m_rRotationTarget.component()->getOriginRotation() + vRotation);
-                        }
+                        pPhysicalRotationTarget->addLocalTorque_kg(CVector3(0.0, -dRotationSpeed, 0.0));
                     }
+                    else
+                    {
+                        CVector3 vRotation = CVector3(0.0, Math::Angles::toRad(-TURN_SPEED) * dDeltaTime, 0.0);
+
+                        pPhysicalRotationTarget->setOriginRotation(m_rRotationTarget.component()->getOriginRotation() + vRotation);
+                    }
+                }
             }
         }
     }

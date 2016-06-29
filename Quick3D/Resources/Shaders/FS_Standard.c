@@ -598,7 +598,7 @@ vec3 doLighting(vec3 position, vec3 normal, vec3 eye, vec2 xy)
 
                 if (u_material_shininess > 0.0)
                 {
-                    specular = u_material_specular.xyz * pow(max(dot_reflected_eye, 0.0), u_material_shininess);
+                    specular = u_material_specular.xyz * pow(max(dot_reflected_eye, 0.0), u_material_shininess * 0.2);
                 }
                 else
                 {

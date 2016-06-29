@@ -135,6 +135,7 @@
 #define ParamName_Level                     "Level"
 #define ParamName_Levels                    "Levels"
 #define ParamName_Longitude                 "Longitude"
+#define ParamName_LookTarget                "LookTarget"
 #define ParamName_Map                       "Map"
 #define ParamName_Material                  "Material"
 #define ParamName_Maximum                   "Maximum"

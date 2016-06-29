@@ -7,7 +7,7 @@
 
 		<Component Name="Terrain" Class="CAutoTerrain">
 			<Parameters>
-				<General Levels="18" Resolution="31"/>
+				<General Levels="18" Resolution="21"/>
 				<Functions>
 					<Function Name="ContinentsFactor">
 						<Value Type="Turbulence" InputScale="0.000001" MinClamp="0.0" MaxClamp="1.0" OutputScale="1.0"/>

@@ -187,17 +187,18 @@ public:
 
 protected:
 
-    CJoystick*							m_pJoystick;
-    CComponentReference<CComponent>		m_rPositionTarget;
-    CComponentReference<CComponent>		m_rRotationTarget;
-    CQ3DEvent							m_eCurrentLeftMouseEvent;
-    CQ3DEvent							m_eCurrentRightMouseEvent;
-    CQ3DEvent							m_eCurrentMiddleMouseEvent;
-    QPoint								m_pPreviousMousePos;
+    CJoystick*                          m_pJoystick;
+    CComponentReference<CComponent>     m_rPositionTarget;
+    CComponentReference<CComponent>     m_rRotationTarget;
+    CComponentReference<CComponent>     m_rLookTarget;
+    CQ3DEvent                           m_eCurrentLeftMouseEvent;
+    CQ3DEvent                           m_eCurrentRightMouseEvent;
+    CQ3DEvent                           m_eCurrentMiddleMouseEvent;
+    QPoint                              m_pPreviousMousePos;
     Math::CRay3                         m_rLastRay;
-    bool								m_bUseMouse;
-    bool								m_bControlPressed;
-    bool								m_bAltPressed;
-    double								m_dMoveSpeed;
-    double								m_dForceFactor;
+    bool                                m_bUseMouse;
+    bool                                m_bControlPressed;
+    bool                                m_bAltPressed;
+    double                              m_dMoveSpeed;
+    double                              m_dForceFactor;
 };

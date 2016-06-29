@@ -30,6 +30,7 @@ VirtualPilot::VirtualPilot(QString sSceneFileName, QWidget *parent, Qt::WFlags f
     , m_FPS(100)
     , m_bProcessEvents(true)
     , m_bRun(true)
+    , m_bRealTime(false)
 {
     LOG_DEBUG("VirtualPilot::VirtualPilot()");
 
@@ -198,7 +199,11 @@ void VirtualPilot::onTimer()
 
         m_FPS.append(1.0 / dDeltaTime);
 
-        m_pScene->setTimeOfDay(QDateTime::currentDateTime().time());
+        if (m_bRealTime)
+        {
+            m_pScene->setTimeOfDay(QDateTime::currentDateTime().time());
+        }
+
         m_pScene->updateScene(dDeltaTime);
         m_pView->update(dDeltaTime);
 

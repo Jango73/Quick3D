@@ -39,7 +39,7 @@ void CForceController::update(double dDeltaTime)
 {
     CController::update(dDeltaTime);
 
-    double dMoveSpeed = 1.5 + (m_dMoveSpeed * m_dForceFactor * 300.0);
+    double dMoveSpeed = m_dForceFactor;
 
     if (m_rPositionTarget.component())
     {
@@ -97,7 +97,7 @@ void CForceController::update(double dDeltaTime)
 
         if (pPhysicalRotationTarget)
         {
-            double dRotationSpeed = m_dMoveSpeed * m_dForceFactor * 50.0;
+            double dRotationSpeed = m_dForceFactor * 0.1;
 
             if (m_bLookUp)
             {
@@ -146,6 +146,151 @@ void CForceController::update(double dDeltaTime)
                             pPhysicalRotationTarget->setOriginRotation(m_rRotationTarget.component()->getOriginRotation() + vRotation);
                         }
                     }
+            }
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CForceController::keyPressEvent(QKeyEvent* event)
+{
+    CStandardController::keyPressEvent(event);
+
+    switch (event->key())
+    {
+        case Qt::Key_8:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_LookFront, CQ3DEvent::Press));
+            break;
+        case Qt::Key_9:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_LookFrontRight, CQ3DEvent::Press));
+            break;
+        case Qt::Key_6:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_LookRight, CQ3DEvent::Press));
+            break;
+        case Qt::Key_3:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_LookBackRight, CQ3DEvent::Press));
+            break;
+        case Qt::Key_2:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_LookBack, CQ3DEvent::Press));
+            break;
+        case Qt::Key_1:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_LookBackLeft, CQ3DEvent::Press));
+            break;
+        case Qt::Key_4:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_LookLeft, CQ3DEvent::Press));
+            break;
+        case Qt::Key_7:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_LookFrontLeft, CQ3DEvent::Press));
+            break;
+        case Qt::Key_5:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_LookFrontDown, CQ3DEvent::Press));
+            break;
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CForceController::keyReleaseEvent(QKeyEvent *event)
+{
+    CStandardController::keyReleaseEvent(event);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CForceController::q3dEvent(CQ3DEvent* event)
+{
+    CStandardController::q3dEvent(event);
+
+    QSP<CComponent> pLookTarget = m_rLookTarget.component();
+
+    if (event->getName() == Q3DEvent_LookFront)
+    {
+        if (event->getAction() == CQ3DEvent::Press)
+        {
+            if (pLookTarget)
+            {
+                pLookTarget->setOriginRotation(CVector3((Math::Pi / 20.0) * 1.0, (Math::Pi / 4.0) * 0.0, 0.0));
+            }
+        }
+    }
+    else if (event->getName() == Q3DEvent_LookFrontRight)
+    {
+        if (event->getAction() == CQ3DEvent::Press)
+        {
+            if (pLookTarget)
+            {
+                pLookTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 1.0, 0.0));
+            }
+        }
+    }
+    else if (event->getName() == Q3DEvent_LookRight)
+    {
+        if (event->getAction() == CQ3DEvent::Press)
+        {
+            if (pLookTarget)
+            {
+                pLookTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 2.0, 0.0));
+            }
+        }
+    }
+    else if (event->getName() == Q3DEvent_LookBackRight)
+    {
+        if (event->getAction() == CQ3DEvent::Press)
+        {
+            if (pLookTarget)
+            {
+                pLookTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 3.0, 0.0));
+            }
+        }
+    }
+    else if (event->getName() == Q3DEvent_LookBack)
+    {
+        if (event->getAction() == CQ3DEvent::Press)
+        {
+            if (pLookTarget)
+            {
+                pLookTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 4.0, 0.0));
+            }
+        }
+    }
+    else if (event->getName() == Q3DEvent_LookBackLeft)
+    {
+        if (event->getAction() == CQ3DEvent::Press)
+        {
+            if (pLookTarget)
+            {
+                pLookTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 5.0, 0.0));
+            }
+        }
+    }
+    else if (event->getName() == Q3DEvent_LookLeft)
+    {
+        if (event->getAction() == CQ3DEvent::Press)
+        {
+            if (pLookTarget)
+            {
+                pLookTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 6.0, 0.0));
+            }
+        }
+    }
+    else if (event->getName() == Q3DEvent_LookFrontLeft)
+    {
+        if (event->getAction() == CQ3DEvent::Press)
+        {
+            if (pLookTarget)
+            {
+                pLookTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 7.0, 0.0));
+            }
+        }
+    }
+    else if (event->getName() == Q3DEvent_LookFrontDown)
+    {
+        if (event->getAction() == CQ3DEvent::Press)
+        {
+            if (pLookTarget)
+            {
+                pLookTarget->setOriginRotation(CVector3((Math::Pi / 4.0) * 1.0, (Math::Pi / 4.0) * 1.0, 0.0));
             }
         }
     }

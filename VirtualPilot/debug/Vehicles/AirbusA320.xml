@@ -13,6 +13,7 @@
 	<Controller Class="CAirbusController" Name="AirbusControl"
 		PositionTarget=".Pilot"
 		RotationTarget=".Pilot"
+		LookTarget=".Pilot"
 		FCU=".FCU"
 	/>
 

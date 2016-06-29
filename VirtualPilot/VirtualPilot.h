@@ -6,9 +6,9 @@
 #include <QtGlobal>
 
 #if QT_VERSION >= 0x050000
-    #include <QMainWindow>
+#include <QMainWindow>
 #else
-    #include <QtGui/QMainWindow>
+#include <QtGui/QMainWindow>
 #endif
 
 // Application
@@ -21,78 +21,79 @@
 
 class VirtualPilot : public QMainWindow
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructeurs et destructeur
+    //-------------------------------------------------------------------------------------------------
 
-	//! Constructeur
+    //! Constructeur
 #if QT_VERSION >= 0x050000
     VirtualPilot(QString sSceneFileName, QWidget *parent = 0);
 #else
     VirtualPilot(QString sSceneFileName, QWidget *parent = 0, Qt::WFlags flags = 0);
 #endif
 
-	//! Destructeur
-	virtual ~VirtualPilot();
+    //! Destructeur
+    virtual ~VirtualPilot();
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes de contrôle
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	void readPreferences();
+    //!
+    void readPreferences();
 
-	//!
-	void loadScene(QString sFileName);
+    //!
+    void loadScene(QString sFileName);
 
-	//!
-	void loadVehicle(QString sFileName);
+    //!
+    void loadVehicle(QString sFileName);
 
-	//-------------------------------------------------------------------------------------------------
-	// Méthodes protégées
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Méthodes protégées
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	//!
-	virtual void resizeEvent(QResizeEvent *event);
+    //!
+    virtual void resizeEvent(QResizeEvent *event);
 
-	//!
-	int randInt(int low, int high);
+    //!
+    int randInt(int low, int high);
 
-	//-------------------------------------------------------------------------------------------------
-	// Slots
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Slots
+    //-------------------------------------------------------------------------------------------------
 
 private slots:
 
-	void onTimer();
-	void onLoadSceneClicked();
-	void onLoadVehicleClicked();
-	void onPreferencesClicked();
-	void onQuitClicked();
-	void onDumpSceneClicked();
-	void onResize();
+    void onTimer();
+    void onLoadSceneClicked();
+    void onLoadVehicleClicked();
+    void onPreferencesClicked();
+    void onQuitClicked();
+    void onDumpSceneClicked();
+    void onResize();
 
-	//-------------------------------------------------------------------------------------------------
-	// Propriétés
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Propriétés
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	Ui::VirtualPilotClass			ui;
-	CGLWidgetScene*					m_pScene;
-	CView*							m_pView;
-	QTimer							m_tTimer;
-	CAverager<double>				m_FPS;
-	QDateTime						m_tPreviousTime;
-	QString							m_sPathVehicles;
-	bool							m_bProcessEvents;
-	bool							m_bRun;
+    Ui::VirtualPilotClass           ui;
+    CGLWidgetScene*                 m_pScene;
+    CView*                          m_pView;
+    QTimer                          m_tTimer;
+    CAverager<double>               m_FPS;
+    QDateTime                       m_tPreviousTime;
+    QString                         m_sPathVehicles;
+    bool                            m_bProcessEvents;
+    bool                            m_bRun;
+    bool                            m_bRealTime;
 };
 
 #endif // VIRTUALPILOT_H

@@ -45,6 +45,15 @@ public:
     //! Met l'objet à jour d'après le temps écoulé depuis la dernière image
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
+    //!
+    virtual void keyPressEvent(QKeyEvent* event);
+
+    //!
+    virtual void keyReleaseEvent(QKeyEvent *event);
+
+    //!
+    virtual void q3dEvent(CQ3DEvent* event);
+
     //-------------------------------------------------------------------------------------------------
     // Propriétés
     //-------------------------------------------------------------------------------------------------

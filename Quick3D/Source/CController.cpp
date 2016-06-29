@@ -54,6 +54,7 @@ void CController::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 
     m_rPositionTarget.setName(xComponent.attributes()[ParamName_PositionTarget]);
     m_rRotationTarget.setName(xComponent.attributes()[ParamName_RotationTarget]);
+    m_rLookTarget.setName(xComponent.attributes()[ParamName_LookTarget]);
 
     if (xComponent.attributes()[ParamName_ForceFactor].isEmpty() == false)
     {
@@ -69,6 +70,7 @@ void CController::solveLinks(C3DScene* pScene)
 
     m_rPositionTarget.solve(pScene, QSP<CComponent>(this));
     m_rRotationTarget.solve(pScene, QSP<CComponent>(this));
+    m_rLookTarget.solve(pScene, QSP<CComponent>(this));
 
     if (!m_rPositionTarget.component() && m_pParent)
     {
@@ -89,6 +91,7 @@ void CController::clearLinks(C3DScene* pScene)
 
     m_rPositionTarget.clear();
     m_rRotationTarget.clear();
+    m_rLookTarget.clear();
 }
 
 //-------------------------------------------------------------------------------------------------

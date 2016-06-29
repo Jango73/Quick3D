@@ -175,9 +175,9 @@ void CAirbusController::wheelEvent(QWheelEvent *event)
 {
     double dDelta = (double) event->delta() * -0.1;
 
-    if (m_rPositionTarget.component() && m_rPositionTarget.component()->isCamera())
+    if (m_rLookTarget.component() && m_rLookTarget.component()->isCamera())
     {
-        QSP<CCamera> pCamera = QSP_CAST(CCamera, m_rPositionTarget.component());
+        QSP<CCamera> pCamera = QSP_CAST(CCamera, m_rLookTarget.component());
 
         if (pCamera)
         {

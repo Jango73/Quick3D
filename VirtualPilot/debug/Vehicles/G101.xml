@@ -6,7 +6,7 @@
 	<IR Factor="0.8"/>
 	<Physics MassKG="2000" SpeedMS="8.0" TurnSpeedDS="30.0" Drag="0.1" Friction="1.0"/>
 
-	<Controller Class="CForceController" ForceFactor="3000.0"
+	<Controller Class="CForceController" ForceFactor="10000.0"
 		LookTarget=".Pilot"
 	/>
 

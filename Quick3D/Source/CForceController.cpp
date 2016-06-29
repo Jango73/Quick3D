@@ -97,7 +97,7 @@ void CForceController::update(double dDeltaTime)
 
         if (pPhysicalRotationTarget)
         {
-            double dRotationSpeed = m_dForceFactor * 0.1;
+            double dRotationSpeed = m_dForceFactor * 0.02;
 
             if (m_bLookUp)
             {

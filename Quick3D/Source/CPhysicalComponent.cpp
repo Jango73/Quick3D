@@ -476,9 +476,13 @@ void CPhysicalComponent::update(double dDeltaTimeS)
             {
                 if (m_pParent->getPreviousWorldTransform().isIdentity() == false)
                 {
-                    CAxis anAxis(getRotation());
-                    anAxis = anAxis * CMatrix4::MakeRotation(getOriginRotation());
+                    CAxis anAxis;
+                    CMatrix4 aMatrix;
 
+                    aMatrix = aMatrix * CMatrix4::MakeRotation(getRotation());
+                    aMatrix = aMatrix * CMatrix4::MakeRotation(getOriginRotation());
+
+                    anAxis = anAxis * aMatrix;
                     anAxis = anAxis * m_pParent->getPreviousWorldTransform();
                     anAxis = anAxis * m_pParent->getWorldTransformInverse();
 
@@ -487,9 +491,9 @@ void CPhysicalComponent::update(double dDeltaTimeS)
                     setRotation(vRotation);
                     vRotation = getRotation();
 
-                    vRotation.X += -vRotation.X * 4.0 * dDeltaTimeS;
-                    vRotation.Y += -vRotation.Y * 4.0 * dDeltaTimeS;
-                    vRotation.Z += -vRotation.Z * 4.0 * dDeltaTimeS;
+                    vRotation.X += -vRotation.X * 2.0 * dDeltaTimeS;
+                    vRotation.Y += -vRotation.Y * 2.0 * dDeltaTimeS;
+                    vRotation.Z += -vRotation.Z * 2.0 * dDeltaTimeS;
 
                     setRotation(vRotation);
                 }

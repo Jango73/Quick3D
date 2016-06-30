@@ -65,6 +65,8 @@ CComponent::CComponent(C3DScene* pScene)
     , m_vRotation(0.0, 0.0, 0.0)
     , m_vScale(1.0, 1.0, 1.0)
     , m_vRotationFactor(1.0, 1.0, 1.0)
+    , m_vRotationMinimum(-1000.0, -1000.0, -1000.0)
+    , m_vRotationMaximum( 1000.0,  1000.0,  1000.0)
     , m_bVisible(true)
     , m_bCastShadows(true)
     , m_bReceiveShadows(true)
@@ -459,6 +461,14 @@ void CComponent::setRotation(CVector3 Rotation)
     m_vRotation.X = Math::Angles::clipAngleRadianPIMinusPI(m_vRotation.X);
     m_vRotation.Y = Math::Angles::clipAngleRadianPIMinusPI(m_vRotation.Y);
     m_vRotation.Z = Math::Angles::clipAngleRadianPIMinusPI(m_vRotation.Z);
+
+    if (m_vRotation.X < m_vRotationMinimum.X) m_vRotation.X = m_vRotationMinimum.X;
+    if (m_vRotation.Y < m_vRotationMinimum.Y) m_vRotation.Y = m_vRotationMinimum.Y;
+    if (m_vRotation.Z < m_vRotationMinimum.Z) m_vRotation.Z = m_vRotationMinimum.Z;
+
+    if (m_vRotation.X > m_vRotationMaximum.X) m_vRotation.X = m_vRotationMaximum.X;
+    if (m_vRotation.Y > m_vRotationMaximum.Y) m_vRotation.Y = m_vRotationMaximum.Y;
+    if (m_vRotation.Z > m_vRotationMaximum.Z) m_vRotation.Z = m_vRotationMaximum.Z;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -561,6 +571,8 @@ void CComponent::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
     CXMLNode tRotationNode = xComponent.getNodeByTagName(ParamName_Rotation);
     CXMLNode tScaleNode = xComponent.getNodeByTagName(ParamName_Scale);
     CXMLNode tRotationFactorNode = xComponent.getNodeByTagName(ParamName_RotationFactor);
+    CXMLNode tRotationMinimumNode = xComponent.getNodeByTagName(ParamName_RotationMinimum);
+    CXMLNode tRotationMaximumNode = xComponent.getNodeByTagName(ParamName_RotationMaximum);
 
     // Nom du composant
 
@@ -602,7 +614,7 @@ void CComponent::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
                               ));
     }
 
-    // Facteurs de rotation (permet de verrouiller un ou plusierus axes)
+    // Facteurs de rotation (permet de verrouiller un ou plusieurs axes)
 
     if (tRotationFactorNode.isEmpty() == false)
     {
@@ -610,6 +622,28 @@ void CComponent::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
                     tRotationFactorNode.attributes()[ParamName_x].toDouble(),
                     tRotationFactorNode.attributes()[ParamName_y].toDouble(),
                     tRotationFactorNode.attributes()[ParamName_z].toDouble()
+                    );
+    }
+
+    // Rotation minimum
+
+    if (tRotationMinimumNode.isEmpty() == false)
+    {
+        m_vRotationMinimum = CVector3(
+                    Angles::toRad(tRotationMinimumNode.attributes()[ParamName_x].toDouble()),
+                    Angles::toRad(tRotationMinimumNode.attributes()[ParamName_y].toDouble()),
+                    Angles::toRad(tRotationMinimumNode.attributes()[ParamName_z].toDouble())
+                    );
+    }
+
+    // Rotation maximum
+
+    if (tRotationMaximumNode.isEmpty() == false)
+    {
+        m_vRotationMaximum = CVector3(
+                    Angles::toRad(tRotationMaximumNode.attributes()[ParamName_x].toDouble()),
+                    Angles::toRad(tRotationMaximumNode.attributes()[ParamName_y].toDouble()),
+                    Angles::toRad(tRotationMaximumNode.attributes()[ParamName_z].toDouble())
                     );
     }
 

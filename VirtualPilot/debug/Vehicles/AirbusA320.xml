@@ -41,6 +41,9 @@
 		<Position x="-0.55" y="0.7" z="14.3"/>
 		<Rotation x="0.0" y="0.0" z="0.0"/>
 		<Controller Class="CStandardController"/>
+		<RotationMinimum x="-5.0" y="-5.0" z="-5.0"/>
+		<RotationMaximum x=" 5.0" y=" 5.0" z=" 5.0"/>
+		<Physics RotationLatency="1.0"/>
 	</Component>
 
 	<Component Name="Back" Class="CCamera">

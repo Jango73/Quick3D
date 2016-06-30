@@ -12,6 +12,10 @@
 
 	<Component Name="Pilot" Class="CCamera">
 		<Position x="-0.3" y="1.0" z="-0.25"/>
+		<!-- <Position x="5.0" y="1.0" z="0.0"/> -->
 		<Rotation x="0.0" y="0.0" z="0.0"/>
+		<RotationMinimum x="-5.0" y="-5.0" z="-5.0"/>
+		<RotationMaximum x=" 5.0" y=" 5.0" z=" 5.0"/>
+		<Physics RotationLatency="1.0"/>
 	</Component>
 </Component>

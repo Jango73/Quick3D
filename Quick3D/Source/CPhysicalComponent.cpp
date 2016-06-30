@@ -43,6 +43,7 @@ CPhysicalComponent::CPhysicalComponent(C3DScene* pScene)
     , m_dFriction_norm(0.1)
     , m_dMass_kg(1.0)
     , m_dStickToNOLL(0.0)
+    , m_dRotationLatency(0.0)
     , m_eCollisionType(ctSphere)
 {
 }
@@ -65,16 +66,18 @@ CPhysicalComponent& CPhysicalComponent::operator = (const CPhysicalComponent& ta
 {
     CComponent::operator = (target);
 
-    m_bPhysicsActive				= target.m_bPhysicsActive;
-    m_bCollisionsActive				= target.m_bCollisionsActive;
-    m_dDrag_norm					= target.m_dDrag_norm;
-    m_dAngularDrag_norm				= target.m_dAngularDrag_norm;
-    m_dMass_kg						= target.m_dMass_kg;
-    m_vVelocity_ms					= target.m_vVelocity_ms;
-    m_vAngularVelocity_rs			= target.m_vAngularVelocity_rs;
-    m_vSummedForces_mss				= target.m_vSummedForces_mss;
-    m_vSummedTorques_rss			= target.m_vSummedTorques_rss;
-    m_eCollisionType				= target.m_eCollisionType;
+    m_bPhysicsActive                = target.m_bPhysicsActive;
+    m_bCollisionsActive             = target.m_bCollisionsActive;
+    m_dDrag_norm                    = target.m_dDrag_norm;
+    m_dAngularDrag_norm             = target.m_dAngularDrag_norm;
+    m_dMass_kg                      = target.m_dMass_kg;
+    m_dStickToNOLL                  = target.m_dStickToNOLL;
+    m_dRotationLatency              = target.m_dRotationLatency;
+    m_vVelocity_ms                  = target.m_vVelocity_ms;
+    m_vAngularVelocity_rs           = target.m_vAngularVelocity_rs;
+    m_vSummedForces_mss             = target.m_vSummedForces_mss;
+    m_vSummedTorques_rss            = target.m_vSummedTorques_rss;
+    m_eCollisionType                = target.m_eCollisionType;
 
     return *this;
 }
@@ -118,6 +121,11 @@ void CPhysicalComponent::loadParameters(const QString& sBaseFile, CXMLNode xComp
         if (xPhysicsNode.attributes()["StickToNOLL"].isEmpty() == false)
         {
             m_dStickToNOLL = xPhysicsNode.attributes()["StickToNOLL"].toDouble();
+        }
+
+        if (xPhysicsNode.attributes()["RotationLatency"].isEmpty() == false)
+        {
+            m_dRotationLatency = xPhysicsNode.attributes()["RotationLatency"].toDouble();
         }
 
         if (xPhysicsNode.attributes()[ParamName_PhysicsActive].isEmpty() == false)
@@ -447,9 +455,7 @@ void CPhysicalComponent::update(double dDeltaTimeS)
         {
             if (m_pParent)
             {
-                CMatrix4 mParentPrevious = m_pParent->getPreviousWorldTransform();
-
-                if (mParentPrevious.isIdentity() == false)
+                if (m_pParent->getPreviousWorldTransform().isIdentity() == false)
                 {
                     CAxis anAxis(getOriginRotation());
 
@@ -460,6 +466,32 @@ void CPhysicalComponent::update(double dDeltaTimeS)
 
                     // Vector3 vNewAngles = anAxis.euleurAngles();
                     // setOriginRotation(interpolate(vNewAngles, m_vOriginRotation, m_dStickToNOLL * dDeltaTime));
+                }
+            }
+        }
+
+        if (m_dRotationLatency > 0.0)
+        {
+            if (m_pParent)
+            {
+                if (m_pParent->getPreviousWorldTransform().isIdentity() == false)
+                {
+                    CAxis anAxis(getRotation());
+                    anAxis = anAxis * CMatrix4::MakeRotation(getOriginRotation());
+
+                    anAxis = anAxis * m_pParent->getPreviousWorldTransform();
+                    anAxis = anAxis * m_pParent->getWorldTransformInverse();
+
+                    CVector3 vRotation = anAxis.euleurAngles();
+
+                    setRotation(vRotation);
+                    vRotation = getRotation();
+
+                    vRotation.X += -vRotation.X * 4.0 * dDeltaTimeS;
+                    vRotation.Y += -vRotation.Y * 4.0 * dDeltaTimeS;
+                    vRotation.Z += -vRotation.Z * 4.0 * dDeltaTimeS;
+
+                    setRotation(vRotation);
                 }
             }
         }

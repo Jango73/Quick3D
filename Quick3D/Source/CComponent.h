@@ -347,15 +347,17 @@ public:
 
 private:
 
-    CGeoloc                 m_gGeoloc;						// Géolocalisation de l'objet
-    Math::CVector3			m_vECEFRotation;				// Rotation de l'objet dans le repère ECEF (Earth-centered earth-fixed)
-    Math::CVector3			m_vOriginPosition;				// Position de l'objet dans le repère NOLL (North-oriented local-level)
-    Math::CVector3			m_vOriginRotation;				// Rotation de l'objet (euleur) dans le repère NOLL
-    Math::CVector3			m_vOriginScale;					// Echelle de l'objet dans le repère NOLL
-    Math::CVector3			m_vPosition;					// Position animée de l'objet dans son repère local
-    Math::CVector3			m_vRotation;					// Rotation animée de l'objet (euleur) dans son repère local
-    Math::CVector3			m_vScale;						// Echelle animée de l'objet dans son repère local
-    Math::CVector3			m_vRotationFactor;				// Verrouillages de rotation
+    CGeoloc                     m_gGeoloc;						// Géolocalisation de l'objet
+    Math::CVector3              m_vECEFRotation;				// Rotation de l'objet dans le repère ECEF (Earth-centered earth-fixed)
+    Math::CVector3              m_vOriginPosition;				// Position de l'objet dans le repère NOLL (North-oriented local-level)
+    Math::CVector3              m_vOriginRotation;				// Rotation de l'objet (euleur) dans le repère NOLL
+    Math::CVector3              m_vOriginScale;					// Echelle de l'objet dans le repère NOLL
+    Math::CVector3              m_vPosition;					// Position animée de l'objet dans son repère local
+    Math::CVector3              m_vRotation;					// Rotation animée de l'objet (euleur) dans son repère local
+    Math::CVector3              m_vScale;						// Echelle animée de l'objet dans son repère local
+    Math::CVector3              m_vRotationFactor;				// Verrouillages de rotation
+    Math::CVector3              m_vRotationMinimum;				// Limites minimum de rotation
+    Math::CVector3              m_vRotationMaximum;				// Limites maximum de rotation
 
 protected:
 

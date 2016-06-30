@@ -205,7 +205,7 @@ void CForceController::q3dEvent(CQ3DEvent* event)
         {
             if (pLookTarget)
             {
-                pLookTarget->setOriginRotation(CVector3((Math::Pi / 20.0) * 1.0, (Math::Pi / 4.0) * 0.0, 0.0));
+                pLookTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 0.0, 0.0));
             }
         }
     }

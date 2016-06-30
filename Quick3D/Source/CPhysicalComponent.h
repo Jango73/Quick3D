@@ -173,20 +173,21 @@ public:
 
 protected:
 
-    QVector<CHeightField*>	m_pFields;						// Les champs de hauteurs dont dépend cet objet
+    QVector<CHeightField*>  m_pFields;                      // Les champs de hauteurs dont dépend cet objet
 
-    bool					m_bPhysicsActive;				// Calculs de physique activés
-    bool					m_bCollisionsActive;			// Calculs de collisions activés
-    bool					m_bOnGround;					// Indicateur si véhicule au sol
-    double					m_dDrag_norm;					// Facteur de trainée normalisé (0..1)
-    double					m_dAngularDrag_norm;			// Facteur de trainée angulaire normalisé (0..1)
-    double					m_dFriction_norm;				// Facteur de friction normalisé (0..1)
-    double					m_dMass_kg;						// Masse en kilogrammes
-    double					m_dStickToNOLL;					//
-    Math::CVector3			m_vCenterOfMass;				// Centre de masse
-    Math::CVector3			m_vVelocity_ms;					// Vélocité en mètres/seconde, repère NOLL
-    Math::CVector3			m_vAngularVelocity_rs;			// Vélocité angulaire en degrés/seconde, repère NOLL
-    Math::CVector3			m_vSummedForces_mss;			// Accelération en mètres/seconde/seconde, repère NOLL
-    Math::CVector3			m_vSummedTorques_rss;			// Accelération angulaire en mètres/seconde/seconde, repère NOLL
-    ECollisionType			m_eCollisionType;				// Type de collisions à utiliser
+    bool                    m_bPhysicsActive;               // Calculs de physique activés
+    bool                    m_bCollisionsActive;            // Calculs de collisions activés
+    bool                    m_bOnGround;                    // Indicateur si véhicule au sol
+    double                  m_dDrag_norm;                   // Facteur de trainée normalisé (0..1)
+    double                  m_dAngularDrag_norm;            // Facteur de trainée angulaire normalisé (0..1)
+    double                  m_dFriction_norm;               // Facteur de friction normalisé (0..1)
+    double                  m_dMass_kg;                     // Masse en kilogrammes
+    double                  m_dStickToNOLL;                 //
+    double                  m_dRotationLatency;             //
+    Math::CVector3          m_vCenterOfMass;                // Centre de masse
+    Math::CVector3          m_vVelocity_ms;                 // Vélocité en mètres/seconde, repère NOLL
+    Math::CVector3          m_vAngularVelocity_rs;          // Vélocité angulaire en degrés/seconde, repère NOLL
+    Math::CVector3          m_vSummedForces_mss;            // Accelération en mètres/seconde/seconde, repère NOLL
+    Math::CVector3          m_vSummedTorques_rss;           // Accelération angulaire en mètres/seconde/seconde, repère NOLL
+    ECollisionType          m_eCollisionType;               // Type de collisions à utiliser
 };

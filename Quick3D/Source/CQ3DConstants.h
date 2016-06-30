@@ -163,6 +163,8 @@
 #define ParamName_Resolution				"Resolution"
 #define ParamName_Rotation					"Rotation"
 #define ParamName_RotationFactor			"RotationFactor"
+#define ParamName_RotationMinimum           "RotationMinimum"
+#define ParamName_RotationMaximum           "RotationMaximum"
 #define ParamName_RotationTarget			"RotationTarget"
 #define ParamName_Scale						"Scale"
 #define ParamName_Servo						"Servo"

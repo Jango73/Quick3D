@@ -300,11 +300,10 @@ QStringList CBILData::readHeader()
                 }
             }
         }
-        else
-            if (sFile.contains(".bil"))
-            {
-                m_sBILFileName = sFile;
-            }
+        else if (sFile.contains(".bil"))
+        {
+            m_sBILFileName = sFile;
+        }
     }
 
     return lReturnValue;

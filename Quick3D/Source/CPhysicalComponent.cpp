@@ -479,8 +479,8 @@ void CPhysicalComponent::update(double dDeltaTimeS)
                     CAxis anAxis;
                     CMatrix4 aMatrix;
 
-                    aMatrix = aMatrix * CMatrix4::MakeRotation(getRotation());
                     aMatrix = aMatrix * CMatrix4::MakeRotation(getOriginRotation());
+                    aMatrix = aMatrix * CMatrix4::MakeRotation(getRotation());
 
                     anAxis = anAxis * aMatrix;
                     anAxis = anAxis * m_pParent->getPreviousWorldTransform();

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Airports>
+	<Airport ICAO="LFPG" Name="Paris-Charles-de-Gaulle">
+		<Geoloc Latitude="49.010037" Longitude="2.562661" Altitude="119.0"/>
+		<Runway ID="26R" Length="3600" Width="75">
+			<Geoloc Latitude="48.998321" Longitude="2.601997" Altitude="0.0"/>
+		</Runway>
+		<Runway ID="26L" Length="2700" Width="61">
+			<Geoloc Latitude="48.994883" Longitude="2.602441" Altitude="0.0"/>
+		</Runway>
+		<Runway ID="27R" Length="2700" Width="61">
+			<Geoloc Latitude="49.026698" Longitude="2.561682" Altitude="0.0"/>
+		</Runway>
+		<Runway ID="27L" Length="3600" Width="75">
+			<Geoloc Latitude="49.023252" Longitude="2.562088" Altitude="0.0"/>
+		</Runway>
+	</Airport>
+</Airports>

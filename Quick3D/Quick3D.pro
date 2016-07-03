@@ -73,6 +73,7 @@ SOURCES += \
     Source/CGenerateFunction.cpp \
     Source/CGeoBounds.cpp \
     Source/CGeoloc.cpp \
+    Source/CGeometryGenerator.cpp \
     Source/CGLExtension.cpp \
     Source/CGLWidgetScene.cpp \
     Source/CHeightField.cpp \
@@ -256,6 +257,7 @@ HEADERS  += \
     Source/CGenerateFunction.h \
     Source/CGeoBounds.h \
     Source/CGeoloc.h \
+    Source/CGeometryGenerator.h \
     Source/CGeoZone.h \
     Source/CGLExtension.h \
     Source/CGLWidgetScene.h \

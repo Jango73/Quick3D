@@ -21,6 +21,7 @@
 #define ClassName_CMeshGeometry             "CMeshGeometry"
 #define ClassName_CMeshInstance				"CMeshInstance"
 #define ClassName_CBoundedMeshInstances		"CBoundedMeshInstances"
+#define ClassName_CGeometryGenerator        "CGeometryGenerator"
 
 #define ClassName_CWater					"CWater"
 #define ClassName_CParticle					"CParticle"

@@ -6,8 +6,16 @@
 // Application
 #include "CQ3DConstants.h"
 #include "CComponent.h"
+#include "CGenerateFunction.h"
+#include "CBoundedMeshInstances.h"
+
+//-------------------------------------------------------------------------------------------------
+// Forward declarations
 
 class C3DScene;
+class CWorldChunk;
+
+//-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CGeometryGenerator : public CComponent
 {
@@ -16,9 +24,6 @@ public:
     //-------------------------------------------------------------------------------------------------
     // Constructeurs et destructeur
     //-------------------------------------------------------------------------------------------------
-
-    //!
-    static CComponent* instanciator(C3DScene* pScene);
 
     //!
     CGeometryGenerator(C3DScene* pScene);
@@ -44,6 +49,12 @@ public:
     //-------------------------------------------------------------------------------------------------
     // Méthodes de contrôle
     //-------------------------------------------------------------------------------------------------
+
+    //! Charge les paramètres de cet objet
+    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent, CXMLNode xFunctions);
+
+    //!
+    virtual void generate(QSP<CWorldChunk> pChunk) = 0;
 
     //-------------------------------------------------------------------------------------------------
     // Propriétés

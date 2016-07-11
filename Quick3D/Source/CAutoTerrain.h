@@ -10,59 +10,11 @@
 #include "CComponent.h"
 #include "CWorldChunk.h"
 #include "CHeightField.h"
-#include "CGenerateFunction.h"
+#include "CGeometryGenerator.h"
 
 //-------------------------------------------------------------------------------------------------
 
 class C3DScene;
-
-//-------------------------------------------------------------------------------------------------
-
-class QUICK3D_EXPORT CVegetation : public QSharedData
-{
-public:
-
-    enum EVegetationType
-    {
-        evtNone,
-        evtTree,
-        evtBush
-    };
-
-    //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
-    //-------------------------------------------------------------------------------------------------
-
-    CVegetation()
-        : m_eType(evtNone)
-        , m_dSpread(0.0)
-        , m_pFunction(NULL)
-        , m_pMesh(NULL)
-        , m_pMaterial(NULL)
-    {
-    }
-
-    CVegetation(EVegetationType eType, double dSpread, CGenerateFunction* pFunction, CMeshInstance* pMesh, CMaterial* pMaterial)
-        : m_eType(eType)
-        , m_dSpread(dSpread)
-        , m_pFunction(pFunction)
-        , m_pMesh(pMesh)
-        , m_pMaterial(QSP<CMaterial>(pMaterial))
-    {
-    }
-
-    virtual ~CVegetation()
-    {
-        if (m_pFunction != NULL) delete m_pFunction;
-        if (m_pMesh != NULL) delete m_pMesh;
-    }
-
-    EVegetationType     m_eType;
-    double              m_dSpread;
-    CGenerateFunction*  m_pFunction;
-    CMeshInstance*      m_pMesh;
-    QSP<CMaterial>      m_pMaterial;
-};
 
 //-------------------------------------------------------------------------------------------------
 
@@ -139,10 +91,10 @@ public:
     int getLevels() const { return m_iLevels; }
 
     //!
-    QVector<QSP<CVegetation> >& getVegetation() { return m_vVegetation; }
+    CMaterial* getMaterial() { return m_pMaterial.data(); }
 
     //!
-    CMaterial* getMaterial() { return m_pMaterial.data(); }
+    QVector<QSP<CComponent> >& generators() { return m_vGenerators; }
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes héritées
@@ -205,12 +157,6 @@ protected:
     //!
     void collectGarbageRecurse(QSP<CWorldChunk> pChunk);
 
-    //!
-    void readVegetationParameters(const QString& sBaseFile, CXMLNode xFunctions);
-
-    //!
-    void readBuildingParameters(const QString& sBaseFile, CXMLNode xFunctions);
-
     //! Calcul d'intersection avec un rayon
     Math::RayTracingResult intersectRecurse(QSP<CWorldChunk> pChunk, const Math::CRay3& ray) const;
 
@@ -220,15 +166,15 @@ protected:
 
 protected:
 
-    bool                            m_bGenerateNow;
-    CHeightField*                   m_pHeights;
-    int                             m_iLevels;
-    int                             m_iTerrainResolution;
-    CXMLNode                        m_xParameters;
+    bool                        m_bGenerateNow;
+    CHeightField*               m_pHeights;
+    int                         m_iLevels;
+    int                         m_iTerrainResolution;
+    CXMLNode                    m_xParameters;
 
     // Shared data
 
-    QSP<CWorldChunk>                m_pRoot;
-    QSP<CMaterial>                  m_pMaterial;
-    QVector<QSP<CVegetation> >      m_vVegetation;
+    QSP<CWorldChunk>            m_pRoot;
+    QSP<CMaterial>              m_pMaterial;
+    QVector<QSP<CComponent> >   m_vGenerators;
 };

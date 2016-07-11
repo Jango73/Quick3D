@@ -9,11 +9,8 @@
 #include "CAutoTerrain.h"
 #include "CWorldChunk.h"
 #include "CTiledMaterial.h"
-#include "CPerlin.h"
 
 using namespace Math;
-
-//-------------------------------------------------------------------------------------------------
 
 #define NUM_CONTAINERS	8
 
@@ -54,11 +51,6 @@ CWorldChunk::~CWorldChunk()
         {
             delete pBounded;
         }
-
-        foreach (QString sKey, m_vBushMeshes.keys())
-        {
-            delete m_vBushMeshes[sKey];
-        }
     }
 }
 
@@ -70,17 +62,14 @@ void CWorldChunk::setTerrain(QSP<CTerrain> value, bool bGenerateNow)
 
     if (m_pTerrain && m_pTerrain->getLevel() < 2)
     {
-        if (m_pScene->getShaderQuality() > 0.8)
+        if (bGenerateNow)
         {
-            if (bGenerateNow)
-            {
-                work();
-            }
-            else
-            {
-                // Add this to workers for detail generation
-                CWorkerManager::getInstance()->addWorker(this);
-            }
+            work();
+        }
+        else
+        {
+            // Add this to workers for detail generation
+            CWorkerManager::getInstance()->addWorker(this);
         }
     }
 }
@@ -400,8 +389,6 @@ void CWorldChunk::work()
 
     if (m_pTerrain)
     {
-        CPerlin* perlin = CPerlin::getInstance();
-
         // Create bounded containers
         {
             CGeoloc gStart(getGeoloc().Latitude - m_gSize.Latitude * 0.5, getGeoloc().Longitude - m_gSize.Longitude * 0.5, 0.0);
@@ -432,75 +419,15 @@ void CWorldChunk::work()
             }
         }
 
-        // Generate vegetation
-        for (int iVegetIndex = 0; iVegetIndex < m_pAutoTerrain->getVegetation().count(); iVegetIndex++)
+        if (m_pScene->getShaderQuality() > 0.8)
         {
-            QSP<CVegetation> pVegetation = m_pAutoTerrain->getVegetation()[iVegetIndex];
-
-            double dSpread = pVegetation->m_dSpread * ((double) m_pTerrain->getLevel() + 1.0);
-            double dAltitude_Trees = 10.0;
-
-            CGeoloc gStart(getGeoloc().Latitude - m_gSize.Latitude * 0.5, getGeoloc().Longitude - m_gSize.Longitude * 0.5, 0.0);
-
-            double dLatStart = fmod(gStart.Latitude, dSpread);
-            double dLonStart = fmod(gStart.Longitude, dSpread);
-
-            if (dLatStart < 0.0) dLatStart -= dSpread * 0.5;
-            if (dLonStart < 0.0) dLonStart -= dSpread * 0.5;
-
-            CGeoloc gStartOffset = CGeoloc(gStart.Latitude - dLatStart, gStart.Longitude - dLonStart, 0.0);
-
-            for (double dLat = gStartOffset.Latitude; dLat < gStartOffset.Latitude + m_gSize.Latitude; dLat += dSpread)
+            foreach (QSP<CComponent> pComponent, m_pAutoTerrain->generators())
             {
-                for (double dLon = gStartOffset.Longitude; dLon < gStartOffset.Longitude + m_gSize.Longitude; dLon += dSpread)
+                QSP<CGeometryGenerator> pGenerator = QSP_CAST(CGeometryGenerator, pComponent);
+
+                if (pGenerator)
                 {
-                    if (
-                            dLat > gStart.Latitude && dLat < gStart.Latitude + m_gSize.Latitude &&
-                            dLon > gStart.Longitude && dLon < gStart.Longitude + m_gSize.Longitude
-                            )
-                    {
-                        CGeoloc gPosition(dLat, dLon, 0.0);
-                        // CVector3 vPosition = gPosition.toVector3();
-
-                        /*
-                        CVector3 vLatDisplace = (vPosition + CVector3(iVegetIndex, iVegetIndex, iVegetIndex)) * 0.0001;
-                        CVector3 vLonDisplace = (vPosition - CVector3(iVegetIndex, iVegetIndex, iVegetIndex)) * 0.0002;
-
-                        double dLatNoise = perlin->getNoise(vLatDisplace);
-                        double dLonNoise = perlin->getNoise(vLonDisplace);
-
-                        gPosition.Latitude += dLatNoise * (dSpread * 0.25);
-                        gPosition.Longitude += dLonNoise * (dSpread * 0.25);
-                        */
-
-                        // gPosition.Latitude += (((double) qrand() / (double) RAND_MAX) - 0.5) * dSpread;
-                        // gPosition.Longitude += (((double) qrand() / (double) RAND_MAX) - 0.5) * dSpread;
-
-                        double dLandscapeValue = pVegetation->m_pFunction->process(perlin, gPosition.toVector3(), CAxis());
-
-                        if (dLandscapeValue > 0.0)
-                        {
-                            double dRigidness = 0.0;
-                            gPosition.Altitude = m_pTerrain->getHeightAt(gPosition, &dRigidness);
-
-                            if (gPosition.Altitude >= dAltitude_Trees)
-                            {
-                                switch (pVegetation->m_eType)
-                                {
-                                    case CVegetation::evtTree:
-                                        placeTree(gPosition, 5.0, iVegetIndex);
-                                        break;
-
-                                    case CVegetation::evtBush:
-                                        placeBush(gPosition, 5.0, iVegetIndex);
-                                        break;
-
-                                    default:
-                                        break;
-                                }
-                            }
-                        }
-                    }
+                    pGenerator->generate(QSP<CWorldChunk>(this));
                 }
 
                 if (m_bStopRequested) return;
@@ -509,92 +436,6 @@ void CWorldChunk::work()
     }
 
     m_bOK = true;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void CWorldChunk::placeTree(CGeoloc gPosition, double dRadius, int iVegetIndex)
-{
-    if (checkPositionFree(gPosition, dRadius))
-    {
-        CMeshInstance* pMeshInstance = m_pAutoTerrain->getVegetation()[iVegetIndex]->m_pMesh->clone();
-
-        if (pMeshInstance != NULL)
-        {
-            pMeshInstance->setGeoloc(gPosition);
-            pMeshInstance->setOriginRotation(CVector3(0.0, ((double) rand() / 32768.0) * Math::Pi * 2.0, 0.0));
-            pMeshInstance->computeWorldTransform();
-
-            foreach (CBoundedMeshInstances* pBounded, m_vMeshes)
-            {
-                if (pBounded->getWorldBounds().contains(gPosition, dRadius))
-                {
-                    pBounded->add(pMeshInstance);
-                    return;
-                }
-            }
-
-            delete pMeshInstance;
-        }
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void CWorldChunk::placeBush(CGeoloc gPosition, double dRadius, int iVegetIndex)
-{
-    if (m_pAutoTerrain->getVegetation()[iVegetIndex]->m_pMaterial)
-    {
-        QString sMaterialName = m_pAutoTerrain->getVegetation()[iVegetIndex]->m_pMaterial->getName();
-
-        if (sMaterialName.isEmpty() == false)
-        {
-            if (m_vBushMeshes.contains(sMaterialName) == false)
-            {
-                CMeshGeometry* pBushMesh = new CMeshGeometry(m_pScene, 100000.0);
-
-                pBushMesh->setGLType(GL_POINTS);
-                pBushMesh->setMaterial(m_pAutoTerrain->getVegetation()[iVegetIndex]->m_pMaterial);
-
-                m_vBushMeshes[sMaterialName] = pBushMesh;
-            }
-
-            CVector3 vGeocentricPosition = gPosition.toVector3();
-            CVector3 vPosition = vGeocentricPosition - getWorldPosition();
-
-            CVertex newVertex(vPosition);
-            newVertex.setNormal(vGeocentricPosition.Normalize());
-            m_vBushMeshes[sMaterialName]->getVertices().append(newVertex);
-        }
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void CWorldChunk::placeBuilding(CGeoloc gPosition, double dRadius, int iBuildingIndex)
-{
-    if (checkPositionFree(gPosition, dRadius))
-    {
-        if (m_pContainer) m_pContainer->flatten(gPosition, dRadius);
-
-        /*
-        CMeshInstance* pMeshInstance = CBuildingGenerator::getInstance()->getBuilding(eType, gPosition, dRadius, dSeed);
-
-        if (pMeshInstance != NULL)
-        {
-            foreach (CBoundedMeshInstances* pBounded, m_vMeshes)
-            {
-                if (pBounded->getWorldBounds().contains(gPosition))
-                {
-                    pBounded->add(pMeshInstance);
-                    return;
-                }
-            }
-
-            delete pMeshInstance;
-        }
-        */
-    }
 }
 
 //-------------------------------------------------------------------------------------------------

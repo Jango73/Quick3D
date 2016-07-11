@@ -135,6 +135,7 @@ SOURCES += \
     Source/CTrajectory.cpp \
     Source/CTreeGenerator.cpp \
     Source/CUtility.cpp \
+    Source/CVegetationGenerator.cpp \
     Source/CVehicle.cpp \
     Source/CVertex.cpp \
     Source/CVertexGroup.cpp \
@@ -323,6 +324,7 @@ HEADERS  += \
     Source/CTrajectory.h \
     Source/CTreeGenerator.h \
     Source/CUtility.h \
+    Source/CVegetationGenerator.h \
     Source/CVehicle.h \
     Source/CVertex.h \
     Source/CVertexGroup.h \

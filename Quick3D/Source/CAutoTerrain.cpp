@@ -3,6 +3,7 @@
 #include "CLogManager.h"
 #include "CRessourcesManager.h"
 #include "C3DScene.h"
+#include "CComponentFactory.h"
 #include "CAutoTerrain.h"
 #include "CTreeGenerator.h"
 #include "CTiledMaterial.h"
@@ -150,8 +151,25 @@ void CAutoTerrain::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
         m_pHeights = new CGeneratedField(m_xParameters);
     }
 
-    readVegetationParameters(sBaseFile, xFunctionsNode);
-    readBuildingParameters(sBaseFile, xFunctionsNode);
+    CXMLNode xGeneratorNode = m_xParameters.getNodeByTagName(ParamName_Generators);
+    QVector<CXMLNode> xComponentNodes = xGeneratorNode.getNodesByTagName(ParamName_Component);
+
+    foreach (CXMLNode xGenerator, xComponentNodes)
+    {
+        QString sClass = xGenerator.attributes()[ParamName_Class];
+        QSP<CComponent> pComponent(CComponentFactory::getInstance()->instanciateComponent(sClass, m_pScene));
+
+        if (pComponent)
+        {
+            QSP<CGeometryGenerator> pGenerator = QSP_CAST(CGeometryGenerator, pComponent);
+
+            if (pGenerator)
+            {
+                pGenerator->loadParameters(sBaseFile, xGenerator, xFunctionsNode);
+                m_vGenerators.append(pComponent);
+            }
+        }
+    }
 
     CXMLNode xMaterialNode = m_xParameters.getNodeByTagName(ParamName_Material);
 
@@ -677,138 +695,6 @@ void CAutoTerrain::flatten(const CGeoloc& gPosition, double dRadius)
         }
     }
     */
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/*!
-    Reads parameters for vegetation and creates appropriate meshes.
-*/
-void CAutoTerrain::readVegetationParameters(const QString& sBaseFile, CXMLNode xFunctions)
-{
-    CXMLNode xVegetationNode = m_xParameters.getNodeByTagName(ParamName_Vegetation);
-
-    QVector<CXMLNode> xTrees = xVegetationNode.getNodesByTagName(ParamName_Tree);
-
-    foreach (CXMLNode xTree, xTrees)
-    {
-        CXMLNode xGeneral = xTree.getNodeByTagName(ParamName_General);
-        CXMLNode xDNA = xTree.getNodeByTagName(ParamName_DNA);
-        CXMLNode xCoverage = xTree.getNodeByTagName(ParamName_Coverage);
-
-        CGenerateFunction* pFunction = new CGenerateFunction(xFunctions, xCoverage.getNodeByTagName(ParamName_Value));
-
-        double dSpread = xGeneral.attributes()[ParamName_Spread].toDouble();
-        int iLevels = xDNA.attributes()[ParamName_Levels].toDouble();
-        double dTrunkLength = xDNA.attributes()[ParamName_TrunkLength].toDouble();
-        double dTrunkRadius = xDNA.attributes()[ParamName_TrunkRadius].toDouble();
-        double dBranchLengthScale = xDNA.attributes()[ParamName_BranchLengthScale].toDouble();
-        double dBranchRadiusScale = xDNA.attributes()[ParamName_BranchRadiusScale].toDouble();
-        double dLeafScale = xDNA.attributes()[ParamName_LeafScale].toDouble();
-        double dGravityFactor = xDNA.attributes()[ParamName_GravityFactor].toDouble();
-
-        CXMLNode xLeaf = xDNA.getNodeByTagName(ParamName_Leaf);
-        CXMLNode xFFD = xLeaf.getNodeByTagName(ParamName_FFD);
-
-        QVector<CXMLNode> xPoints = xFFD.getNodesByTagName(ParamName_Point);
-
-        QVector<CVector3> vFFDFrom;
-        QVector<CVector3> vFFDTo;
-
-        foreach (CXMLNode xPoint, xPoints)
-        {
-            vFFDFrom.append(CVector3(
-                                xPoint.attributes()["fx"].toDouble(),
-                            xPoint.attributes()["fy"].toDouble(),
-                    xPoint.attributes()["fz"].toDouble()
-                    ));
-
-            vFFDTo.append(CVector3(
-                              xPoint.attributes()["tx"].toDouble(),
-                          xPoint.attributes()["ty"].toDouble(),
-                    xPoint.attributes()["tz"].toDouble()
-                    ));
-        }
-
-        QVector<QSP<CMesh> > vMeshes;
-
-        CVector3 vNoisePosition(
-                    ((double) rand() / 32768.0) * 2.0,
-                    ((double) rand() / 32768.0) * 2.0,
-                    ((double) rand() / 32768.0) * 2.0
-                    );
-
-        for (int iLODLevel = 0; iLODLevel < 5; iLODLevel++)
-        {
-            CMesh* pMesh = new CMesh(m_pScene);
-
-            CMeshGeometry* pMeshGeometry = m_pScene->getTreeGenerator()->createTree(
-                        iLODLevel,
-                        vNoisePosition,
-                        iLevels,
-                        dTrunkLength,
-                        dTrunkRadius,
-                        dBranchLengthScale,
-                        dBranchRadiusScale,
-                        dLeafScale,
-                        dGravityFactor,
-                        vFFDFrom,
-                        vFFDTo
-                        );
-
-            pMesh->setGeometry(QSP<CMeshGeometry>(pMeshGeometry));
-            vMeshes.append(QSP<CMesh>(pMesh));
-        }
-
-        m_vVegetation.append(QSP<CVegetation>(new CVegetation(CVegetation::evtTree, dSpread, pFunction, new CMeshInstance(vMeshes), NULL)));
-    }
-
-    QVector<CXMLNode> xBushes = xVegetationNode.getNodesByTagName(ParamName_Bush);
-
-    foreach (CXMLNode xBush, xBushes)
-    {
-        CXMLNode xGeneral = xBush.getNodeByTagName(ParamName_General);
-        CXMLNode xCoverage = xBush.getNodeByTagName(ParamName_Coverage);
-        CXMLNode xMaterial = xBush.getNodeByTagName(ParamName_Material);
-
-        if (xCoverage.isEmpty() == false && xGeneral.attributes()[ParamName_Spread].isEmpty() == false)
-        {
-            CGenerateFunction* pFunction = new CGenerateFunction(xFunctions, xCoverage.getNodeByTagName(ParamName_Value));
-
-            double dSpread = xGeneral.attributes()[ParamName_Spread].toDouble();
-
-            if (xMaterial.isEmpty() == false)
-            {
-                CMaterial* pMaterial = new CMaterial(m_pScene);
-                pMaterial->loadParameters(sBaseFile, xMaterial);
-                pMaterial->setBillBoard(true);
-                pMaterial->setHasAlpha(true);
-                m_vVegetation.append(QSP<CVegetation>(new CVegetation(CVegetation::evtBush, dSpread, pFunction, NULL, pMaterial)));
-            }
-        }
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/*!
-    Reads parameters for buildings.
-*/
-void CAutoTerrain::readBuildingParameters(const QString& sBaseFile, CXMLNode xFunctions)
-{
-    Q_UNUSED(sBaseFile);
-
-    CXMLNode xBuildingsNode = m_xParameters.getNodeByTagName(ParamName_Buildings);
-
-    QVector<CXMLNode> xBuildings = xBuildingsNode.getNodesByTagName(ParamName_Building);
-
-    foreach (CXMLNode xBuilding, xBuildings)
-    {
-        CXMLNode xMeshList = xBuilding.getNodeByTagName(ParamName_MeshList);
-        CXMLNode xCoverage = xBuilding.getNodeByTagName(ParamName_Coverage);
-
-        // TODO : Complete
-    }
 }
 
 //-------------------------------------------------------------------------------------------------

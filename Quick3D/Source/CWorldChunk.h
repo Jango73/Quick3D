@@ -17,6 +17,7 @@
 #include "CHeightField.h"
 #include "CTerrain.h"
 #include "CBox.h"
+#include "CGeometryGenerator.h"
 
 //-------------------------------------------------------------------------------------------------
 // Déclarations avancées
@@ -79,6 +80,12 @@ public:
 
     //!
     QSP<CTerrain> getWater() const { return m_pWater; }
+
+    //!
+    QVector<CBoundedMeshInstances*>& meshes() { return m_vMeshes; }
+
+    //!
+    QMap<QString, QSP<CMeshGeometry> >& bushMeshes() { return m_vBushMeshes; }
 
     //!
     bool isOK() const { return m_bOK; }
@@ -146,15 +153,6 @@ public:
     virtual void work();
 
     //!
-    void placeTree(CGeoloc gPosition, double dRadius, int iVegetIndex);
-
-    //!
-    void placeBush(CGeoloc gPosition, double dRadius, int iVegetIndex);
-
-    //!
-    void placeBuilding(CGeoloc gPosition, double dRadius, int iBuildingIndex);
-
-    //!
     bool checkPositionFree(CGeoloc gPosition, double dRadius);
 
     //-------------------------------------------------------------------------------------------------
@@ -163,23 +161,22 @@ public:
 
 protected:
 
-    CAutoTerrain*                   m_pAutoTerrain;
-    CHeightField*                   m_pContainer;
-    CGeoloc                         m_gOriginalGeoloc;
-    CGeoloc                         m_gOriginalSize;
-    CGeoloc                         m_gSize;
-    CBoundingBox                    m_bWorldBounds;
-    QVector<CBoundedMeshInstances*> m_vMeshes;
-    QMap<QString, CMeshGeometry*>   m_vBushMeshes;
-    QMutex                          m_mMutex;
-    double                          m_dDistance;
-    bool                            m_bOK;
+    CAutoTerrain*                       m_pAutoTerrain;
+    CHeightField*                       m_pContainer;
+    CGeoloc                             m_gOriginalGeoloc;
+    CGeoloc                             m_gOriginalSize;
+    CGeoloc                             m_gSize;
+    CBoundingBox                        m_bWorldBounds;
+    QVector<CBoundedMeshInstances*>     m_vMeshes;
+    QMutex                              m_mMutex;
+    double                              m_dDistance;
+    bool                                m_bOK;
 
-    static int                      m_iNumWorldChunks;
+    static int                          m_iNumWorldChunks;
 
     // Shared data
 
-    QSP<CTerrain>                   m_pTerrain;
-    QSP<CTerrain>                   m_pWater;
-
+    QSP<CTerrain>                       m_pTerrain;
+    QSP<CTerrain>                       m_pWater;
+    QMap<QString, QSP<CMeshGeometry> >  m_vBushMeshes;
 };

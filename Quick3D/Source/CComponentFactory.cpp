@@ -23,6 +23,7 @@
 #include "CBasicAnimator.h"
 #include "CSkyBox.h"
 #include "CAutoTerrain.h"
+#include "CVegetationGenerator.h"
 #include "CMesh.h"
 #include "CArmature.h"
 #include "CBone.h"
@@ -83,6 +84,8 @@ void CComponentFactory::registerCoreComponents()
     registerComponent(ClassName_CBasicAnimator, CBasicAnimator::instanciator);
     registerComponent(ClassName_CSkyBox, CSkyBox::instanciator);
     registerComponent(ClassName_CAutoTerrain, CAutoTerrain::instanciator);
+    registerComponent(ClassName_CVegetationGenerator, CVegetationGenerator::instanciator);
+
     registerComponent(ClassName_CMesh, CMesh::instanciator);
     registerComponent(ClassName_CArmature, CArmature::instanciator);
     registerComponent(ClassName_CBone, CBone::instanciator);

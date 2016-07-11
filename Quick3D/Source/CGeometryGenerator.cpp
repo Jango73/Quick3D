@@ -6,13 +6,6 @@
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CGeometryGenerator::instanciator(C3DScene* pScene)
-{
-    return new CGeometryGenerator(pScene);
-}
-
-//-------------------------------------------------------------------------------------------------
-
 CGeometryGenerator::CGeometryGenerator(C3DScene* pScene)
 : CComponent(pScene)
 {
@@ -24,4 +17,10 @@ CGeometryGenerator::CGeometryGenerator(C3DScene* pScene)
 CGeometryGenerator::~CGeometryGenerator()
 {
     LOG_DEBUG("CGeometryGenerator::~CGeometryGenerator()");
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CGeometryGenerator::loadParameters(const QString& sBaseFile, CXMLNode xComponent, CXMLNode xFunctions)
+{
 }

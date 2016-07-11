@@ -95,10 +95,6 @@ CAutoTerrain::CAutoTerrain(C3DScene* pScene, CGeoloc gCameraPosition, CHeightFie
 */
 CAutoTerrain::~CAutoTerrain()
 {
-    foreach (CVegetation* pVegetation, m_vVegetation)
-    {
-        delete pVegetation;
-    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -764,7 +760,7 @@ void CAutoTerrain::readVegetationParameters(const QString& sBaseFile, CXMLNode x
             vMeshes.append(QSP<CMesh>(pMesh));
         }
 
-        m_vVegetation.append(new CVegetation(CVegetation::evtTree, dSpread, pFunction, new CMeshInstance(vMeshes), NULL));
+        m_vVegetation.append(QSP<CVegetation>(new CVegetation(CVegetation::evtTree, dSpread, pFunction, new CMeshInstance(vMeshes), NULL)));
     }
 
     QVector<CXMLNode> xBushes = xVegetationNode.getNodesByTagName(ParamName_Bush);
@@ -787,7 +783,7 @@ void CAutoTerrain::readVegetationParameters(const QString& sBaseFile, CXMLNode x
                 pMaterial->loadParameters(sBaseFile, xMaterial);
                 pMaterial->setBillBoard(true);
                 pMaterial->setHasAlpha(true);
-                m_vVegetation.append(new CVegetation(CVegetation::evtBush, dSpread, pFunction, NULL, pMaterial));
+                m_vVegetation.append(QSP<CVegetation>(new CVegetation(CVegetation::evtBush, dSpread, pFunction, NULL, pMaterial)));
             }
         }
     }

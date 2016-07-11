@@ -435,7 +435,7 @@ void CWorldChunk::work()
         // Generate vegetation
         for (int iVegetIndex = 0; iVegetIndex < m_pAutoTerrain->getVegetation().count(); iVegetIndex++)
         {
-            CVegetation* pVegetation = m_pAutoTerrain->getVegetation()[iVegetIndex];
+            QSP<CVegetation> pVegetation = m_pAutoTerrain->getVegetation()[iVegetIndex];
 
             double dSpread = pVegetation->m_dSpread * ((double) m_pTerrain->getLevel() + 1.0);
             double dAltitude_Trees = 10.0;

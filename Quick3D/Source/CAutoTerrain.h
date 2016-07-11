@@ -18,7 +18,7 @@ class C3DScene;
 
 //-------------------------------------------------------------------------------------------------
 
-class QUICK3D_EXPORT CVegetation
+class QUICK3D_EXPORT CVegetation : public QSharedData
 {
 public:
 
@@ -139,7 +139,7 @@ public:
     int getLevels() const { return m_iLevels; }
 
     //!
-    QVector<CVegetation*>& getVegetation() { return m_vVegetation; }
+    QVector<QSP<CVegetation> >& getVegetation() { return m_vVegetation; }
 
     //!
     CMaterial* getMaterial() { return m_pMaterial.data(); }
@@ -225,10 +225,10 @@ protected:
     int                             m_iLevels;
     int                             m_iTerrainResolution;
     CXMLNode                        m_xParameters;
-    QVector<CVegetation*>           m_vVegetation;
 
     // Shared data
 
     QSP<CWorldChunk>                m_pRoot;
     QSP<CMaterial>                  m_pMaterial;
+    QVector<QSP<CVegetation> >      m_vVegetation;
 };

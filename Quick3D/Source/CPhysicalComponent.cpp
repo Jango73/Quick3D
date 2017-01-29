@@ -472,6 +472,7 @@ void CPhysicalComponent::update(double dDeltaTimeS)
 
         if (m_dRotationLatency > 0.0)
         {
+            /*
             if (m_pParent)
             {
                 if (m_pParent->getPreviousWorldTransform().isIdentity() == false)
@@ -498,6 +499,7 @@ void CPhysicalComponent::update(double dDeltaTimeS)
                     setRotation(vRotation);
                 }
             }
+            */
         }
     }
 

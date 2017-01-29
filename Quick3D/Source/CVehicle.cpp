@@ -112,7 +112,7 @@ void CVehicle::update(double dDeltaTime)
             double hFrontLeft = m_pFields[0]->getHeightAt(gFrontLeft, &r3);
             double hFrontRight = m_pFields[0]->getHeightAt(gFrontRight, &r4);
 
-            double dRigidness = (r1 + r2 + r3 + r4) / 4.0;
+            // double dRigidness = (r1 + r2 + r3 + r4) / 4.0;
 
             double hAverage = (hBackLeft + hBackRight + hFrontLeft + hFrontRight) / 4.0;
 

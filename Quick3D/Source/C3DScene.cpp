@@ -311,6 +311,9 @@ void C3DScene::setFogLevel(double value)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Sets the force of the wind to \a value.
+*/
 void C3DScene::setWindLevel(double value)
 {
     m_dWindLevel = value;
@@ -326,6 +329,9 @@ void C3DScene::setRainVisible(bool bOnOff)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Forces a wide FOV when rendering when \a value is \c true.
+*/
 void C3DScene::forceWideFOV(bool value)
 {
     m_bforceWideFOV = value;
@@ -333,6 +339,9 @@ void C3DScene::forceWideFOV(bool value)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Forces a small FOV when rendering when \a value is \c true.
+*/
 void C3DScene::forceSmallFOV(bool value)
 {
     m_bforceSmallFOV = value;
@@ -340,6 +349,9 @@ void C3DScene::forceSmallFOV(bool value)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Forces IR effect when rendering.
+*/
 void C3DScene::forceIR(bool value)
 {
     m_bForceIR = value;
@@ -347,6 +359,9 @@ void C3DScene::forceIR(bool value)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Returns a vector of all lights.
+*/
 QVector<QSP<CLight> > C3DScene::getLights()
 {
     QVector<QSP<CLight> > vLights;
@@ -381,6 +396,9 @@ void C3DScene::getLightsRecurse(QVector<QSP<CLight> >& vLights, QSP<CComponent> 
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Returns a vector of components whose tag matches \a sTag.
+*/
 QVector<QSP<CComponent> > C3DScene::getComponentsByTag(const QString& sTag)
 {
     QVector<QSP<CComponent> > vReturnValue;
@@ -398,6 +416,9 @@ QVector<QSP<CComponent> > C3DScene::getComponentsByTag(const QString& sTag)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Returns a vector of lights whose tag matches \a sTag.
+*/
 QVector<QSP<CLight> > C3DScene::getLightsByTag(const QString& sTag)
 {
     QVector<QSP<CLight> > vLights;
@@ -432,6 +453,9 @@ void C3DScene::getLightsByTagRecurse(QVector<QSP<CLight> >& vLights, const QStri
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Updates the scene using elapsed time in \a dDeltaTimeS.
+*/
 void C3DScene::updateScene(double dDeltaTimeS)
 {
     if (dDeltaTimeS < 0.0) dDeltaTimeS = 0.0;
@@ -467,6 +491,9 @@ void C3DScene::updateScene(double dDeltaTimeS)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Paints all components, using \a pContext.
+*/
 void C3DScene::paintComponents(CRenderContext* pContext)
 {
     foreach(QSP<CComponent> pComponent, m_vComponents)
@@ -487,6 +514,9 @@ void C3DScene::paintComponents(CRenderContext* pContext)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Paints all components that cast shadows, using \a pContext.
+*/
 void C3DScene::paintShadowCastingComponents(CRenderContext* pContext)
 {
     foreach(QSP<CComponent> pComponent, m_vComponents)
@@ -505,24 +535,36 @@ void C3DScene::paintShadowCastingComponents(CRenderContext* pContext)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Sets up the environment of the scene.
+*/
 void C3DScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram* pProgram, bool bBackgroundItem)
 {
 }
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Sets up the lights of the scene.
+*/
 void C3DScene::setupLights(CRenderContext* pContext)
 {
 }
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Makes the OpenGL context of this scene the current one.
+*/
 void C3DScene::makeCurrentRenderingContext()
 {
 }
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Adds \a pComponent to the scene.
+*/
 void C3DScene::addComponent(QSP<CComponent> pComponent)
 {
     m_vComponents.append(pComponent);

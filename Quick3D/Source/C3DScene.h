@@ -247,9 +247,6 @@ public:
     //!
     void deleteComponentsByTag(const QString& sTag);
 
-    //!
-    static void Matrix4ToGLdouble(const Math::CMatrix4& tMatrix, GLdouble* dBuffer);
-
     //! Calcul d'intersection avec un rayon
     virtual Math::RayTracingResult intersect(Math::CRay3 aRay) const;
 

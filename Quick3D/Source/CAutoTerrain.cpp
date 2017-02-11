@@ -333,7 +333,7 @@ void CAutoTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pContex
     if (bStayHere)
     {
         // Create terrain for the chunk if needed
-        if (pChunk->getTerrain() == NULL)
+        if (!pChunk->getTerrain())
         {
             LOG_DEBUG(QString("Creating terrain for tile at lat %1, lon %2, level %3")
                       .arg(gChunkPosition.Latitude)
@@ -498,7 +498,7 @@ void CAutoTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRend
 
     if (bStayHere)
     {
-        if (pChunk->getTerrain() != NULL && pChunk->getTerrain()->isOK())
+        if (pChunk->getTerrain() && pChunk->getTerrain()->isOK())
         {
             pChunk->setDistance(
                         (
@@ -588,7 +588,7 @@ void CAutoTerrain::collectGarbage()
 */
 void CAutoTerrain::collectGarbageRecurse(QSP<CWorldChunk> pChunk)
 {
-    if (pChunk->getTerrain() != NULL)
+    if (pChunk->getTerrain())
     {
         if (pChunk->isExpendable())
         {
@@ -647,12 +647,12 @@ double CAutoTerrain::getHeightAtRecurse(const CGeoloc& gPosition, QSP<CWorldChun
             }
         }
 
-        if (pChunk->getTerrain() != NULL && pChunk->getTerrain()->isOK())
+        if (pChunk->getTerrain() && pChunk->getTerrain()->isOK())
         {
             double dTerrainRigidness = 0.0;
             double dTerrainAltitude = pChunk->getTerrain()->getHeightAt(gPosition, &dTerrainRigidness);
 
-            if (pChunk->getWater() != NULL)
+            if (pChunk->getWater())
             {
                 double dWaterRigidness = 0.0;
                 double dWaterAltitude = pChunk->getWater()->getHeightAt(gPosition, &dWaterRigidness);

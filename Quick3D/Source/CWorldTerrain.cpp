@@ -4,7 +4,7 @@
 #include "CRessourcesManager.h"
 #include "C3DScene.h"
 #include "CComponentFactory.h"
-#include "CAutoTerrain.h"
+#include "CWorldTerrain.h"
 #include "CTreeGenerator.h"
 #include "CTiledMaterial.h"
 
@@ -22,7 +22,7 @@ using namespace Math;
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    \class CAutoTerrain
+    \class CWorldTerrain
     \brief A dynamic terrain, with automatic LOD.
     \inmodule Quick3D
     \sa C3DScene
@@ -31,23 +31,23 @@ using namespace Math;
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Instantiates a new CAutoTerrain.
+    Instantiates a new CWorldTerrain.
 */
-CComponent* CAutoTerrain::instanciator(C3DScene* pScene)
+CComponent* CWorldTerrain::instanciator(C3DScene* pScene)
 {
-    return new CAutoTerrain(pScene);
+    return new CWorldTerrain(pScene);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Constructs a CAutoTerrain \br\br.
+    Constructs a CWorldTerrain \br\br.
     \a pScene is the scene to which this terrain belongs.
     \a gCameraPosition is the geo-localization of the camera, used to build the initial terrain patches.
     \a pHeights is the height field to use for altitudes.
     \a bGenerateNow tells whether the terrain should be immediately created or threaded.
 */
-CAutoTerrain::CAutoTerrain(C3DScene* pScene, CGeoloc gCameraPosition, CHeightField* pHeights, bool bGenerateNow)
+CWorldTerrain::CWorldTerrain(C3DScene* pScene, CGeoloc gCameraPosition, CHeightField* pHeights, bool bGenerateNow)
     : CComponent(pScene)
     , m_bGenerateNow(bGenerateNow)
     , m_pRoot(NULL)
@@ -63,7 +63,7 @@ CAutoTerrain::CAutoTerrain(C3DScene* pScene, CGeoloc gCameraPosition, CHeightFie
 
     if (m_bGenerateNow)
     {
-        LOG_DEBUG("CAutoTerrain::CAutoTerrain() : Generating terrain now");
+        LOG_DEBUG("CWorldTerrain::CWorldTerrain() : Generating terrain now");
 
         if (pScene->getViewports().count() > 0 && pScene->getViewports()[0]->getCamera())
         {
@@ -83,7 +83,7 @@ CAutoTerrain::CAutoTerrain(C3DScene* pScene, CGeoloc gCameraPosition, CHeightFie
         }
         else
         {
-            LOG_WARNING("CAutoTerrain::CAutoTerrain() : Scene has no viewport");
+            LOG_WARNING("CWorldTerrain::CWorldTerrain() : Scene has no viewport");
         }
     }
 }
@@ -91,9 +91,9 @@ CAutoTerrain::CAutoTerrain(C3DScene* pScene, CGeoloc gCameraPosition, CHeightFie
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Destroys a CAutoTerrain.
+    Destroys a CWorldTerrain.
 */
-CAutoTerrain::~CAutoTerrain()
+CWorldTerrain::~CWorldTerrain()
 {
 }
 
@@ -102,7 +102,7 @@ CAutoTerrain::~CAutoTerrain()
 /*!
     Sets the terrain resolution to \a value.
 */
-void CAutoTerrain::setTerrainResolution(int value)
+void CWorldTerrain::setTerrainResolution(int value)
 {
     m_iTerrainResolution = Angles::clipInt(value, 3, 81);
 }
@@ -112,7 +112,7 @@ void CAutoTerrain::setTerrainResolution(int value)
 /*!
     Loads the properties of this terrain from \a xComponent.
 */
-void CAutoTerrain::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
+void CWorldTerrain::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
     CComponent::loadParameters(sBaseFile, xComponent);
 
@@ -203,7 +203,7 @@ void CAutoTerrain::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 
 //-------------------------------------------------------------------------------------------------
 
-void CAutoTerrain::clearLinks(C3DScene* pScene)
+void CWorldTerrain::clearLinks(C3DScene* pScene)
 {
     if (m_pRoot)
     {
@@ -218,7 +218,7 @@ void CAutoTerrain::clearLinks(C3DScene* pScene)
 /*!
     Paints the terrain using \a pContext.
 */
-void CAutoTerrain::paint(CRenderContext* pContext)
+void CWorldTerrain::paint(CRenderContext* pContext)
 {
     static int iBuildCounter = 0;
     static int iGarbageCounter = 0;
@@ -262,7 +262,7 @@ void CAutoTerrain::paint(CRenderContext* pContext)
 /*!
     Updates the terrain using \a dDeltaTimeS, which is the elapsed seconds since the last frame.
 */
-void CAutoTerrain::update(double dDeltaTime)
+void CWorldTerrain::update(double dDeltaTime)
 {
 }
 
@@ -271,7 +271,7 @@ void CAutoTerrain::update(double dDeltaTime)
 /*!
     Does post update work on the terrain using \a dDeltaTimeS, which is the elapsed seconds since the last frame.
 */
-void CAutoTerrain::postUpdate(double dDeltaTime)
+void CWorldTerrain::postUpdate(double dDeltaTime)
 {
 }
 
@@ -280,7 +280,7 @@ void CAutoTerrain::postUpdate(double dDeltaTime)
 /*!
     Builds the root of the terrain.
 */
-void CAutoTerrain::buildRoot(CRenderContext* pContext)
+void CWorldTerrain::buildRoot(CRenderContext* pContext)
 {
     if (!m_pRoot)
     {
@@ -300,7 +300,7 @@ void CAutoTerrain::buildRoot(CRenderContext* pContext)
 
 //-------------------------------------------------------------------------------------------------
 
-bool CAutoTerrain::enoughDetail(QSP<CWorldChunk> pChunk, CRenderContext* pContext, int iLevel)
+bool CWorldTerrain::enoughDetail(QSP<CWorldChunk> pChunk, CRenderContext* pContext, int iLevel)
 {
     // double dDistance = (pContext->camera()->getWorldPosition() - pChunk->getWorldBounds().center()).getMagnitude();
     // return pChunk->getWorldBounds().radius() / dDistance < 2.0;
@@ -322,7 +322,7 @@ bool CAutoTerrain::enoughDetail(QSP<CWorldChunk> pChunk, CRenderContext* pContex
     \a pContext is the rendering context.
     \a iLevel is the depth in the chunk tree.
 */
-void CAutoTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pContext, int iLevel)
+void CWorldTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pContext, int iLevel)
 {
     CGeoloc gOriginalChunkPosition = pChunk->getOriginalGeoloc();
     CGeoloc gOriginalChunkSize = pChunk->getOriginalSize();
@@ -479,7 +479,7 @@ void CAutoTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pContex
 
 //-------------------------------------------------------------------------------------------------
 
-void CAutoTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRenderContext* pContext, QSP<CWorldChunk> pChunk, int iLevel, bool bForcePaint)
+void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRenderContext* pContext, QSP<CWorldChunk> pChunk, int iLevel, bool bForcePaint)
 {
     CGeoloc gChunkPosition = pChunk->getGeoloc();
 
@@ -577,7 +577,7 @@ void CAutoTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRend
 /*!
     Called by paint in order to collect any useless chunks.
 */
-void CAutoTerrain::collectGarbage()
+void CWorldTerrain::collectGarbage()
 {
     if (m_pRoot)
     {
@@ -590,7 +590,7 @@ void CAutoTerrain::collectGarbage()
 /*!
     Destroys \a pChunk 's terrain if it has not been used since 60 seconds and collects garbage on child chunks.
 */
-void CAutoTerrain::collectGarbageRecurse(QSP<CWorldChunk> pChunk)
+void CWorldTerrain::collectGarbageRecurse(QSP<CWorldChunk> pChunk)
 {
     if (pChunk->getTerrain())
     {
@@ -613,7 +613,7 @@ void CAutoTerrain::collectGarbageRecurse(QSP<CWorldChunk> pChunk)
 
 //-------------------------------------------------------------------------------------------------
 
-double CAutoTerrain::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
+double CWorldTerrain::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 {
     if (m_pRoot)
     {
@@ -625,7 +625,7 @@ double CAutoTerrain::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 
 //-------------------------------------------------------------------------------------------------
 
-double CAutoTerrain::getHeightAtRecurse(const CGeoloc& gPosition, QSP<CWorldChunk> pChunk, double* pRigidness)
+double CWorldTerrain::getHeightAtRecurse(const CGeoloc& gPosition, QSP<CWorldChunk> pChunk, double* pRigidness)
 {
     double dDiffLatitude = Math::Angles::angleDifferenceDegree(gPosition.Latitude, pChunk->getGeoloc().Latitude);
     double dDiffLongitude = Math::Angles::angleDifferenceDegree(gPosition.Longitude, pChunk->getGeoloc().Longitude);
@@ -685,7 +685,7 @@ double CAutoTerrain::getHeightAtRecurse(const CGeoloc& gPosition, QSP<CWorldChun
 /*!
     Flattens terrain at the specified \a gPosition, to the extents of \a dRadius.
 */
-void CAutoTerrain::flatten(const CGeoloc& gPosition, double dRadius)
+void CWorldTerrain::flatten(const CGeoloc& gPosition, double dRadius)
 {
     /*
     foreach (ChunkMap map, m_vChunks)
@@ -703,7 +703,7 @@ void CAutoTerrain::flatten(const CGeoloc& gPosition, double dRadius)
 
 //-------------------------------------------------------------------------------------------------
 
-RayTracingResult CAutoTerrain::intersect(Math::CRay3 ray)
+RayTracingResult CWorldTerrain::intersect(Math::CRay3 ray)
 {
     if (m_pRoot)
     {
@@ -718,7 +718,7 @@ RayTracingResult CAutoTerrain::intersect(Math::CRay3 ray)
 /*!
     Checks if \a ray intersects this terrain.
 */
-RayTracingResult CAutoTerrain::intersectRecurse(QSP<CWorldChunk> pChunk, const Math::CRay3& ray) const
+RayTracingResult CWorldTerrain::intersectRecurse(QSP<CWorldChunk> pChunk, const Math::CRay3& ray) const
 {
     RayTracingResult dResult(Q3D_INFINITY);
 
@@ -752,9 +752,9 @@ RayTracingResult CAutoTerrain::intersectRecurse(QSP<CWorldChunk> pChunk, const M
 /*!
     Dumps this component to \a stream using the indentation value in \a iIdent.
 */
-void CAutoTerrain::dump(QTextStream& stream, int iIdent)
+void CWorldTerrain::dump(QTextStream& stream, int iIdent)
 {
-    dumpIdent(stream, iIdent, QString("[CAutoTerrain]"));
+    dumpIdent(stream, iIdent, QString("[CWorldTerrain]"));
     dumpIdent(stream, iIdent, QString("Levels : %1").arg(m_iLevels));
     dumpIdent(stream, iIdent, QString("Terrain res : %1").arg(m_iTerrainResolution));
     dumpIdent(stream, iIdent, QString("Root :"));

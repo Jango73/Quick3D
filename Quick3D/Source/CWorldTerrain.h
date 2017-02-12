@@ -56,7 +56,7 @@ public:
 
 //-------------------------------------------------------------------------------------------------
 
-class QUICK3D_EXPORT CAutoTerrain : public CComponent, public CHeightField
+class QUICK3D_EXPORT CWorldTerrain : public CComponent, public CHeightField
 {
 public:
 
@@ -68,10 +68,10 @@ public:
     static CComponent* instanciator(C3DScene* pScene);
 
     //!
-    CAutoTerrain(C3DScene* pScene, CGeoloc gCameraPosition = CGeoloc(), CHeightField* pHeights = NULL, bool bGenerateNow = false);
+    CWorldTerrain(C3DScene* pScene, CGeoloc gCameraPosition = CGeoloc(), CHeightField* pHeights = NULL, bool bGenerateNow = false);
 
     //!
-    virtual ~CAutoTerrain();
+    virtual ~CWorldTerrain();
 
     //-------------------------------------------------------------------------------------------------
     // Setters
@@ -101,7 +101,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    virtual QString getClassName() const { return ClassName_CAutoTerrain; }
+    virtual QString getClassName() const { return ClassName_CWorldTerrain; }
 
     //!
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;

@@ -20,7 +20,7 @@
 #include "CImageUtilities.h"
 #include "IProgressListener.h"
 #include "CGLWidgetScene.h"
-#include "CAutoTerrain.h"
+#include "CWorldTerrain.h"
 #include "CSRTMField.h"
 #include "CBILField.h"
 #include "CCamera.h"
@@ -70,7 +70,7 @@ protected:
 
     CGLWidgetScene*     m_pCMScene;
     CHeightField*       m_pCMField;
-    QSP<CAutoTerrain>   m_pCMTerrain;
+    QSP<CWorldTerrain>   m_pCMTerrain;
     QSP<CCamera>        m_pCMCamera;
 };
 

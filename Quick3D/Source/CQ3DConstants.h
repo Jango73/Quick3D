@@ -32,7 +32,7 @@
 #define ClassName_CCone                     "CCone"
 #define ClassName_CSkyBox                   "CSkyBox"
 
-#define ClassName_CAutoTerrain              "CAutoTerrain"
+#define ClassName_CWorldTerrain             "CWorldTerrain"
 #define ClassName_CTerrain                  "CTerrain"
 #define ClassName_CWorldChunk               "CWorldChunk"
 

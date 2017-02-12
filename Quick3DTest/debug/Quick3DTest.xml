@@ -28,7 +28,7 @@
 		<Component Name="SkyBox" Class="CSkyBox">
 		</Component>
 
-		<Component Name="Terrain" Class="CAutoTerrain">
+        <Component Name="Terrain" Class="CWorldTerrain">
 			<Parameters>
 				<General Levels="18" Resolution="21"/>
 				<Functions>

@@ -62,7 +62,7 @@ void CQuick3DUtilities::prepareSceneForMatrices_CubeMapped(CPanoramicMatrixParam
         m_pCMScene->getViewports()[0]->setEnabled(true);
 
         // Création du générateur de terrain
-        m_pCMTerrain = QSP<CAutoTerrain>(new CAutoTerrain(m_pCMScene, tParams.m_gCameraPosition, m_pCMField, true));
+        m_pCMTerrain = QSP<CWorldTerrain>(new CWorldTerrain(m_pCMScene, tParams.m_gCameraPosition, m_pCMField, true));
 
         // double dAltitude = m_pCMTerrain->getHeightAt(tParams.m_gCameraPosition);
 
@@ -104,7 +104,7 @@ void CQuick3DUtilities::computeSphericalDetectionMatrices_RayTraced(CPanoramicMa
     }
 
     // Création du générateur de terrain
-    QSP<CAutoTerrain> pTerrain(new CAutoTerrain(pScene, tParams.m_gCameraPosition, pField, true));
+    QSP<CWorldTerrain> pTerrain(new CWorldTerrain(pScene, tParams.m_gCameraPosition, pField, true));
 
     double dAltitude = pTerrain->getHeightAt(tParams.m_gCameraPosition);
 

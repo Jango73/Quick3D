@@ -11,7 +11,7 @@
 #include "CTerrain.h"
 #include "CWorldChunk.h"
 #include "CVehicle.h"
-#include "CAutoTerrain.h"
+#include "CWorldTerrain.h"
 #include "CController.h"
 
 // Application
@@ -352,13 +352,13 @@ void Quick3DTest::onExportTerrainClicked()
 
     if (result == QDialog::Accepted)
     {
-        CAutoTerrain* pTerrain = NULL;
+        CWorldTerrain* pTerrain = NULL;
 
         foreach (QSP<CComponent> pComponent, m_pScene->getComponents())
         {
-            if (pComponent->getClassName() == ClassName_CAutoTerrain)
+            if (pComponent->getClassName() == ClassName_CWorldTerrain)
             {
-                pTerrain = dynamic_cast<CAutoTerrain*>(pComponent.data());
+                pTerrain = dynamic_cast<CWorldTerrain*>(pComponent.data());
 
                 break;
             }
@@ -559,9 +559,9 @@ void Quick3DTest::onTerrainResChanged(int iValue)
 {
     foreach (QSP<CComponent> pComponent, m_pScene->getComponents())
     {
-        if (pComponent->getClassName() == ClassName_CAutoTerrain)
+        if (pComponent->getClassName() == ClassName_CWorldTerrain)
         {
-            CAutoTerrain* pTerrain = dynamic_cast<CAutoTerrain*>(pComponent.data());
+            CWorldTerrain* pTerrain = dynamic_cast<CWorldTerrain*>(pComponent.data());
 
             if (pTerrain != NULL)
             {

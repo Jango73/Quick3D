@@ -6,7 +6,7 @@
 #include "CWorkerManager.h"
 #include "CRessourcesManager.h"
 #include "C3DScene.h"
-#include "CAutoTerrain.h"
+#include "CWorldTerrain.h"
 #include "CWorldChunk.h"
 #include "CTiledMaterial.h"
 
@@ -20,7 +20,7 @@ int CWorldChunk::m_iNumWorldChunks = 0;
 
 //-------------------------------------------------------------------------------------------------
 
-CWorldChunk::CWorldChunk(C3DScene* pScene, CAutoTerrain* pAutoTerrain, CHeightField* pContainer)
+CWorldChunk::CWorldChunk(C3DScene* pScene, CWorldTerrain* pAutoTerrain, CHeightField* pContainer)
     : CComponent(pScene)
     , m_pAutoTerrain(pAutoTerrain)
     , m_pTerrain(NULL)

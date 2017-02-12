@@ -22,7 +22,7 @@
 #include "CAircraftController.h"
 #include "CBasicAnimator.h"
 #include "CSkyBox.h"
-#include "CAutoTerrain.h"
+#include "CWorldTerrain.h"
 #include "CVegetationGenerator.h"
 #include "CMesh.h"
 #include "CArmature.h"
@@ -83,7 +83,7 @@ void CComponentFactory::registerCoreComponents()
     registerComponent(ClassName_CAircraftController, CAircraftController::instanciator);
     registerComponent(ClassName_CBasicAnimator, CBasicAnimator::instanciator);
     registerComponent(ClassName_CSkyBox, CSkyBox::instanciator);
-    registerComponent(ClassName_CAutoTerrain, CAutoTerrain::instanciator);
+    registerComponent(ClassName_CWorldTerrain, CWorldTerrain::instanciator);
     registerComponent(ClassName_CVegetationGenerator, CVegetationGenerator::instanciator);
 
     registerComponent(ClassName_CMesh, CMesh::instanciator);

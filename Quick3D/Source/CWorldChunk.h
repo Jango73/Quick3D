@@ -23,7 +23,7 @@
 // Déclarations avancées
 
 class C3DScene;
-class CAutoTerrain;
+class CWorldTerrain;
 
 //-------------------------------------------------------------------------------------------------
 
@@ -38,7 +38,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    CWorldChunk(C3DScene* pScene, CAutoTerrain* pAutoTerrain, CHeightField* pContainer);
+    CWorldChunk(C3DScene* pScene, CWorldTerrain* pAutoTerrain, CHeightField* pContainer);
 
     //!
     virtual ~CWorldChunk();
@@ -161,7 +161,7 @@ public:
 
 protected:
 
-    CAutoTerrain*                       m_pAutoTerrain;
+    CWorldTerrain*                      m_pAutoTerrain;
     CHeightField*                       m_pContainer;
     CGeoloc                             m_gOriginalGeoloc;
     CGeoloc                             m_gOriginalSize;

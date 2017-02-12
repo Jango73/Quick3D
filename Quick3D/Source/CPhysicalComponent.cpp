@@ -548,7 +548,7 @@ void CPhysicalComponent::computeCollisions(QVector<QSP<CComponent> >& vComponent
         QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, pComponent);
 
         // Pour l'instant les terrains sont ignorés car traités dans update
-        if (pPhysical && pPhysical->getClassName() != ClassName_CAutoTerrain)
+        if (pPhysical && pPhysical->getClassName() != ClassName_CWorldTerrain)
         {
             if (pPhysical->isRootObject() && pPhysical->getCollisionsActive() == true)
             {
@@ -582,7 +582,7 @@ void CPhysicalComponent::computeCollisionsForComponent(QSP<CPhysicalComponent> p
             {
                 // Pour l'instant les terrains sont ignorés car traités dans update()
                 // Terrains are for now processed in update()
-                if (pOtherPhysical->getClassName() != ClassName_CAutoTerrain)
+                if (pOtherPhysical->getClassName() != ClassName_CWorldTerrain)
                 {
                     // Calcul de distance avec l'autre objet
                     CVector3 vPosition = pComponent->getGeoloc().toVector3(pOtherPhysical->getGeoloc());

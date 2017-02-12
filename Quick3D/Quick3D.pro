@@ -37,7 +37,6 @@ SOURCES += \
     Source/CAnimatorFrame.cpp \
     Source/CArmature.cpp \
     Source/CAtmosphere.cpp \
-    Source/CAutoTerrain.cpp \
     Source/CBasicAnimationStep.cpp \
     Source/CBasicAnimator.cpp \
     Source/CBasicAnimatorFrame.cpp \
@@ -209,7 +208,8 @@ SOURCES += \
     ../COTS/SFML-1.6/src/SFML/System/Win32/MutexImpl.cpp \
     ../COTS/SFML-1.6/src/SFML/System/Win32/SleepImpl.cpp \
     ../COTS/SFML-1.6/src/SFML/System/Win32/ThreadImpl.cpp \
-    ../COTS/SFML-1.6/src/SFML/System/Win32/ThreadLocalImpl.cpp
+    ../COTS/SFML-1.6/src/SFML/System/Win32/ThreadLocalImpl.cpp \
+    Source/CWorldTerrain.cpp
 
 HEADERS  += \
     Source/Angles.h \
@@ -220,7 +220,6 @@ HEADERS  += \
     Source/CAnimatorFrame.h \
     Source/CArmature.h \
     Source/CAtmosphere.h \
-    Source/CAutoTerrain.h \
     Source/CAverager.h \
     Source/CBasicAnimationStep.h \
     Source/CBasicAnimator.h \
@@ -395,7 +394,8 @@ HEADERS  += \
     ../COTS/SFML-1.6/src/SFML/System/Win32/MutexImpl.hpp \
     ../COTS/SFML-1.6/src/SFML/System/Win32/SleepImpl.hpp \
     ../COTS/SFML-1.6/src/SFML/System/Win32/ThreadImpl.hpp \
-    ../COTS/SFML-1.6/src/SFML/System/Win32/ThreadLocalImpl.hpp
+    ../COTS/SFML-1.6/src/SFML/System/Win32/ThreadLocalImpl.hpp \
+    Source/CWorldTerrain.h
 
 DISTFILES +=
 

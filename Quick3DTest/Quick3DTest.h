@@ -17,7 +17,7 @@
 #include "CGLWidgetScene.h"
 #include "CComponent.h"
 #include "CView.h"
-#include "CAutoTerrain.h"
+#include "CWorldTerrain.h"
 
 class Quick3DTest : public QMainWindow
 {

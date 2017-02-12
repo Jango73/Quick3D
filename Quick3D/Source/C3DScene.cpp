@@ -17,7 +17,7 @@
 #include "COBJLoader.h"
 #include "CMaterial.h"
 #include "CHeightField.h"
-#include "CAutoTerrain.h"
+#include "CWorldTerrain.h"
 #include "CTrajectorable.h"
 #include "CController.h"
 #include "CStandardController.h"
@@ -580,7 +580,7 @@ void C3DScene::autoResolveHeightFields()
 
     foreach (QSP<CComponent> pComponent, m_vComponents)
     {
-        if (dynamic_cast<CAutoTerrain*>(pComponent.data()) != NULL)
+        if (dynamic_cast<CWorldTerrain*>(pComponent.data()) != NULL)
         {
             pTerrain = dynamic_cast<CHeightField*>(pComponent.data());
         }

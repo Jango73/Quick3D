@@ -64,12 +64,12 @@ void CImageUtilities::createPanoramicTextureSet(
 	)
 {
 	// Récupération du nombre de textures en sortie
-	int iNumTiltImages = tParams.getTiltCount();
-	int iNumPanImages = tParams.getPanCount();
+	int iNumTiltImages = tParams.tiltCount();
+	int iNumPanImages = tParams.panCount();
 
 	// Récupération de la taille des textures de sortie
-	int iTextureWidth = tParams.getTextureSize().width();
-	int iTextureHeight = tParams.getTextureSize().height();
+	int iTextureWidth = tParams.textureSize().width();
+	int iTextureHeight = tParams.textureSize().height();
 
 	// Création de la texture de sortie intermédiaire
 	QImage imgOutput(
@@ -77,8 +77,8 @@ void CImageUtilities::createPanoramicTextureSet(
 		QImage::Format_RGB888
 		);
 
-	Math::CVector2 vInputStartAngles = tParams.getStartAngles();
-	Math::CVector2 vInputEndAngles = tParams.getEndAngles();
+	Math::CVector2 vInputStartAngles = tParams.startAngles();
+	Math::CVector2 vInputEndAngles = tParams.endAngles();
 	Math::CVector2 vInputCenter((vInputStartAngles.X + vInputEndAngles.X) / 2.0, (vInputStartAngles.Y + vInputEndAngles.Y) / 2.0);
 	Math::CVector2 vInputSpan(vInputEndAngles.X - vInputStartAngles.X, vInputEndAngles.Y - vInputStartAngles.Y);
 
@@ -121,13 +121,13 @@ void CImageUtilities::createPanoramicTextureSet(
 	}
 
 	// Création des textures de sortie d'après la texture de sortie intermédiaire (imgOutput)
-	tParams.getImages().clear();
+	tParams.images().clear();
 
 	// Parcours de chaque ligne
 	for (int iTiltIndex = 0; iTiltIndex < iNumTiltImages; iTiltIndex++)
 	{
 		// Ajout d'un vecteur d'images pour la ligne courante
-		tParams.getImages().append(QVector<QImage>());
+		tParams.images().append(QVector<QImage>());
 
 		// Parcours de chaque colonne
 		for (int iPanIndex = 0; iPanIndex < iNumPanImages; iPanIndex++)
@@ -137,10 +137,10 @@ void CImageUtilities::createPanoramicTextureSet(
 			blitPart(
 				imgImage, QPoint(0, 0),
 				imgOutput, QPoint(iPanIndex * iTextureWidth, iTiltIndex * iTextureHeight),
-				tParams.getTextureSize()
+				tParams.textureSize()
 				);
 
-			tParams.getImages()[iTiltIndex].append(imgImage);
+			tParams.images()[iTiltIndex].append(imgImage);
 		}
 	}
 }

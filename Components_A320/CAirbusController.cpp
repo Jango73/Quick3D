@@ -64,14 +64,14 @@ void CAirbusController::update(double dDeltaTime)
     {
         LOG_VALUE(QString("JOY X / Y / Z / R"),
                   QString("%1 / %2 / %3 / %4")
-                  .arg(QString::number(m_pJoystick->getAxisStates()[0], 'f', 2))
-                .arg(QString::number(m_pJoystick->getAxisStates()[1], 'f', 2))
-                .arg(QString::number(m_pJoystick->getAxisStates()[2], 'f', 2))
-                .arg(QString::number(m_pJoystick->getAxisStates()[3], 'f', 2))
+                  .arg(QString::number(m_pJoystick->axisStates()[0], 'f', 2))
+                .arg(QString::number(m_pJoystick->axisStates()[1], 'f', 2))
+                .arg(QString::number(m_pJoystick->axisStates()[2], 'f', 2))
+                .arg(QString::number(m_pJoystick->axisStates()[3], 'f', 2))
                 );
 
-        CVector2 vStick = CVector2(m_pJoystick->getAxisStates()[0], m_pJoystick->getAxisStates()[1]);
-        double dThrottle = 1.0 - ((m_pJoystick->getAxisStates()[2] + 1.0) * 0.5);
+        CVector2 vStick = CVector2(m_pJoystick->axisStates()[0], m_pJoystick->axisStates()[1]);
+        double dThrottle = 1.0 - ((m_pJoystick->axisStates()[2] + 1.0) * 0.5);
 
         pushData(CAirbusData(m_sName, adStick_CAPT_x, vStick.X));
         pushData(CAirbusData(m_sName, adStick_CAPT_y, vStick.Y));

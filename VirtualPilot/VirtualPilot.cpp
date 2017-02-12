@@ -96,8 +96,8 @@ void VirtualPilot::loadScene(QString sFileName)
 
     m_pScene->clear();
 
-    m_pScene->getViewports()[0] = new CViewport(m_pScene, true);
-    m_pScene->getViewports()[0]->setEnabled(true);
+    m_pScene->viewports()[0] = new CViewport(m_pScene, true);
+    m_pScene->viewports()[0]->setEnabled(true);
 
     //-----------------------------------------------
     // Chargement des composants
@@ -126,7 +126,7 @@ void VirtualPilot::loadVehicle(QString sFileName)
 
     if (pComponent)
     {
-        QVector<QSP<CComponent> > vComponents = m_pScene->getComponentsByTag("PLAYER");
+        QVector<QSP<CComponent> > vComponents = m_pScene->componentsByTag("PLAYER");
 
         if (vComponents.count() > 0)
         {
@@ -152,13 +152,13 @@ void VirtualPilot::loadVehicle(QString sFileName)
 
         if (pCamera)
         {
-            m_pScene->getViewports()[0]->setCamera(QSP_CAST(CCamera, pCamera));
+            m_pScene->viewports()[0]->setCamera(QSP_CAST(CCamera, pCamera));
         }
         else
         {
             LOG_ERROR("VirtualPilot::loadVehicle() : camera not found");
 
-            m_pScene->getViewports()[0]->setCamera(QSP<CCamera>());
+            m_pScene->viewports()[0]->setCamera(QSP<CCamera>());
         }
     }
 }
@@ -180,8 +180,8 @@ void VirtualPilot::onResize()
     {
         m_pView->setGeometry(0, 0, ui.Render1->width(), ui.Render1->height());
         m_pScene->setGeometry(0, 0, m_pView->width(), m_pView->height());
-        m_pScene->getViewports()[0]->setPosition(CVector2(0.0, 0.0));
-        m_pScene->getViewports()[0]->setSize(CVector2((double) ui.Render1->width(), (double) ui.Render1->height()));
+        m_pScene->viewports()[0]->setPosition(CVector2(0.0, 0.0));
+        m_pScene->viewports()[0]->setSize(CVector2((double) ui.Render1->width(), (double) ui.Render1->height()));
     }
 }
 
@@ -215,22 +215,22 @@ void VirtualPilot::onTimer()
         CVector3 TorqueAcceleration;
         double dSpeedMS = 0.0;
 
-        if (m_pScene->getController() != NULL && m_pScene->getController()->getPositionTarget())
+        if (m_pScene->controller() != NULL && m_pScene->controller()->getPositionTarget())
         {
-            QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, m_pScene->getController()->getPositionTarget()->getRoot());
+            QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, m_pScene->controller()->getPositionTarget()->getRoot());
 
             if (pPhysical)
             {
                 ViewGeoloc = pPhysical->getGeoloc();
-                ControledVelocity = pPhysical->getVelocity_ms();
-                ControledTorque = pPhysical->getAngularVelocity_rs();
+                ControledVelocity = pPhysical->velocity_ms();
+                ControledTorque = pPhysical->angularVelocity_rs();
                 dSpeedMS = ControledVelocity.getMagnitude();
             }
         }
 
-        if (m_pScene->getController() != NULL && m_pScene->getController()->getRotationTarget())
+        if (m_pScene->controller() != NULL && m_pScene->controller()->getRotationTarget())
         {
-            QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, m_pScene->getController()->getRotationTarget()->getRoot());
+            QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, m_pScene->controller()->getRotationTarget()->getRoot());
 
             if (pPhysical)
             {
@@ -266,7 +266,7 @@ void VirtualPilot::onTimer()
                 .arg(m_pScene->m_tStatistics.m_iNumChunksDrawn)
                 .arg(CComponent::getNumComponents())
                 .arg(CWorldChunk::getNumWorldChunks())
-                .arg(CTerrain::getNumTerrains())
+                .arg(CTerrain::numTerrains())
                 ;
 
         ui.m_lInfo->setText(sInfo);

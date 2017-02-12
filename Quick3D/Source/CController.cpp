@@ -157,7 +157,7 @@ void CController::generateQ3DEvent(CQ3DEvent anEvent)
 
 void CController::generateQ3DMouseEvent(CQ3DEvent::EEventAction eAction, QMouseEvent* event, CComponent* pComponent)
 {
-    QStringList sNameList = pComponent->getName().split(":");
+    QStringList sNameList = pComponent->name().split(":");
 
     if (sNameList.count() == 3)
     {
@@ -247,7 +247,7 @@ void CController::mousePressEvent(QMouseEvent* event)
         {
             QPointF point = event->localPos();
 
-            foreach (CViewport* pViewport, pScene->getViewports().values())
+            foreach (CViewport* pViewport, pScene->viewports().values())
             {
                 if (pViewport != NULL)
                 {

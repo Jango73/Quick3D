@@ -60,7 +60,7 @@ void CWorldChunk::setTerrain(QSP<CTerrain> value, bool bGenerateNow)
 {
     m_pTerrain = value;
 
-    if (m_pTerrain && m_pTerrain->getLevel() < 2)
+    if (m_pTerrain && m_pTerrain->level() < 2)
     {
         if (bGenerateNow)
         {
@@ -116,7 +116,7 @@ void CWorldChunk::build()
                 0.0
                 );
 
-    CMaterial* pMaterial = m_pAutoTerrain->getMaterial();
+    CMaterial* pMaterial = m_pAutoTerrain->material();
 
     if (pMaterial)
     {
@@ -135,11 +135,11 @@ void CWorldChunk::build()
 
 //-------------------------------------------------------------------------------------------------
 
-CBoundingBox CWorldChunk::getBounds()
+CBoundingBox CWorldChunk::bounds()
 {
     if (m_pTerrain && m_pTerrain->isOK())
     {
-        return m_pTerrain->getBounds();
+        return m_pTerrain->bounds();
     }
 
     return m_bWorldBounds;
@@ -147,7 +147,7 @@ CBoundingBox CWorldChunk::getBounds()
 
 //-------------------------------------------------------------------------------------------------
 
-CBoundingBox CWorldChunk::getWorldBounds()
+CBoundingBox CWorldChunk::worldBounds()
 {
     return m_bWorldBounds;
 }
@@ -226,13 +226,13 @@ void CWorldChunk::paint(CRenderContext* pContext)
 
         if (m_pTerrain && m_pTerrain->isOK())
         {
-            CMaterial* pMaterial = m_pAutoTerrain->getMaterial();
+            CMaterial* pMaterial = m_pAutoTerrain->material();
 
             CTiledMaterial* pTiled = dynamic_cast<CTiledMaterial*>(pMaterial);
 
             if (pTiled != NULL)
             {
-                pTiled->setCurrentPositionAndLevel(m_gOriginalGeoloc, m_pTerrain->getLevel());
+                pTiled->setCurrentPositionAndLevel(m_gOriginalGeoloc, m_pTerrain->level());
             }
 
             m_pTerrain->paint(pContext);
@@ -363,7 +363,7 @@ void CWorldChunk::clearTerrain()
         LOG_DEBUG(QString("Deleting terrain for chunk at %1, %2 (%3)")
                   .arg(gChunkPosition.Latitude)
                   .arg(gChunkPosition.Longitude)
-                  .arg(m_pTerrain->getName())
+                  .arg(m_pTerrain->name())
                   );
 
         m_pTerrain.reset();
@@ -419,7 +419,7 @@ void CWorldChunk::work()
             }
         }
 
-        if (m_pScene->getShaderQuality() > 0.7)
+        if (m_pScene->shaderQuality() > 0.7)
         {
             foreach (QSP<CComponent> pComponent, m_pAutoTerrain->generators())
             {
@@ -475,7 +475,7 @@ RayTracingResult CWorldChunk::intersect(Math::CRay3 ray)
 {
     if (m_pTerrain && m_pTerrain->isOK())
     {
-        RayTracingResult dResult = getWorldBounds().intersect(ray);
+        RayTracingResult dResult = worldBounds().intersect(ray);
 
         if (dResult.m_dDistance < Q3D_INFINITY)
         {

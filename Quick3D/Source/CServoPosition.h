@@ -48,13 +48,13 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Retourne la position
-    double getPosition() const { return m_dPosition; }
+    double position() const { return m_dPosition; }
 
     //! Retourne l'acceleration
-    double getAcceleration() const { return m_dAcceleration; }
+    double acceleration() const { return m_dAcceleration; }
 
     //! Retourne la vitesse
-    double getVelocity() const { return m_dVelocity; }
+    double velocity() const { return m_dVelocity; }
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes de contrôle

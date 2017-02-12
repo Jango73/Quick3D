@@ -98,10 +98,10 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    virtual CBoundingBox getBounds();
+    virtual CBoundingBox bounds();
 
     //!
-    virtual CBoundingBox getWorldBounds();
+    virtual CBoundingBox worldBounds();
 
     //!
     virtual CBoundingBox getBuildWorldBounds();

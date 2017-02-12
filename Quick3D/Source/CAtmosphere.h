@@ -31,22 +31,22 @@ public:
 	//-------------------------------------------------------------------------------------------------
 
 	//!
-	double getDensity_kgm3(double dAltitude_m);
+    double density_kgm3(double dAltitude_m);
 
 	//!
-	double getPressure_Nm2(double dAltitude_m);
+    double pressure_Nm2(double dAltitude_m);
 
 	//!
-	double getSoundSpeed_ms(double dAltitude_m);
+    double soundSpeed_ms(double dAltitude_m);
 
 	//!
-	double getTemperature_K(double dAltitude_m);
+    double temperature_K(double dAltitude_m);
 
 	//!
-	double getAirForceFactor(double dAltitude_m);
+    double airForceFactor(double dAltitude_m);
 
 	//!
-	double getAirDragFactor(double dAltitude_m);
+    double airDragFactor(double dAltitude_m);
 
 	//-------------------------------------------------------------------------------------------------
 	// Propriétés

@@ -28,10 +28,10 @@ public:
 	bool connected() const { return m_bConnected; }
 
 	//
-	QMap<int, bool>& getButtonStates() { return m_mButtonStates; }
+    QMap<int, bool>& buttonStates() { return m_mButtonStates; }
 
 	//
-	QMap<int, double>& getAxisStates() { return m_dAxisStates; }
+    QMap<int, double>& axisStates() { return m_dAxisStates; }
 
 	//-------------------------------------------------------------------------------------------------
 	// Méthodes de contrôle

@@ -5,12 +5,13 @@
 
 // Application
 #include "CQ3DConstants.h"
+#include "CNamed.h"
 #include "CVector3.h"
 #include "CGeoloc.h"
 #include "CXMLNode.h"
 #include "CPerlin.h"
 
-class QUICK3D_EXPORT CGenerateFunction
+class QUICK3D_EXPORT CGenerateFunction : public CNamed
 {
 public:
 
@@ -38,19 +39,6 @@ public:
 
     //!
     virtual ~CGenerateFunction();
-
-    //-------------------------------------------------------------------------------------------------
-    // Setters
-    //-------------------------------------------------------------------------------------------------
-
-    //!
-    void setName(const QString& sName);
-
-    //-------------------------------------------------------------------------------------------------
-    // Getters
-    //-------------------------------------------------------------------------------------------------
-
-    QString getName() const;
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes de contrôle

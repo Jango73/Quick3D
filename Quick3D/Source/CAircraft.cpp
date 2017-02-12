@@ -52,8 +52,8 @@ void CAircraft::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 
 void CAircraft::update(double dDeltaTime)
 {
-	double dDensity_kgm3 = CAtmosphere::getInstance()->getDensity_kgm3(m_dAltitude_m);
-	double dSpeedOfSound_ms = CAtmosphere::getInstance()->getSoundSpeed_ms(m_dAltitude_m);
+	double dDensity_kgm3 = CAtmosphere::getInstance()->density_kgm3(m_dAltitude_m);
+	double dSpeedOfSound_ms = CAtmosphere::getInstance()->soundSpeed_ms(m_dAltitude_m);
 
 	// Stockage des données de vol
 
@@ -86,7 +86,7 @@ void CAircraft::update(double dDeltaTime)
 
 	LOG_VALUE(QString("%1 TOT MASS KG").arg(m_sName),
 		QString("%1")
-		.arg(QString::number(getTotalMass_kg(), 'f', 2))
+		.arg(QString::number(totalMass_kg(), 'f', 2))
 		);
 
 	CVehicle::update(dDeltaTime);

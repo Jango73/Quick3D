@@ -95,7 +95,7 @@ CTerrain::CTerrain(
         m_pMesh->setMaterial(QSP<CWaterMaterial>(new CWaterMaterial(pScene)));
 
         // Set material IR factor
-        m_pMesh->getMaterials()[0]->setIRFactor(0.2);
+        m_pMesh->materials()[0]->setIRFactor(0.2);
     }
 
     if (bGenerateNow)
@@ -128,7 +128,7 @@ CTerrain::~CTerrain()
 
 //-------------------------------------------------------------------------------------------------
 
-CBoundingBox CTerrain::getBounds()
+CBoundingBox CTerrain::bounds()
 {
     if (m_pMesh)
     {
@@ -140,7 +140,7 @@ CBoundingBox CTerrain::getBounds()
 
 //-------------------------------------------------------------------------------------------------
 
-CBoundingBox CTerrain::getWorldBounds()
+CBoundingBox CTerrain::worldBounds()
 {
     if (m_pMesh)
     {
@@ -214,11 +214,11 @@ double CTerrain::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
     if (m_bIsWater)
     {
         if (
-                m_pMesh != NULL && m_pMesh->getMaterials().count() > 0 &&
-                dynamic_cast<CHeightField*>(m_pMesh->getMaterials()[0].data()) != NULL
+                m_pMesh != NULL && m_pMesh->materials().count() > 0 &&
+                dynamic_cast<CHeightField*>(m_pMesh->materials()[0].data()) != NULL
                 )
         {
-            CHeightField* pField = dynamic_cast<CHeightField*>(m_pMesh->getMaterials()[0].data());
+            CHeightField* pField = dynamic_cast<CHeightField*>(m_pMesh->materials()[0].data());
             return pField->getHeightAt(gPosition, pRigidness);
         }
 
@@ -256,16 +256,16 @@ double CTerrain::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
                         */
                     // No skirt
                     iIndex1 >= 0 && iIndex2 >= 0 && iIndex3 >= 0 && iIndex4 >= 0 &&
-                    iIndex1 < m_pMesh->getVertices().count() &&
-                    iIndex2 < m_pMesh->getVertices().count() &&
-                    iIndex3 < m_pMesh->getVertices().count() &&
-                    iIndex4 < m_pMesh->getVertices().count()
+                    iIndex1 < m_pMesh->vertices().count() &&
+                    iIndex2 < m_pMesh->vertices().count() &&
+                    iIndex3 < m_pMesh->vertices().count() &&
+                    iIndex4 < m_pMesh->vertices().count()
                     )
             {
-                CVector3 v1(m_pMesh->getVertices()[iIndex1].position());
-                CVector3 v2(m_pMesh->getVertices()[iIndex2].position());
-                CVector3 v3(m_pMesh->getVertices()[iIndex3].position());
-                CVector3 v4(m_pMesh->getVertices()[iIndex4].position());
+                CVector3 v1(m_pMesh->vertices()[iIndex1].position());
+                CVector3 v2(m_pMesh->vertices()[iIndex2].position());
+                CVector3 v3(m_pMesh->vertices()[iIndex3].position());
+                CVector3 v4(m_pMesh->vertices()[iIndex4].position());
 
                 CRay3 ray(vLocal + vUp * 50000.0, vUp * -1.0);
 
@@ -333,18 +333,18 @@ void CTerrain::work()
     // Récupération du matériau du mesh
     CMaterial* pMaterial = NULL;
 
-    if (m_pMesh->getMaterials().count() > 0)
+    if (m_pMesh->materials().count() > 0)
     {
-        pMaterial = m_pMesh->getMaterials()[0].data();
+        pMaterial = m_pMesh->materials()[0].data();
     }
 
     CTiledMaterial* pTiledMaterial = dynamic_cast<CTiledMaterial*>(pMaterial);
 
     // Move vertices
-    for (int iIndex = 0; iIndex < m_pMesh->getVertices().count(); iIndex++)
+    for (int iIndex = 0; iIndex < m_pMesh->vertices().count(); iIndex++)
     {
         CGeoloc gPosition;
-        CVector3 vPosition = m_pMesh->getVertices()[iIndex].position();
+        CVector3 vPosition = m_pMesh->vertices()[iIndex].position();
 
         gPosition.Latitude = m_gOriginalGeoloc.Latitude + vPosition.Z * m_gOriginalSize.Latitude;
         gPosition.Longitude = m_gOriginalGeoloc.Longitude + vPosition.X * m_gOriginalSize.Longitude;
@@ -372,20 +372,20 @@ void CTerrain::work()
 
         CAxis aNOLLAxis = gPosition.getNOLLAxis();
 
-        m_pMesh->getVertices()[iIndex].position() = gPosition.toVector3();
-        m_pMesh->getVertices()[iIndex].normal() = m_pMesh->getVertices()[iIndex].position().Normalize();
-        m_pMesh->getVertices()[iIndex].tangent() = aNOLLAxis.Front;
-        m_pMesh->getVertices()[iIndex].gravity() = m_pMesh->getVertices()[iIndex].normal() * -1.0;
+        m_pMesh->vertices()[iIndex].position() = gPosition.toVector3();
+        m_pMesh->vertices()[iIndex].normal() = m_pMesh->vertices()[iIndex].position().Normalize();
+        m_pMesh->vertices()[iIndex].tangent() = aNOLLAxis.Front;
+        m_pMesh->vertices()[iIndex].gravity() = m_pMesh->vertices()[iIndex].normal() * -1.0;
 
         if (pMaterial != NULL && pTiledMaterial == NULL)
         {
-            m_pMesh->getVertices()[iIndex].texCoord() = pMaterial->getTexCoords(gPosition, m_iLevel);
+            m_pMesh->vertices()[iIndex].texCoord() = pMaterial->texCoords(gPosition, m_iLevel);
         }
         else if (m_bIsWater)
         {
-            m_pMesh->getVertices()[iIndex].texCoord().X = gPosition.Longitude;
-            m_pMesh->getVertices()[iIndex].texCoord().Y = gPosition.Altitude;
-            m_pMesh->getVertices()[iIndex].texCoord().Z = gPosition.Latitude;
+            m_pMesh->vertices()[iIndex].texCoord().X = gPosition.Longitude;
+            m_pMesh->vertices()[iIndex].texCoord().Y = gPosition.Altitude;
+            m_pMesh->vertices()[iIndex].texCoord().Z = gPosition.Latitude;
         }
 
         if (m_bStopRequested)
@@ -395,7 +395,7 @@ void CTerrain::work()
     }
 
     // Loop over vertices
-    for (int iIndex = 0; iIndex < m_pMesh->getVertices().count(); iIndex++)
+    for (int iIndex = 0; iIndex < m_pMesh->vertices().count(); iIndex++)
     {
         double dTerrainAltitude = 0.0;
 
@@ -406,8 +406,8 @@ void CTerrain::work()
             if (m_pHeights->isGenerated() || m_iLevel < m_iMaxLevel / 2)
             {
                 dTerrainAltitude = m_pHeights->getHeightAt(
-                            m_pMesh->getVertices()[iIndex].position(),
-                            CAxis(m_pMesh->getVertices()[iIndex].tangent(), m_pMesh->getVertices()[iIndex].normal()),
+                            m_pMesh->vertices()[iIndex].position(),
+                            CAxis(m_pMesh->vertices()[iIndex].tangent(), m_pMesh->vertices()[iIndex].normal()),
                             false
                             );
             }
@@ -431,7 +431,7 @@ void CTerrain::work()
                 m_bAllHeightsOverSea = false;
             }
 
-            m_pMesh->getVertices()[iIndex].altitude() = dTerrainAltitude;
+            m_pMesh->vertices()[iIndex].altitude() = dTerrainAltitude;
         }
 
         // If this is a water mesh, altitude is always 0
@@ -441,9 +441,9 @@ void CTerrain::work()
         }
 
         // Translate vertex to final position
-        m_pMesh->getVertices()[iIndex].position() =
-                (m_pMesh->getVertices()[iIndex].position() - vFinalCenter) +
-                (m_pMesh->getVertices()[iIndex].gravity() * -1.0) * dTerrainAltitude;
+        m_pMesh->vertices()[iIndex].position() =
+                (m_pMesh->vertices()[iIndex].position() - vFinalCenter) +
+                (m_pMesh->vertices()[iIndex].gravity() * -1.0) * dTerrainAltitude;
 
         vVertexCount++;
 
@@ -462,33 +462,33 @@ void CTerrain::work()
     {
         LOG_DEBUG(QString("CTerrain::work() : Setting up terrain textures for non-tiled material"));
 
-        for (int iIndex = 0; iIndex < m_pMesh->getVertices().count(); iIndex++)
+        for (int iIndex = 0; iIndex < m_pMesh->vertices().count(); iIndex++)
         {
             if (m_bIsWater == false)
             {
-                double dSlope = fabs(m_pMesh->getVertices()[iIndex].normal().DotProduct(
-                                         m_pMesh->getVertices()[iIndex].gravity() * -1.0
+                double dSlope = fabs(m_pMesh->vertices()[iIndex].normal().DotProduct(
+                                         m_pMesh->vertices()[iIndex].gravity() * -1.0
                                          ));
 
                 dSlope = pow(dSlope, 4.0);
 
-                double dStoneMix = pPerlin->getNoise_0_1((vFinalCenter + m_pMesh->getVertices()[iIndex].position()) * 0.2);
-                double dDirtMix = pPerlin->getNoise_0_1((vFinalCenter + m_pMesh->getVertices()[iIndex].position()) * 0.3);
-                double dGrassMix = pPerlin->getNoise_0_1((vFinalCenter + m_pMesh->getVertices()[iIndex].position()) * 0.1);
+                double dStoneMix = pPerlin->noise_0_1((vFinalCenter + m_pMesh->vertices()[iIndex].position()) * 0.2);
+                double dDirtMix = pPerlin->noise_0_1((vFinalCenter + m_pMesh->vertices()[iIndex].position()) * 0.3);
+                double dGrassMix = pPerlin->noise_0_1((vFinalCenter + m_pMesh->vertices()[iIndex].position()) * 0.1);
 
-                m_pMesh->getVertices()[iIndex].setDiffuseTextureWeight(0, 1.0);
+                m_pMesh->vertices()[iIndex].setDiffuseTextureWeight(0, 1.0);
 
-                m_pMesh->getVertices()[iIndex].setDiffuseTextureWeight(0, dStoneMix);
-                m_pMesh->getVertices()[iIndex].setDiffuseTextureWeight(1, 1.0 - dStoneMix);
+                m_pMesh->vertices()[iIndex].setDiffuseTextureWeight(0, dStoneMix);
+                m_pMesh->vertices()[iIndex].setDiffuseTextureWeight(1, 1.0 - dStoneMix);
 
-                m_pMesh->getVertices()[iIndex].setDiffuseTextureWeight(2, m_iAltitudes_Dirt.getValue(m_pMesh->getVertices()[iIndex].altitude()) * dSlope * dDirtMix);
-                m_pMesh->getVertices()[iIndex].setDiffuseTextureWeight(3, m_iAltitudes_Dirt.getValue(m_pMesh->getVertices()[iIndex].altitude()) * dSlope * (1.0 - dDirtMix));
+                m_pMesh->vertices()[iIndex].setDiffuseTextureWeight(2, m_iAltitudes_Dirt.getValue(m_pMesh->vertices()[iIndex].altitude()) * dSlope * dDirtMix);
+                m_pMesh->vertices()[iIndex].setDiffuseTextureWeight(3, m_iAltitudes_Dirt.getValue(m_pMesh->vertices()[iIndex].altitude()) * dSlope * (1.0 - dDirtMix));
 
-                m_pMesh->getVertices()[iIndex].setDiffuseTextureWeight(4, m_iAltitudes_Sand.getValue(m_pMesh->getVertices()[iIndex].altitude()) * dSlope);
-                m_pMesh->getVertices()[iIndex].setDiffuseTextureWeight(5, m_iAltitudes_Snow.getValue(m_pMesh->getVertices()[iIndex].altitude()) * dSlope);
+                m_pMesh->vertices()[iIndex].setDiffuseTextureWeight(4, m_iAltitudes_Sand.getValue(m_pMesh->vertices()[iIndex].altitude()) * dSlope);
+                m_pMesh->vertices()[iIndex].setDiffuseTextureWeight(5, m_iAltitudes_Snow.getValue(m_pMesh->vertices()[iIndex].altitude()) * dSlope);
 
-                m_pMesh->getVertices()[iIndex].setDiffuseTextureWeight(6, m_iAltitudes_Grass.getValue(m_pMesh->getVertices()[iIndex].altitude()) * dSlope * dGrassMix);
-                m_pMesh->getVertices()[iIndex].setDiffuseTextureWeight(7, m_iAltitudes_Grass.getValue(m_pMesh->getVertices()[iIndex].altitude()) * dSlope * (1.0 - dGrassMix));
+                m_pMesh->vertices()[iIndex].setDiffuseTextureWeight(6, m_iAltitudes_Grass.getValue(m_pMesh->vertices()[iIndex].altitude()) * dSlope * dGrassMix);
+                m_pMesh->vertices()[iIndex].setDiffuseTextureWeight(7, m_iAltitudes_Grass.getValue(m_pMesh->vertices()[iIndex].altitude()) * dSlope * (1.0 - dGrassMix));
             }
 
             vVertexCount++;
@@ -502,13 +502,13 @@ void CTerrain::work()
         // Remove underwater if terrain is large
         if (m_bIsWater == false && m_iLevel >= m_iMaxLevel / 2)
         {
-            for (int iFaceIndex = 0; iFaceIndex < m_pMesh->getFaces().count(); iFaceIndex++)
+            for (int iFaceIndex = 0; iFaceIndex < m_pMesh->faces().count(); iFaceIndex++)
             {
                 bool bIsOversea = false;
 
-                for (int iVertexIndex = 0; iVertexIndex < m_pMesh->getFaces()[iFaceIndex].getIndices().count(); iVertexIndex++)
+                for (int iVertexIndex = 0; iVertexIndex < m_pMesh->faces()[iFaceIndex].getIndices().count(); iVertexIndex++)
                 {
-                    if (m_pMesh->getVertices()[m_pMesh->getFaces()[iFaceIndex].getIndices()[iVertexIndex]].altitude() >= 0.0)
+                    if (m_pMesh->vertices()[m_pMesh->faces()[iFaceIndex].getIndices()[iVertexIndex]].altitude() >= 0.0)
                     {
                         bIsOversea = true;
                     }
@@ -516,7 +516,7 @@ void CTerrain::work()
 
                 if (bIsOversea == false)
                 {
-                    m_pMesh->getFaces().remove(iFaceIndex);
+                    m_pMesh->faces().remove(iFaceIndex);
                     iFaceIndex--;
                 }
 
@@ -541,7 +541,7 @@ void CTerrain::work()
         );
         */
 
-    if (m_pMesh->getFaces().count() == 0)
+    if (m_pMesh->faces().count() == 0)
     {
         LOG_WARNING(QString("CTerrain::work() : No faces in %1").arg(m_sName));
     }
@@ -595,15 +595,15 @@ void CTerrain::buildVerticesToFaceMap()
 
     if (m_pMesh != NULL)
     {
-        for (int iIndex = 0; iIndex < m_pMesh->getFaces().count(); iIndex++)
+        for (int iIndex = 0; iIndex < m_pMesh->faces().count(); iIndex++)
         {
-            if (m_pMesh->getFaces()[iIndex].getIndices().count() == 4)
+            if (m_pMesh->faces()[iIndex].getIndices().count() == 4)
             {
                 QString sKey = QString("%1%2%3%4")
-                        .arg(m_pMesh->getFaces()[iIndex].getIndices()[0])
-                        .arg(m_pMesh->getFaces()[iIndex].getIndices()[1])
-                        .arg(m_pMesh->getFaces()[iIndex].getIndices()[2])
-                        .arg(m_pMesh->getFaces()[iIndex].getIndices()[3])
+                        .arg(m_pMesh->faces()[iIndex].getIndices()[0])
+                        .arg(m_pMesh->faces()[iIndex].getIndices()[1])
+                        .arg(m_pMesh->faces()[iIndex].getIndices()[2])
+                        .arg(m_pMesh->faces()[iIndex].getIndices()[3])
                         ;
 
                 m_mVerticesToFace[sKey] = iIndex;

@@ -17,16 +17,16 @@
 
 //-------------------------------------------------------------------------------------------------
 
-#define GL_glGenBuffers                 m_pScene->getGLExtension()->glGenBuffers
-#define GL_glDeleteBuffers              m_pScene->getGLExtension()->glDeleteBuffers
-#define GL_glBindBuffer                 m_pScene->getGLExtension()->glBindBuffer
-#define GL_glBufferData                 m_pScene->getGLExtension()->glBufferData
-#define GL_glGetAttribLocation          m_pScene->getGLExtension()->glGetAttribLocation
-#define GL_glEnableVertexAttribArray    m_pScene->getGLExtension()->glEnableVertexAttribArray
-#define GL_glDisableVertexAttribArray   m_pScene->getGLExtension()->glDisableVertexAttribArray
-#define GL_glVertexAttribPointer        m_pScene->getGLExtension()->glVertexAttribPointer
-#define GL_glActiveTexture              m_pScene->getGLExtension()->glActiveTexture
-#define GL_glGenerateMipmap             m_pScene->getGLExtension()->glGenerateMipmap
+#define GL_glGenBuffers                 m_pScene->glExtension()->glGenBuffers
+#define GL_glDeleteBuffers              m_pScene->glExtension()->glDeleteBuffers
+#define GL_glBindBuffer                 m_pScene->glExtension()->glBindBuffer
+#define GL_glBufferData                 m_pScene->glExtension()->glBufferData
+#define GL_glGetAttribLocation          m_pScene->glExtension()->glGetAttribLocation
+#define GL_glEnableVertexAttribArray    m_pScene->glExtension()->glEnableVertexAttribArray
+#define GL_glDisableVertexAttribArray   m_pScene->glExtension()->glDisableVertexAttribArray
+#define GL_glVertexAttribPointer        m_pScene->glExtension()->glVertexAttribPointer
+#define GL_glActiveTexture              m_pScene->glExtension()->glActiveTexture
+#define GL_glGenerateMipmap             m_pScene->glExtension()->glGenerateMipmap
 
 //-------------------------------------------------------------------------------------------------
 

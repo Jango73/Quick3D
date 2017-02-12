@@ -44,13 +44,13 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    virtual double getCurrentFuelFlow_norm() const;
+    virtual double currentFuelFlow_norm() const;
 
     //!
-    virtual double getCurrentThrust_kg() const;
+    virtual double currentThrust_kg() const;
 
     //!
-    virtual double getCurrentFuelCons_ls() const;
+    virtual double currentFuelCons_ls() const;
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes héritées

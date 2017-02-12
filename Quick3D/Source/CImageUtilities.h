@@ -55,25 +55,25 @@ public:
 	//-------------------------------------------------------------------------------------------------
 
 	//!
-	Math::CVector2 getStartAngles() const {return m_vStartAngles; }
+    Math::CVector2 startAngles() const {return m_vStartAngles; }
 
 	//!
-	Math::CVector2 getEndAngles() const {return m_vEndAngles; }
+    Math::CVector2 endAngles() const {return m_vEndAngles; }
 
 	//!
-	int getPanCount() const { return m_iPanCount; }
+    int panCount() const { return m_iPanCount; }
 
 	//!
-	int getTiltCount() const { return m_iTiltCount; }
+    int tiltCount() const { return m_iTiltCount; }
 
 	//!
-	QSize getTextureSize() { return m_sTextureSize; }
+    QSize textureSize() { return m_sTextureSize; }
 
 	//! Retourne la liste d'images
-	QVector<QVector<QImage> >& getImages() { return m_vImages; }
+    QVector<QVector<QImage> >& images() { return m_vImages; }
 
 	//! Retourne la liste d'images
-	const QVector<QVector<QImage> >& getImages() const { return m_vImages; }
+    const QVector<QVector<QImage> >& images() const { return m_vImages; }
 
 	//-------------------------------------------------------------------------------------------------
 	// Propriétés

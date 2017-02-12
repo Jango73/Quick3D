@@ -50,22 +50,22 @@ void CAirbusADIRU::work(double dDeltaTime)
     if (pAircraft)
     {
         // Calcul du tanguage
-        double dPitch_deg = pAircraft->getPitch_deg();
+        double dPitch_deg = pAircraft->pitch_deg();
         pushData(CAirbusData(m_sName, adInertial_Pitch_deg, dPitch_deg));
 
         // Calcul du roulis
-        double dRoll_deg = pAircraft->getRoll_deg();
+        double dRoll_deg = pAircraft->roll_deg();
         pushData(CAirbusData(m_sName, adInertial_Roll_deg, dRoll_deg));
 
         // Calcul du cap réel
-        double dTrueHeading_deg = pAircraft->getTrueHeading_deg();
+        double dTrueHeading_deg = pAircraft->trueHeading_deg();
         pushData(CAirbusData(m_sName, adGeoLoc_TrueHeading_deg, dTrueHeading_deg));
 
         // Calcul du track
-        double dTrueTrack_deg = pAircraft->getTrueTrack_deg();
+        double dTrueTrack_deg = pAircraft->trueTrack_deg();
         pushData(CAirbusData(m_sName, adGeoLoc_TrueTrack_deg, dTrueTrack_deg));
 
-        CVector3 vAngularVelocity_rs = pAircraft->getAngularVelocity_rs();
+        CVector3 vAngularVelocity_rs = pAircraft->angularVelocity_rs();
 
         // Calcul de la vélocité du roulis
         double dInertial_RollVelocity_ds = Math::Angles::toDeg(vAngularVelocity_rs.Z);
@@ -76,11 +76,11 @@ void CAirbusADIRU::work(double dDeltaTime)
         pushData(CAirbusData(m_sName, adInertial_PitchVelocity_ds, dInertial_PitchVelocity_ds));
 
         // Calcul de la vitesse air vraie
-        double dTrueAirSpeed_ms = pAircraft->getTrueAirSpeed_ms();
+        double dTrueAirSpeed_ms = pAircraft->trueAirSpeed_ms();
         pushData(CAirbusData(m_sName, adAir_TrueAirspeed_ms, dTrueAirSpeed_ms));
 
         // Calcul de la vitesse air indiquée
-        double dIndicatedAirSpeed_ms = pAircraft->getIndicatedAirSpeed_ms();
+        double dIndicatedAirSpeed_ms = pAircraft->indicatedAirSpeed_ms();
         pushData(CAirbusData(m_sName, adAir_IndicatedAirspeed_ms, dIndicatedAirSpeed_ms));
 
         double dIndicatedAccel_ms = (dIndicatedAirSpeed_ms - m_dPreviousIndicatedAirSpeed_ms) / dDeltaTime;
@@ -90,15 +90,15 @@ void CAirbusADIRU::work(double dDeltaTime)
         pushData(CAirbusData(m_sName, adAir_IndicatedAirspeedVMax_ms, 140.0));
 
         // Calcul du Mach
-        double dMach = pAircraft->getMach();
+        double dMach = pAircraft->mach();
         pushData(CAirbusData(m_sName, adAir_Mach, dMach));
 
         // Calcul de la vitesse sol
-        double dGroundSpeed_ms = pAircraft->getGroundSpeed_ms();
+        double dGroundSpeed_ms = pAircraft->groundSpeed_ms();
         pushData(CAirbusData(m_sName, adGeoLoc_GroundSpeed_ms, dGroundSpeed_ms));
 
         // Calcul de la vitesse verticale
-        double dVerticalSpeed_ms = pAircraft->getVerticalSpeed_ms();
+        double dVerticalSpeed_ms = pAircraft->verticalSpeed_ms();
         pushData(CAirbusData(m_sName, adAir_VerticalSpeed_ms, dVerticalSpeed_ms));
 
         // Calcul de la latitude
@@ -110,7 +110,7 @@ void CAirbusADIRU::work(double dDeltaTime)
         pushData(CAirbusData(m_sName, adGeoLoc_Longitude_deg, dLongitude_deg));
 
         // Calcul de l'altitude
-        double dAltitude_m = pAircraft->getAltitude_m();
+        double dAltitude_m = pAircraft->altitude_m();
         pushData(CAirbusData(m_sName, adAir_Altitude_m, dAltitude_m));
         pushData(CAirbusData(m_sName, adGeoLoc_Altitude_m, dAltitude_m));
 

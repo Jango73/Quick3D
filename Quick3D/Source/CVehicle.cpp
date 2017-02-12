@@ -93,7 +93,7 @@ void CVehicle::update(double dDeltaTime)
 
             vRotation = getOriginRotation();
 
-            CBoundingBox box = getBounds();
+            CBoundingBox box = bounds();
 
             CMatrix4 mOrientation = CMatrix4().MakeRotation(vRotation);
 
@@ -139,7 +139,7 @@ void CVehicle::update(double dDeltaTime)
 
                     CVector3 torque(-dDiffX * 4.0, 0.0, -dDiffZ);
 
-                    addLocalTorque_kg(torque * getTotalMass_kg() * 0.5);
+                    addLocalTorque_kg(torque * totalMass_kg() * 0.5);
                 }
             }
         }

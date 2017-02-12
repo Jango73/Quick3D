@@ -50,37 +50,37 @@ CAtmosphere::CAtmosphere()
 
 //-------------------------------------------------------------------------------------------------
 
-double CAtmosphere::getDensity_kgm3(double dAltitude_m)
+double CAtmosphere::density_kgm3(double dAltitude_m)
 {
 	return m_Density_kgm3.getValue(dAltitude_m);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-double CAtmosphere::getPressure_Nm2(double dAltitude_m)
+double CAtmosphere::pressure_Nm2(double dAltitude_m)
 {
 	return m_Pressure_Nm2.getValue(dAltitude_m);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-double CAtmosphere::getSoundSpeed_ms(double dAltitude_m)
+double CAtmosphere::soundSpeed_ms(double dAltitude_m)
 {
 	return m_SoundSpeed_ms.getValue(dAltitude_m);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-double CAtmosphere::getTemperature_K(double dAltitude_m)
+double CAtmosphere::temperature_K(double dAltitude_m)
 {
 	return m_Temperature_K.getValue(dAltitude_m);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-double CAtmosphere::getAirForceFactor(double dAltitude_m)
+double CAtmosphere::airForceFactor(double dAltitude_m)
 {
-	double dAirDensity_kgm3 = getDensity_kgm3(dAltitude_m);
+	double dAirDensity_kgm3 = density_kgm3(dAltitude_m);
 	double dAirForceFactor = 1.0 / (1.0 + dAirDensity_kgm3);
 
 	return dAirForceFactor;
@@ -88,9 +88,9 @@ double CAtmosphere::getAirForceFactor(double dAltitude_m)
 
 //-------------------------------------------------------------------------------------------------
 
-double CAtmosphere::getAirDragFactor(double dAltitude_m)
+double CAtmosphere::airDragFactor(double dAltitude_m)
 {
-	double dAirDensity_kgm3 = getDensity_kgm3(dAltitude_m);
+	double dAirDensity_kgm3 = density_kgm3(dAltitude_m);
 	double dAirDragFactor = dAirDensity_kgm3;
 
 	return dAirDragFactor;

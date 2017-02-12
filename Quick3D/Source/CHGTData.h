@@ -66,10 +66,10 @@ public:
     double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);
 
     //!
-    int getNumCellsWidth() { return m_iNumCellsWidth; }
+    int numCellsWidth() { return m_iNumCellsWidth; }
 
     //!
-    int getNumCellsHeight() { return m_iNumCellsHeight; }
+    int numCellsHeight() { return m_iNumCellsHeight; }
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes de contrôle

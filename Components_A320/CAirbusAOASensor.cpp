@@ -40,7 +40,7 @@ void CAirbusAOASensor::update(double dDeltaTime)
 
     if (pAircraft)
     {
-        double dAngleOfAttack = pAircraft->getAngleOfAttack_rad();
+        double dAngleOfAttack = pAircraft->angleOfAttack_rad();
 
         pushData(CAirbusData(m_sName, adAir_AngleOfAttack_rad, dAngleOfAttack));
 

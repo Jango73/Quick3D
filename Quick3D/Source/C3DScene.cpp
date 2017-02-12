@@ -177,7 +177,7 @@ void C3DScene::init(QVector<QSP<CComponent> > vComponents)
     //-----------------------------------------------
     // Add sun
 
-    QVector<QSP<CLight> > vLights = getLights();
+    QVector<QSP<CLight> > vLights = lights();
     bool bFoundSun = false;
 
     foreach (QSP<CLight> pLight, vLights)
@@ -362,7 +362,7 @@ void C3DScene::forceIR(bool value)
 /*!
     Returns a vector of all lights.
 */
-QVector<QSP<CLight> > C3DScene::getLights()
+QVector<QSP<CLight> > C3DScene::lights()
 {
     QVector<QSP<CLight> > vLights;
 
@@ -399,7 +399,7 @@ void C3DScene::getLightsRecurse(QVector<QSP<CLight> >& vLights, QSP<CComponent> 
 /*!
     Returns a vector of components whose tag matches \a sTag.
 */
-QVector<QSP<CComponent> > C3DScene::getComponentsByTag(const QString& sTag)
+QVector<QSP<CComponent> > C3DScene::componentsByTag(const QString& sTag)
 {
     QVector<QSP<CComponent> > vReturnValue;
 
@@ -419,7 +419,7 @@ QVector<QSP<CComponent> > C3DScene::getComponentsByTag(const QString& sTag)
 /*!
     Returns a vector of lights whose tag matches \a sTag.
 */
-QVector<QSP<CLight> > C3DScene::getLightsByTag(const QString& sTag)
+QVector<QSP<CLight> > C3DScene::lightsByTag(const QString& sTag)
 {
     QVector<QSP<CLight> > vLights;
 
@@ -675,12 +675,12 @@ RayTracingResult C3DScene::intersectRecurse(QSP<CComponent> pComponent, const Ma
 
 void C3DScene::addSegment(Math::CVector3 vStart, Math::CVector3 vEnd)
 {
-    if (m_pSegments->getVertices().count() > 400) return;
+    if (m_pSegments->vertices().count() > 400) return;
 
     if (m_bEditMode == false)
     {
-        m_pSegments->getVertices().append(CVertex(vStart - m_vWorldOrigin));
-        m_pSegments->getVertices().append(CVertex(vEnd - m_vWorldOrigin));
+        m_pSegments->vertices().append(CVertex(vStart - m_vWorldOrigin));
+        m_pSegments->vertices().append(CVertex(vEnd - m_vWorldOrigin));
     }
 }
 

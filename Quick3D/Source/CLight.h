@@ -57,13 +57,13 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    double getLightingDistance() const { return m_dLightingDistance; }
+    double lightingDistance() const { return m_dLightingDistance; }
 
     //!
-    QSP<CMaterial> getMaterial() const { return m_pMaterial; }
+    QSP<CMaterial> material() const { return m_pMaterial; }
 
     //!
-    double getOcclusion() const { return m_dOcclusion; }
+    double occlusion() const { return m_dOcclusion; }
 
     //!
     bool castShadows() const { return m_bCastShadows; }

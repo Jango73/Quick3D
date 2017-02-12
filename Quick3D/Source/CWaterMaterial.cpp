@@ -28,7 +28,7 @@ QGLShaderProgram* CWaterMaterial::activate(CRenderContext* pContext)
 
     if (pProgram != NULL)
     {
-        double dAmplitude = m_pScene->getWindLevel() * 4.0;
+        double dAmplitude = m_pScene->windLevel() * 4.0;
 
         pProgram->setUniformValue("u_wave_enable", (GLint) 1);
         pProgram->setUniformValue("u_wave_amplitude", (GLfloat) (float) dAmplitude);
@@ -65,15 +65,15 @@ double CWaterMaterial::getHeightAt(const Math::CVector3& vPosition, const Math::
 double CWaterMaterial::WaveHeight(CGeoloc gPosition)
 {
     CPerlin* pPerlin = CPerlin::getInstance();
-    double dAmplitude = m_pScene->getWindLevel() * 4.0;
+    double dAmplitude = m_pScene->windLevel() * 4.0;
 
-    CVector3 input_position = gPosition.toVector3() - m_pScene->getWorldOrigin();
+    CVector3 input_position = gPosition.toVector3() - m_pScene->worldOrigin();
 
     CVector3 position_1 = input_position;
     CVector3 position_2 = input_position + CVector3(2.0, 2.0, 2.0);
 
-    double value_1 = pPerlin->getTurbulence((position_1 * 0.005) + CVector3(m_dTime, m_dTime, m_dTime) * 0.1) * dAmplitude * 4.0;
-    double value_2 = pPerlin->getTurbulence((position_2 * 0.005) - CVector3(m_dTime, m_dTime, m_dTime) * 0.1) * dAmplitude * 4.0;
+    double value_1 = pPerlin->turbulence((position_1 * 0.005) + CVector3(m_dTime, m_dTime, m_dTime) * 0.1) * dAmplitude * 4.0;
+    double value_2 = pPerlin->turbulence((position_2 * 0.005) - CVector3(m_dTime, m_dTime, m_dTime) * 0.1) * dAmplitude * 4.0;
 
     // double value_3 = pPerlin->getTurbulence((position_1 * 0.050) + Vector3(m_dTime, m_dTime, m_dTime) * 0.5) * dAmplitude * 0.8;
     // double value_4 = pPerlin->getTurbulence((position_2 * 0.050) - Vector3(m_dTime, m_dTime, m_dTime) * 0.5) * dAmplitude * 0.8;

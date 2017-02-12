@@ -79,15 +79,15 @@ void CView::keyPressEvent(QKeyEvent* event)
 {
     if (m_pScene != NULL)
     {
-        if (m_pScene->getEditMode())
+        if (m_pScene->editMode())
         {
             emit keyPress(event);
         }
         else
         {
-            if (m_pScene->getController() != NULL)
+            if (m_pScene->controller() != NULL)
             {
-                m_pScene->getController()->keyPressEvent(event);
+                m_pScene->controller()->keyPressEvent(event);
             }
         }
     }
@@ -99,15 +99,15 @@ void CView::keyReleaseEvent(QKeyEvent *event)
 {
     if (m_pScene != NULL)
     {
-        if (m_pScene->getEditMode())
+        if (m_pScene->editMode())
         {
             emit keyRelease(event);
         }
         else
         {
-            if (m_pScene->getController() != NULL)
+            if (m_pScene->controller() != NULL)
             {
-                m_pScene->getController()->keyReleaseEvent(event);
+                m_pScene->controller()->keyReleaseEvent(event);
             }
         }
     }
@@ -119,15 +119,15 @@ void CView::mousePressEvent(QMouseEvent* event)
 {
     if (m_pScene != NULL)
     {
-        if (m_pScene->getEditMode())
+        if (m_pScene->editMode())
         {
             emit mousePress(event);
         }
         else
         {
-            if (m_pScene->getController() != NULL)
+            if (m_pScene->controller() != NULL)
             {
-                m_pScene->getController()->mousePressEvent(event);
+                m_pScene->controller()->mousePressEvent(event);
             }
         }
     }
@@ -139,15 +139,15 @@ void CView::mouseReleaseEvent(QMouseEvent* event)
 {
     if (m_pScene != NULL)
     {
-        if (m_pScene->getEditMode())
+        if (m_pScene->editMode())
         {
             emit mouseRelease(event);
         }
         else
         {
-            if (m_pScene->getController() != NULL)
+            if (m_pScene->controller() != NULL)
             {
-                m_pScene->getController()->mouseReleaseEvent(event);
+                m_pScene->controller()->mouseReleaseEvent(event);
             }
         }
     }
@@ -159,15 +159,15 @@ void CView::mouseMoveEvent(QMouseEvent* event)
 {
     if (m_pScene != NULL)
     {
-        if (m_pScene->getEditMode())
+        if (m_pScene->editMode())
         {
             emit mouseMove(event);
         }
         else
         {
-            if (m_pScene->getController() != NULL)
+            if (m_pScene->controller() != NULL)
             {
-                m_pScene->getController()->mouseMoveEvent(event);
+                m_pScene->controller()->mouseMoveEvent(event);
             }
         }
     }
@@ -179,15 +179,15 @@ void CView::wheelEvent(QWheelEvent *event)
 {
     if (m_pScene != NULL)
     {
-        if (m_pScene->getEditMode())
+        if (m_pScene->editMode())
         {
             emit wheel(event);
         }
         else
         {
-            if (m_pScene->getController() != NULL)
+            if (m_pScene->controller() != NULL)
             {
-                m_pScene->getController()->wheelEvent(event);
+                m_pScene->controller()->wheelEvent(event);
             }
         }
     }
@@ -199,21 +199,21 @@ void CView::focusOutEvent(QFocusEvent* event)
 {
     if (m_pScene != NULL)
     {
-        if (m_pScene->getEditMode())
+        if (m_pScene->editMode())
         {
         }
         else
         {
-            if (m_pScene->getController() != NULL)
+            if (m_pScene->controller() != NULL)
             {
                 {
                     QKeyEvent tEvent(QEvent::KeyRelease, Qt::Key_Control, Qt::NoModifier);
-                    m_pScene->getController()->keyReleaseEvent(&tEvent);
+                    m_pScene->controller()->keyReleaseEvent(&tEvent);
                 }
 
                 {
                     QKeyEvent tEvent(QEvent::KeyRelease, Qt::Key_Alt, Qt::NoModifier);
-                    m_pScene->getController()->keyReleaseEvent(&tEvent);
+                    m_pScene->controller()->keyReleaseEvent(&tEvent);
                 }
             }
         }
@@ -229,20 +229,20 @@ void CView::update(double dDeltaTimeS)
 
     if (m_pScene != NULL)
     {
-        if (m_pScene->getEditMode())
+        if (m_pScene->editMode())
         {
             dDeltaTimeS = 0.0;
         }
 
-        double dTime = m_pScene->getTime() + dDeltaTimeS;
+        double dTime = m_pScene->time() + dDeltaTimeS;
 
         m_pScene->setTime(dTime);
         m_pScene->setGeometry(this->frameRect());
         m_pScene->updateGL();
 
-        foreach (int iIndex, m_pScene->getViewports().keys())
+        foreach (int iIndex, m_pScene->viewports().keys())
         {
-            m_pScene->getViewports()[iIndex]->update(dDeltaTimeS);
+            m_pScene->viewports()[iIndex]->update(dDeltaTimeS);
         }
     }
 }
@@ -261,7 +261,7 @@ void CView::testPerlin()
     {
         for (double x = 0.0; x < 10000.0; x += 25.0)
         {
-            double dValue = perlin->getNoise(CVector3(x, 0.0, z) * 0.001);
+            double dValue = perlin->noise(CVector3(x, 0.0, z) * 0.001);
 
             if (dValue < dMin) dMin = dValue;
             if (dValue > dMax) dMax = dValue;

@@ -89,7 +89,7 @@ public:
     virtual QString getClassName() const { return ClassName_CTiledMaterial; }
 
     //! Retourne des coordonnées de texture pour une géolocalisation donnée
-    virtual Math::CVector2 getTexCoords(const CGeoloc& gPosition, int iLevel);
+    virtual Math::CVector2 texCoords(const CGeoloc& gPosition, int iLevel);
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes héritées

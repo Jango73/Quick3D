@@ -31,9 +31,9 @@ CVector3 CBasicAnimatorFrame::compute(double dDeltaTime, CVector3 vCurrentValue)
 		}
 		else
 		{
-			if (m_vCurrentValue.isSame(m_vSteps[m_iCurrentStep].getTarget()))
+			if (m_vCurrentValue.isSame(m_vSteps[m_iCurrentStep].target()))
 			{
-				m_dTime = m_vSteps[m_iCurrentStep].getDuration();
+				m_dTime = m_vSteps[m_iCurrentStep].duration();
 
 				m_iCurrentStep++;
 
@@ -45,8 +45,8 @@ CVector3 CBasicAnimatorFrame::compute(double dDeltaTime, CVector3 vCurrentValue)
 
 			if (m_iCurrentStep < m_vSteps.count())
 			{
-				CVector3 vTarget = m_vSteps[m_iCurrentStep].getTarget();
-				CVector3 vSpeed = m_vSteps[m_iCurrentStep].getSpeed();
+				CVector3 vTarget = m_vSteps[m_iCurrentStep].target();
+				CVector3 vSpeed = m_vSteps[m_iCurrentStep].speed();
 
 				m_vCurrentValue.X = computeSingleAxis(dDeltaTime, m_vCurrentValue.X, vTarget.X, vSpeed.X);
 				m_vCurrentValue.Y = computeSingleAxis(dDeltaTime, m_vCurrentValue.Y, vTarget.Y, vSpeed.Y);

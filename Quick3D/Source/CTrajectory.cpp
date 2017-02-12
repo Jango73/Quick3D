@@ -87,7 +87,7 @@ void CTrajectory::processObject(CTrajectorable* pObject, double dDeltaTime)
             return;
 
             LOG_DEBUG(QString("CTrajectory::processVehicle() : %1 reached waypoint, next = %2")
-                      .arg(pObject->getName())
+                      .arg(pObject->name())
                       .arg(m_iCurrentPoint));
         }
 

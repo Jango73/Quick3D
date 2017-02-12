@@ -37,16 +37,16 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    virtual double getCurrentThrust_kg() const;
+    virtual double currentThrust_kg() const;
 
     //!
-    virtual double getCurrentFuelCons_ls() const;
+    virtual double currentFuelCons_ls() const;
 
     //!
-    virtual double getN1_norm() const;
+    virtual double n1_norm() const;
 
     //!
-    virtual double getN2_norm() const;
+    virtual double n2_norm() const;
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes héritées

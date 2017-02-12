@@ -59,13 +59,13 @@ CWorldTerrain::CWorldTerrain(C3DScene* pScene, CGeoloc gCameraPosition, CHeightF
     setName("AutoTerrain");
     setInheritTransform(false);
 
-    m_pMaterial = pScene->getRessourcesManager()->shareMaterial(QSP<CMaterial>(new CMaterial(m_pScene)));
+    m_pMaterial = pScene->ressourcesManager()->shareMaterial(QSP<CMaterial>(new CMaterial(m_pScene)));
 
     if (m_bGenerateNow)
     {
         LOG_DEBUG("CWorldTerrain::CWorldTerrain() : Generating terrain now");
 
-        if (pScene->getViewports().count() > 0 && pScene->getViewports()[0]->getCamera())
+        if (pScene->viewports().count() > 0 && pScene->viewports()[0]->getCamera())
         {
             CRenderContext context(
                         QMatrix4x4(),
@@ -75,7 +75,7 @@ CWorldTerrain::CWorldTerrain(C3DScene* pScene, CGeoloc gCameraPosition, CHeightF
                         Math::CMatrix4(),
                         Math::CMatrix4(),
                         pScene,
-                        pScene->getViewports()[0]->getCamera().data()
+                        pScene->viewports()[0]->getCamera().data()
                     );
 
             buildRoot(&context);
@@ -176,7 +176,7 @@ void CWorldTerrain::loadParameters(const QString& sBaseFile, CXMLNode xComponent
 
     if (sMaterialType.toLower() == "blend")
     {
-        m_pMaterial = m_pScene->getRessourcesManager()->shareMaterial(QSP<CMaterial>(new CMaterial(m_pScene)));
+        m_pMaterial = m_pScene->ressourcesManager()->shareMaterial(QSP<CMaterial>(new CMaterial(m_pScene)));
 
         m_pMaterial->setIRFactor(0.2);
 
@@ -197,7 +197,7 @@ void CWorldTerrain::loadParameters(const QString& sBaseFile, CXMLNode xComponent
         pTiled->setIRFactor(0.2);
         pTiled->setLevels(m_iLevels);
 
-        m_pMaterial = m_pScene->getRessourcesManager()->shareMaterial(QSP<CMaterial>(pTiled));
+        m_pMaterial = m_pScene->ressourcesManager()->shareMaterial(QSP<CMaterial>(pTiled));
     }
 }
 
@@ -308,7 +308,7 @@ bool CWorldTerrain::enoughDetail(QSP<CWorldChunk> pChunk, CRenderContext* pConte
     // if (iLevel > m_iLevels - (m_iLevels / 5)) return false;
 
     return (
-                pChunk->getWorldBounds().containsSpherical(pContext->camera()->getGeoloc()) == false ||
+                pChunk->worldBounds().containsSpherical(pContext->camera()->getGeoloc()) == false ||
                 iLevel == 0
                 )
             && iLevel < m_iLevels;
@@ -516,7 +516,7 @@ void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRen
             vChunkCollect.append(pChunk);
 
             // Get rid of unneeded water
-            if (pChunk->getWater() && pChunk->getTerrain()->getAllHeightsOverSea())
+            if (pChunk->getWater() && pChunk->getTerrain()->allHeightsOverSea())
             {
                 pChunk->setWater(QSP<CTerrain>());
             }

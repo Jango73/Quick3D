@@ -74,9 +74,9 @@ void CLight::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
     {
         if (tColorNode.isEmpty() == false)
         {
-            m_pMaterial->getDiffuse().X = tColorNode.attributes()[ParamName_r].toDouble();
-            m_pMaterial->getDiffuse().Y = tColorNode.attributes()[ParamName_g].toDouble();
-            m_pMaterial->getDiffuse().Z = tColorNode.attributes()[ParamName_b].toDouble();
+            m_pMaterial->diffuse().X = tColorNode.attributes()[ParamName_r].toDouble();
+            m_pMaterial->diffuse().Y = tColorNode.attributes()[ParamName_g].toDouble();
+            m_pMaterial->diffuse().Z = tColorNode.attributes()[ParamName_b].toDouble();
         }
     }
 

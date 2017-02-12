@@ -24,7 +24,7 @@ void CParented::setParentName(const QString& sName)
 
 //-------------------------------------------------------------------------------------------------
 
-const QString& CParented::getParentName() const
+const QString& CParented::parentName() const
 {
 	return m_sParentName;
 }

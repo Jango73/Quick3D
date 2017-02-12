@@ -35,14 +35,14 @@ void CBoundedMeshInstances::setBounds(CBoundingBox bBounds)
 
 //-------------------------------------------------------------------------------------------------
 
-CBoundingBox CBoundedMeshInstances::getBounds()
+CBoundingBox CBoundedMeshInstances::bounds()
 {
     return m_bBounds;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-CBoundingBox CBoundedMeshInstances::getWorldBounds()
+CBoundingBox CBoundedMeshInstances::worldBounds()
 {
     return m_bBounds;
 }
@@ -61,10 +61,10 @@ void CBoundedMeshInstances::update(double dDeltaTime)
 
 void CBoundedMeshInstances::paint(CRenderContext* pContext)
 {
-    CVector3 vPosition = pContext->internalCameraMatrix() * getWorldBounds().center();
-    double dRadius = getWorldBounds().radius();
+    CVector3 vPosition = pContext->internalCameraMatrix() * worldBounds().center();
+    double dRadius = worldBounds().radius();
 
-    if (pContext->scene()->getFrustumCheck() == false || pContext->camera()->contains(vPosition, dRadius))
+    if (pContext->scene()->frustumCheck() == false || pContext->camera()->contains(vPosition, dRadius))
     {
         foreach (CMeshInstance* pMeshInstance, m_vMeshes)
         {

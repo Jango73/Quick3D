@@ -48,11 +48,11 @@ CMeshInstance* CMeshInstance::clone()
 
 //-------------------------------------------------------------------------------------------------
 
-CBoundingBox CMeshInstance::getBounds()
+CBoundingBox CMeshInstance::bounds()
 {
     if (m_vMeshes.count() > 0)
     {
-        return m_vMeshes[0]->getBounds();
+        return m_vMeshes[0]->bounds();
     }
 
     return CBoundingBox();
@@ -60,11 +60,11 @@ CBoundingBox CMeshInstance::getBounds()
 
 //-------------------------------------------------------------------------------------------------
 
-CBoundingBox CMeshInstance::getWorldBounds()
+CBoundingBox CMeshInstance::worldBounds()
 {
     if (m_vMeshes.count() > 0)
     {
-        CBoundingBox bBounds(m_vMeshes[0]->getBounds());
+        CBoundingBox bBounds(m_vMeshes[0]->bounds());
         CVector3 vWorldPosition = getWorldPosition();
         return CBoundingBox(vWorldPosition + bBounds.minimum(), vWorldPosition + bBounds.maximum());
     }
@@ -78,11 +78,11 @@ void CMeshInstance::paint(CRenderContext* pContext)
 {
     if (m_vMeshes.count() > 0)
     {
-        CVector3 vPosition = pContext->internalCameraMatrix() * getWorldBounds().center();
+        CVector3 vPosition = pContext->internalCameraMatrix() * worldBounds().center();
 
         foreach (QSP<CMesh> pMesh, m_vMeshes)
         {
-            if (vPosition.getMagnitude() <= pMesh->geometry()->getMaxDistance())
+            if (vPosition.getMagnitude() <= pMesh->geometry()->maxDistance())
             {
                 pMesh->setWorldTransform(m_mWorldTransform);
                 pMesh->paint(pContext);

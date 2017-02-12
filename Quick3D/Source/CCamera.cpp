@@ -114,12 +114,12 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
 
     //-------------------------------------------------------------------------------------------------
 
-    QVector<QSP<CLight> > vSuns = pScene->getLightsByTag("SUN");
+    QVector<QSP<CLight> > vSuns = pScene->lightsByTag("SUN");
 
     QMatrix4x4 mShadowProjectionMatrix;
     QMatrix4x4 mShadowMatrix;
 
-    if (pScene->getShaderQuality() >= 0.90)
+    if (pScene->shaderQuality() >= 0.90)
     {
         pScene->setRenderingShadows(true);
 
@@ -139,7 +139,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
             CVector3 vCamPos = pLight->getWorldPosition();
             CVector3 vCamRot = pLight->getWorldRotation();
 
-            mShadowMatrix = CCamera::getQtCameraMatrix(vCamPos - pScene->getWorldOrigin(), vCamRot);
+            mShadowMatrix = CCamera::getQtCameraMatrix(vCamPos - pScene->worldOrigin(), vCamRot);
             mShadowProjectionMatrix = CCamera::getQtProjectionMatrix(pLight->getFOV(), 1.0, pLight->getMinDistance(), pLight->getMaxDistance());
 
             CMatrix4 mInternalCameraMatrix = CCamera::getInternalCameraMatrix(vCamPos, vCamRot);
@@ -159,7 +159,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
             //-------------------------------------------------------------------------------------------------
             // Render objects
 
-            pLight->getMaterial()->enableFrameBuffer();
+            pLight->material()->enableFrameBuffer();
 
             glViewport(0, 0, 2048, 2048);
 
@@ -172,7 +172,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
 
             pScene->paintShadowCastingComponents(&Context);
 
-            pLight->getMaterial()->disableFrameBuffer();
+            pLight->material()->disableFrameBuffer();
 
             //-------------------------------------------------------------------------------------------------
 
@@ -204,7 +204,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     //-------------------------------------------------------------------------------------------------
     // Contexte de rendu et matrices de transformation
 
-    if (pScene->getShaderQuality() >= 0.90)
+    if (pScene->shaderQuality() >= 0.90)
     {
         if (vSuns.count() > 0 && vSuns[0]->castShadows())
         {
@@ -222,7 +222,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
             double dMinDistance = 1.0;
             double dMaxDistance = 2000.0;
 
-            mShadowMatrix = CCamera::getQtCameraMatrix(vLitePos - pScene->getWorldOrigin(), vLiteRot);
+            mShadowMatrix = CCamera::getQtCameraMatrix(vLitePos - pScene->worldOrigin(), vLiteRot);
             mShadowProjectionMatrix = CCamera::getQtProjectionMatrix(pLight->getFOV(), 1.0, dMinDistance, dMaxDistance);
 
             pLight->loadTransform();
@@ -251,7 +251,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
 
     double dVerticalFOV = dFOV * ((double) iHeight / (double) iWidth);
 
-    QMatrix4x4 mCameraMatrix = CCamera::getQtCameraMatrix(vCamPos - pScene->getWorldOrigin(), vCamRot);
+    QMatrix4x4 mCameraMatrix = CCamera::getQtCameraMatrix(vCamPos - pScene->worldOrigin(), vCamRot);
     QMatrix4x4 mCameraProjection = CCamera::getQtProjectionMatrix(
                 dVerticalFOV,
                 (double) iWidth / (double) iHeight,
@@ -285,7 +285,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     //-------------------------------------------------------------------------------------------------
     // Mise à jour des objets
 
-    foreach(QSP<CComponent> pComponent, pScene->getComponents())
+    foreach(QSP<CComponent> pComponent, pScene->components())
     {
         if (pComponent->isVisible())
         {
@@ -393,7 +393,7 @@ void CCamera::renderDepth_RayTraced
             // Initialisation de la distance trouvée pour ce point
             RayTracingResult dResult(Q3D_INFINITY);
 
-            foreach (QSP<CComponent> pComponent, pScene->getComponents())
+            foreach (QSP<CComponent> pComponent, pScene->components())
             {
                 // Est-ce que le composant doit être pris en compte par le ray-tracing?
                 if (pComponent->isVisible() && pComponent->isRaytracable())
@@ -528,7 +528,7 @@ void CCamera::renderDepth_CubeMapped
 
         // Sauvegarde des paramètres de la caméra
         QRect rOldGeometry = pGLWidgetScene->geometry();
-        CViewport* pOldViewport = pGLWidgetScene->getViewports()[0];
+        CViewport* pOldViewport = pGLWidgetScene->viewports()[0];
         CViewport* pNewViewport = new CViewport(pGLWidgetScene);
         CVector3 vCameraInitialRotation = getOriginRotation();
         CVector3 vCameraAttitude = tParams.m_vAttitude.degreesToRadians() * -1.0;
@@ -537,10 +537,10 @@ void CCamera::renderDepth_CubeMapped
 
         // Création du viewport pour le rendu de la scène
         pGLWidgetScene->setGeometry(0, 0, sMapSize.width(), sMapSize.height());
-        pGLWidgetScene->getViewports()[0] = pNewViewport;
-        pGLWidgetScene->getViewports()[0]->setSize(vMapSize);
-        pGLWidgetScene->getViewports()[0]->setCamera(QSP<CCamera>(this));
-        pGLWidgetScene->getViewports()[0]->setEnabled(true);
+        pGLWidgetScene->viewports()[0] = pNewViewport;
+        pGLWidgetScene->viewports()[0]->setSize(vMapSize);
+        pGLWidgetScene->viewports()[0]->setCamera(QSP<CCamera>(this));
+        pGLWidgetScene->viewports()[0]->setEnabled(true);
         pGLWidgetScene->setDepthComputing(true);
         pGLWidgetScene->setShaderQuality(0.0);
         pGLWidgetScene->updateScene(1.0);
@@ -704,7 +704,7 @@ void CCamera::renderDepth_CubeMapped
 
         // Restauration des réglages de la scène
         pGLWidgetScene->setGeometry(rOldGeometry);
-        pGLWidgetScene->getViewports()[0] = pOldViewport;
+        pGLWidgetScene->viewports()[0] = pOldViewport;
         pGLWidgetScene->setDepthComputing(false);
         pGLWidgetScene->setShaderQuality(0.5);
 

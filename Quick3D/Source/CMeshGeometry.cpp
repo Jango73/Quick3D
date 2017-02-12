@@ -61,7 +61,7 @@ void CMeshGeometry::setMaterial(QSP<CMaterial> pMaterial)
 {
     deleteMaterials();
 
-    m_vMaterials.append(m_pScene->getRessourcesManager()->shareMaterial(pMaterial));
+    m_vMaterials.append(m_pScene->ressourcesManager()->shareMaterial(pMaterial));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -232,7 +232,7 @@ void CMeshGeometry::checkAndUpdateGeometry()
                         }
                         else
                         {
-                            pGLMeshData->m_iNumRenderIndices = getNumTriangleCountForFaces(vFaceIndices) * 3;
+                            pGLMeshData->m_iNumRenderIndices = triangleCountForFaces(vFaceIndices) * 3;
                         }
 
                         if (pGLMeshData->m_iNumRenderPoints > 0 && pGLMeshData->m_iNumRenderIndices > 0)
@@ -535,7 +535,7 @@ void CMeshGeometry::flipNormals()
 
 //-------------------------------------------------------------------------------------------------
 
-int CMeshGeometry::getNumTriangleCount()
+int CMeshGeometry::triangleCount()
 {
     int iNumTriangles = 0;
 
@@ -552,7 +552,7 @@ int CMeshGeometry::getNumTriangleCount()
 
 //-------------------------------------------------------------------------------------------------
 
-int CMeshGeometry::getNumTriangleCountForFaces(const QVector<int>& vFaceIndices)
+int CMeshGeometry::triangleCountForFaces(const QVector<int>& vFaceIndices)
 {
     int iNumTriangles = 0;
 
@@ -1589,9 +1589,9 @@ void CMeshGeometry::paint(CRenderContext* pContext, CComponent* pContainer)
     {
         bool bFrustumCheck = false;
 
-        if (pContainer != NULL && pContext->scene()->getFrustumCheck())
+        if (pContainer != NULL && pContext->scene()->frustumCheck())
         {
-            CBoundingBox bWorldBounds = pContainer->getWorldBounds();
+            CBoundingBox bWorldBounds = pContainer->worldBounds();
             CVector3 vPosition = pContext->internalCameraMatrix() * bWorldBounds.center();
             double dRadius = bWorldBounds.radius();
 
@@ -1633,7 +1633,7 @@ void CMeshGeometry::paint(CRenderContext* pContext, CComponent* pContainer)
                     if (pContainer != NULL)
                     {
                         // Set transform matrix
-                        CVector3 WorldPosition = pContainer->getWorldPosition() - pContext->scene()->getWorldOrigin();
+                        CVector3 WorldPosition = pContainer->getWorldPosition() - pContext->scene()->worldOrigin();
                         CVector3 WorldRotation = pContainer->getWorldRotation();
                         CVector3 WorldScale = pContainer->getWorldScale();
 

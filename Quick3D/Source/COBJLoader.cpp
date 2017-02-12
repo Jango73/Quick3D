@@ -42,8 +42,8 @@ QSP<CMeshGeometry> COBJLoader::load(const QString& sBaseFile, CComponent *pConta
 
     QSP<CMeshGeometry> pMesh = QSP<CMeshGeometry>(new CMeshGeometry(pContainer->getScene()));
 
-    pMesh->getFaces().clear();
-    pMesh->getVertices().clear();
+    pMesh->faces().clear();
+    pMesh->vertices().clear();
 
     int iSmoothingGroup = 0;
     int iMaterialIndex = 0;
@@ -73,7 +73,7 @@ QSP<CMeshGeometry> COBJLoader::load(const QString& sBaseFile, CComponent *pConta
                                 sBaseFile,
                                 pContainer->getScene(),
                                 pMesh.data(),
-                                pContainer->getScene()->getRessourcesManager()->getObjByFilePathName(sMaterialFileName)
+                                pContainer->getScene()->ressourcesManager()->getObjByFilePathName(sMaterialFileName)
                                 );
                 }
                 else if (sFirstWord == "o" && lWords.count() > 1)
@@ -84,9 +84,9 @@ QSP<CMeshGeometry> COBJLoader::load(const QString& sBaseFile, CComponent *pConta
                 {
                     QString sMaterialName = lWords.at(1);
 
-                    for (int iIndex = 0; iIndex < pMesh->getMaterials().count(); iIndex++)
+                    for (int iIndex = 0; iIndex < pMesh->materials().count(); iIndex++)
                     {
-                        if (pMesh->getMaterials()[iIndex]->getName() == sMaterialName)
+                        if (pMesh->materials()[iIndex]->name() == sMaterialName)
                         {
                             iMaterialIndex = iIndex;
                         }
@@ -98,7 +98,7 @@ QSP<CMeshGeometry> COBJLoader::load(const QString& sBaseFile, CComponent *pConta
                     double y = lWords.at(3).toDouble();
                     double z = lWords.at(2).toDouble();
 
-                    pMesh->getVertices().append(CVertex(CVector3(x, y, z), CVector2()));
+                    pMesh->vertices().append(CVertex(CVector3(x, y, z), CVector2()));
                 }
                 else if (sFirstWord == TOKEN_vertex_normal && lWords.count() > 3)
                 {
@@ -160,12 +160,12 @@ QSP<CMeshGeometry> COBJLoader::load(const QString& sBaseFile, CComponent *pConta
 
                             if (iTextureIndex > 0 && iTextureIndex < vTextureVertices.count())
                             {
-                                pMesh->getVertices()[iPositionIndex].texCoord() = vTextureVertices[iTextureIndex];
+                                pMesh->vertices()[iPositionIndex].texCoord() = vTextureVertices[iTextureIndex];
                             }
                         }
                     }
 
-                    pMesh->getFaces().append(NewFace);
+                    pMesh->faces().append(NewFace);
                 }
             }
         }
@@ -208,7 +208,7 @@ void COBJLoader::loadMaterials(const QString& sBaseFile, C3DScene* pScene, CMesh
                 {
                     pMaterial = new CMaterial(pScene, lWords.at(1));
 
-                    pMesh->getMaterials().append(pScene->getRessourcesManager()->shareMaterial(QSP<CMaterial>(pMaterial)));
+                    pMesh->materials().append(pScene->ressourcesManager()->shareMaterial(QSP<CMaterial>(pMaterial)));
                 }
                 else if (sFirstWord == TOKEN_material_ambient && lWords.count() > 3)
                 {
@@ -217,9 +217,9 @@ void COBJLoader::loadMaterials(const QString& sBaseFile, C3DScene* pScene, CMesh
 
                     if (pMaterial != NULL)
                     {
-                        pMaterial->getAmbient().X = lWords.at(1).toDouble();
-                        pMaterial->getAmbient().Y = lWords.at(2).toDouble();
-                        pMaterial->getAmbient().Z = lWords.at(3).toDouble();
+                        pMaterial->ambient().X = lWords.at(1).toDouble();
+                        pMaterial->ambient().Y = lWords.at(2).toDouble();
+                        pMaterial->ambient().Z = lWords.at(3).toDouble();
                     }
                 }
                 else if (sFirstWord == TOKEN_material_diffuse && lWords.count() > 3)
@@ -229,9 +229,9 @@ void COBJLoader::loadMaterials(const QString& sBaseFile, C3DScene* pScene, CMesh
 
                     if (pMaterial != NULL)
                     {
-                        pMaterial->getDiffuse().X = lWords.at(1).toDouble();
-                        pMaterial->getDiffuse().Y = lWords.at(2).toDouble();
-                        pMaterial->getDiffuse().Z = lWords.at(3).toDouble();
+                        pMaterial->diffuse().X = lWords.at(1).toDouble();
+                        pMaterial->diffuse().Y = lWords.at(2).toDouble();
+                        pMaterial->diffuse().Z = lWords.at(3).toDouble();
                     }
                 }
                 else if (sFirstWord == TOKEN_material_specular && lWords.count() > 3)
@@ -241,9 +241,9 @@ void COBJLoader::loadMaterials(const QString& sBaseFile, C3DScene* pScene, CMesh
 
                     if (pMaterial != NULL)
                     {
-                        pMaterial->getSpecular().X = lWords.at(1).toDouble();
-                        pMaterial->getSpecular().Y = lWords.at(2).toDouble();
-                        pMaterial->getSpecular().Z = lWords.at(3).toDouble();
+                        pMaterial->specular().X = lWords.at(1).toDouble();
+                        pMaterial->specular().Y = lWords.at(2).toDouble();
+                        pMaterial->specular().Z = lWords.at(3).toDouble();
                     }
                 }
                 else if (sFirstWord == TOKEN_material_emission && lWords.count() > 3)

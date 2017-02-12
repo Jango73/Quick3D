@@ -126,7 +126,7 @@ void CWing::update(double dDeltaTime)
         aRotationAxis = aRotationAxis.rotate(CVector3(m_dWingAngle_rad, 0.0, 0.0));
         aRotationAxis = aRotationAxis.rotate(pAircraft->getOriginRotation());
 
-        CAxis aVelocityAxis(euleurAngles(pAircraft->getVelocity_ms()));
+        CAxis aVelocityAxis(euleurAngles(pAircraft->velocity_ms()));
 
         aVelocityAxis = aVelocityAxis.transferFrom(aRotationAxis);
 
@@ -134,9 +134,9 @@ void CWing::update(double dDeltaTime)
         double dDotBodyAirflowCorrected = m_iBodyAirflowDotLiftFactor.getValue(dDotBodyAirflow);
         double dDotBodyAirflowAileronCorrected = m_iBodyAirflowDotAileronLiftFactor.getValue(dDotBodyAirflow);
 
-        double dAirDragFactor = CAtmosphere::getInstance()->getAirDragFactor(pAircraft->getGeoloc().Altitude);
-        double dVelocity = pAircraft->getVelocity_ms().getMagnitude();
-        double dTotalMass_kg = pAircraft->getTotalMass_kg();
+        double dAirDragFactor = CAtmosphere::getInstance()->airDragFactor(pAircraft->getGeoloc().Altitude);
+        double dVelocity = pAircraft->velocity_ms().getMagnitude();
+        double dTotalMass_kg = pAircraft->totalMass_kg();
         double dMassMultiplier = sqrt(dTotalMass_kg);					// 245
         double dAreaOnMass = m_dArea_m2 / dMassMultiplier;				// 0.32
         double dLift = dVelocity * dAreaOnMass;							// 200 kts = 32

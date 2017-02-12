@@ -95,37 +95,37 @@ public:
     virtual QString getClassName() const { return ClassName_CMaterial; }
 
     //! Retourne le nom du matériau
-    QString getName() const { return m_sName; }
+    QString name() const { return m_sName; }
 
     //! Retourne la couleur ambiente
-    Math::Vector4& getAmbient() { return m_cAmbient; }
+    Math::Vector4& ambient() { return m_cAmbient; }
 
     //! Retourne la couleur diffuse
-    Math::Vector4& getDiffuse() { return m_cDiffuse; }
+    Math::Vector4& diffuse() { return m_cDiffuse; }
 
     //! Retourne la couleur spéculaire
-    Math::Vector4& getSpecular() { return m_cSpecular; }
+    Math::Vector4& specular() { return m_cSpecular; }
 
     //! Retourne la couleur spéculaire
-    Math::Vector4& getSubdermal() { return m_cSubdermal; }
+    Math::Vector4& subdermal() { return m_cSubdermal; }
 
     //! Retourne le taux de rélection
-    double getReflection() const { return m_dReflection; }
+    double reflection() const { return m_dReflection; }
 
     //! Retourne le taux de reflectance IR
-    double getIRFactor() const { return m_dIRFactor; }
+    double IRFactor() const { return m_dIRFactor; }
 
     //! Est-ce un matériau de ciel?
-    bool getUseSky() const { return m_bUseSky; }
+    bool useSky() const { return m_bUseSky; }
 
     //!
     bool hasAlpha() const;
 
     //!
-    QVector<CTexture*>& getDiffuseTextures() { return m_vDiffuseTextures; }
+    QVector<CTexture*>& diffuseTextures() { return m_vDiffuseTextures; }
 
     //! Retourne des coordonnées de texture pour une géolocalisation donnée
-    virtual Math::CVector2 getTexCoords(const CGeoloc& gPosition, int iLevel);
+    virtual Math::CVector2 texCoords(const CGeoloc& gPosition, int iLevel);
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes héritées

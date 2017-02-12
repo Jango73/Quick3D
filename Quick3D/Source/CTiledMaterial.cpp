@@ -41,7 +41,7 @@ void CTiledMaterial::onTileReady(QString sTileName)
 
 //-------------------------------------------------------------------------------------------------
 
-CVector2 CTiledMaterial::getTexCoords(const CGeoloc& gPosition, int iLevel)
+CVector2 CTiledMaterial::texCoords(const CGeoloc& gPosition, int iLevel)
 {
     double dX = gPosition.Longitude / 180.0;
     double dY = gPosition.Latitude / 90.0;

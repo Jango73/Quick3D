@@ -45,16 +45,16 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Retourne la cible (translation ou rotation)
-    Math::CVector3 getTarget() const { return m_vTarget; }
+    Math::CVector3 target() const { return m_vTarget; }
 
     //! Retourne la vitesse (translation ou rotation)
-    Math::CVector3 getSpeed() const { return m_vSpeed; }
+    Math::CVector3 speed() const { return m_vSpeed; }
 
     //! Retourne l'accélération (translation ou rotation)
-    Math::CVector3 getAcceleration() const { return m_vAcceleration; }
+    Math::CVector3 acceleration() const { return m_vAcceleration; }
 
     //! Retourne la durée en secondes
-    double getDuration() const { return m_dDuration; }
+    double duration() const { return m_dDuration; }
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes de contrôle

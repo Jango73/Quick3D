@@ -133,49 +133,49 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    QString getURL() const { return m_sURL; }
+    QString url() const { return m_sURL; }
 
     //!
-    QVector<CVertex>& getVertices() { return m_vVertices; }
+    QVector<CVertex>& vertices() { return m_vVertices; }
 
     //!
-    const QVector<CVertex>& getVertices() const { return m_vVertices; }
+    const QVector<CVertex>& vertices() const { return m_vVertices; }
 
     //!
-    QVector<CFace>& getFaces() { return m_vFaces; }
+    QVector<CFace>& faces() { return m_vFaces; }
 
     //!
-    const QVector<CFace>& getFaces() const { return m_vFaces; }
+    const QVector<CFace>& faces() const { return m_vFaces; }
 
     //!
-    QVector<CVertexGroup>& getVertexGroups() { return m_vVertexGroups; }
+    QVector<CVertexGroup>& vertexGroups() { return m_vVertexGroups; }
 
     //!
-    const QVector<CVertexGroup>& getVertexGroups() const { return m_vVertexGroups; }
+    const QVector<CVertexGroup>& vertexGroups() const { return m_vVertexGroups; }
 
     //!
-    const QVector<QSP<CMaterial> >& getMaterials() const { return m_vMaterials; }
+    const QVector<QSP<CMaterial> >& materials() const { return m_vMaterials; }
 
     //!
-    QVector<QSP<CMaterial> >& getMaterials() { return m_vMaterials; }
+    QVector<QSP<CMaterial> >& materials() { return m_vMaterials; }
 
     //!
-    QMap<QString, QString>& getDynTexUpdaters() { return m_mDynTexUpdaters; }
+    QMap<QString, QString>& dynTexUpdaters() { return m_mDynTexUpdaters; }
 
     //!
-    const QMap<QString, QString>& getDynTexUpdaters() const { return m_mDynTexUpdaters; }
+    const QMap<QString, QString>& dynTexUpdaters() const { return m_mDynTexUpdaters; }
 
     //!
-    double getMaxDistance() const { return m_dMaxDistance; }
+    double maxDistance() const { return m_dMaxDistance; }
 
     //!
-    QVector<CGLMeshData*>& getGLMeshData() { return m_vGLMeshData; }
+    QVector<CGLMeshData*>& glMeshData() { return m_vGLMeshData; }
 
     //! Return number of triangles needed for this mesh
-    int getNumTriangleCount();
+    int triangleCount();
 
     //!
-    int getNumTriangleCountForFaces(const QVector<int>& vFaceIndices);
+    int triangleCountForFaces(const QVector<int>& vFaceIndices);
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes héritées

@@ -41,21 +41,21 @@ void CEngine::setCurrentFuelFlow_norm(double value)
 
 //-------------------------------------------------------------------------------------------------
 
-double CEngine::getCurrentFuelFlow_norm() const
+double CEngine::currentFuelFlow_norm() const
 {
     return m_dFuelFlow_norm;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-double CEngine::getCurrentThrust_kg() const
+double CEngine::currentThrust_kg() const
 {
     return m_dFuelFlow_norm * 100.0;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-double CEngine::getCurrentFuelCons_ls() const
+double CEngine::currentFuelCons_ls() const
 {
     return m_dFuelFlow_norm * 0.01;
 }
@@ -85,9 +85,9 @@ void CEngine::update(double dDeltaTime)
 
     if (pPhysical)
     {
-        double dAirFactor = CAtmosphere::getInstance()->getAirDragFactor(pPhysical->getGeoloc().Altitude);
+        double dAirFactor = CAtmosphere::getInstance()->airDragFactor(pPhysical->getGeoloc().Altitude);
         dAirFactor = Math::Angles::clipDouble((dAirFactor * 2.0) * 40.0, 0.0, 40.0);
-        double dCurrentThrust_kg = getCurrentThrust_kg() * dAirFactor;
+        double dCurrentThrust_kg = currentThrust_kg() * dAirFactor;
 
         pPhysical->addUncenteredLocalForce_kg(getOriginPosition(), CVector3(0.0, 0.0, dCurrentThrust_kg));
     }

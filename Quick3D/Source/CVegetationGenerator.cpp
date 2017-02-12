@@ -90,7 +90,7 @@ void CVegetationGenerator::loadParameters(const QString& sBaseFile, CXMLNode xVe
         {
             CMesh* pMesh = new CMesh(m_pScene);
 
-            CMeshGeometry* pMeshGeometry = m_pScene->getTreeGenerator()->createTree(
+            CMeshGeometry* pMeshGeometry = m_pScene->treeGenerator()->createTree(
                         iLODLevel,
                         vNoisePosition,
                         iLevels,
@@ -148,7 +148,7 @@ void CVegetationGenerator::generate(QSP<CWorldChunk> pChunk)
     {
         QSP<CVegetation> pVegetation = m_vVegetation[iVegetIndex];
 
-        double dSpread = pVegetation->m_dSpread * ((double) pChunk->getTerrain()->getLevel() + 1.0);
+        double dSpread = pVegetation->m_dSpread * ((double) pChunk->getTerrain()->level() + 1.0);
         double dAltitude_Trees = 10.0;
 
         CGeoloc gStart(pChunk->getGeoloc().Latitude - pChunk->getSize().Latitude * 0.5, pChunk->getGeoloc().Longitude - pChunk->getSize().Longitude * 0.5, 0.0);
@@ -233,7 +233,7 @@ void CVegetationGenerator::placeTree(QSP<CWorldChunk> pChunk, CGeoloc gPosition,
 
             foreach (CBoundedMeshInstances* pBounded, pChunk->meshes())
             {
-                if (pBounded->getWorldBounds().contains(gPosition, dRadius))
+                if (pBounded->worldBounds().contains(gPosition, dRadius))
                 {
                     pBounded->add(pMeshInstance);
                     return;
@@ -251,7 +251,7 @@ void CVegetationGenerator::placeBush(QSP<CWorldChunk> pChunk, CGeoloc gPosition,
 {
     if (m_vVegetation[iVegetIndex]->m_pMaterial)
     {
-        QString sMaterialName = m_vVegetation[iVegetIndex]->m_pMaterial->getName();
+        QString sMaterialName = m_vVegetation[iVegetIndex]->m_pMaterial->name();
 
         if (sMaterialName.isEmpty() == false)
         {
@@ -270,7 +270,7 @@ void CVegetationGenerator::placeBush(QSP<CWorldChunk> pChunk, CGeoloc gPosition,
 
             CVertex newVertex(vPosition);
             newVertex.setNormal(vGeocentricPosition.Normalize());
-            pChunk->bushMeshes()[sMaterialName]->getVertices().append(newVertex);
+            pChunk->bushMeshes()[sMaterialName]->vertices().append(newVertex);
         }
     }
 }

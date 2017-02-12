@@ -425,6 +425,6 @@ void CStandardController::q3dEvent(CQ3DEvent* event)
     }
     else if (event->getName() == Q3DEvent_ToggleEdit && event->getAction() == CQ3DEvent::Press)
     {
-        m_pScene->setEditMode(!m_pScene->getEditMode());
+        m_pScene->setEditMode(!m_pScene->editMode());
     }
 }

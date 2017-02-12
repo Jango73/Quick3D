@@ -16,11 +16,11 @@ using namespace Math;
 CRain::CRain(C3DScene* pScene)
     : CParticleSystem(pScene)
 {
-    m_pGeometry->setMaterial(m_pScene->getRessourcesManager()->getDefaultMaterial());
-    m_pGeometry->getMaterials()[0]->getDiffuse() = Vector4(0.8, 0.8, 1.0, 0.4);
-    m_pGeometry->getMaterials()[0]->getSpecular() = Vector4(0.4, 0.4, 0.4, 1.0);
-    m_pGeometry->getMaterials()[0]->setShininess(0.8);
-    m_pGeometry->getMaterials()[0]->setIRFactor(0.4);
+    m_pGeometry->setMaterial(m_pScene->ressourcesManager()->getDefaultMaterial());
+    m_pGeometry->materials()[0]->diffuse() = Vector4(0.8, 0.8, 1.0, 0.4);
+    m_pGeometry->materials()[0]->specular() = Vector4(0.4, 0.4, 0.4, 1.0);
+    m_pGeometry->materials()[0]->setShininess(0.8);
+    m_pGeometry->materials()[0]->setIRFactor(0.4);
 }
 
 //-------------------------------------------------------------------------------------------------

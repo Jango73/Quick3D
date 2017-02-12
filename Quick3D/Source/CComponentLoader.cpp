@@ -74,17 +74,17 @@ QVector<QSP<CComponent> > CComponentLoader::load(const QString& sBaseFile, C3DSc
 
         if (pCamera1Found && pCamera1Found->isCamera())
         {
-            if (pScene->getViewports().contains(0))
+            if (pScene->viewports().contains(0))
             {
-                pScene->getViewports()[0]->setCamera(QSP_CAST(CCamera, pCamera1Found));
+                pScene->viewports()[0]->setCamera(QSP_CAST(CCamera, pCamera1Found));
             }
         }
 
         if (pCamera2Found && pCamera2Found->isCamera())
         {
-            if (pScene->getViewports().contains(1))
+            if (pScene->viewports().contains(1))
             {
-                pScene->getViewports()[1]->setCamera(QSP_CAST(CCamera, pCamera2Found));
+                pScene->viewports()[1]->setCamera(QSP_CAST(CCamera, pCamera2Found));
             }
         }
 
@@ -122,12 +122,12 @@ CComponent* CComponentLoader::loadComponent(const QString& sBaseFile, C3DScene* 
     {
         if (pParent != NULL)
         {
-            pComponent->setParentName(pParent->getName());
+            pComponent->setParentName(pParent->name());
         }
 
         pComponent->loadParameters(sBaseFile, xComponent);
 
-        LOG_DEBUG(QString("... Adding component %1").arg(pComponent->getName()));
+        LOG_DEBUG(QString("... Adding component %1").arg(pComponent->name()));
 
         // Chargement des composants enfants
 

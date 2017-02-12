@@ -13,8 +13,8 @@ CSphere::CSphere(C3DScene* pScene, double dMaxDistance, int iNumSegments)
 {
     setName("Sphere");
 
-    m_pGeometry->setMaterial(m_pScene->getRessourcesManager()->getDefaultMaterial());
-    m_pGeometry->getMaterials()[0]->setIRFactor(0.4);
+    m_pGeometry->setMaterial(m_pScene->ressourcesManager()->getDefaultMaterial());
+    m_pGeometry->materials()[0]->setIRFactor(0.4);
 
     m_pGeometry->createSphere(iNumSegments);
 }

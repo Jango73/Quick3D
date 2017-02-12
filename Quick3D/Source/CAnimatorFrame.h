@@ -34,10 +34,10 @@ public:
 	//-------------------------------------------------------------------------------------------------
 
 	//! Retourne une référence sur la liste de pas
-	QVector<CBasicAnimationStep>& getSteps() { return m_vSteps; }
+    QVector<CBasicAnimationStep>& steps() { return m_vSteps; }
 
 	//! Retourne une référence sur la liste de pas
-	const QVector<CBasicAnimationStep>& getSteps() const { return m_vSteps; }
+    const QVector<CBasicAnimationStep>& steps() const { return m_vSteps; }
 
 	//-------------------------------------------------------------------------------------------------
 	// Méthodes de contrôle

@@ -57,7 +57,7 @@ CMaterial::~CMaterial()
 
 //-------------------------------------------------------------------------------------------------
 
-Math::CVector2 CMaterial::getTexCoords(const CGeoloc& gPosition, int iLevel)
+Math::CVector2 CMaterial::texCoords(const CGeoloc& gPosition, int iLevel)
 {
     return CVector2(
                 fmod(gPosition.Latitude * 111000.0, 1000.0) * 0.05,
@@ -150,7 +150,7 @@ void CMaterial::update(double dDeltaTime)
 
 void CMaterial::addDiffuseTexture(const QString& sBaseFile, const QString& sResourceName)
 {
-    QString sFinalResource = m_pScene->getRessourcesManager()->locateResource(sBaseFile, sResourceName);
+    QString sFinalResource = m_pScene->ressourcesManager()->locateResource(sBaseFile, sResourceName);
 
     if (sFinalResource.isEmpty() == false)
     {
@@ -173,7 +173,7 @@ void CMaterial::addDiffuseTexture(const QString& sName, const QImage& imgTexture
 
 void CMaterial::addDynamicDiffuseTexture(const QString& sBaseFile, const QString& sResourceName)
 {
-    QString sFinalResource = m_pScene->getRessourcesManager()->locateResource(sBaseFile, sResourceName);
+    QString sFinalResource = m_pScene->ressourcesManager()->locateResource(sBaseFile, sResourceName);
 
     if (sFinalResource.isEmpty() == false)
     {
@@ -198,7 +198,7 @@ void CMaterial::addDynamicDiffuseTexture(const QString& sName, const QImage& img
 
 void CMaterial::createShadowTexture()
 {
-    if (m_pScene->getForDisplay())
+    if (m_pScene->forDisplay())
     {
         m_pScene->makeCurrentRenderingContext();
 
@@ -248,15 +248,15 @@ QGLShaderProgram* CMaterial::activate(CRenderContext* pContext)
 
     if (m_bBillBoard)
     {
-        pProgram = pContext->scene()->getShaders()->getShader(SP_Standard_Billboard);
+        pProgram = pContext->scene()->shaders()->getShader(SP_Standard_Billboard);
     }
     else if (m_bLines)
     {
-        pProgram = pContext->scene()->getShaders()->getShader(SP_Special_Lines);
+        pProgram = pContext->scene()->shaders()->getShader(SP_Special_Lines);
     }
     else
     {
-        pProgram = pContext->scene()->getShaders()->getShader(SP_Standard_Mesh);
+        pProgram = pContext->scene()->shaders()->getShader(SP_Standard_Mesh);
     }
 
     if (pProgram != NULL)

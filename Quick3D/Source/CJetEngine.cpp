@@ -30,30 +30,30 @@ CJetEngine::~CJetEngine()
 
 //-------------------------------------------------------------------------------------------------
 
-double CJetEngine::getCurrentThrust_kg() const
+double CJetEngine::currentThrust_kg() const
 {
     // return m_dN1.getPosition() * m_dMaxThrust_kg;
-    double dFactor = Math::Angles::clipDouble((m_dN1.getPosition() - 0.5) * 2.0, 0.0, 1.0);
+    double dFactor = Math::Angles::clipDouble((m_dN1.position() - 0.5) * 2.0, 0.0, 1.0);
     return dFactor * m_dMaxThrust_kg;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-double CJetEngine::getCurrentFuelCons_ls() const
+double CJetEngine::currentFuelCons_ls() const
 {
     return m_dFuelFlow_norm * 0.01;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-double CJetEngine::getN1_norm() const
+double CJetEngine::n1_norm() const
 {
-    return m_dN1.getPosition();
+    return m_dN1.position();
 }
 
 //-------------------------------------------------------------------------------------------------
 
-double CJetEngine::getN2_norm() const
+double CJetEngine::n2_norm() const
 {
     return m_dN2_norm;
 }
@@ -68,8 +68,8 @@ void CJetEngine::update(double dDeltaTime)
     LOG_VALUE(QString("%1 FF / N1 / THT KG").arg(m_sName),
               QString("%1 / %2 / %3")
               .arg(QString::number(m_dFuelFlow_norm, 'f', 4))
-              .arg(QString::number(m_dN1.getPosition(), 'f', 4))
-              .arg(QString::number(getCurrentThrust_kg(), 'f', 2))
+              .arg(QString::number(m_dN1.position(), 'f', 4))
+              .arg(QString::number(currentThrust_kg(), 'f', 2))
               );
 
     CEngine::update(dDeltaTime);

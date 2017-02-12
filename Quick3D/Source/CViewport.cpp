@@ -49,18 +49,18 @@ void CViewport::update(double dDeltaTime)
 {
     if ((m_bStreamView && m_pServer != NULL) || m_bNeedFrameBuffer)
     {
-        if (m_pScene->getFrameBuffer().width() > 0 && m_pScene->getFrameBuffer().height() > 0)
+        if (m_pScene->frameBuffer().width() > 0 && m_pScene->frameBuffer().height() > 0)
         {
             QRect rect((int) m_vPosition.X, (int) m_vPosition.Y, (int) m_vSize.X, (int) m_vSize.Y);
 
             if (
                     m_vPosition.X >= 0.0 &&
                     m_vPosition.Y >= 0.0 &&
-                    m_vPosition.X + m_vSize.X <= m_pScene->getFrameBuffer().width() &&
-                    m_vPosition.Y + m_vSize.Y <= m_pScene->getFrameBuffer().height()
+                    m_vPosition.X + m_vSize.X <= m_pScene->frameBuffer().width() &&
+                    m_vPosition.Y + m_vSize.Y <= m_pScene->frameBuffer().height()
                     )
             {
-                m_imgFrameBuffer = createSubImage(m_pScene->getFrameBuffer(), rect).copy();
+                m_imgFrameBuffer = createSubImage(m_pScene->frameBuffer(), rect).copy();
 
                 if (m_imgFrameBuffer.width() > 0 && m_imgFrameBuffer.height() > 0)
                 {

@@ -33,19 +33,19 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Retourne une valeur de bruit pour une position donnée
-    double getNoise(Math::CVector3 pos);
+    double noise(Math::CVector3 pos);
 
     //! Retourne une valeur de bruit normalisée pour une position donnée
-    double getNoise_0_1(Math::CVector3 pos);
+    double noise_0_1(Math::CVector3 pos);
 
     //! Retourne une valeur de turbulence pour une position donnée
-    double getTurbulence(Math::CVector3 pos);
+    double turbulence(Math::CVector3 pos);
 
     //! Retourne une valeur d'érosion pour une position donnée
-    double getErosion(Math::CVector3 pos, Math::CAxis reference, double dDisplace);
+    double erosion(Math::CVector3 pos, Math::CAxis reference, double dDisplace);
 
     //! Retourne une valeur du pattern de Voronoi pour une position donnée
-    double getVoronoi(Math::CVector3 pos, Math::CAxis reference, double dDisplace);
+    double voronoi(Math::CVector3 pos, Math::CAxis reference, double dDisplace);
 
     //! Retourne une valeur de déplacement pour une position donnée
     Math::CVector3 displace(Math::CVector3 pos, double scale);

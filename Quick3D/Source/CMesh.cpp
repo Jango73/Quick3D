@@ -39,7 +39,7 @@ void CMesh::setGeometry(QSP<CMeshGeometry> pGeometry)
 
 //-------------------------------------------------------------------------------------------------
 
-CBoundingBox CMesh::getBounds()
+CBoundingBox CMesh::bounds()
 {
     if (m_pGeometry)
     {
@@ -51,7 +51,7 @@ CBoundingBox CMesh::getBounds()
 
 //-------------------------------------------------------------------------------------------------
 
-CBoundingBox CMesh::getWorldBounds()
+CBoundingBox CMesh::worldBounds()
 {
     if (m_pGeometry)
     {
@@ -91,13 +91,13 @@ void CMesh::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 
         if (sName != "")
         {
-            m_pGeometry = m_pScene->getRessourcesManager()->loadMesh(sBaseFile, sName, this);
+            m_pGeometry = m_pScene->ressourcesManager()->loadMesh(sBaseFile, sName, this);
 
             if (xIRNode.attributes()[ParamName_Factor].isEmpty() == false)
             {
-                if (m_pGeometry->getMaterials().count() > 0)
+                if (m_pGeometry->materials().count() > 0)
                 {
-                    m_pGeometry->getMaterials()[0]->setIRFactor(xIRNode.attributes()[ParamName_Factor].toDouble());
+                    m_pGeometry->materials()[0]->setIRFactor(xIRNode.attributes()[ParamName_Factor].toDouble());
                 }
             }
 
@@ -106,7 +106,7 @@ void CMesh::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
                 QString sTextureName = xDynTexNode.attributes()[ParamName_Name];
                 QString sUpdaterName = xDynTexNode.attributes()[ParamName_Updater];
 
-                m_pGeometry->getDynTexUpdaters()[sTextureName] = sUpdaterName;
+                m_pGeometry->dynTexUpdaters()[sTextureName] = sUpdaterName;
             }
         }
 
@@ -152,21 +152,21 @@ void CMesh::solveLinks(C3DScene* pScene)
 
     if (m_pGeometry)
     {
-        foreach (QString sTextureName, m_pGeometry->getDynTexUpdaters().keys())
+        foreach (QString sTextureName, m_pGeometry->dynTexUpdaters().keys())
         {
             bool bFound = false;
 
-            foreach (QSP<CComponent> pComponent, pScene->getComponents())
+            foreach (QSP<CComponent> pComponent, pScene->components())
             {
-                QString sUpdaterName = m_pGeometry->getDynTexUpdaters()[sTextureName];
+                QString sUpdaterName = m_pGeometry->dynTexUpdaters()[sTextureName];
 
                 QSP<CComponent> pFound = pComponent->findComponent(sUpdaterName, QSP<CComponent>(this));
 
                 if (pFound)
                 {
-                    foreach (QSP<CMaterial> pMaterial, m_pGeometry->getMaterials())
+                    foreach (QSP<CMaterial> pMaterial, m_pGeometry->materials())
                     {
-                        foreach (CTexture* pTexture, pMaterial->getDiffuseTextures())
+                        foreach (CTexture* pTexture, pMaterial->diffuseTextures())
                         {
                             if (pTexture->getName().contains(sTextureName))
                             {
@@ -189,7 +189,7 @@ void CMesh::solveLinks(C3DScene* pScene)
             }
         }
 
-        m_pGeometry->getDynTexUpdaters().clear();
+        m_pGeometry->dynTexUpdaters().clear();
     }
 }
 

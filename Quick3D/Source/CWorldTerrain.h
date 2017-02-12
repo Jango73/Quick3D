@@ -85,13 +85,13 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    CHeightField* getHeights() { return m_pHeights; }
+    CHeightField* heights() { return m_pHeights; }
 
     //!
-    int getLevels() const { return m_iLevels; }
+    int levels() const { return m_iLevels; }
 
     //!
-    CMaterial* getMaterial() { return m_pMaterial.data(); }
+    CMaterial* material() { return m_pMaterial.data(); }
 
     //!
     QVector<QSP<CComponent> >& generators() { return m_vGenerators; }

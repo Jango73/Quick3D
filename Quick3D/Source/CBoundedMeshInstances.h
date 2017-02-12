@@ -36,7 +36,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    const QVector<CMeshInstance*>& getMeshes() { return m_vMeshes; }
+    const QVector<CMeshInstance*>& meshes() { return m_vMeshes; }
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes héritées
@@ -46,10 +46,10 @@ public:
     virtual QString getClassName() const { return ClassName_CBoundedMeshInstances; }
 
     //!
-    virtual CBoundingBox getBounds();
+    virtual CBoundingBox bounds();
 
     //!
-    virtual CBoundingBox getWorldBounds();
+    virtual CBoundingBox worldBounds();
 
     //!
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;

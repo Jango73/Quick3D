@@ -104,7 +104,7 @@ static inline CVector3 neighbor_offset(double i)
 
 //-------------------------------------------------------------------------------------------------
 
-double CPerlin::getNoise(CVector3 pos)
+double CPerlin::noise(CVector3 pos)
 {
     CVector3 i = floor(pos);
     CVector3 f = fract(pos);
@@ -125,14 +125,14 @@ double CPerlin::getNoise(CVector3 pos)
 
 //-------------------------------------------------------------------------------------------------
 
-double CPerlin::getNoise_0_1(CVector3 pos)
+double CPerlin::noise_0_1(CVector3 pos)
 {
-    return (getNoise(pos) + 1.0) * 0.5;
+    return (noise(pos) + 1.0) * 0.5;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-double CPerlin::getTurbulence(CVector3 pos)
+double CPerlin::turbulence(CVector3 pos)
 {
     int octaves = 4;
     double f = 0.0;
@@ -140,7 +140,7 @@ double CPerlin::getTurbulence(CVector3 pos)
     for (int i = 0; i < octaves; i++)
     {
         pos = (CVector3(pos.Y, pos.Z, pos.X) + CVector3(pos.Z, pos.Y, pos.X) * CVector3(1.0, -1.0, 1.0)) / sqrt(2.0);
-        f = f * 2.0 + getNoise(pos);
+        f = f * 2.0 + noise(pos);
         pos = pos * 1.5;
     }
 
@@ -150,7 +150,7 @@ double CPerlin::getTurbulence(CVector3 pos)
 
 //-------------------------------------------------------------------------------------------------
 
-double CPerlin::getErosion(CVector3 pos, CAxis reference, double dDisplace)
+double CPerlin::erosion(CVector3 pos, CAxis reference, double dDisplace)
 {
     pos = displace(pos, dDisplace);
 
@@ -174,7 +174,7 @@ double CPerlin::getErosion(CVector3 pos, CAxis reference, double dDisplace)
 
 //-------------------------------------------------------------------------------------------------
 
-double CPerlin::getVoronoi(CVector3 pos, CAxis reference, double dDisplace)
+double CPerlin::voronoi(CVector3 pos, CAxis reference, double dDisplace)
 {
     CVector3 g = floor(pos);
     CVector3 f = fract(pos);
@@ -198,9 +198,9 @@ double CPerlin::getVoronoi(CVector3 pos, CAxis reference, double dDisplace)
 
 CVector3 CPerlin::displace(CVector3 pos, double scale)
 {
-    double dX = getTurbulence(CVector3(pos.X + scale, pos.Y, pos.Z));
-    double dY = getTurbulence(CVector3(pos.X, pos.Y + scale, pos.Z));
-    double dZ = getTurbulence(CVector3(pos.X, pos.Y, pos.Z + scale));
+    double dX = turbulence(CVector3(pos.X + scale, pos.Y, pos.Z));
+    double dY = turbulence(CVector3(pos.X, pos.Y + scale, pos.Z));
+    double dZ = turbulence(CVector3(pos.X, pos.Y, pos.Z + scale));
 
     return pos + CVector3(dX, dY, dZ) * (scale * 0.25);
 }

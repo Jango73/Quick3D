@@ -93,7 +93,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    const CElectricalLoad& getLoad() const { return m_tLoad; }
+    const CElectricalLoad& load() const { return m_tLoad; }
 
     //!
     bool isShortCircuited() const { return m_bShortCircuited; }

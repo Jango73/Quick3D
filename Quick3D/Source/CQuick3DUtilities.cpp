@@ -56,10 +56,10 @@ void CQuick3DUtilities::prepareSceneForMatrices_CubeMapped(CPanoramicMatrixParam
         m_pCMCamera->setGeoloc(CGeoloc(tParams.m_gCameraPosition.Latitude, tParams.m_gCameraPosition.Longitude, 0.0));
 
         // Création du viewport
-        m_pCMScene->getViewports()[0] = new CViewport(m_pCMScene);
-        m_pCMScene->getViewports()[0]->setSize(Math::CVector2(512, 512));
-        m_pCMScene->getViewports()[0]->setCamera(m_pCMCamera);
-        m_pCMScene->getViewports()[0]->setEnabled(true);
+        m_pCMScene->viewports()[0] = new CViewport(m_pCMScene);
+        m_pCMScene->viewports()[0]->setSize(Math::CVector2(512, 512));
+        m_pCMScene->viewports()[0]->setCamera(m_pCMCamera);
+        m_pCMScene->viewports()[0]->setEnabled(true);
 
         // Création du générateur de terrain
         m_pCMTerrain = QSP<CWorldTerrain>(new CWorldTerrain(m_pCMScene, tParams.m_gCameraPosition, m_pCMField, true));

@@ -34,7 +34,7 @@ CGLWidgetScene::CGLWidgetScene(bool bForDisplay)
         m_vShaders = new CShaderCollection();
 
         CMaterial* pMaterial = new CMaterial(this);
-        pMaterial->getDiffuse() = Vector4(1.0, 0.0, 0.0, 1.0);
+        pMaterial->diffuse() = Vector4(1.0, 0.0, 0.0, 1.0);
         pMaterial->setLines(true);
         m_pSegments->setMaterial(QSP<CMaterial>(pMaterial));
         m_pSegments->setGLType(GL_LINES);
@@ -153,9 +153,9 @@ void CGLWidgetScene::initShaders()
 
         pProgram = new QGLShaderProgram();
 
-        pProgram->addShaderFromSourceCode(QGLShader::Vertex, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/VS_Standard.c"));
-        pProgram->addShaderFromSourceCode(QGLShader::Geometry, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/GS_Standard_Triangle.c"));
-        pProgram->addShaderFromSourceCode(QGLShader::Fragment, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/FS_Standard.c"));
+        pProgram->addShaderFromSourceCode(QGLShader::Vertex, ressourcesManager()->getShaderByFilePathName(":/Resources/Shaders/VS_Standard.c"));
+        pProgram->addShaderFromSourceCode(QGLShader::Geometry, ressourcesManager()->getShaderByFilePathName(":/Resources/Shaders/GS_Standard_Triangle.c"));
+        pProgram->addShaderFromSourceCode(QGLShader::Fragment, ressourcesManager()->getShaderByFilePathName(":/Resources/Shaders/FS_Standard.c"));
 
         if (pProgram->link())
         {
@@ -171,9 +171,9 @@ void CGLWidgetScene::initShaders()
 
         pProgram = new QGLShaderProgram();
 
-        pProgram->addShaderFromSourceCode(QGLShader::Vertex, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/VS_Standard.c"));
-        pProgram->addShaderFromSourceCode(QGLShader::Geometry, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/GS_Standard_Billboard.c"));
-        pProgram->addShaderFromSourceCode(QGLShader::Fragment, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/FS_Standard.c"));
+        pProgram->addShaderFromSourceCode(QGLShader::Vertex, ressourcesManager()->getShaderByFilePathName(":/Resources/Shaders/VS_Standard.c"));
+        pProgram->addShaderFromSourceCode(QGLShader::Geometry, ressourcesManager()->getShaderByFilePathName(":/Resources/Shaders/GS_Standard_Billboard.c"));
+        pProgram->addShaderFromSourceCode(QGLShader::Fragment, ressourcesManager()->getShaderByFilePathName(":/Resources/Shaders/FS_Standard.c"));
 
         if (pProgram->link())
         {
@@ -189,9 +189,9 @@ void CGLWidgetScene::initShaders()
 
         pProgram = new QGLShaderProgram();
 
-        pProgram->addShaderFromSourceCode(QGLShader::Vertex, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/VS_Standard.c"));
-        pProgram->addShaderFromSourceCode(QGLShader::Geometry, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/GS_Standard_Line.c"));
-        pProgram->addShaderFromSourceCode(QGLShader::Fragment, getRessourcesManager()->getShaderByFilePathName(":/Resources/Shaders/FS_Special_Line.c"));
+        pProgram->addShaderFromSourceCode(QGLShader::Vertex, ressourcesManager()->getShaderByFilePathName(":/Resources/Shaders/VS_Standard.c"));
+        pProgram->addShaderFromSourceCode(QGLShader::Geometry, ressourcesManager()->getShaderByFilePathName(":/Resources/Shaders/GS_Standard_Line.c"));
+        pProgram->addShaderFromSourceCode(QGLShader::Fragment, ressourcesManager()->getShaderByFilePathName(":/Resources/Shaders/FS_Special_Line.c"));
 
         if (pProgram->link())
         {
@@ -318,8 +318,8 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
 
         m_dSunIntensity = Math::Angles::_max(m_dSunIntensity, 1.0 - dAtmosphereFactor);
 
-        QVector<QSP<CLight> > vLights = getLights();
-        QVector<QSP<CLight> > vSuns = getLightsByTag("SUN");
+        QVector<QSP<CLight> > vLights = lights();
+        QVector<QSP<CLight> > vSuns = lightsByTag("SUN");
 
         if (vSuns.count() > 0)
         {
@@ -327,11 +327,11 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
 
             if (pContext->camera()->getGeoloc().Altitude >= 0.0)
             {
-                vSuns[0]->getMaterial()->getDiffuse() = m_vSunColor.getValue(m_dSunIntensity);
+                vSuns[0]->material()->diffuse() = m_vSunColor.getValue(m_dSunIntensity);
             }
             else
             {
-                vSuns[0]->getMaterial()->getDiffuse() = Vector4(0.00, 0.25, 0.50, 1.00);
+                vSuns[0]->material()->diffuse() = Vector4(0.00, 0.25, 0.50, 1.00);
             }
         }
 
@@ -340,7 +340,7 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
 
         if (vSuns.count() > 0)
         {
-            Vector4 vColor = vSuns[0]->getMaterial()->getDiffuse();
+            Vector4 vColor = vSuns[0]->material()->diffuse();
             vSunColor = QVector3D(vColor.X, vColor.Y, vColor.Z);
         }
         else
@@ -352,7 +352,7 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
 
         for (int iLightIndex = 0; iLightIndex < vLights.count() && iOpenGLLightIndex < MAX_GL_LIGHTS; iLightIndex++)
         {
-            Vector4 vColor = vLights[iLightIndex]->getMaterial()->getDiffuse();
+            Vector4 vColor = vLights[iLightIndex]->material()->diffuse();
 
             if (vColor.X != 0.0 || vColor.Y != 0.0 || vColor.Z != 0.0)
             {
@@ -386,9 +386,9 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
                     u_light_direction[iOpenGLLightIndex]            = QVector3D(vWorldDirection.X, vWorldDirection.Y, vWorldDirection.Z);
                     u_light_color[iOpenGLLightIndex]                = QVector3D(vColor.X, vColor.Y, vColor.Z);
                     u_light_distance_to_camera[iOpenGLLightIndex]   = (GLfloat) vRelativePosition.length();
-                    u_light_distance[iOpenGLLightIndex]             = (GLfloat) vLights[iLightIndex]->getLightingDistance();
+                    u_light_distance[iOpenGLLightIndex]             = (GLfloat) vLights[iLightIndex]->lightingDistance();
                     u_light_spot_angle[iOpenGLLightIndex]           = (GLfloat) Math::Angles::toRad(vLights[iLightIndex]->getFOV());
-                    u_light_occlusion[iOpenGLLightIndex]            = (GLfloat) vLights[iLightIndex]->getOcclusion();
+                    u_light_occlusion[iOpenGLLightIndex]            = (GLfloat) vLights[iLightIndex]->occlusion();
 
                     iOpenGLLightIndex++;
                 }
@@ -406,7 +406,7 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
 
         if (vSuns.count() > 0 && vSuns[0]->castShadows())
         {
-            vSuns[0]->getMaterial()->activateShadow(pContext);
+            vSuns[0]->material()->activateShadow(pContext);
         }
 
         // Compute light occlusions
@@ -420,7 +420,7 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
 
 void CGLWidgetScene::computeLightsOcclusion(CRenderContext* pContext)
 {
-    QVector<QSP<CLight> > vLights = getLights();
+    QVector<QSP<CLight> > vLights = lights();
 
     foreach (QSP<CLight> pLight, vLights)
     {

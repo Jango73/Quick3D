@@ -85,19 +85,19 @@ public:
     bool isOK() const { return m_bOK; }
 
     //!
-    bool getAllHeightsOverSea() const { return m_bAllHeightsOverSea; }
+    bool allHeightsOverSea() const { return m_bAllHeightsOverSea; }
 
     //!
-    int getLevel() { return m_iLevel; }
+    int level() { return m_iLevel; }
 
     //!
-    CMeshGeometry* getMesh () { return m_pMesh; }
+    CMeshGeometry* mesh () { return m_pMesh; }
 
     //!
-    const CMeshGeometry* getMesh () const { return m_pMesh; }
+    const CMeshGeometry* mesh () const { return m_pMesh; }
 
     //!
-    static int getNumTerrains() { return m_iNumTerrains; }
+    static int numTerrains() { return m_iNumTerrains; }
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes héritées
@@ -107,10 +107,10 @@ public:
     virtual QString getClassName() const { return ClassName_CTerrain; }
 
     //!
-    virtual CBoundingBox getBounds();
+    virtual CBoundingBox bounds();
 
     //!
-    virtual CBoundingBox getWorldBounds();
+    virtual CBoundingBox worldBounds();
 
     //!
     virtual void paint(CRenderContext* pContext) Q_DECL_OVERRIDE;

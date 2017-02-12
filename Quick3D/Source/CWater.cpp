@@ -12,13 +12,13 @@ CWater::CWater(C3DScene* pScene, double dSize, int iIterations)
     : CMesh(pScene)
     , CHeightField(0.4)
 {
-    m_pGeometry->setMaterial(m_pScene->getRessourcesManager()->getWaterMaterial());
+    m_pGeometry->setMaterial(m_pScene->ressourcesManager()->getWaterMaterial());
 
     m_pGeometry->createCircularQuadPatch(CVector3(), iIterations);
 
-    for (int iIndex = 0; iIndex < m_pGeometry->getVertices().count(); iIndex++)
+    for (int iIndex = 0; iIndex < m_pGeometry->vertices().count(); iIndex++)
     {
-        m_pGeometry->getVertices()[iIndex].position() = m_pGeometry->getVertices()[iIndex].position() * dSize;
+        m_pGeometry->vertices()[iIndex].position() = m_pGeometry->vertices()[iIndex].position() * dSize;
     }
 
     m_pGeometry->setGeometryDirty(true);
@@ -63,9 +63,9 @@ double CWater::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 {
     if (pRigidness) *pRigidness = 0.0;
 
-    if (m_pGeometry->getMaterials().count() > 0)
+    if (m_pGeometry->materials().count() > 0)
     {
-        CWaterMaterial* pMat = dynamic_cast<CWaterMaterial*>(m_pGeometry->getMaterials()[0].data());
+        CWaterMaterial* pMat = dynamic_cast<CWaterMaterial*>(m_pGeometry->materials()[0].data());
 
         if (pRigidness) *pRigidness = 0.25;
 

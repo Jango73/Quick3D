@@ -114,8 +114,8 @@ void Quick3DTest::loadScene(QString sFileName)
 
     m_pScene->clear();
 
-    m_pScene->getViewports()[0] = new CViewport(m_pScene, true);
-    m_pScene->getViewports()[0]->setEnabled(true);
+    m_pScene->viewports()[0] = new CViewport(m_pScene, true);
+    m_pScene->viewports()[0]->setEnabled(true);
 
     //-----------------------------------------------
     // Chargement des composants
@@ -150,8 +150,8 @@ void Quick3DTest::onResize()
     {
         m_pView->setGeometry(0, 0, ui.Render1->width(), ui.Render1->height());
         m_pScene->setGeometry(0, 0, m_pView->width(), m_pView->height());
-        m_pScene->getViewports()[0]->setPosition(CVector2(0.0, 0.0));
-        m_pScene->getViewports()[0]->setSize(CVector2((double) ui.Render1->width(), (double) ui.Render1->height()));
+        m_pScene->viewports()[0]->setPosition(CVector2(0.0, 0.0));
+        m_pScene->viewports()[0]->setSize(CVector2((double) ui.Render1->width(), (double) ui.Render1->height()));
     }
 }
 
@@ -164,14 +164,14 @@ void Quick3DTest::fillObjectsCombo()
     ui.m_cbViews1->clear();
     ui.m_cbControllable->clear();
 
-    foreach (QSP<CComponent> pComponent, m_pScene->getComponents())
+    foreach (QSP<CComponent> pComponent, m_pScene->components())
     {
         fillCameraCombo(pComponent.data());
     }
 
     ui.m_cbViews1->setCurrentIndex(-1);
 
-    foreach (QSP<CComponent> pComponent, m_pScene->getComponents())
+    foreach (QSP<CComponent> pComponent, m_pScene->components())
     {
         fillControlableCombo(pComponent.data());
     }
@@ -262,22 +262,22 @@ void Quick3DTest::onTimer()
         CVector3 TorqueAcceleration;
         double dSpeedMS = 0.0;
 
-        if (m_pScene->getController() != NULL && m_pScene->getController()->getPositionTarget())
+        if (m_pScene->controller() != NULL && m_pScene->controller()->getPositionTarget())
         {
-            QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, m_pScene->getController()->getPositionTarget()->getRoot());
+            QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, m_pScene->controller()->getPositionTarget()->getRoot());
 
             if (pPhysical)
             {
                 ViewGeoloc = pPhysical->getGeoloc();
-                ControledVelocity = pPhysical->getVelocity_ms();
-                ControledTorque = pPhysical->getAngularVelocity_rs();
+                ControledVelocity = pPhysical->velocity_ms();
+                ControledTorque = pPhysical->angularVelocity_rs();
                 dSpeedMS = ControledVelocity.getMagnitude();
             }
         }
 
-        if (m_pScene->getController() != NULL && m_pScene->getController()->getRotationTarget())
+        if (m_pScene->controller() != NULL && m_pScene->controller()->getRotationTarget())
         {
-            QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, m_pScene->getController()->getPositionTarget()->getRoot());
+            QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, m_pScene->controller()->getPositionTarget()->getRoot());
 
             if (pPhysical)
             {
@@ -314,7 +314,7 @@ void Quick3DTest::onTimer()
                 .arg(m_pScene->m_tStatistics.m_iNumFrustumTests)
                 .arg(CComponent::getNumComponents())
                 .arg(CWorldChunk::getNumWorldChunks())
-                .arg(CTerrain::getNumTerrains())
+                .arg(CTerrain::numTerrains())
                 ;
 
         ui.m_lInfo->setText(sInfo);
@@ -354,7 +354,7 @@ void Quick3DTest::onExportTerrainClicked()
     {
         CWorldTerrain* pTerrain = NULL;
 
-        foreach (QSP<CComponent> pComponent, m_pScene->getComponents())
+        foreach (QSP<CComponent> pComponent, m_pScene->components())
         {
             if (pComponent->getClassName() == ClassName_CWorldTerrain)
             {
@@ -405,7 +405,7 @@ void Quick3DTest::onExportTerrainClicked()
 
                                 CGeoloc gPoint(gStart, Math::CVector3(dPointX, 0.0, dPointZ));
 
-                                double dAltitude = dHeightOffset + pTerrain->getHeights()->getHeightAt(gPoint);
+                                double dAltitude = dHeightOffset + pTerrain->heights()->getHeightAt(gPoint);
                                 if (dAltitude < 0.0) dAltitude = 0.0;
 
                                 if (dAltitude > dMaxAltitude) dMaxAltitude = dAltitude;
@@ -440,7 +440,7 @@ void Quick3DTest::onGenerateMatrixClicked()
 {
     CCamera* pCamera = NULL;
 
-    foreach (QSP<CComponent> pComponent, m_pScene->getComponents())
+    foreach (QSP<CComponent> pComponent, m_pScene->components())
     {
         if (pComponent->isCamera())
         {
@@ -557,7 +557,7 @@ void Quick3DTest::onShaderQualityChanged(int iValue)
 
 void Quick3DTest::onTerrainResChanged(int iValue)
 {
-    foreach (QSP<CComponent> pComponent, m_pScene->getComponents())
+    foreach (QSP<CComponent> pComponent, m_pScene->components())
     {
         if (pComponent->getClassName() == ClassName_CWorldTerrain)
         {
@@ -575,9 +575,9 @@ void Quick3DTest::onTerrainResChanged(int iValue)
 
 void Quick3DTest::onMoveSpeedChanged(int iValue)
 {
-    if (m_pScene->getController() != NULL)
+    if (m_pScene->controller() != NULL)
     {
-        m_pScene->getController()->setMoveSpeed((double) iValue / 100.0);
+        m_pScene->controller()->setMoveSpeed((double) iValue / 100.0);
     }
 }
 
@@ -613,7 +613,7 @@ void Quick3DTest::onIRClicked()
 
 void Quick3DTest::onStreamView1Clicked()
 {
-    m_pScene->getViewports()[0]->setStreamView(ui.m_chkStreamView1->checkState() == Qt::Checked);
+    m_pScene->viewports()[0]->setStreamView(ui.m_chkStreamView1->checkState() == Qt::Checked);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -622,13 +622,13 @@ void Quick3DTest::onViews1IndexChanged(const QString& sName)
 {
     if (m_bProcessEvents)
     {
-        foreach (QSP<CComponent> pComponent, m_pScene->getComponents())
+        foreach (QSP<CComponent> pComponent, m_pScene->components())
         {
             QSP<CComponent> pFound = pComponent->findComponent(sName);
 
             if (pFound && pFound->isCamera())
             {
-                m_pScene->getViewports()[0]->setCamera(QSP_CAST(CCamera, pFound));
+                m_pScene->viewports()[0]->setCamera(QSP_CAST(CCamera, pFound));
                 break;
             }
         }
@@ -641,7 +641,7 @@ void Quick3DTest::onControllableIndexChanged(const QString& sName)
 {
     if (m_bProcessEvents)
     {
-        foreach (QSP<CComponent> pComponent, m_pScene->getComponents())
+        foreach (QSP<CComponent> pComponent, m_pScene->components())
         {
             QSP<CComponent> pFound = pComponent->findComponent(sName);
 
@@ -658,7 +658,7 @@ void Quick3DTest::onControllableIndexChanged(const QString& sName)
 
 void Quick3DTest::onResetClicked()
 {
-    foreach (QSP<CComponent> pComponent, m_pScene->getComponents())
+    foreach (QSP<CComponent> pComponent, m_pScene->components())
     {
         if (pComponent->getClassName() == ClassName_CTerrestrialVehicle || pComponent->getClassName() == ClassName_CSeaVehicle)
         {

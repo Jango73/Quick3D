@@ -73,7 +73,7 @@ public:
     //!
     void solve(C3DScene* pScene, QSP<CComponent> pCaller)
     {
-        foreach (QSP<CComponent> pComponent, pScene->getComponents())
+        foreach (QSP<CComponent> pComponent, pScene->components())
         {
             QSP<CComponent> pFound = pComponent->findComponent(m_sName, pCaller);
 

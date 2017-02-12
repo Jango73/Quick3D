@@ -236,7 +236,7 @@ QSP<CComponent> CComponent::findComponent(QString sName, QSP<CComponent> pCaller
 
         if (lNames[0].isEmpty() && pCaller)
         {
-            lNames[0] = pCaller->getRoot()->getName();
+            lNames[0] = pCaller->getRoot()->name();
         }
 
         if (lNames[0] == m_sName)
@@ -725,7 +725,7 @@ void CComponent::postPaint(CRenderContext* pContext)
 /*!
     Returns the local bounds of the component.
 */
-CBoundingBox CComponent::getBounds()
+CBoundingBox CComponent::bounds()
 {
     // Sans géométrie, retourner une boite vide
 
@@ -737,7 +737,7 @@ CBoundingBox CComponent::getBounds()
 /*!
     Returns the world bounds of the component.
 */
-CBoundingBox CComponent::getWorldBounds()
+CBoundingBox CComponent::worldBounds()
 {
     // Sans géométrie, retourner une boite vide
 

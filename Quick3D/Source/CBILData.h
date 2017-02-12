@@ -64,25 +64,25 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Retourne le centre géolocalisé de la tuile
-    CGeoloc getGeoloc() const { return m_gGeoloc; }
+    CGeoloc geoloc() const { return m_gGeoloc; }
 
     //! Retourne la taille géolocalisée de la tuile
-    CGeoloc getSize() const { return m_gSize; }
+    CGeoloc size() const { return m_gSize; }
 
     //! Retourne l'altitude à la géolocalisation spécifiée
     double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);
 
     //! Retourne le nombre de cellules en largeur
-    int getNumCellsWidth() const { return m_iNumCellsWidth; }
+    int numCellsWidth() const { return m_iNumCellsWidth; }
 
     //! Retourne le nombre de cellules en hauteur
-    int getNumCellsHeight() const { return m_iNumCellsHeight; }
+    int numCellsHeight() const { return m_iNumCellsHeight; }
 
     //! Retourne les données d'élévation constantes
-    const qint16* getData() const { return m_vData; }
+    const qint16* data() const { return m_vData; }
 
     //! Retourne les données d'élévation
-    qint16* getData() { return m_vData; }
+    qint16* data() { return m_vData; }
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes de contrôle

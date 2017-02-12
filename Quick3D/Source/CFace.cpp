@@ -140,9 +140,9 @@ void CFace::computeNormal()
 
         if (m_vIndices.count() > 2)
         {
-            if (m_vIndices[0] < m_pParent->getVertices().count()) v1 = m_pParent->getVertices()[m_vIndices[0]];
-            if (m_vIndices[1] < m_pParent->getVertices().count()) v2 = m_pParent->getVertices()[m_vIndices[1]];
-            if (m_vIndices[2] < m_pParent->getVertices().count()) v3 = m_pParent->getVertices()[m_vIndices[2]];
+            if (m_vIndices[0] < m_pParent->vertices().count()) v1 = m_pParent->vertices()[m_vIndices[0]];
+            if (m_vIndices[1] < m_pParent->vertices().count()) v2 = m_pParent->vertices()[m_vIndices[1]];
+            if (m_vIndices[2] < m_pParent->vertices().count()) v3 = m_pParent->vertices()[m_vIndices[2]];
 
             CVector3 U = v3.position() - v1.position();
             CVector3 V = v2.position() - v1.position();

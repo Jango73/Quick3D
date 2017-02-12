@@ -127,7 +127,7 @@ void CAirbusFADEC::work(double dDeltaTime)
             pEngine2->setCurrentFuelFlow_norm(dThrottle_2_norm);
         }
 
-        pushData(CAirbusData(m_sName, adFADEC_Engine1_N1_norm, pEngine1->getN1_norm()));
-        pushData(CAirbusData(m_sName, adFADEC_Engine2_N1_norm, pEngine2->getN1_norm()));
+        pushData(CAirbusData(m_sName, adFADEC_Engine1_N1_norm, pEngine1->n1_norm()));
+        pushData(CAirbusData(m_sName, adFADEC_Engine2_N1_norm, pEngine2->n1_norm()));
     }
 }

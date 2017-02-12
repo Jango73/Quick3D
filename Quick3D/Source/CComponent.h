@@ -299,10 +299,10 @@ public:
     virtual void updateTexture(CTexture* pTexture, double dDeltaTime);
 
     //! Retourne la boite englobante locale
-    virtual CBoundingBox getBounds();
+    virtual CBoundingBox bounds();
 
     //! Retourne la boite englobante "monde"
-    virtual CBoundingBox getWorldBounds();
+    virtual CBoundingBox worldBounds();
 
     //! Calcul d'intersection avec un rayon
     virtual Math::RayTracingResult intersect(Math::CRay3 ray);

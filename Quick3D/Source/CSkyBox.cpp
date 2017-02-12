@@ -24,7 +24,7 @@ CSkyBox::CSkyBox(C3DScene* pScene)
 {
     setCastShadows(false);
     setRaytracable(false);
-    m_pGeometry->setMaterial(m_pScene->getRessourcesManager()->getSkyboxMaterial());
+    m_pGeometry->setMaterial(m_pScene->ressourcesManager()->getSkyboxMaterial());
     flipNormals();
 }
 

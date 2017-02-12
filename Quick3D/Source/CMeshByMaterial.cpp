@@ -27,12 +27,12 @@ CMeshByMaterial::~CMeshByMaterial()
 
 void CMeshByMaterial::addGeometry(CComponent* pContainer, CMeshGeometry* pGeometry)
 {
-    if (pGeometry->getGLMeshData().count() > 0 && pGeometry->getGLMeshData().count() == pGeometry->getMaterials().count())
+    if (pGeometry->glMeshData().count() > 0 && pGeometry->glMeshData().count() == pGeometry->materials().count())
     {
-        for (int iMaterialIndex = 0; iMaterialIndex < pGeometry->getMaterials().count(); iMaterialIndex++)
+        for (int iMaterialIndex = 0; iMaterialIndex < pGeometry->materials().count(); iMaterialIndex++)
         {
-            CGLMeshData* pData = pGeometry->getGLMeshData()[iMaterialIndex];
-            CMaterial* pMaterial = pGeometry->getMaterials()[iMaterialIndex].data();
+            CGLMeshData* pData = pGeometry->glMeshData()[iMaterialIndex];
+            CMaterial* pMaterial = pGeometry->materials()[iMaterialIndex].data();
 
             if (m_vGeometry.contains(pMaterial) == false)
             {
@@ -82,7 +82,7 @@ void CMeshByMaterial::paint(CRenderContext* pContext)
                 if (pContainer != NULL)
                 {
                     // Set transform matrix
-                    CVector3 WorldPosition = pContainer->getWorldPosition() - pContext->scene()->getWorldOrigin();
+                    CVector3 WorldPosition = pContainer->getWorldPosition() - pContext->scene()->worldOrigin();
                     CVector3 WorldRotation = pContainer->getWorldRotation();
                     CVector3 WorldScale = pContainer->getWorldScale();
 

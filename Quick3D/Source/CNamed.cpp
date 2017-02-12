@@ -26,7 +26,7 @@ void CNamed::setName(const QString& sName)
 
 //-------------------------------------------------------------------------------------------------
 
-const QString& CNamed::getName() const
+const QString& CNamed::name() const
 {
     return m_sName;
 }

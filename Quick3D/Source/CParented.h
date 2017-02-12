@@ -31,7 +31,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Retourne le nom du parent
-    virtual const QString& getParentName() const;
+    virtual const QString& parentName() const;
 
     //-------------------------------------------------------------------------------------------------
     // Propriétés

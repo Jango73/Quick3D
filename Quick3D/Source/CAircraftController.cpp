@@ -91,32 +91,32 @@ void CAircraftController::update(double dDeltaTime)
     {
         LOG_VALUE(QString("JOY X / Y / Z / R"),
                   QString("%1 / %2 / %3 / %4")
-                  .arg(QString::number(m_pJoystick->getAxisStates()[0], 'f', 2))
-                .arg(QString::number(m_pJoystick->getAxisStates()[1], 'f', 2))
-                .arg(QString::number(m_pJoystick->getAxisStates()[2], 'f', 2))
-                .arg(QString::number(m_pJoystick->getAxisStates()[3], 'f', 2))
+                  .arg(QString::number(m_pJoystick->axisStates()[0], 'f', 2))
+                .arg(QString::number(m_pJoystick->axisStates()[1], 'f', 2))
+                .arg(QString::number(m_pJoystick->axisStates()[2], 'f', 2))
+                .arg(QString::number(m_pJoystick->axisStates()[3], 'f', 2))
                 );
 
         if (pLeftWing && pRightWing && pElevator)
         {
-            pLeftWing->setAileronAngle_norm(m_pJoystick->getAxisStates()[0]);
-            pRightWing->setAileronAngle_norm(m_pJoystick->getAxisStates()[0] * -1.0);
+            pLeftWing->setAileronAngle_norm(m_pJoystick->axisStates()[0]);
+            pRightWing->setAileronAngle_norm(m_pJoystick->axisStates()[0] * -1.0);
         }
 
         if (pElevator)
         {
-            pElevator->setAileronAngle_norm(m_pJoystick->getAxisStates()[1]);
+            pElevator->setAileronAngle_norm(m_pJoystick->axisStates()[1]);
         }
 
         if (pRudder)
         {
-            pRudder->setAileronAngle_norm(m_pJoystick->getAxisStates()[3]);
+            pRudder->setAileronAngle_norm(m_pJoystick->axisStates()[3]);
         }
 
         QSP<CEngine> pEngine1 = QSP_CAST(CEngine, m_rEngine1Target.component());
         QSP<CEngine> pEngine2 = QSP_CAST(CEngine, m_rEngine2Target.component());
 
-        double dAxis = 1.0 - ((m_pJoystick->getAxisStates()[2] + 1.0) * 0.5);
+        double dAxis = 1.0 - ((m_pJoystick->axisStates()[2] + 1.0) * 0.5);
 
         if (pEngine1)
         {
@@ -248,12 +248,12 @@ void CAircraftController::keyPressEvent(QKeyEvent* event)
         {
             if (pEngine1)
             {
-                pEngine1->setCurrentFuelFlow_norm(pEngine1->getCurrentFuelFlow_norm() + 0.1);
+                pEngine1->setCurrentFuelFlow_norm(pEngine1->currentFuelFlow_norm() + 0.1);
             }
 
             if (pEngine2)
             {
-                pEngine2->setCurrentFuelFlow_norm(pEngine2->getCurrentFuelFlow_norm() + 0.1);
+                pEngine2->setCurrentFuelFlow_norm(pEngine2->currentFuelFlow_norm() + 0.1);
             }
         }
             break;
@@ -261,12 +261,12 @@ void CAircraftController::keyPressEvent(QKeyEvent* event)
         {
             if (pEngine1)
             {
-                pEngine1->setCurrentFuelFlow_norm(pEngine1->getCurrentFuelFlow_norm() - 0.1);
+                pEngine1->setCurrentFuelFlow_norm(pEngine1->currentFuelFlow_norm() - 0.1);
             }
 
             if (pEngine2)
             {
-                pEngine2->setCurrentFuelFlow_norm(pEngine2->getCurrentFuelFlow_norm() - 0.1);
+                pEngine2->setCurrentFuelFlow_norm(pEngine2->currentFuelFlow_norm() - 0.1);
             }
         }
             break;
@@ -274,8 +274,8 @@ void CAircraftController::keyPressEvent(QKeyEvent* event)
         {
             if (pLeftWing && pRightWing)
             {
-                pLeftWing->setFlapsPosition_norm(pLeftWing->getFlapsPosition_norm() + 0.2);
-                pRightWing->setFlapsPosition_norm(pRightWing->getFlapsPosition_norm() + 0.2);
+                pLeftWing->setFlapsPosition_norm(pLeftWing->flapsPosition_norm() + 0.2);
+                pRightWing->setFlapsPosition_norm(pRightWing->flapsPosition_norm() + 0.2);
             }
         }
             break;
@@ -283,8 +283,8 @@ void CAircraftController::keyPressEvent(QKeyEvent* event)
         {
             if (pLeftWing && pRightWing)
             {
-                pLeftWing->setFlapsPosition_norm(pLeftWing->getFlapsPosition_norm() - 0.2);
-                pRightWing->setFlapsPosition_norm(pRightWing->getFlapsPosition_norm() - 0.2);
+                pLeftWing->setFlapsPosition_norm(pLeftWing->flapsPosition_norm() - 0.2);
+                pRightWing->setFlapsPosition_norm(pRightWing->flapsPosition_norm() - 0.2);
             }
         }
             break;

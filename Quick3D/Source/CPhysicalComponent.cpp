@@ -184,7 +184,7 @@ void CPhysicalComponent::setCollisions(bool bEnabled)
 /*!
     Returns the total mass (including children) of the component.
 */
-double CPhysicalComponent::getTotalMass_kg() const
+double CPhysicalComponent::totalMass_kg() const
 {
     double dTotalMass_kg = m_dMass_kg;
 
@@ -194,7 +194,7 @@ double CPhysicalComponent::getTotalMass_kg() const
 
         if (pPhysical)
         {
-            dTotalMass_kg += pPhysical->getTotalMass_kg();
+            dTotalMass_kg += pPhysical->totalMass_kg();
         }
     }
 
@@ -206,7 +206,7 @@ double CPhysicalComponent::getTotalMass_kg() const
 /*!
     Returns the euler angles of the velocity vector.
 */
-CVector3 CPhysicalComponent::getVelocityVectorAngles() const
+CVector3 CPhysicalComponent::velocityVectorAngles() const
 {
     return euleurAngles(m_vVelocity_ms);
 }
@@ -265,7 +265,7 @@ void CPhysicalComponent::addLocalForce_kg(CVector3 vForce_kg)
         vForce_kg = CMatrix4().MakeRotation(CVector3(vRotation.X, 0.0, 0.0)) * vForce_kg;
         vForce_kg = CMatrix4().MakeRotation(CVector3(0.0, vRotation.Y, 0.0)) * vForce_kg;
 
-        m_vSummedForces_mss = m_vSummedForces_mss + (vForce_kg / getTotalMass_kg()) * 5.0;
+        m_vSummedForces_mss = m_vSummedForces_mss + (vForce_kg / totalMass_kg()) * 5.0;
     }
 }
 
@@ -279,7 +279,7 @@ void CPhysicalComponent::addForce_kg(CVector3 vForce_kg)
 {
     if (m_bPhysicsActive == true)
     {
-        m_vSummedForces_mss = m_vSummedForces_mss + (vForce_kg / getTotalMass_kg()) * 5.0;
+        m_vSummedForces_mss = m_vSummedForces_mss + (vForce_kg / totalMass_kg()) * 5.0;
     }
 }
 
@@ -293,7 +293,7 @@ void CPhysicalComponent::addLocalTorque_kg(CVector3 vForce_kg)
 {
     if (m_bPhysicsActive == true)
     {
-        m_vSummedTorques_rss = m_vSummedTorques_rss + (vForce_kg / getTotalMass_kg()) * 5.0;
+        m_vSummedTorques_rss = m_vSummedTorques_rss + (vForce_kg / totalMass_kg()) * 5.0;
     }
 }
 
@@ -331,9 +331,9 @@ void CPhysicalComponent::update(double dDeltaTimeS)
 
                 if (m_bPhysicsActive == true)
                 {
-                    double dTotalMass_kg = getTotalMass_kg();
+                    double dTotalMass_kg = totalMass_kg();
                     // double dAirForceFactor = CAtmosphere::getInstance()->getAirForceFactor(getGeoloc().Altitude);
-                    double dAirDragFactor = CAtmosphere::getInstance()->getAirDragFactor(getGeoloc().Altitude);
+                    double dAirDragFactor = CAtmosphere::getInstance()->airDragFactor(getGeoloc().Altitude);
 
                     // Ajout force de gravité
 
@@ -397,7 +397,7 @@ void CPhysicalComponent::update(double dDeltaTimeS)
 
                 CGeoloc gNewGeoloc(vNewPosition);
 
-                double dBoundsYOffset = getBounds().minimum().Y;
+                double dBoundsYOffset = bounds().minimum().Y;
                 double dLowestAltitude = gNewGeoloc.Altitude + dBoundsYOffset;
 
                 m_bOnGround = false;
@@ -550,10 +550,10 @@ void CPhysicalComponent::computeCollisions(QVector<QSP<CComponent> >& vComponent
         // Pour l'instant les terrains sont ignorés car traités dans update
         if (pPhysical && pPhysical->getClassName() != ClassName_CWorldTerrain)
         {
-            if (pPhysical->isRootObject() && pPhysical->getCollisionsActive() == true)
+            if (pPhysical->isRootObject() && pPhysical->collisionsActive() == true)
             {
                 // On ne calcule de collision que si l'objet a une vitesse non nulle
-                if (pPhysical->getVelocity_ms().getMagnitude() > 0.0)
+                if (pPhysical->velocity_ms().getMagnitude() > 0.0)
                 {
                     computeCollisionsForComponent(pPhysical, vComponents, dDeltaTimeS);
                 }
@@ -578,7 +578,7 @@ void CPhysicalComponent::computeCollisionsForComponent(QSP<CPhysicalComponent> p
 
         if (pOtherPhysical)
         {
-            if (pComponent != pOtherPhysical && pOtherPhysical->isRootObject() && pOtherPhysical->getCollisionsActive() == true)
+            if (pComponent != pOtherPhysical && pOtherPhysical->isRootObject() && pOtherPhysical->collisionsActive() == true)
             {
                 // Pour l'instant les terrains sont ignorés car traités dans update()
                 // Terrains are for now processed in update()
@@ -586,18 +586,18 @@ void CPhysicalComponent::computeCollisionsForComponent(QSP<CPhysicalComponent> p
                 {
                     // Calcul de distance avec l'autre objet
                     CVector3 vPosition = pComponent->getGeoloc().toVector3(pOtherPhysical->getGeoloc());
-                    double dRadiusSum = pComponent->getWorldBounds().radius() + pOtherPhysical->getWorldBounds().radius();
+                    double dRadiusSum = pComponent->worldBounds().radius() + pOtherPhysical->worldBounds().radius();
 
                     // Est-ce que les deux sphères se recoupent?
                     if (vPosition.getMagnitude() < dRadiusSum)
                     {
                         // Si oui, on fait rebondir les objets
 
-                        double dForce = pComponent->m_vVelocity_ms.getMagnitude() * pComponent->getTotalMass_kg() * 4.0;
+                        double dForce = pComponent->m_vVelocity_ms.getMagnitude() * pComponent->totalMass_kg() * 4.0;
                         CVector3 vForceDirection = vPosition.Normalize() * 0.5 * dForce;
-                        double dTotalMass = pComponent->getTotalMass_kg() + pOtherPhysical->getTotalMass_kg();
-                        double dForceThisComponent = 1.0 - (pComponent->getTotalMass_kg() / dTotalMass);
-                        double dForceOtherComponent = 1.0 - (pOtherPhysical->getTotalMass_kg() / dTotalMass);
+                        double dTotalMass = pComponent->totalMass_kg() + pOtherPhysical->totalMass_kg();
+                        double dForceThisComponent = 1.0 - (pComponent->totalMass_kg() / dTotalMass);
+                        double dForceOtherComponent = 1.0 - (pOtherPhysical->totalMass_kg() / dTotalMass);
                         pComponent->addForce_kg(vForceDirection * dForceThisComponent);
                         pOtherPhysical->addForce_kg(vForceDirection * dForceOtherComponent * -1.0);
                     }

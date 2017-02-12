@@ -59,7 +59,7 @@ CMeshGeometry* CTreeGenerator::createTree(
                 dTrunkRadius * dRadiusScale
                 );
 
-    pMesh->setMaterial(m_pScene->getRessourcesManager()->getTreeMaterial());
+    pMesh->setMaterial(m_pScene->ressourcesManager()->getTreeMaterial());
 
     CMatrix4 mAccumTransform = CMatrix4().MakeTranslation(CVector3(0.0, dTrunkLength, 0.0));
 
@@ -84,15 +84,15 @@ CMeshGeometry* CTreeGenerator::createTree(
                 iTreeLevel
                 );
 
-    for (int iVertexIndex = 0; iVertexIndex < pMesh->getVertices().count(); iVertexIndex++)
+    for (int iVertexIndex = 0; iVertexIndex < pMesh->vertices().count(); iVertexIndex++)
     {
-        CVector3 vPosition = pMesh->getVertices()[iVertexIndex].position();
+        CVector3 vPosition = pMesh->vertices()[iVertexIndex].position();
 
-        double dX = perlin->getNoise(vPosition * 2.50) * (dTrunkLength * 0.04);
-        double dY = perlin->getNoise(vPosition * 2.53) * (dTrunkLength * 0.04);
-        double dZ = perlin->getNoise(vPosition * 2.55) * (dTrunkLength * 0.04);
+        double dX = perlin->noise(vPosition * 2.50) * (dTrunkLength * 0.04);
+        double dY = perlin->noise(vPosition * 2.53) * (dTrunkLength * 0.04);
+        double dZ = perlin->noise(vPosition * 2.55) * (dTrunkLength * 0.04);
 
-        pMesh->getVertices()[iVertexIndex].position() = CVector3(vPosition.X + dX, (vPosition.Y + dY) - VERT_OFFSET, vPosition.Z + dZ);
+        pMesh->vertices()[iVertexIndex].position() = CVector3(vPosition.X + dX, (vPosition.Y + dY) - VERT_OFFSET, vPosition.Z + dZ);
     }
 
     return pMesh;
@@ -127,13 +127,13 @@ void CTreeGenerator::addBranches(
 
         CVector3 vPosition = mAccumTransform * CVector3();
 
-        bool bContinueCurrentBranch = perlin->getNoise_0_1((vNoisePosition + vPosition) * 3.0) > 0.5;
-        int iNumBranches = 2 + (int) (perlin->getNoise_0_1((vNoisePosition + vPosition) * 3.1) * iTreeLevel);
+        bool bContinueCurrentBranch = perlin->noise_0_1((vNoisePosition + vPosition) * 3.0) > 0.5;
+        int iNumBranches = 2 + (int) (perlin->noise_0_1((vNoisePosition + vPosition) * 3.1) * iTreeLevel);
 
         for (int iIndex = 0; iIndex < iNumBranches; iIndex++)
         {
-            double dRotationX = dGravityFactor * (0.3 + (perlin->getNoise_0_1((vNoisePosition + vPosition) * 3.2) * (Math::Pi * 1.0)) * 0.25);
-            double dRotationY = (((double) iIndex / (double) iNumBranches) * (Math::Pi * 3.3)) + perlin->getNoise_0_1((vNoisePosition + vPosition) * 1.2) * (Math::Pi / 6.0);
+            double dRotationX = dGravityFactor * (0.3 + (perlin->noise_0_1((vNoisePosition + vPosition) * 3.2) * (Math::Pi * 1.0)) * 0.25);
+            double dRotationY = (((double) iIndex / (double) iNumBranches) * (Math::Pi * 3.3)) + perlin->noise_0_1((vNoisePosition + vPosition) * 1.2) * (Math::Pi / 6.0);
 
             // If branch must continue, clear flag and reduce X rotation
             if (bContinueCurrentBranch)

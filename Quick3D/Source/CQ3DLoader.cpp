@@ -112,7 +112,7 @@ void CQ3DLoader::loadComponent(
         double u = xVertex.attributes()[ParamName_u].toDouble();
         double v = xVertex.attributes()[ParamName_v].toDouble();
 
-        pMesh->getVertices().append(CVertex(CVector3(x, y, z), CVector2(u, v)));
+        pMesh->vertices().append(CVertex(CVector3(x, y, z), CVector2(u, v)));
     }
 
     // Map servant à définir des index de matériaux locaux au mesh
@@ -157,24 +157,24 @@ void CQ3DLoader::loadComponent(
             }
         }
 
-        pMesh->getFaces().append(NewFace);
+        pMesh->faces().append(NewFace);
     }
 
-    pMesh->getMaterials().clear();
+    pMesh->materials().clear();
 
     // Ajout de chaque matériau utilisé par le mesh à ce dernier
     foreach (int iUsedMaterial, mMaterialIndex.keys())
     {
-        mMaterialIndex[iUsedMaterial] = pMesh->getMaterials().count();
-        pMesh->getMaterials().append(vMaterials[iUsedMaterial]);
+        mMaterialIndex[iUsedMaterial] = pMesh->materials().count();
+        pMesh->materials().append(vMaterials[iUsedMaterial]);
     }
 
     // Modification des indices de matériau des polygones
-    for (int iFaceIndex = 0; iFaceIndex < pMesh->getFaces().count(); iFaceIndex++)
+    for (int iFaceIndex = 0; iFaceIndex < pMesh->faces().count(); iFaceIndex++)
     {
-        int iFaceMaterialIndex = pMesh->getFaces()[iFaceIndex].getMaterialIndex();
+        int iFaceMaterialIndex = pMesh->faces()[iFaceIndex].getMaterialIndex();
         int iNewFaceMaterialIndex = mMaterialIndex[iFaceMaterialIndex];
-        pMesh->getFaces()[iFaceIndex].setMaterialIndex(iNewFaceMaterialIndex);
+        pMesh->faces()[iFaceIndex].setMaterialIndex(iNewFaceMaterialIndex);
     }
 
     // Chargement des noeuds enfants
@@ -207,7 +207,7 @@ void CQ3DLoader::addBounds(CComponent* pContainer, CBoundingBox& bBox, CMatrix4 
 
     mTransform = mLocalTransform * mTransform;
 
-    bBox = bBox & pContainer->getBounds().transformed(mTransform);
+    bBox = bBox & pContainer->bounds().transformed(mTransform);
 
     foreach (QSP<CComponent> pChild, pContainer->getChildren())
     {

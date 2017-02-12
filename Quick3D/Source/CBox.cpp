@@ -20,8 +20,8 @@ CBox::CBox(C3DScene* pScene, double dMaxDistance)
 {
     setName("Box");
 
-    m_pGeometry->setMaterial(m_pScene->getRessourcesManager()->getDefaultMaterial());
-    m_pGeometry->getMaterials()[0]->setIRFactor(0.4);
+    m_pGeometry->setMaterial(m_pScene->ressourcesManager()->getDefaultMaterial());
+    m_pGeometry->materials()[0]->setIRFactor(0.4);
 
     fillVertices();
 }

@@ -59,10 +59,10 @@ public:
     virtual QString getClassName() const { return ClassName_CMesh; }
 
     //!
-    virtual CBoundingBox getBounds();
+    virtual CBoundingBox bounds();
 
     //!
-    virtual CBoundingBox getWorldBounds();
+    virtual CBoundingBox worldBounds();
 
     //!
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;

@@ -53,20 +53,6 @@ CGenerateFunction::~CGenerateFunction()
 
 //-------------------------------------------------------------------------------------------------
 
-void CGenerateFunction::setName(const QString& sName)
-{
-    m_sName = sName;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-QString CGenerateFunction::getName() const
-{
-    return m_sName;
-}
-
-//-------------------------------------------------------------------------------------------------
-
 void CGenerateFunction::getStandardParameters(CXMLNode xFunctions, CXMLNode xNode)
 {
     const QString& sType = xNode.attributes()[ParamName_Type];
@@ -258,16 +244,16 @@ double CGenerateFunction::process(CPerlin* pPerlin, const CVector3& vPosition, c
                 switch (m_eType)
                 {
                     case toPerlin:
-                        dNewValue = pPerlin->getNoise(vPosition * dInputScale);
+                        dNewValue = pPerlin->noise(vPosition * dInputScale);
                         break;
                     case toTurbulence:
-                        dNewValue = pPerlin->getTurbulence(vPosition * dInputScale);
+                        dNewValue = pPerlin->turbulence(vPosition * dInputScale);
                         break;
                     case toErosion:
-                        dNewValue = pPerlin->getErosion(vPosition * dInputScale, aAxis, m_dDisplace);
+                        dNewValue = pPerlin->erosion(vPosition * dInputScale, aAxis, m_dDisplace);
                         break;
                     case toVoronoi:
-                        dNewValue = pPerlin->getVoronoi(vPosition * dInputScale, aAxis, m_dDisplace);
+                        dNewValue = pPerlin->voronoi(vPosition * dInputScale, aAxis, m_dDisplace);
                         break;
                     default:
                         break;

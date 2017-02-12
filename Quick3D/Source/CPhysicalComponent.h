@@ -81,37 +81,37 @@ public:
     virtual QString getClassName() const { return ClassName_CPhysicalComponent; }
 
     //! Retourne la trainée normalisée
-    double getDrag_norm() const { return m_dDrag_norm; }
+    double drag_norm() const { return m_dDrag_norm; }
 
     //! Retourne la trainée angulaire normalisée
-    double getAngularDrag_norm() const { return m_dAngularDrag_norm; }
+    double angularDrag_norm() const { return m_dAngularDrag_norm; }
 
     //! Retourne la masse en kilogrammes
-    double getMass_kg() const { return m_dMass_kg; }
+    double mass_kg() const { return m_dMass_kg; }
 
     //! Retourne la masse totale (enfants compris) en kilogrammes
-    double getTotalMass_kg() const;
+    double totalMass_kg() const;
 
     //! Retourne le vecteur vélocité en mètres/seconde
-    Math::CVector3 getVelocity_ms() const { return m_vVelocity_ms; }
+    Math::CVector3 velocity_ms() const { return m_vVelocity_ms; }
 
     //! Retourne la vélocité angulaire en radians/seconde
-    Math::CVector3 getAngularVelocity_rs() const { return m_vAngularVelocity_rs; }
+    Math::CVector3 angularVelocity_rs() const { return m_vAngularVelocity_rs; }
 
     //! Retourne toutes les forces en mètres/seconde/seconde
-    Math::CVector3 getSummedForces_mss()  const { return m_vSummedForces_mss; }
+    Math::CVector3 summedForces_mss()  const { return m_vSummedForces_mss; }
 
     //! Retourne tous les couples en radians/seconde/seconde
-    Math::CVector3 getSummedTorques_rss() const { return m_vSummedTorques_rss; }
+    Math::CVector3 summedTorques_rss() const { return m_vSummedTorques_rss; }
 
     //! Retourne vrai si les collisions sont activées
-    bool getCollisionsActive() const { return m_bCollisionsActive; }
+    bool collisionsActive() const { return m_bCollisionsActive; }
 
     //! Retourne le type d'objet utilisé pour les collisions
-    ECollisionType getCollisionType() const { return m_eCollisionType; }
+    ECollisionType collisionType() const { return m_eCollisionType; }
 
     //!
-    Math::CVector3 getVelocityVectorAngles() const;
+    Math::CVector3 velocityVectorAngles() const;
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes de contrôle

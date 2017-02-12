@@ -46,10 +46,10 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Retourne une référence sur les pas de translations
-    CAnimatorFrame* getTranslationFrame() { return m_pTranslationFrame; }
+    CAnimatorFrame* translationFrame() { return m_pTranslationFrame; }
 
     //! Retourne une référence sur les pas de rotations
-    CAnimatorFrame* getRotationFrame() { return m_pRotationFrame; }
+    CAnimatorFrame* rotationFrame() { return m_pRotationFrame; }
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes de contrôle

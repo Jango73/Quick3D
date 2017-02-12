@@ -52,9 +52,9 @@ CVector3 CServoAnimatorFrame::compute(double dDeltaTime, CVector3 vCurrentValue)
 		}
 		else
 		{
-			if (m_vCurrentValue.isSame(m_vSteps[m_iCurrentStep].getTarget()))
+			if (m_vCurrentValue.isSame(m_vSteps[m_iCurrentStep].target()))
 			{
-				m_dTime = m_vSteps[m_iCurrentStep].getDuration();
+				m_dTime = m_vSteps[m_iCurrentStep].duration();
 
 				m_iCurrentStep++;
 
@@ -66,9 +66,9 @@ CVector3 CServoAnimatorFrame::compute(double dDeltaTime, CVector3 vCurrentValue)
 
 			if (m_iCurrentStep < m_vSteps.count())
 			{
-				CVector3 vTarget = m_vSteps[m_iCurrentStep].getTarget();
-				CVector3 vSpeed = m_vSteps[m_iCurrentStep].getSpeed();
-				CVector3 vAccel = m_vSteps[m_iCurrentStep].getAcceleration();
+				CVector3 vTarget = m_vSteps[m_iCurrentStep].target();
+				CVector3 vSpeed = m_vSteps[m_iCurrentStep].speed();
+				CVector3 vAccel = m_vSteps[m_iCurrentStep].acceleration();
 
 				m_tServo_X.setMaximumAcceleration(vAccel.X);
 				m_tServo_Y.setMaximumAcceleration(vAccel.Y);
@@ -90,9 +90,9 @@ CVector3 CServoAnimatorFrame::compute(double dDeltaTime, CVector3 vCurrentValue)
 				m_tServo_Y.update(dDeltaTime);
 				m_tServo_Z.update(dDeltaTime);
 
-				m_vCurrentValue.X = m_tServo_X.getPosition();
-				m_vCurrentValue.Y = m_tServo_Y.getPosition();
-				m_vCurrentValue.Z = m_tServo_Z.getPosition();
+				m_vCurrentValue.X = m_tServo_X.position();
+				m_vCurrentValue.Y = m_tServo_Y.position();
+				m_vCurrentValue.Z = m_tServo_Z.position();
 			}
 		}
 	}

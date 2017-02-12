@@ -45,7 +45,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    virtual double getFlapsPosition_norm() const { return m_dFlapsPosition_norm; }
+    virtual double flapsPosition_norm() const { return m_dFlapsPosition_norm; }
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes héritées

@@ -118,88 +118,88 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    bool getForDisplay() const { return m_bForDisplay; }
+    bool forDisplay() const { return m_bForDisplay; }
 
     //!
-    Math::CVector3 getWorldOrigin() const { return m_vWorldOrigin; }
+    Math::CVector3 worldOrigin() const { return m_vWorldOrigin; }
 
     //!
-    QMap<int, CViewport*>& getViewports() { return m_pViewports; }
+    QMap<int, CViewport*>& viewports() { return m_pViewports; }
 
     //!
-    const QMap<int, CViewport*>& getViewports() const { return m_pViewports; }
+    const QMap<int, CViewport*>& viewports() const { return m_pViewports; }
 
     //!
-    double getShaderQuality() { return m_dShaderQuality; }
+    double shaderQuality() { return m_dShaderQuality; }
 
     //!
-    CGLExtension* getGLExtension() { return m_pGLExtension; }
+    CGLExtension* glExtension() { return m_pGLExtension; }
 
     //!
-    CRessourcesManager* getRessourcesManager() { return m_pRessourcesManager; }
+    CRessourcesManager* ressourcesManager() { return m_pRessourcesManager; }
 
     //!
-    CBuildingGenerator* getBuildingGenerator() { return m_pBuildingGenerator; }
+    CBuildingGenerator* buildingGenerator() { return m_pBuildingGenerator; }
 
     //!
-    CTreeGenerator* getTreeGenerator() { return m_pTreeGenerator; }
+    CTreeGenerator* treeGenerator() { return m_pTreeGenerator; }
 
     //!
-    CShaderCollection* getShaders() { return m_vShaders; }
+    CShaderCollection* shaders() { return m_vShaders; }
 
     //!
-    CController* getController() { return m_pController; }
+    CController* controller() { return m_pController; }
 
     //!
-    QVector<QSP<CLight> > getLights();
+    QVector<QSP<CLight> > lights();
 
     //!
-    QVector<QSP<CComponent> >& getComponents() { return m_vComponents; }
+    QVector<QSP<CComponent> >& components() { return m_vComponents; }
 
     //!
-    const QVector<QSP<CComponent> >& getComponents() const { return m_vComponents; }
+    const QVector<QSP<CComponent> >& components() const { return m_vComponents; }
 
     //!
-    QVector<QSP<CComponent> > getComponentsByTag(const QString& sTag);
+    QVector<QSP<CComponent> > componentsByTag(const QString& sTag);
 
     //!
-    QVector<QSP<CLight> > getLightsByTag(const QString& sTag);
+    QVector<QSP<CLight> > lightsByTag(const QString& sTag);
 
     //!
-    CFog& getFog() { return m_tFog; }
+    CFog& fog() { return m_tFog; }
 
     //!
-    double getTime() const { return m_dTime; }
+    double time() const { return m_dTime; }
 
     //!
-    double getWindLevel() const { return m_dWindLevel; }
+    double windLevel() const { return m_dWindLevel; }
 
     //!
     bool isRenderingShadows() const { return m_bRenderingShadows; }
 
     //!
-    bool getStreamView() const { return m_bStreamView; }
+    bool streamView() const { return m_bStreamView; }
 
     //!
-    bool getDepthComputing() const { return m_bDepthComputing; }
+    bool depthComputing() const { return m_bDepthComputing; }
 
     //!
-    const QImage& getFrameBuffer() const { return m_imgFrameBuffer; }
+    const QImage& frameBuffer() const { return m_imgFrameBuffer; }
 
     //!
-    bool getEditMode() { return m_bEditMode; }
+    bool editMode() { return m_bEditMode; }
 
     //!
-    bool getDebugMode() { return m_DebugMode; }
+    bool debugMode() { return m_DebugMode; }
 
     //!
-    bool getFrustumCheck() { return m_bFrustumCheck; }
+    bool frustumCheck() { return m_bFrustumCheck; }
 
     //!
-    bool getBoundsOnly() { return m_bBoundsOnly; }
+    bool boundsOnly() { return m_bBoundsOnly; }
 
     //!
-    bool getNormalsOnly() { return m_bNormalsOnly; }
+    bool normalsOnly() { return m_bNormalsOnly; }
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes de contrôle

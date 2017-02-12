@@ -30,37 +30,37 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    double getAngleOfAttack_rad() const { return m_dAngleOfAttack_rad; }
+    double angleOfAttack_rad() const { return m_dAngleOfAttack_rad; }
 
     //!
-    double getTrueAirSpeed_ms() const { return m_dTrueAirSpeed_ms; }
+    double trueAirSpeed_ms() const { return m_dTrueAirSpeed_ms; }
 
     //!
-    double getIndicatedAirSpeed_ms() const { return m_dIndicatedAirSpeed_ms; }
+    double indicatedAirSpeed_ms() const { return m_dIndicatedAirSpeed_ms; }
 
     //!
-    double getGroundSpeed_ms() const { return m_dGroundSpeed_ms; }
+    double groundSpeed_ms() const { return m_dGroundSpeed_ms; }
 
     //!
-    double getMach() const { return m_dMach; }
+    double mach() const { return m_dMach; }
 
     //!
-    double getTrueHeading_deg() const { return m_dTrueHeading_deg; }
+    double trueHeading_deg() const { return m_dTrueHeading_deg; }
 
     //!
-    double getTrueTrack_deg() const { return m_dTrueTrack_deg; }
+    double trueTrack_deg() const { return m_dTrueTrack_deg; }
 
     //!
-    double getPitch_deg() const { return m_dPitch_deg; }
+    double pitch_deg() const { return m_dPitch_deg; }
 
     //!
-    double getRoll_deg() const { return m_dRoll_deg; }
+    double roll_deg() const { return m_dRoll_deg; }
 
     //!
-    double getVerticalSpeed_ms() const { return m_dVerticalSpeed_ms; }
+    double verticalSpeed_ms() const { return m_dVerticalSpeed_ms; }
 
     //!
-    double getAltitude_m() const { return m_dAltitude_m; }
+    double altitude_m() const { return m_dAltitude_m; }
 
     //-------------------------------------------------------------------------------------------------
     // Méthodes héritées

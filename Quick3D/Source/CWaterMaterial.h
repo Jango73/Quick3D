@@ -38,7 +38,7 @@ public:
     // Getters
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne le nom de la classe
+    //! Returns this object's class name
     virtual QString getClassName() const { return ClassName_CWaterMaterial; }
 
     //-------------------------------------------------------------------------------------------------

@@ -16,7 +16,7 @@ public:
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Constructeur d'après une scène
+    //! Constructor using a scene
     CRain(C3DScene* pScene);
 
     //! Destructor

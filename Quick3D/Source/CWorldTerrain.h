@@ -106,7 +106,7 @@ public:
     //!
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
 
-    //! Efface les liens de cet objet
+    //! Deletes this object's links
     virtual void clearLinks(C3DScene* pScene);
 
     //!

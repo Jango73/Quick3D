@@ -31,7 +31,7 @@ public:
     //! Retourne une nouvelle instance de cet objet
     static CComponent* instanciator(C3DScene* pScene);
 
-    //! Constructeur d'après une scène
+    //! Constructor using a scene
     CBasicAnimator(C3DScene* pScene);
 
     //! Destructor
@@ -68,7 +68,7 @@ public:
     //! Returns this object's class name
     virtual QString getClassName() const { return ClassName_CBasicAnimator; }
 
-    //! Charge les paramètres de cet objet d'après le noeud XML fourni
+    //! Loads this object's parameters d'après le noeud XML fourni
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
 
     //! Met l'objet à jour d'après le temps écoulé depuis la dernière image

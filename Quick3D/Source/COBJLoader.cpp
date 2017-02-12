@@ -137,7 +137,7 @@ QSP<CMeshGeometry> COBJLoader::load(const QString& sBaseFile, CComponent *pConta
 
                         int iPositionIndex = -1;
                         int iTextureIndex = -1;
-                        int iNormalIndex = -1;
+                        // int iNormalIndex = -1;
 
                         if (sFaceIndices.count() > 0)
                         {
@@ -149,10 +149,12 @@ QSP<CMeshGeometry> COBJLoader::load(const QString& sBaseFile, CComponent *pConta
                             iTextureIndex = sFaceIndices.at(1).toInt() - 1;
                         }
 
+                        /*
                         if (sFaceIndices.count() > 2)
                         {
                             iNormalIndex = sFaceIndices.at(2).toInt() - 1;
                         }
+                        */
 
                         if (iPositionIndex > 0)
                         {

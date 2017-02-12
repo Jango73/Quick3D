@@ -86,7 +86,7 @@ public:
     //! Retourne une nouvelle instance de cet objet
     static CComponent* instanciator(C3DScene* pScene);
 
-    //! Constructeur d'après une scène
+    //! Constructor using a scene
     CCamera(C3DScene* pScene);
 
     //! Constructeur de copie
@@ -143,7 +143,7 @@ public:
     //! Retourne vrai si cet objet est une caméra
     virtual bool isCamera() const { return true; }
 
-    //! Charge les paramètres de cet objet d'après le noeud XML fourni
+    //! Loads this object's parameters d'après le noeud XML fourni
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------

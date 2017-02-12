@@ -85,10 +85,10 @@ public:
     // Getters
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne le nom de la classe
+    //! Returns this object's class name
     virtual QString getClassName() const { return ClassName_CTiledMaterial; }
 
-    //! Retourne des coordonnées de texture pour une géolocalisation donnée
+    //! Returns texture coordinates for a given geo loc
     virtual Math::CVector2 texCoords(const CGeoloc& gPosition, int iLevel);
 
     //-------------------------------------------------------------------------------------------------

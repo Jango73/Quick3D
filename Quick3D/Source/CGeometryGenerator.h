@@ -50,7 +50,7 @@ public:
     // Control methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Charge les paramètres de cet objet
+    //! Loads this object's parameters
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent, CXMLNode xFunctions);
 
     //!

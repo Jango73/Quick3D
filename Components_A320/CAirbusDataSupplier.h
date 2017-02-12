@@ -46,16 +46,16 @@ public:
     // Control methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Charge les paramètres de cet objet
+    //! Loads this object's parameters
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
 
-    //! Recherche les liens de cet objet
+    //! Solves the links of this object
     virtual void solveLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
 
-    //! Efface les liens de cet objet
+    //! Deletes this object's links
     virtual void clearLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
 
-    //! Recherche les liens de cet objet
+    //! Solves the links of this object
     virtual void solveLinks(C3DScene* pScene, CComponent* pCaller);
 
     //!

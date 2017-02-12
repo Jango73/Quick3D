@@ -47,7 +47,7 @@ public:
     //!
     virtual QString getClassName() const { return ClassName_CElectricalContactor; }
 
-    //! Charge les paramètres de cet objet
+    //! Loads this object's parameters
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
 
     //!

@@ -16,7 +16,7 @@ public:
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Constructeur d'après une scène
+    //! Constructor using a scene
     CBox(C3DScene* pScene, double dMaxDistance = 10000.0);
 
     //! Destructor

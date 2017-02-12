@@ -85,7 +85,7 @@ public:
     //! Retourne une nouvelle instance de cet objet
     static CComponent* instanciator(C3DScene* pScene);
 
-    //! Constructeur d'après une scène
+    //! Constructor using a scene
     CComponent(C3DScene* pScene);
 
     //! Destructor
@@ -262,13 +262,13 @@ public:
     //! Opérateur d'assignation
     CComponent& operator = (const CComponent& target);
 
-    //! Charge les paramètres de cet objet
+    //! Loads this object's parameters
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
-    //! Recherche les liens de cet objet
+    //! Solves the links of this object
     virtual void solveLinks(C3DScene* pScene);
 
-    //! Efface les liens de cet objet
+    //! Deletes this object's links
     virtual void clearLinks(C3DScene* pScene);
 
     //! Recherche un composant dans la hiérarchie de cet objet

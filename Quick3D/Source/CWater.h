@@ -36,7 +36,7 @@ public:
     // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne le nom de la classe
+    //! Returns this object's class name
     virtual QString getClassName() const { return ClassName_CWater; }
 
     //! Méthode de mise à jour avec temps delta depuis la dernière itération

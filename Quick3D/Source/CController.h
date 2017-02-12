@@ -99,7 +99,7 @@ public:
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Constructeur d'après une scène
+    //! Constructor using a scene
     CController(C3DScene* pScene);
 
     //! Destructor
@@ -166,16 +166,16 @@ public:
     // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne le nom de classe de l'objet
+    //! Returns this object's class name
     virtual QString getClassName() const { return ClassName_CController; }
 
-    //! Charge les paramètres de cet objet
+    //! Loads this object's parameters
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
 
-    //! Recherche les liens de cet objet
+    //! Solves the links of this object
     virtual void solveLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
 
-    //! Efface les liens de cet objet
+    //! Deletes this object's links
     virtual void clearLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
 
     //!

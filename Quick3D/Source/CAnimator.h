@@ -29,7 +29,7 @@ public:
     //! Retourne l'instanciateur de cet objet
     static CComponent* instanciator(C3DScene* pScene);
 
-    //! Constructeur d'après une scène
+    //! Constructor using a scene
     CAnimator(C3DScene* pScene);
 
     //! Destructor
@@ -62,7 +62,7 @@ public:
     //! Returns this object's class name
     virtual QString getClassName() const { return ClassName_CAnimator; }
 
-    //! Charge les paramètres de cet objet d'après le noeud XML fourni
+    //! Loads this object's parameters d'après le noeud XML fourni
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
 
     //!

@@ -27,7 +27,7 @@ public:
     //! Retourne une nouvelle instance de cet objet
     static CComponent* instanciator(C3DScene* pScene);
 
-    //! Constructeur d'après une scène
+    //! Constructor using a scene
     CStandardController(C3DScene* pScene);
 
     //! Destructor

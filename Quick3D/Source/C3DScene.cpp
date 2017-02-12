@@ -39,6 +39,7 @@ using namespace Math;
 
 /*!
     Constructs a C3DScene with its default parameters.
+    \a bForDisplay tells if the scene will be displayed
 */
 C3DScene::C3DScene(bool bForDisplay)
     : m_pRessourcesManager(NULL)

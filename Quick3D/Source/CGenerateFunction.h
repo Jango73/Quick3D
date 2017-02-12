@@ -60,7 +60,6 @@ public:
 protected:
 
     ETerrainOperation               m_eType;
-    QString                         m_sName;
     double                          m_dConstant;
     QVector<CGenerateFunction*>     m_vOperands;
     double                          m_dInputScale;

@@ -21,8 +21,8 @@ double CMaterial::m_dTime = 0.0;
 //-------------------------------------------------------------------------------------------------
 
 CMaterial::CMaterial(C3DScene* pScene, QString sName)
-    : m_pScene(pScene)
-    , m_sName(sName)
+    : CNamed(sName)
+    , m_pScene(pScene)
     , m_dSelfIllumination(0.0)
     , m_dShininess(0.0)
     , m_dReflection(0.0)

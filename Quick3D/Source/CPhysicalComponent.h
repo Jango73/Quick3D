@@ -36,7 +36,7 @@ public:
     //! Retourne une nouvelle instance de cet objet
     static CComponent* instanciator(C3DScene* pScene);
 
-    //! Constructeur d'après une scène
+    //! Constructor using a scene
     CPhysicalComponent(C3DScene* pScene);
 
     //! Destructor
@@ -120,7 +120,7 @@ public:
     //! Opérateur d'assignation
     CPhysicalComponent& operator = (const CPhysicalComponent& target);
 
-    //! Charge les paramètres de cet objet
+    //! Loads this object's parameters
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
 
     //! Méthode de mise à jour avec temps delta depuis la dernière itération

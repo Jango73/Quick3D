@@ -18,7 +18,7 @@ public:
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Constructeur d'après une scène
+    //! Constructor using a scene
     CExpendable(int iSecondsToExpendability = 60);
 
     //! Destructor

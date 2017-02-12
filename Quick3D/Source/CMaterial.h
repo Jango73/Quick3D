@@ -12,6 +12,7 @@
 #include <QGLFramebufferObject>
 
 // Application
+#include "CNamed.h"
 #include "CVector4.h"
 #include "CGeoloc.h"
 #include "ILoadable.h"
@@ -33,14 +34,13 @@ class CRenderContext;
 
 //-------------------------------------------------------------------------------------------------
 
-class QUICK3D_EXPORT CMaterial : public QObject, public QSharedData, public ILoadable
+class QUICK3D_EXPORT CMaterial : public QObject, public QSharedData, public CNamed, public ILoadable
 {
     Q_OBJECT
 
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructors and destructor
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
@@ -54,81 +54,74 @@ public:
     // Setters
     //-------------------------------------------------------------------------------------------------
 
-    //! Définit le nom du matériau
-    void setName(const QString& sName) { m_sName = sName; }
-
-    //! Définit le taux de brillance
+    //! Sets shininess factor
     void setShininess(double value) { m_dShininess = value; }
 
-    //! Définit le taux de réflection
+    //! Sets reflection factor
     void setReflection(double value) { m_dReflection = value; }
 
-    //!
+    //! Sets SSS factor (Sub-surface scattering)
     void setSSSFactor(double value) { m_dSSSFactor = value; }
 
-    //!
+    //! Sets SSS radius
     void setSSSRadius(double value) { m_dSSSRadius = value; }
 
-    //! Définit le taux de reflectance IR
+    //! Sets IR factor
     void setIRFactor(double value) { m_dIRFactor = value; }
 
-    //!
+    //! Sets if this material has alpha
     void setHasAlpha(bool value) { m_bHasAlpha = value; }
 
-    //! Définit si ce matériau représente le ciel
+    //! Sets the "use sky" flag
     void setUseSky(bool value) { m_bUseSky = value; }
 
-    //!
+    //! Sets the "bill board" flag
     void setBillBoard(bool value) { m_bBillBoard = value; }
 
-    //!
+    //! Sets the "lines" flag
     void setLines(bool value) { m_bLines = value; }
 
-    //! Définit la valeur temps utilisée pour animer les textures
+    //! Sets the time value for animated textures
     static void setTime(double value) { m_dTime = value; }
 
     //-------------------------------------------------------------------------------------------------
     // Getters
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne le nom de la classe
+    //! Returns this object's class name
     virtual QString getClassName() const { return ClassName_CMaterial; }
 
-    //! Retourne le nom du matériau
-    QString name() const { return m_sName; }
-
-    //! Retourne la couleur ambiente
+    //! Returns a reference to the ambient color
     Math::Vector4& ambient() { return m_cAmbient; }
 
-    //! Retourne la couleur diffuse
+    //! Returns a reference to the diffuse color
     Math::Vector4& diffuse() { return m_cDiffuse; }
 
-    //! Retourne la couleur spéculaire
+    //! Returns a reference to the specular color
     Math::Vector4& specular() { return m_cSpecular; }
 
-    //! Retourne la couleur spéculaire
+    //! Returns a reference to the subdermal color
     Math::Vector4& subdermal() { return m_cSubdermal; }
 
-    //! Retourne le taux de rélection
+    //! Returns the reflection factor
     double reflection() const { return m_dReflection; }
 
-    //! Retourne le taux de reflectance IR
+    //! Returns the IR factor
     double IRFactor() const { return m_dIRFactor; }
 
-    //! Est-ce un matériau de ciel?
-    bool useSky() const { return m_bUseSky; }
-
-    //!
+    //! Returns true if this material has alpha
     bool hasAlpha() const;
 
-    //!
+    //! Returns the "use sky" flag
+    bool useSky() const { return m_bUseSky; }
+
+    //! Returns a reference to the list of diffuse textures
     QVector<CTexture*>& diffuseTextures() { return m_vDiffuseTextures; }
 
-    //! Retourne des coordonnées de texture pour une géolocalisation donnée
+    //! Returns texture coordinates for a given geo loc
     virtual Math::CVector2 texCoords(const CGeoloc& gPosition, int iLevel);
 
     //-------------------------------------------------------------------------------------------------
-    // Inherited methods
     // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
@@ -136,14 +129,13 @@ public:
     //! Loads the object's properties from a CXMLNode
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
 
-    //! Recherche les liens de cet objet
+    //! Solves the links of this object
     virtual void solveLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
 
-    //! Efface les liens de cet objet
+    //! Deletes this object's links
     virtual void clearLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
-    // Control methods
     // Control methods
     //-------------------------------------------------------------------------------------------------
 
@@ -192,13 +184,11 @@ public:
 
     //-------------------------------------------------------------------------------------------------
     // Properties
-    // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:
 
     C3DScene*               m_pScene;
-    QString                 m_sName;
     Math::Vector4           m_cAmbient;
     Math::Vector4           m_cDiffuse;
     Math::Vector4           m_cSpecular;

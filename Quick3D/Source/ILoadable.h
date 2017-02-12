@@ -13,9 +13,9 @@ public:
     //! Loads the object's properties from a CXMLNode
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) = 0;
 
-    //! Recherche les liens de cet objet
+    //! Solves the links of this object
     virtual void solveLinks(C3DScene* pScene) = 0;
 
-    //! Efface les liens de cet objet
+    //! Deletes this object's links
     virtual void clearLinks(C3DScene* pScene) = 0;
 };

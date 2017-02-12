@@ -419,7 +419,7 @@ void CWorldChunk::work()
             }
         }
 
-        if (m_pScene->getShaderQuality() > 0.8)
+        if (m_pScene->getShaderQuality() > 0.7)
         {
             foreach (QSP<CComponent> pComponent, m_pAutoTerrain->generators())
             {

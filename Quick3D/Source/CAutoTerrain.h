@@ -137,7 +137,7 @@ public:
 protected:
 
     //!
-    void buildRoot();
+    void buildRoot(CRenderContext* pContext);
 
     //!
     bool enoughDetail(QSP<CWorldChunk> pChunk, CRenderContext* pContext, int iLevel);

@@ -40,7 +40,7 @@ protected:
 protected slots:
 
 	void httpFinished();
-	void httpError();
+    void httpError(QNetworkReply::NetworkError code);
 	void httpReadyRead();
 
 signals:

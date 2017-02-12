@@ -67,8 +67,6 @@ CAutoTerrain::CAutoTerrain(C3DScene* pScene, CGeoloc gCameraPosition, CHeightFie
 
         if (pScene->getViewports().count() > 0 && pScene->getViewports()[0]->getCamera())
         {
-            buildRoot();
-
             CRenderContext context(
                         QMatrix4x4(),
                         QMatrix4x4(),
@@ -80,6 +78,7 @@ CAutoTerrain::CAutoTerrain(C3DScene* pScene, CGeoloc gCameraPosition, CHeightFie
                         pScene->getViewports()[0]->getCamera().data()
                     );
 
+            buildRoot(&context);
             buildRecurse(m_pRoot, &context, m_iLevels);
         }
         else
@@ -224,7 +223,7 @@ void CAutoTerrain::paint(CRenderContext* pContext)
     static int iBuildCounter = 0;
     static int iGarbageCounter = 0;
 
-    buildRoot();
+    buildRoot(pContext);
 
     iBuildCounter++;
 
@@ -281,14 +280,19 @@ void CAutoTerrain::postUpdate(double dDeltaTime)
 /*!
     Builds the root of the terrain.
 */
-void CAutoTerrain::buildRoot()
+void CAutoTerrain::buildRoot(CRenderContext* pContext)
 {
     if (!m_pRoot)
     {
+        double startLat = 0.0;
+        double startLon = pContext->camera()->getGeoloc().Longitude;
+        startLon = startLon - fmod(startLon, 90.0);
+        startLon = Angles::clipAngleDegreePIMinusPI(startLon);
+
         m_pRoot = QSP<CWorldChunk>(new CWorldChunk(m_pScene, this, this));
         m_pRoot->setInheritTransform(false);
         m_pRoot->CComponent::setParent(QSP<CComponent>(this));
-        m_pRoot->setGeoloc(CGeoloc(0.0, 180.0, 0.0));
+        m_pRoot->setGeoloc(CGeoloc(startLat, startLon, 0.0));
         m_pRoot->computeWorldTransform();
         m_pRoot->setSize(CGeoloc(LAT_MAX * 2.0, 360.0, 0.0));
     }

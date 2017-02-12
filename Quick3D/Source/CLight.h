@@ -24,7 +24,7 @@ class QUICK3D_EXPORT CLight : public CCamera
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //! Retourne une nouvelle instance de cet objet
@@ -69,10 +69,10 @@ public:
     bool castShadows() const { return m_bCastShadows; }
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes héritées
+    // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne le nom de classe de cet objet
+    //! Returns this object's class name
     virtual QString getClassName() const { return ClassName_CLight; }
 
     //! Charge les paramètres de cet objet
@@ -82,14 +82,14 @@ public:
     virtual bool isLight() const { return true; }
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //!
     CLight& operator = (const CLight& target);
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:

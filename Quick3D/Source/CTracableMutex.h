@@ -14,7 +14,7 @@ class QUICK3D_EXPORT CTracableMutex
 {
 public:
 
-	//! Constructeur par défaut
+	//! Default constructor
 	CTracableMutex();
 
 	//! Constructeur avec paramètres
@@ -23,7 +23,7 @@ public:
 	//! Constructeur de copie
 	CTracableMutex(const CTracableMutex&);
 
-	//! Destructeur
+	//! Destructor
 	~CTracableMutex();
 
 	//! Opérateur de copie

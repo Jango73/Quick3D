@@ -17,7 +17,7 @@ public:
     CVector3 Up;
     CVector3 Right;
 
-    //! Constructeur par défaut
+    //! Default constructor
     CAxis ()
         : Front(0.0, 0.0, 1.0)
         , Up(0.0, 1.0, 0.0)

@@ -14,7 +14,7 @@ class QUICK3D_EXPORT CSkyBox : public CBox
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //!
@@ -24,10 +24,10 @@ public:
     virtual ~CSkyBox();
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes héritées
+    // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne le nom de classe de cet objet
+    //! Returns this object's class name
     virtual QString getClassName() const { return ClassName_CSkyBox; }
 
     //!
@@ -40,7 +40,7 @@ public:
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //!

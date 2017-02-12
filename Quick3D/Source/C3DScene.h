@@ -43,13 +43,13 @@ class QUICK3D_EXPORT C3DScene : public CDumpable
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //! Constructeur
     C3DScene(bool bForDisplay = true);
 
-    //! Destructeur
+    //! Destructor
     virtual ~C3DScene();
 
     //-------------------------------------------------------------------------------------------------
@@ -202,7 +202,7 @@ public:
     bool normalsOnly() { return m_bNormalsOnly; }
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //!
@@ -263,7 +263,7 @@ public:
     virtual void dump(QTextStream& stream, int iIdent);
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes protégées
+    // Protected methods
     // Protected methods
     //-------------------------------------------------------------------------------------------------
 
@@ -276,7 +276,7 @@ protected:
     static void getLightsByTagRecurse(QVector<QSP<CLight> >& vLights, const QString &sTag, QSP<CComponent> pComponent);
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 public:

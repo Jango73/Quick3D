@@ -15,12 +15,12 @@ class QUICK3D_EXPORT CCone : public CMesh
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //! Constructeur d'après une scène
     CCone(C3DScene* pScene, double dMaxDistance, int iNumSegments, int iNumHeightSegments, double dHeight, double dBaseRadius, double dApexRadius);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CCone();
 };

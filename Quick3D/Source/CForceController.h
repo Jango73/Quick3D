@@ -15,7 +15,7 @@ class QUICK3D_EXPORT CForceController : public CStandardController
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //! Retourne une nouvelle instance de cet objet
@@ -24,7 +24,7 @@ public:
     //! Constructeur d'après une scène
     CForceController(C3DScene* pScene);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CForceController();
 
     //-------------------------------------------------------------------------------------------------
@@ -32,14 +32,14 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes héritées
+    // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne le nom de classe de cet objet
+    //! Returns this object's class name
     virtual QString getClassName() const { return ClassName_CForceController; }
 
     //! Met l'objet à jour d'après le temps écoulé depuis la dernière image
@@ -55,7 +55,7 @@ public:
     virtual void q3dEvent(CQ3DEvent* event);
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:

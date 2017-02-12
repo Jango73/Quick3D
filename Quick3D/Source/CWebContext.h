@@ -19,20 +19,20 @@ class QUICK3D_EXPORT CWebContext
 public:
 
 	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
+	// Constructors and destructor
 	//-------------------------------------------------------------------------------------------------
 
-    //! Constructeur par défaut
+    //! Default constructor
     CWebContext();
 
 	//! Constructeur
     CWebContext(QTcpSocket* pSocket, QString sPeer, QString sHost, QStringList lPath, QMap<QString, QString> mArguments);
 
-	//! Destructeur
+	//! Destructor
 	virtual ~CWebContext();
 
 	//-------------------------------------------------------------------------------------------------
-	// Propriétés
+	// Properties
 	//-------------------------------------------------------------------------------------------------
 
 public:

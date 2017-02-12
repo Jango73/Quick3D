@@ -8,7 +8,7 @@
 using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
-// Propriétés statiques
+// Properties statiques
 
 GLuint CGLMeshData::m_iCurrentVBO = 0;
 

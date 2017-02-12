@@ -22,7 +22,7 @@ public:
     bool	m_bIsIdentity;
     double	Data [4][4];
 
-    //! Constructeur par défaut
+    //! Default constructor
     inline CMatrix4()
         : m_bIsIdentity(false)
     {

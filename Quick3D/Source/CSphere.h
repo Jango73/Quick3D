@@ -13,12 +13,12 @@ class QUICK3D_EXPORT CSphere : public CMesh
 public:
 
 	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
+	// Constructors and destructor
 	//-------------------------------------------------------------------------------------------------
 
 	//! Constructeur d'après une scène
 	CSphere(C3DScene* pScene, double dMaxDistance, int iNumSegments);
 
-	//! Destructeur
+	//! Destructor
 	virtual ~CSphere();
 };

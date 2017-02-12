@@ -29,17 +29,17 @@ class QUICK3D_EXPORT CGLWidgetScene : public QGLWidget, public C3DScene
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //! Constructeur
     CGLWidgetScene(bool bForDisplay = true);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CGLWidgetScene();
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes héritées
+    // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
     //! Rendu
@@ -64,7 +64,7 @@ public:
     virtual void makeCurrentRenderingContext();
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:

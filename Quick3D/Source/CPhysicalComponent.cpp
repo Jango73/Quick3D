@@ -91,7 +91,7 @@ void CPhysicalComponent::loadParameters(const QString& sBaseFile, CXMLNode xComp
 {
     CComponent::loadParameters(sBaseFile, xComponent);
 
-    // Propriétés physiques
+    // Properties physiques
 
     CXMLNode xPhysicsNode = xComponent.getNodeByTagName(ParamName_Physics);
     CXMLNode xCenterOfMassNode = xComponent.getNodeByTagName(ParamName_CenterOfMass);

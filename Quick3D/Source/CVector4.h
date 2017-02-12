@@ -17,7 +17,7 @@ namespace Math
 		double Z;
 		double W;
 
-		//! Constructeur par défaut
+		//! Default constructor
 		inline Vector4 ()
 		{
 			X = 0.0;

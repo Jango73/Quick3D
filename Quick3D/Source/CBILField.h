@@ -16,13 +16,13 @@ class QUICK3D_EXPORT CBILField : public CHeightField
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //! Constructeur avec paramètres
     CBILField(CXMLNode xParameters, const QString& sPathToBILFiles = "", double dValueForNoData = 0.0);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CBILField();
 
     //-------------------------------------------------------------------------------------------------
@@ -43,7 +43,7 @@ public:
     virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, bool bForPhysics = true);
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //!
@@ -53,7 +53,7 @@ public:
     void addChunk(CBILData* pData);
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes protégées
+    // Protected methods
     //-------------------------------------------------------------------------------------------------
 
 protected:
@@ -65,7 +65,7 @@ protected:
     void collectGarbage();
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:

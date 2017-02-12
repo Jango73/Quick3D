@@ -21,13 +21,13 @@ class QUICK3D_EXPORT CParticleSystem : public CMesh
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //! Constructeur
     CParticleSystem(C3DScene* pScene);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CParticleSystem();
 
     //!

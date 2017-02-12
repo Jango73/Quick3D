@@ -23,15 +23,15 @@ class QUICK3D_EXPORT CXMLNode
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Constructeur par défaut
+    //! Default constructor
     //! Default constructor
     CXMLNode();
 
-    //! Destructeur
+    //! Destructor
     //! Destructor
     virtual ~CXMLNode();
 
@@ -83,7 +83,7 @@ public:
     QVector<CXMLNode> getNodesByTagName(QString sTagName) const;
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle haut niveau
+    // Control methods haut niveau
     // High level control methods
     //-------------------------------------------------------------------------------------------------
 
@@ -116,7 +116,7 @@ public:
     bool saveJSONToFile(const QString& sFileName);
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle bas niveau
+    // Control methods bas niveau
     // Low level control methods
     //-------------------------------------------------------------------------------------------------
 
@@ -158,7 +158,7 @@ public:
     void merge(const CXMLNode& target);
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés statiques publiques
+    // Properties statiques publiques
     // Static public properties
     //-------------------------------------------------------------------------------------------------
 
@@ -168,7 +168,7 @@ public:
     static const QString sExtension_JSON;
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     // Properties
     //-------------------------------------------------------------------------------------------------
 

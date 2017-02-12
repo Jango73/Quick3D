@@ -40,7 +40,7 @@ class QUICK3D_EXPORT CMaterial : public QObject, public QSharedData, public ILoa
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
@@ -128,7 +128,7 @@ public:
     virtual Math::CVector2 texCoords(const CGeoloc& gPosition, int iLevel);
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes héritées
+    // Inherited methods
     // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
@@ -143,7 +143,7 @@ public:
     virtual void clearLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     // Control methods
     //-------------------------------------------------------------------------------------------------
 
@@ -191,7 +191,7 @@ public:
     static Math::Vector4 white_x5()	{ return Math::Vector4(5.0, 5.0, 5.0, 1.0); }
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     // Properties
     //-------------------------------------------------------------------------------------------------
 

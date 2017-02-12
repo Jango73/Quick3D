@@ -14,10 +14,10 @@ class QUICK3D_EXPORT CParticle
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Constructeur par défaut
+    //! Default constructor
     CParticle();
 
     //! Constructeur avec paramètres

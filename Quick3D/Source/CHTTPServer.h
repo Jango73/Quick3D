@@ -93,17 +93,17 @@ class QUICK3D_EXPORT CHTTPServer : public QTcpServer
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //! Constructeur
     CHTTPServer(quint16 port, QObject* parent = 0);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CHTTPServer();
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //! Ajoute un élément à la liste des répertoires autorisés en accès par un client
@@ -131,7 +131,7 @@ public:
     virtual void handleSocketDisconnection(QTcpSocket* pSocket);
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes statiques
+    // Static methods
     //-------------------------------------------------------------------------------------------------
 
     //! Encode une chaîne au format URL (remplace les caractères ASCII par leur %XX correspondant)
@@ -141,7 +141,7 @@ public:
     static QString decodeURLParameters(QString sText);
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes protégées
+    // Protected methods
     //-------------------------------------------------------------------------------------------------
 
 protected:
@@ -241,7 +241,7 @@ public:
     };
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:

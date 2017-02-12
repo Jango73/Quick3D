@@ -16,13 +16,13 @@ class QUICK3D_EXPORT CImageFilter_Matrix : public CImageFilter
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //! Constructeur d'après une matrice 3x3
     CImageFilter_Matrix(const QMatrix3x3& mMatrix);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CImageFilter_Matrix();
 
     //-------------------------------------------------------------------------------------------------
@@ -34,17 +34,17 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne le nom de classe de cet objet
+    //! Returns this object's class name
     virtual QString getClassName() const { return "CImageFilter_Matrix"; }
 
     //!
     virtual void process(QImage& imgImage);
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:

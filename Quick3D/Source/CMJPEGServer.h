@@ -35,7 +35,7 @@ public:
     //! Constructeur
     CMJPEGThread(CMJPEGServer* pParent);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CMJPEGThread();
 
     virtual void run();
@@ -57,20 +57,20 @@ class QUICK3D_EXPORT CMJPEGServer : public CHTTPServer
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Constructeur par défaut
+    //! Default constructor
     CMJPEGServer(int iPort);
 
     //! Constructeur pour sortie sur fichier
     CMJPEGServer(QString sFileName);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CMJPEGServer();
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //!
@@ -98,7 +98,7 @@ public:
     virtual void handleSocketDisconnection(QTcpSocket* pSocket);
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes statiques
+    // Static methods
     //-------------------------------------------------------------------------------------------------
 
     //!
@@ -113,7 +113,7 @@ protected slots:
     void onTimeout();
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes protégées
+    // Protected methods
     //-------------------------------------------------------------------------------------------------
 
 protected:
@@ -128,7 +128,7 @@ protected:
     static QString getImageDescriptor(int iSize);
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:

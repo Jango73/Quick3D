@@ -13,17 +13,17 @@ class QUICK3D_EXPORT CRain : public CParticleSystem
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //! Constructeur d'après une scène
     CRain(C3DScene* pScene);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CRain();
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes héritées
+    // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
     //! Met l'objet à jour d'après le temps écoulé depuis la dernière image

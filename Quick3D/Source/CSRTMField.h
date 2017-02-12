@@ -19,13 +19,13 @@ class QUICK3D_EXPORT CSRTMField : public CHeightField
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //! Constructeur avec paramètres
     CSRTMField(CXMLNode xParameters, const QString& sPathToSRTMFiles = "", double dValueForNoData = -2000.0);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CSRTMField();
 
     //-------------------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ public:
     virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, bool bForPhysics = true);
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //!
@@ -56,7 +56,7 @@ public:
     void addChunk(CSRTMData* pData);
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes protégées
+    // Protected methods
     //-------------------------------------------------------------------------------------------------
 
 protected:
@@ -65,7 +65,7 @@ protected:
     void parseSRTMFiles();
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:

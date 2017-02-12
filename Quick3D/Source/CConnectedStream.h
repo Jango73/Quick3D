@@ -14,13 +14,13 @@ class QUICK3D_EXPORT CConnectedStream : public QIODevice
 public:
 
 	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
+	// Constructors and destructor
 	//-------------------------------------------------------------------------------------------------
 
-	//! Constructeur par défaut
+	//! Default constructor
 	CConnectedStream();
 
-	//! Destructeur
+	//! Destructor
 	virtual ~CConnectedStream();
 
 	//-------------------------------------------------------------------------------------------------
@@ -43,7 +43,7 @@ signals:
 	void disconnected();
 
 	//-------------------------------------------------------------------------------------------------
-	// Propriétés
+	// Properties
 	//-------------------------------------------------------------------------------------------------
 
 protected:

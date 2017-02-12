@@ -33,7 +33,7 @@ public:
         return s_pInstance != NULL;
     }
 
-	//! Destructeur de l'instance de la classe.
+	//! Destructor de l'instance de la classe.
 	static void killInstance()
 	{
 		QMutexLocker locker(&s_mutex);

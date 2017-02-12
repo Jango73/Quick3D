@@ -59,7 +59,7 @@ public:
     const QVector<int>& getFaceIndices() const { return m_vFaceIndices; }
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //!
@@ -100,7 +100,7 @@ class QUICK3D_EXPORT CMeshGeometry : public QSharedData, public CDumpable
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //!
@@ -178,14 +178,14 @@ public:
     int triangleCountForFaces(const QVector<int>& vFaceIndices);
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes héritées
+    // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
     //! Dump du contenu dans un flux
     virtual void dump(QTextStream& stream, int iIdent);
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //!
@@ -277,7 +277,7 @@ public:
     virtual Math::RayTracingResult intersect(CComponent* pContainer, Math::CRay3 ray);
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes protégées
+    // Protected methods
     //-------------------------------------------------------------------------------------------------
 
 protected:
@@ -286,7 +286,7 @@ protected:
     Math::RayTracingResult intersectRecurse(CComponent* pContainer, CMeshPartition& mpPartition, Math::CRay3 ray);
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:

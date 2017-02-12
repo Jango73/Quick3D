@@ -50,7 +50,7 @@ public:
     CVector3 vOrigin;
     CVector3 vNormal;
 
-    //! Constructeur par défaut
+    //! Default constructor
     inline CRay3 ()
     {
     }

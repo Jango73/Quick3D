@@ -22,7 +22,7 @@ namespace Math
 		double X;
 		double Y;
 
-		//! Constructeur par défaut
+		//! Default constructor
 		inline CVector2 ()
 		{
 			X = 0.0f;

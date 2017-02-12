@@ -25,7 +25,7 @@ public:
     double Y;
     double Z;
 
-    //! Constructeur par défaut
+    //! Default constructor
     inline CVector3 ()
     {
         X = 0.0;

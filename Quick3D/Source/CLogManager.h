@@ -69,16 +69,16 @@ class QUICK3D_EXPORT CLogManager : public QObject, public CSingleton<CLogManager
 public:
 
 	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
+	// Constructors and destructor
 	//-------------------------------------------------------------------------------------------------
 
-	//! Constructeur par défaut
+	//! Default constructor
 	CLogManager();
 
 	//! Constructeur avec nom de fichier
 	CLogManager(QString sPath, QString sFileName);
 
-	//! Destructeur
+	//! Destructor
 	virtual ~CLogManager();
 
 	//-------------------------------------------------------------------------------------------------
@@ -111,7 +111,7 @@ public:
 	QString getFileName() const;
 
 	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
+	// Control methods
 	//-------------------------------------------------------------------------------------------------
 
 	//! Initialise le logger
@@ -130,7 +130,7 @@ public:
 	virtual void flush(); // Permet de forcer l'écriture du log sur le disque (à ne faire que dans des cas exceptionnels)
 
 	//-------------------------------------------------------------------------------------------------
-	// Méthodes protégées
+	// Protected methods
 	//-------------------------------------------------------------------------------------------------
 
 protected:
@@ -145,7 +145,7 @@ protected:
 	void handleRollingCopies();
 
 	//-------------------------------------------------------------------------------------------------
-	// Propriétés
+	// Properties
 	//-------------------------------------------------------------------------------------------------
 
 protected:

@@ -16,10 +16,10 @@ class QUICK3D_EXPORT CSphericalTextureSet
 public:
 
 	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
+	// Constructors and destructor
 	//-------------------------------------------------------------------------------------------------
 
-	//! Constructeur par défaut
+	//! Default constructor
 	CSphericalTextureSet();
 
 	//! Constructeur avec paramètres
@@ -76,7 +76,7 @@ public:
     const QVector<QVector<QImage> >& images() const { return m_vImages; }
 
 	//-------------------------------------------------------------------------------------------------
-	// Propriétés
+	// Properties
 	//-------------------------------------------------------------------------------------------------
 
 protected:
@@ -96,7 +96,7 @@ class QUICK3D_EXPORT CImageUtilities
 public:
 
 	//-------------------------------------------------------------------------------------------------
-	// Méthodes statiques
+	// Static methods
 	//-------------------------------------------------------------------------------------------------
 
 	//! Créé un jeu de textures à mapper sur une sphère d'après une image panoramique

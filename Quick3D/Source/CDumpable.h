@@ -17,7 +17,7 @@ public:
     //! Constructeur
     CDumpable();
 
-    //! Destructeur
+    //! Destructor
     virtual ~CDumpable();
 
     //! Dump du contenu dans un flux

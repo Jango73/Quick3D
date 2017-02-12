@@ -27,12 +27,12 @@ class QUICK3D_EXPORT CTimeSampler : public QObject, public CSingleton<CTimeSampl
 
 public:
 
-	//! Constructeur par défaut
+	//! Default constructor
 	CTimeSampler();
 
 	CTimeSampler(CLogManager* pLogger);
 
-	//! Destructeur
+	//! Destructor
 	virtual ~CTimeSampler();
 
 	void startSample(const QString& sName);

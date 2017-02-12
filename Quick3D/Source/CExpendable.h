@@ -15,13 +15,13 @@ class QUICK3D_EXPORT CExpendable
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //! Constructeur d'après une scène
     CExpendable(int iSecondsToExpendability = 60);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CExpendable();
 
     //-------------------------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ public:
     virtual bool isReallyExpendable() const;
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:

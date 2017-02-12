@@ -36,7 +36,7 @@ public:
     double          Altitude;
     EGeolocDatum    Datum;
 
-    //! Constructeur par défaut
+    //! Default constructor
     CGeoloc ();
 
     //! Constructeur par composants
@@ -54,7 +54,7 @@ public:
     //! Le repère de vPosition est l'axe NOLL (North-Oriented Local-level) au niveau de gReference
     CGeoloc (const CGeoloc& gReference, const Math::CVector3& vPosition);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CGeoloc ();
 
     //! Opérateur de copie

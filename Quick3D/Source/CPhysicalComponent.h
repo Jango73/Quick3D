@@ -30,7 +30,7 @@ public:
     };
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //! Retourne une nouvelle instance de cet objet
@@ -39,7 +39,7 @@ public:
     //! Constructeur d'après une scène
     CPhysicalComponent(C3DScene* pScene);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CPhysicalComponent();
 
     //-------------------------------------------------------------------------------------------------
@@ -114,7 +114,7 @@ public:
     Math::CVector3 velocityVectorAngles() const;
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //! Opérateur d'assignation
@@ -158,7 +158,7 @@ public:
     void addTorque_kg(Math::CVector3 vForce_kg);
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes statiques
+    // Static methods
     //-------------------------------------------------------------------------------------------------
 
     //!
@@ -168,7 +168,7 @@ public:
     static void computeCollisionsForComponent(QSP<CPhysicalComponent> pComponent, QVector<QSP<CComponent> >& vOtherComponents, double dDeltaTimeS);
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:

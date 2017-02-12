@@ -17,16 +17,16 @@ class QUICK3D_EXPORT CComponentLoader : public CSingleton<CComponentLoader>
     friend class CSingleton<CComponentLoader>;
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
 protected:
 
-    //! Constructeur par défaut
+    //! Default constructor
     CComponentLoader();
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
 public:

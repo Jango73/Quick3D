@@ -16,7 +16,7 @@ namespace Math
 		double dDistance;
 		CVector3 vNormal;
 
-		//! Constructeur par défaut
+		//! Default constructor
 		inline CPlane3 ()
 		{
 			dDistance = 0.0;

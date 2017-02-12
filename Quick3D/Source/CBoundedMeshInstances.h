@@ -15,7 +15,7 @@ class QUICK3D_EXPORT CBoundedMeshInstances : public CComponent
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //!
@@ -39,7 +39,7 @@ public:
     const QVector<CMeshInstance*>& meshes() { return m_vMeshes; }
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes héritées
+    // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
     //!
@@ -58,7 +58,7 @@ public:
     virtual void paint(CRenderContext* pContext) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //! Ajoute un mesh dans ce délimiteur

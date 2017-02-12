@@ -21,10 +21,10 @@ class QUICK3D_EXPORT CPluginInterface : public CSingleton<CPluginInterface>
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Constructeur par défaut
+    //! Default constructor
     CPluginInterface();
 
     //!

@@ -31,7 +31,7 @@ public:
     bool containsWorker(CWorker* pWorker);
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //! Ajoute un travailleur au pool
@@ -41,7 +41,7 @@ public:
     void removeWorker(CWorker* pWorker);
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
 protected:
@@ -49,14 +49,14 @@ protected:
     //! Conctructeur par défaut
     CWorkerManager();
 
-    //! Destructeur
+    //! Destructor
     virtual ~CWorkerManager();
 
     //! Implémentation de la méthode run() de QThread
     virtual void run();
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:

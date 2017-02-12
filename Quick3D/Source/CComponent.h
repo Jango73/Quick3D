@@ -79,7 +79,7 @@ class QUICK3D_EXPORT CComponent : public QSharedData, public CNamed, public CPar
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //! Retourne une nouvelle instance de cet objet
@@ -88,7 +88,7 @@ public:
     //! Constructeur d'après une scène
     CComponent(C3DScene* pScene);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CComponent();
 
     //-------------------------------------------------------------------------------------------------
@@ -256,7 +256,7 @@ public:
     static int getNumComponents() { return m_iNumComponents; }
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //! Opérateur d'assignation
@@ -338,11 +338,11 @@ public:
     void copyTransform(const CComponent* pTarget);
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes statiques
+    // Static methods
     //-------------------------------------------------------------------------------------------------
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 private:

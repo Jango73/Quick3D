@@ -19,7 +19,7 @@ class QUICK3D_EXPORT CTankController : public CForceController
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //! Retourne une nouvelle instance de cet objet
@@ -28,7 +28,7 @@ public:
     //! Constructeur d'après une scène
     CTankController(C3DScene* pScene);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CTankController();
 
     //-------------------------------------------------------------------------------------------------
@@ -36,14 +36,14 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes héritées
+    // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne le nom de classe de cet objet
+    //! Returns this object's class name
     virtual QString getClassName() const { return ClassName_CTankController; }
 
     //! Charge les paramètres de cet objet
@@ -65,7 +65,7 @@ public:
     virtual void keyReleaseEvent(QKeyEvent *event);
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:

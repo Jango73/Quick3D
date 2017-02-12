@@ -23,17 +23,17 @@ class QUICK3D_EXPORT CZip
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Constructeur par défaut
+    //! Default constructor
     CZip(const QString& sFileName);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CZip();
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //!

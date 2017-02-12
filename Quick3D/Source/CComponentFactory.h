@@ -21,7 +21,7 @@ class QUICK3D_EXPORT CComponentFactory : public CSingleton<CComponentFactory>
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //!
@@ -31,7 +31,7 @@ public:
     virtual ~CComponentFactory();
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //! Enregistre les composants du noyau
@@ -44,7 +44,7 @@ public:
     CComponent* instanciateComponent(QString sClassName, C3DScene* pScene);
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:

@@ -17,13 +17,13 @@ class QUICK3D_EXPORT CServoAnimatorFrame : public CAnimatorFrame
 public:
 
 	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
+	// Constructors and destructor
 	//-------------------------------------------------------------------------------------------------
 
-	//! Constructeur par défaut
+	//! Default constructor
 	CServoAnimatorFrame();
 
-	//! Destructeur
+	//! Destructor
 	virtual ~CServoAnimatorFrame();
 
 	//-------------------------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ public:
 	//-------------------------------------------------------------------------------------------------
 
 	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
+	// Control methods
 	//-------------------------------------------------------------------------------------------------
 
 	//! Calcule une valeur cible selon une valeur courante
@@ -51,7 +51,7 @@ public:
 	virtual Math::CVector3 getCurrentValue() const;
 
 	//-------------------------------------------------------------------------------------------------
-	// Méthodes protégées
+	// Protected methods
 	//-------------------------------------------------------------------------------------------------
 
 protected:
@@ -60,7 +60,7 @@ protected:
 	double computeSingleAxis(double dDeltaTime, double dCurrentValue, double dTargetValue, double dSpeed);
 
 	//-------------------------------------------------------------------------------------------------
-	// Propriétés
+	// Properties
 	//-------------------------------------------------------------------------------------------------
 
 protected:

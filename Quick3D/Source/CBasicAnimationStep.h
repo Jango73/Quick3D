@@ -12,16 +12,16 @@ class QUICK3D_EXPORT CBasicAnimationStep
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Constructeur par défaut
+    //! Default constructor
     CBasicAnimationStep();
 
     //! Constructeur avec paramètres
     CBasicAnimationStep(Math::CVector3 vTarget, Math::CVector3 vSpeed, Math::CVector3 vAcceleration, double dDuration);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CBasicAnimationStep();
 
     //-------------------------------------------------------------------------------------------------
@@ -57,14 +57,14 @@ public:
     double duration() const { return m_dDuration; }
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //!
     CBasicAnimationStep& operator = (const CBasicAnimationStep& target);
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:

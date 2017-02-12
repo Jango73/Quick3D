@@ -61,11 +61,11 @@ protected:
     //! Conctructeur
     CQuick3DUtilities();
 
-    //! Destructeur
+    //! Destructor
     virtual ~CQuick3DUtilities();
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
     CGLWidgetScene*     m_pCMScene;

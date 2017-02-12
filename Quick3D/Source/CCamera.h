@@ -80,7 +80,7 @@ class QUICK3D_EXPORT CCamera : public CPhysicalComponent
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //! Retourne une nouvelle instance de cet objet
@@ -92,7 +92,7 @@ public:
     //! Constructeur de copie
     CCamera(const CCamera& target);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CCamera();
 
     //-------------------------------------------------------------------------------------------------
@@ -134,10 +134,10 @@ public:
     virtual double getMaxDistance() const { return m_dMaxDistance; }
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes héritées
+    // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne le nom de classe de cet objet
+    //! Returns this object's class name
     virtual QString getClassName() const { return ClassName_CCamera; }
 
     //! Retourne vrai si cet objet est une caméra
@@ -147,7 +147,7 @@ public:
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //! Opérateur d'assignation
@@ -198,7 +198,7 @@ public:
     CGeoZone::EGeoZoneFlag categorizePointFromZones(const QVector<CGeoZone>& vZones, Math::CVector2 vPoint);
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:

@@ -19,10 +19,10 @@ class QUICK3D_EXPORT CVertex
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Constructeur par défaut
+    //! Default constructor
     CVertex();
 
     //! Constructeur avec coordonnées de position et de texture mapping
@@ -31,7 +31,7 @@ public:
     //! Constructeur de copie
     CVertex(const CVertex&);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CVertex();
 
     //-------------------------------------------------------------------------------------------------
@@ -85,7 +85,7 @@ public:
     double altitude() const { return m_dAltitude; }
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes statiques
+    // Static methods
     //-------------------------------------------------------------------------------------------------
 
     //! Retourne l'offset mémoire de la propriété m_vPosition
@@ -113,14 +113,14 @@ public:
     static int diffTexWeight_6_7_8Offset() { return VTX_OFFSET_OF(CVertex, m_vDiffTexWeight_6_7_8); }
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //! Opérateur de copie
     CVertex& operator=(const CVertex& target);
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 public:

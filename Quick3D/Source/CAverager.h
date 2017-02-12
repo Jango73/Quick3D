@@ -15,13 +15,13 @@ class CAverager
 {
 public:
 
-    //! Constructeur par défaut
+    //! Default constructor
     CAverager(int iMaxValues = 5)
         : m_iMaxValues(iMaxValues)
     {
     }
 
-    //! Destructeur
+    //! Destructor
     virtual ~CAverager()
     {
     }
@@ -74,14 +74,14 @@ class CRollingAverager
 {
 public:
 
-    //! Constructeur par défaut
+    //! Default constructor
     CRollingAverager(int numSamples)
         : m_iNumSamples(numSamples)
         , m_tAverage((T) 0)
     {
     }
 
-    //! Destructeur
+    //! Destructor
     virtual ~CRollingAverager()
     {
     }

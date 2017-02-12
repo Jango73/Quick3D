@@ -11,13 +11,13 @@ class QUICK3D_EXPORT CPIDController
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Constructeur par défaut
+    //! Default constructor
     CPIDController(double dNewProportional, double dNewIntegral, double dNewDerivative);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CPIDController();
 
     //-------------------------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ public:
     void update(double dCurrentValue, double DeltaTimeMillis);
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:

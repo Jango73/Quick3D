@@ -23,7 +23,7 @@ class QUICK3D_EXPORT CAnimator : public CController
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //! Retourne l'instanciateur de cet objet
@@ -32,7 +32,7 @@ public:
     //! Constructeur d'après une scène
     CAnimator(C3DScene* pScene);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CAnimator();
 
     //-------------------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ public:
     bool isPlaying() const { return m_bIsPlaying; }
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //!
@@ -56,10 +56,10 @@ public:
     virtual void stop();
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes héritées
+    // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne le nom de classe de cet objet
+    //! Returns this object's class name
     virtual QString getClassName() const { return ClassName_CAnimator; }
 
     //! Charge les paramètres de cet objet d'après le noeud XML fourni
@@ -69,7 +69,7 @@ public:
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:

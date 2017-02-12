@@ -25,7 +25,7 @@ class QUICK3D_EXPORT CGLMeshData
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
@@ -36,7 +36,7 @@ public:
     ~CGLMeshData();
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     // Control methods
     //-------------------------------------------------------------------------------------------------
 
@@ -44,7 +44,7 @@ public:
     void paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolute, QGLShaderProgram* pProgram, int iGLType);
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     // Properties
     //-------------------------------------------------------------------------------------------------
 

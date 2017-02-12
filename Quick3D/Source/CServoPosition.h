@@ -9,16 +9,16 @@ class QUICK3D_EXPORT CServoPosition
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Constructeur par défaut
+    //! Default constructor
     CServoPosition();
 
     //! Constructeur avec paramètres
     CServoPosition(double dMaximumAcceleration, double dMaximumVelocity, double dAccelerationFactor = 10.0, double dVelocityFactor = 2.0);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CServoPosition();
 
     //-------------------------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ public:
     double velocity() const { return m_dVelocity; }
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //!
@@ -67,7 +67,7 @@ public:
     void update(double dDeltaTime);
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:

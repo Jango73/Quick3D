@@ -35,7 +35,7 @@
 using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
-// Propriétés statiques
+// Properties statiques
 
 int CComponent::m_iNumComponents = 0;
 

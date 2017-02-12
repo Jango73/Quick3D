@@ -23,7 +23,7 @@ class QUICK3D_EXPORT CBuildings
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     CBuildings()
@@ -61,7 +61,7 @@ class QUICK3D_EXPORT CWorldTerrain : public CComponent, public CHeightField
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //!
@@ -97,7 +97,7 @@ public:
     QVector<QSP<CComponent> >& generators() { return m_vGenerators; }
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes héritées
+    // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
     //!
@@ -161,7 +161,7 @@ protected:
     Math::RayTracingResult intersectRecurse(QSP<CWorldChunk> pChunk, const Math::CRay3& ray) const;
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:

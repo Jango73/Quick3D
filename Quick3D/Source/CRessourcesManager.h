@@ -29,7 +29,7 @@ public:
     //! Conctructeur
     CRessourcesManager(C3DScene* pScene);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CRessourcesManager();
 
     //!

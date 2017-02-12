@@ -23,7 +23,7 @@ class QUICK3D_EXPORT CSocketStream : public CConnectedStream
 public:
 
 	//-------------------------------------------------------------------------------------------------
-	// Constructeurs et destructeur
+	// Constructors and destructor
 	//-------------------------------------------------------------------------------------------------
 
 	//! Constructeur avec paramètres
@@ -31,7 +31,7 @@ public:
 	//! sName = "n.n.n.n:pppp" Le flux sera client de l'adresse n.n.n.n:pppp
 	CSocketStream(const QString& sName, const QMap<QString, QString>& sParameters);
 
-	//! Destructeur
+	//! Destructor
 	virtual ~CSocketStream();
 
 	//-------------------------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ public:
 	QString getName() const { return m_sName; }
 
 	//-------------------------------------------------------------------------------------------------
-	// Méthodes de contrôle
+	// Control methods
 	//-------------------------------------------------------------------------------------------------
 
 	//! Appelée en interne pour démarrer en mode serveur
@@ -55,7 +55,7 @@ public:
 	bool hasConnections() const { return m_vClients.count() > 0; }
 
 	//-------------------------------------------------------------------------------------------------
-	// Méthodes héritées
+	// Inherited methods
 	//-------------------------------------------------------------------------------------------------
 
 	//! Lecture de données
@@ -81,7 +81,7 @@ protected slots:
 	void onSendOutput();
 
 	//-------------------------------------------------------------------------------------------------
-	// Méthodes protégées
+	// Protected methods
 	//-------------------------------------------------------------------------------------------------
 
 protected:
@@ -133,7 +133,7 @@ protected:
 	};
 
 	//-------------------------------------------------------------------------------------------------
-	// Propriétés
+	// Properties
 	//-------------------------------------------------------------------------------------------------
 
 protected:

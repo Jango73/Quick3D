@@ -25,7 +25,7 @@ class QUICK3D_EXPORT CBasicAnimator : public CAnimator
 public:
 
     //-------------------------------------------------------------------------------------------------
-    // Constructeurs et destructeur
+    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //! Retourne une nouvelle instance de cet objet
@@ -34,7 +34,7 @@ public:
     //! Constructeur d'après une scène
     CBasicAnimator(C3DScene* pScene);
 
-    //! Destructeur
+    //! Destructor
     virtual ~CBasicAnimator();
 
     //-------------------------------------------------------------------------------------------------
@@ -52,7 +52,7 @@ public:
     CAnimatorFrame* rotationFrame() { return m_pRotationFrame; }
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes de contrôle
+    // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //! Ajoute un pas de translation
@@ -62,10 +62,10 @@ public:
     void addRotationStep(CBasicAnimationStep value);
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes héritées
+    // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne le nom de classe de cet objet
+    //! Returns this object's class name
     virtual QString getClassName() const { return ClassName_CBasicAnimator; }
 
     //! Charge les paramètres de cet objet d'après le noeud XML fourni
@@ -75,7 +75,7 @@ public:
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
-    // Propriétés
+    // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:

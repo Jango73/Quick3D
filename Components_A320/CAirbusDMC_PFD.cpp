@@ -464,6 +464,8 @@ void CAirbusDMC::drawFMA(QPainter* pPainter, CTexture* pTexture, double dDeltaTi
 
         switch (eFG_LateralMode_alm)
         {
+            case almNone :
+                break;
             case almHeading :
                 sTextPart3_1 = "HDG";
                 break;

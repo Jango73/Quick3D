@@ -397,7 +397,5 @@ HEADERS  += \
     ../COTS/SFML-1.6/src/SFML/System/Win32/ThreadLocalImpl.hpp \
     Source/CWorldTerrain.h
 
-DISTFILES +=
-
 RESOURCES += \
     Quick3DShaders.qrc

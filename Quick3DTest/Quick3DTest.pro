@@ -25,9 +25,9 @@ QMAKE_CXXFLAGS += -Wno-reorder
 
 # Libraries
 CONFIG(debug, debug|release) {
-    LIBS += -L$$OUT_PWD/../Quick3D/debug/ -lQuick3D
+    LIBS += -L$$OUT_PWD/../Quick3D/bin -lQuick3D
 } else {
-    LIBS += -L$$OUT_PWD/../Quick3D/release/ -lQuick3D
+    LIBS += -L$$OUT_PWD/../Quick3D/bin -lQuick3D
 }
 
 CONFIG(debug, debug|release) {

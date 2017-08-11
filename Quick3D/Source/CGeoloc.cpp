@@ -1,6 +1,9 @@
 
-#include "GeoTools/geotrans.h"
-#include "GeoTools/geocent.h"
+// Foundations
+#include "geotrans.h"
+#include "geocent.h"
+
+// Application
 #include "CMatrix4.h"
 #include "CGeoloc.h"
 

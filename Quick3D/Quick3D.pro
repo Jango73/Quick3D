@@ -15,6 +15,7 @@ DEFINES += SFML_SYSTEM_EXPORTS
 DEFINES += SFML_WINDOW_EXPORTS
 INCLUDEPATH += $$PWD/../qt-plus/source/cpp
 INCLUDEPATH += $$PWD/../qt-plus/source/cpp/Web
+INCLUDEPATH += $$PWD/../qt-plus/source/cpp/GeoTools
 INCLUDEPATH += $$PWD/../COTS/SFML-1.6/include
 INCLUDEPATH += $$PWD/../COTS/unzip11
 INCLUDEPATH += $$PWD/../COTS/SFML-1.6/src
@@ -156,15 +157,6 @@ SOURCES += \
     Source/CWorkerManager.cpp \
     Source/CWorldChunk.cpp \
     Source/CZip.cpp \
-    GeoTools/coordcnv.cpp \
-    GeoTools/geocent.cpp \
-    GeoTools/geotrans.cpp \
-    GeoTools/mgrs.cpp \
-    GeoTools/polarst.cpp \
-    GeoTools/tranmerc.cpp \
-    GeoTools/ups.cpp \
-    GeoTools/utm.cpp \
-    GeoTools/UtmMgrs.cpp \
     ../COTS/zlib-1.2.6/adler32.c \
     ../COTS/zlib-1.2.6/compress.c \
     ../COTS/zlib-1.2.6/crc32.c \
@@ -351,15 +343,6 @@ HEADERS  += \
     Source/CQuaternion.h \
     Source/CMatrix4.h \
     Source/CAxis.h \
-    GeoTools/coordcnv.h \
-    GeoTools/geocent.h \
-    GeoTools/geotrans.h \
-    GeoTools/mgrs.h \
-    GeoTools/polarst.h \
-    GeoTools/tranmerc.h \
-    GeoTools/ups.h \
-    GeoTools/utm.h \
-    GeoTools/UtmMgrs.h \
     ../COTS/zlib-1.2.6/crc32.h \
     ../COTS/zlib-1.2.6/deflate.h \
     ../COTS/zlib-1.2.6/gzguts.h \

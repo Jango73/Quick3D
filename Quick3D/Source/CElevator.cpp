@@ -1,7 +1,9 @@
 
-// Application
-#include "CLogManager.h"
+// Foundations
+#include "CLogger.h"
 #include "CConsoleBoard.h"
+
+// Application
 #include "C3DScene.h"
 #include "CElevator.h"
 #include "CAircraft.h"

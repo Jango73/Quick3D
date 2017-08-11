@@ -1,6 +1,6 @@
 
 // Application
-#include "CLogManager.h"
+#include "CLogger.h"
 #include "CWorkerManager.h"
 #include "CRessourcesManager.h"
 #include "CTerrain.h"

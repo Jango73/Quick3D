@@ -8,7 +8,7 @@
 #include <GL/glu.h>
 
 // Fondations
-#include "CLogManager.h"
+#include "CLogger.h"
 
 // Application
 #include "C3DScene.h"

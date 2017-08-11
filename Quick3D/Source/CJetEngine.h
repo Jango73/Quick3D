@@ -4,7 +4,7 @@
 #include "quick3d_global.h"
 
 // Application
-#include "CLogManager.h"
+#include "CLogger.h"
 #include "CQ3DConstants.h"
 #include "CEngine.h"
 #include "CServoPosition.h"

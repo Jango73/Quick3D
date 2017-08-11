@@ -1,6 +1,8 @@
 
+// Foundations
+#include "CLogger.h"
+
 // Application
-#include "CLogManager.h"
 #include "C3DScene.h"
 #include "CGeometryGenerator.h"
 

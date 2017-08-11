@@ -1,6 +1,6 @@
 
 // Fondations
-#include "CLogManager.h"
+#include "CLogger.h"
 
 // Application
 #include "CWorker.h"

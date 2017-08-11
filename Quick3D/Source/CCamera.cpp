@@ -2,9 +2,9 @@
 // Qt
 #include <QColor>
 
-// Fondations
+// Foundations
+#include "CLogger.h"
 #include "CTimeSampler.h"
-#include "CLogManager.h"
 
 // Application
 #include "CCamera.h"

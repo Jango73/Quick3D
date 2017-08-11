@@ -3,8 +3,10 @@
 
 #include "quick3d_global.h"
 
-// Application
+// Fondations
 #include "CSingleton.h"
+
+// Quick3D
 #include "Interpolator.h"
 
 #define N_TO_KG	(0.101971621)

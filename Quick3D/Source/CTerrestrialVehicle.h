@@ -4,7 +4,7 @@
 #include "quick3d_global.h"
 
 // Fondations
-#include "CLogManager.h"
+#include "CLogger.h"
 
 // Application
 #include "CQ3DConstants.h"

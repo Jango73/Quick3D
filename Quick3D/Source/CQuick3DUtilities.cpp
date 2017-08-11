@@ -4,7 +4,7 @@
 #include <QPainter>
 
 // Application
-#include "CLogManager.h"
+#include "CLogger.h"
 #include "CTimeSampler.h"
 #include "CQuick3DUtilities.h"
 #include "CImageFilter_Matrix.h"

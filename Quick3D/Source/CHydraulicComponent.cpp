@@ -1,6 +1,8 @@
 
+// Foundations
+#include "CLogger.h"
+
 // Application
-#include "CLogManager.h"
 #include "CConsoleBoard.h"
 #include "C3DScene.h"
 #include "CHydraulicComponent.h"

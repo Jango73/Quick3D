@@ -1,6 +1,8 @@
 
+// Foundations
+#include "CLogger.h"
+
 // Application
-#include "CLogManager.h"
 #include "CVector3.h"
 #include "CGLWidgetScene.h"
 #include "CRessourcesManager.h"

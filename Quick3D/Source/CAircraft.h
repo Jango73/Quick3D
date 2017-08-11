@@ -3,8 +3,10 @@
 
 #include "quick3d_global.h"
 
+// Foundations
+#include "CLogger.h"
+
 // Application
-#include "CLogManager.h"
 #include "CQ3DConstants.h"
 #include "CVehicle.h"
 

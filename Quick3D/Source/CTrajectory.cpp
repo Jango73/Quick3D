@@ -1,6 +1,6 @@
 
 // Fondations
-#include "CLogManager.h"
+#include "CLogger.h"
 #include "Angles.h"
 #include "CAxis.h"
 

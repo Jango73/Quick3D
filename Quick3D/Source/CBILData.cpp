@@ -4,8 +4,8 @@
 #include <QTextStream>
 #include <QDataStream>
 
-// Fondations
-#include "CLogManager.h"
+// Foundations
+#include "CLogger.h"
 #include "Angles.h"
 #include "CZip.h"
 

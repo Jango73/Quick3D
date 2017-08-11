@@ -1,0 +1,3 @@
+[submodule "qt-plus"]
+	path = qt-plus
+	url = https://github.com/Jango73/qt-plus.git

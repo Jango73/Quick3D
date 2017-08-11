@@ -1,6 +1,6 @@
 
 // Application
-#include "CLogManager.h"
+#include "CLogger.h"
 #include "COBJLoader.h"
 #include "C3DScene.h"
 #include "CMesh.h"

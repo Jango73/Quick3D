@@ -5,7 +5,7 @@
 #include <QTextDocument>
 
 // Application
-#include "CLogManager.h"
+#include "CLogger.h"
 #include "CView.h"
 #include "CController.h"
 #include "CPerlin.h"

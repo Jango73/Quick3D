@@ -1,6 +1,6 @@
 
 // Application
-#include "CLogManager.h"
+#include "CLogger.h"
 #include "CGLExtension.h"
 #include "C3DScene.h"
 #include "CComponent.h"

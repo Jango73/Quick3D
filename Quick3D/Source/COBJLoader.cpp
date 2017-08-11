@@ -3,7 +3,7 @@
 #include <QTextStream>
 
 // Application
-#include "CLogManager.h"
+#include "CLogger.h"
 #include "C3DScene.h"
 #include "COBJLoader.h"
 

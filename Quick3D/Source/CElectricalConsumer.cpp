@@ -1,6 +1,6 @@
 
-// Fondations
-#include "CLogManager.h"
+// Foundations
+#include "CLogger.h"
 #include "CConsoleBoard.h"
 
 // Application

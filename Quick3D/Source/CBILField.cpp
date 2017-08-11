@@ -3,8 +3,8 @@
 #include <QDir>
 #include <QStringList>
 
-// Fondations
-#include "CLogManager.h"
+// Foundations
+#include "CLogger.h"
 
 // Application
 #include "CBILField.h"

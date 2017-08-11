@@ -1,18 +1,18 @@
 
 #include "CTimeSampler.h"
-#include "CLogManager.h"
+#include "CLogger.h"
 
 CTimeSampler::CTimeSampler()
     : m_tMutex(QMutex::Recursive)
     , m_tDumpTimer(this)
-    , m_pLogger(CLogManager::getInstance())
+    , m_pLogger(CLogger::getInstance())
 {
     connect(&m_tDumpTimer, SIGNAL(timeout()), this, SLOT(onTimer()));
 
     m_tDumpTimer.start(10000);
 }
 
-CTimeSampler::CTimeSampler(CLogManager* pLogger)
+CTimeSampler::CTimeSampler(CLogger* pLogger)
     : m_tMutex(QMutex::Recursive)
     , m_tDumpTimer(this)
     , m_pLogger(pLogger)
@@ -23,7 +23,7 @@ CTimeSampler::CTimeSampler(CLogManager* pLogger)
 
     if (m_pLogger == NULL)
     {
-        m_pLogger = CLogManager::getInstance();
+        m_pLogger = CLogger::getInstance();
     }
 }
 

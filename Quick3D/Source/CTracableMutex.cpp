@@ -1,6 +1,6 @@
 
 #include "CTracableMutex.h"
-#include "CLogManager.h"
+#include "CLogger.h"
 
 #include <QThread>
 

@@ -13,10 +13,15 @@ TEMPLATE = lib
 DEFINES += QUICK3D_LIB
 DEFINES += SFML_SYSTEM_EXPORTS
 DEFINES += SFML_WINDOW_EXPORTS
-INCLUDEPATH += ../COTS/SFML-1.6/include
-INCLUDEPATH += ../COTS/unzip11
-INCLUDEPATH += ../COTS/SFML-1.6/src
+INCLUDEPATH += $$PWD/../qt-plus/source/cpp
+INCLUDEPATH += $$PWD/../qt-plus/source/cpp/Web
+INCLUDEPATH += $$PWD/../COTS/SFML-1.6/include
+INCLUDEPATH += $$PWD/../COTS/unzip11
+INCLUDEPATH += $$PWD/../COTS/SFML-1.6/src
 LIBS += -lopengl32 -luser32 -lgdi32 -lwinmm
+DESTDIR = $$PWD/bin
+MOC_DIR = $$PWD/moc
+OBJECTS_DIR = $$PWD/obj
 
 # C++ Flags
 QMAKE_CXXFLAGS += -Wno-invalid-offsetof
@@ -27,6 +32,12 @@ QMAKE_CXXFLAGS += -Wno-reorder
 helpfile = Quick3D.qdocconf
 
 QMAKE_POST_LINK += qdoc $$quote($$shell_path($$helpfile)) $$escape_expand(\\n\\t)
+
+CONFIG(debug, debug|release) {
+    LIBS += -L$$PWD/../qt-plus/bin -lqt-plusd
+} else {
+    LIBS += -L$$PWD/../qt-plus/bin -lqt-plus
+}
 
 # Code
 SOURCES += \
@@ -53,7 +64,6 @@ SOURCES += \
     Source/CComponentFactory.cpp \
     Source/CComponentLoader.cpp \
     Source/CCone.cpp \
-    Source/CConnectedStream.cpp \
     Source/CConsoleBoard.cpp \
     Source/CController.cpp \
     Source/CDumpable.cpp \
@@ -87,15 +97,12 @@ SOURCES += \
     Source/CJetEngine.cpp \
     Source/CJoystick.cpp \
     Source/CLight.cpp \
-    Source/CLogManager.cpp \
     Source/CMan.cpp \
     Source/CMaterial.cpp \
     Source/CMesh.cpp \
     Source/CMeshByMaterial.cpp \
     Source/CMeshGeometry.cpp \
     Source/CMeshInstance.cpp \
-    Source/CMJPEGClient.cpp \
-    Source/CMJPEGServer.cpp \
     Source/CNamed.cpp \
     Source/COBJLoader.cpp \
     Source/CParented.cpp \
@@ -118,7 +125,6 @@ SOURCES += \
     Source/CServoPosition.cpp \
     Source/CShaderCollection.cpp \
     Source/CSkyBox.cpp \
-    Source/CSocketStream.cpp \
     Source/CSphere.cpp \
     Source/CSRTMData.cpp \
     Source/CSRTMField.cpp \
@@ -149,7 +155,6 @@ SOURCES += \
     Source/CWorker.cpp \
     Source/CWorkerManager.cpp \
     Source/CWorldChunk.cpp \
-    Source/CXMLNode.cpp \
     Source/CZip.cpp \
     GeoTools/coordcnv.cpp \
     GeoTools/geocent.cpp \
@@ -238,7 +243,6 @@ HEADERS  += \
     Source/CComponentLoader.h \
     Source/CComponentReference.h \
     Source/CCone.h \
-    Source/CConnectedStream.h \
     Source/CConsoleBoard.h \
     Source/CController.h \
     Source/CDumpable.h \
@@ -273,15 +277,12 @@ HEADERS  += \
     Source/CJetEngine.h \
     Source/CJoystick.h \
     Source/CLight.h \
-    Source/CLogManager.h \
     Source/CMan.h \
     Source/CMaterial.h \
     Source/CMesh.h \
     Source/CMeshByMaterial.h \
     Source/CMeshGeometry.h \
     Source/CMeshInstance.h \
-    Source/CMJPEGClient.h \
-    Source/CMJPEGServer.h \
     Source/CNamed.h \
     Source/COBJLoader.h \
     Source/ComponentInstanciator.h \
@@ -305,9 +306,7 @@ HEADERS  += \
     Source/CServoAnimatorFrame.h \
     Source/CServoPosition.h \
     Source/CShaderCollection.h \
-    Source/CSingleton.h \
     Source/CSkyBox.h \
-    Source/CSocketStream.h \
     Source/CSphere.h \
     Source/CSRTMData.h \
     Source/CSRTMField.h \
@@ -338,10 +337,8 @@ HEADERS  += \
     Source/CWorker.h \
     Source/CWorkerManager.h \
     Source/CWorldChunk.h \
-    Source/CXMLNode.h \
     Source/CZip.h \
     Source/glext.h \
-    Source/ILogger.h \
     Source/ILoadable.h \
     Source/Interpolator.h \
     Source/IProgressListener.h \

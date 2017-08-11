@@ -17,7 +17,7 @@
 #define STOP_SAMPLE(a)			CTimeSampler::getInstance()->stopSample(a)
 #define STOP_SAMPLE_AND_LOG(a)	CTimeSampler::getInstance()->stopSampleAndLog(a)
 
-class CLogManager;
+class CLogger;
 
 //-------------------------------------------------------------------------------------------------
 
@@ -30,7 +30,7 @@ public:
 	//! Default constructor
 	CTimeSampler();
 
-	CTimeSampler(CLogManager* pLogger);
+	CTimeSampler(CLogger* pLogger);
 
 	//! Destructor
 	virtual ~CTimeSampler();
@@ -54,7 +54,7 @@ private:
 	QMap<QString, qint64>		m_mAccumTimes;
 	QMap<QString, qint64>		m_mNumCalls;
 	QTimer						m_tDumpTimer;
-	CLogManager*				m_pLogger;
+	CLogger*				m_pLogger;
 };
 
 #endif // CTIMESAMPLER_H

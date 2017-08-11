@@ -2,8 +2,8 @@
 // Qt
 #include <QTextStream>
 
-// Fondations
-#include "CLogManager.h"
+// Foundations
+#include "CLogger.h"
 
 // Application
 #include "C3DScene.h"

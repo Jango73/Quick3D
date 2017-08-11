@@ -4,6 +4,10 @@ Qt based 3D engine with geo-referenced entities
 This used to be a very simple 3D engine that could show a 3D terrain and objects.
 But it has been pushed much further and is now a general purpose engine.
 
+## Building
+
+Open .pro file in Qt Creator and build **without** shadow build option.
+
 ## Features
 
 * Global terrain with automatic level of detail. Can be generated from real earth elevation data or procedurally and can be populated with vegetation.

@@ -117,7 +117,6 @@ SOURCES += \
     Source/CParticleSystem.cpp \
     Source/CPerlin.cpp \
     Source/CPhysicalComponent.cpp \
-    Source/CPIDController.cpp \
     Source/CPluginInterface.cpp \
     Source/CPluginLoader.cpp \
     Source/CPreferencesManager.cpp \
@@ -288,7 +287,6 @@ HEADERS  += \
     Source/CParticleSystem.h \
     Source/CPerlin.h \
     Source/CPhysicalComponent.h \
-    Source/CPIDController.h \
     Source/CPluginInterface.h \
     Source/CPluginLoader.h \
     Source/CPreferencesManager.h \

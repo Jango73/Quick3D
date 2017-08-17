@@ -195,7 +195,7 @@ CBoundingBox CBoundingBox::translated(CVector3 vAmount) const
 
 CBoundingBox CBoundingBox::rotated(CVector3 vAmount) const
 {
-    CMatrix4 mRotation = CMatrix4::MakeRotation(vAmount);
+    CMatrix4 mRotation = CMatrix4::makeRotation(vAmount);
 
     return transformed(mRotation);
 }

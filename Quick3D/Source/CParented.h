@@ -1,6 +1,7 @@
 
 #pragma once
 
+// Application
 #include "quick3d_global.h"
 
 //-------------------------------------------------------------------------------------------------
@@ -23,14 +24,14 @@ public:
     // Setters
     //-------------------------------------------------------------------------------------------------
 
-    //! Définit le nom du parent
+    //! Sets the parent name
     virtual void setParentName(const QString& sName);
 
     //-------------------------------------------------------------------------------------------------
     // Getters
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne le nom du parent
+    //! Returns the parent name
     virtual const QString& parentName() const;
 
     //-------------------------------------------------------------------------------------------------
@@ -39,5 +40,5 @@ public:
 
 protected:
 
-    QString     m_sParentName;  // Nom du parent de l'objet
+    QString     m_sParentName;  // Object's parent name
 };

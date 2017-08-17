@@ -3,7 +3,7 @@
 
 #include "quick3d_global.h"
 
-// Foundations
+// qt-plus
 #include "CLogger.h"
 
 // Application

@@ -1,19 +1,17 @@
 
-#ifndef CQUICK3DUTILITIES_H
-#define CQUICK3DUTILITIES_H
-
-#include "quick3d_global.h"
+#pragma once
 
 // Qt
 #include <QString>
 #include <QImage>
 
-// Fondations
+// qt-plus
 #include "CSingleton.h"
-#include "CGeoloc.h"
-#include "CVector2.h"
 
 // Application
+#include "quick3d_global.h"
+#include "CGeoloc.h"
+#include "CVector2.h"
 #include "CSRTMData.h"
 #include "CGeoZone.h"
 #include "CCamera.h"
@@ -70,8 +68,6 @@ protected:
 
     CGLWidgetScene*     m_pCMScene;
     CHeightField*       m_pCMField;
-    QSP<CWorldTerrain>   m_pCMTerrain;
+    QSP<CWorldTerrain>  m_pCMTerrain;
     QSP<CCamera>        m_pCMCamera;
 };
-
-#endif // CQUICK3DUTILITIES_H

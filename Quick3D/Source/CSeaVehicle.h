@@ -1,14 +1,15 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
-// Fondations
+// qt-plus
 #include "CLogger.h"
 
 // Application
+#include "quick3d_global.h"
 #include "CQ3DConstants.h"
 #include "CVehicle.h"
+
+//-------------------------------------------------------------------------------------------------
 
 class C3DScene;
 

@@ -1,13 +1,12 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
-// Fondations
-#include "CAverager.h"
+// qt-plus
 #include "CLogger.h"
 
 // Application
+#include "quick3d_global.h"
+#include "CAverager.h"
 #include "CQ3DConstants.h"
 #include "CComponent.h"
 #include "CTrajectorable.h"

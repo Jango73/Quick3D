@@ -1,8 +1,6 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
 // Qt
 #include <QImage>
 #include <QMutex>
@@ -10,6 +8,7 @@
 #include <QVector>
 
 // Application
+#include "quick3d_global.h"
 #include "CQ3DConstants.h"
 #include "CPhysicalComponent.h"
 #include "CMeshGeometry.h"
@@ -17,8 +16,6 @@
 //-------------------------------------------------------------------------------------------------
 
 class C3DScene;
-
-//-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CMesh : public CPhysicalComponent
 {

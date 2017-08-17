@@ -3,7 +3,7 @@
 #include <QDir>
 #include <QStringList>
 
-// Foundations
+// qt-plus
 #include "CLogger.h"
 
 // Application

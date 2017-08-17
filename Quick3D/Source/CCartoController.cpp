@@ -101,7 +101,7 @@ void CCartoController::mouseMoveEvent(QMouseEvent* event)
 
             CVector3 vMovement(-dDeltaY * dMoveFactor, 0.0, dDeltaX * dMoveFactor);
 
-            vMovement = CMatrix4().MakeRotation(CVector3(0.0, dHeading, 0.0)) * vMovement;
+            vMovement = CMatrix4().makeRotation(CVector3(0.0, dHeading, 0.0)) * vMovement;
 
             CGeoloc gPosition = m_rPositionTarget.component()->getGeoloc();
 

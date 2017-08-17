@@ -1,13 +1,14 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
-// Fondations
+// qt-plus
 #include "CSingleton.h"
 
 // Application
+#include "quick3d_global.h"
 #include "CMeshGeometry.h"
+
+//-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT COBJLoader : public CSingleton<COBJLoader>
 {

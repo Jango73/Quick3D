@@ -1,6 +1,8 @@
 
-// Application
+// qt-plus
 #include "CLogger.h"
+
+// Application
 #include "CWorkerManager.h"
 #include "CRessourcesManager.h"
 #include "CTerrain.h"

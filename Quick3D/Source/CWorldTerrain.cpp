@@ -1,13 +1,14 @@
 
-// Application
+// qt-plus
 #include "CLogger.h"
+
+// Application
 #include "CRessourcesManager.h"
 #include "C3DScene.h"
 #include "CComponentFactory.h"
 #include "CWorldTerrain.h"
 #include "CTreeGenerator.h"
 #include "CTiledMaterial.h"
-
 #include "CGeneratedField.h"
 #include "CSRTMField.h"
 #include "CHGTField.h"

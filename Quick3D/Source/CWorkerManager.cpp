@@ -2,7 +2,7 @@
 // Qt
 #include <QMutexLocker>
 
-// Fondations
+// qt-plus
 #include "CLogger.h"
 
 // Application

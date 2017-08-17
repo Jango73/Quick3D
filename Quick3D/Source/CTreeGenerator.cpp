@@ -61,7 +61,7 @@ CMeshGeometry* CTreeGenerator::createTree(
 
     pMesh->setMaterial(m_pScene->ressourcesManager()->getTreeMaterial());
 
-    CMatrix4 mAccumTransform = CMatrix4().MakeTranslation(CVector3(0.0, dTrunkLength, 0.0));
+    CMatrix4 mAccumTransform = CMatrix4().makeTranslation(CVector3(0.0, dTrunkLength, 0.0));
 
     int iTreeLevel = iNumLevels;
 
@@ -154,9 +154,9 @@ void CTreeGenerator::addBranches(
 
             mBranch.scaleUVs(CVector2(0.5, 1.0));
 
-            CMatrix4 mRotate1 = CMatrix4().MakeRotation(CVector3(dRotationX, 0.0, 0.0));
-            CMatrix4 mRotate2 = CMatrix4().MakeRotation(CVector3(0.0, dRotationY, 0.0));
-            CMatrix4 mTranslate = CMatrix4().MakeTranslation(CVector3(0.0, dTrunkLength * dCurrentLengthScale, 0.0));
+            CMatrix4 mRotate1 = CMatrix4().makeRotation(CVector3(dRotationX, 0.0, 0.0));
+            CMatrix4 mRotate2 = CMatrix4().makeRotation(CVector3(0.0, dRotationY, 0.0));
+            CMatrix4 mTranslate = CMatrix4().makeTranslation(CVector3(0.0, dTrunkLength * dCurrentLengthScale, 0.0));
             CMatrix4 mTransform = (mRotate1 * mRotate2) * mAccumTransform;
 
             mBranch.transformVertices(mTransform);
@@ -233,13 +233,13 @@ void CTreeGenerator::addLeaves(
 
             CMeshGeometry mLeaf(m_pScene);
             mLeaf.createSurfaceFromFFD(vFFDFrom, vFFDTo, iNumVerts);
-            mLeaf.transformVertices(CMatrix4().MakeTranslation(CVector3(0.0, 0.0, 0.5)));
-            mLeaf.transformVertices(CMatrix4().MakeScale(CVector3(dTrunkLength * 0.1, dTrunkLength * 0.1, dTrunkLength * 0.1)));
+            mLeaf.transformVertices(CMatrix4().makeTranslation(CVector3(0.0, 0.0, 0.5)));
+            mLeaf.transformVertices(CMatrix4().makeScale(CVector3(dTrunkLength * 0.1, dTrunkLength * 0.1, dTrunkLength * 0.1)));
 
-            CMatrix4 mScale = CMatrix4().MakeScale(CVector3(dLeafScale, dLeafScale, dLeafScale));
-            CMatrix4 mRotate1 = CMatrix4().MakeRotation(CVector3(dRotationX, 0.0, 0.0));
-            CMatrix4 mRotate2 = CMatrix4().MakeRotation(CVector3(0.0, dRotationY, 0.0));
-            CMatrix4 mTranslate = CMatrix4().MakeTranslation(CVector3(0.0, dTranslationY, 0.0));
+            CMatrix4 mScale = CMatrix4().makeScale(CVector3(dLeafScale, dLeafScale, dLeafScale));
+            CMatrix4 mRotate1 = CMatrix4().makeRotation(CVector3(dRotationX, 0.0, 0.0));
+            CMatrix4 mRotate2 = CMatrix4().makeRotation(CVector3(0.0, dRotationY, 0.0));
+            CMatrix4 mTranslate = CMatrix4().makeTranslation(CVector3(0.0, dTranslationY, 0.0));
             CMatrix4 mTransform = (((mScale * mRotate1) * mRotate2) * mTranslate) * mAccumTransform;
 
             mLeaf.transformVertices(mTransform);

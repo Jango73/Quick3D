@@ -1,15 +1,17 @@
 
-#ifndef __MATRIX4__
-#define __MATRIX4__
+#pragma once
 
+// Std
 #include "string.h"
 #include "math.h"
-#include "CVector3.h"
-#include "CRay3.h"
-#include "CQuaternion.h"
 
 // Qt
 #include <QMatrix4x4>
+
+// Application
+#include "CVector3.h"
+#include "CRay3.h"
+#include "CQuaternion.h"
 
 namespace Math
 {
@@ -26,7 +28,7 @@ public:
     inline CMatrix4()
         : m_bIsIdentity(false)
     {
-        MakeIdentity();
+        makeIdentity();
     }
 
     inline CMatrix4(CVector3 a, CVector3 b, CVector3 c)
@@ -53,8 +55,8 @@ public:
         Data[3][3] = 1.0;
     }
 
-    //! Initialise une matrice identitée
-    inline void MakeIdentity()
+    //! Makes an identity matrix
+    inline void makeIdentity()
     {
         m_bIsIdentity = true;
 
@@ -79,10 +81,11 @@ public:
         Data[3][3] = 1.0;
     }
 
+    //! Returns \c true if this matrix is identity
     inline bool isIdentity() const { return m_bIsIdentity; }
 
-    //! Crée une matrice de translation
-    static inline CMatrix4 MakeTranslation(const CVector3& Translation)
+    //! Creates a translation matrix
+    static inline CMatrix4 makeTranslation(const CVector3& Translation)
     {
         CMatrix4 Result;
 
@@ -96,7 +99,7 @@ public:
     }
 
     //! Crée une matrice de rotation selon angles euler
-    static inline CMatrix4 MakeRotation(const CVector3& Rotation)
+    static inline CMatrix4 makeRotation(const CVector3& Rotation)
     {
         CMatrix4 Result;
 
@@ -142,7 +145,7 @@ public:
     }
 
     //! Crée une matrice de rotation selon angles euler
-    static inline CMatrix4 MakeInverseRotation(const CVector3& Rotation)
+    static inline CMatrix4 makeInverseRotation(const CVector3& Rotation)
     {
         CMatrix4 Result;
 
@@ -188,7 +191,7 @@ public:
     }
 
     //! Crée une matrice de mise à l'échelle
-    static inline CMatrix4 MakeScale(const CVector3& Scale)
+    static inline CMatrix4 makeScale(const CVector3& Scale)
     {
         CMatrix4 Result;
 
@@ -203,7 +206,7 @@ public:
     }
 
     //!
-    static inline CMatrix4 MakePerspective(double dFov, double dAspectRatio, double dNear, double dFar)
+    static inline CMatrix4 makePerspective(double dFov, double dAspectRatio, double dNear, double dFar)
     {
         CMatrix4 Result;
 
@@ -346,7 +349,7 @@ public:
     }
 
     //! Crée une matrice de rotation d'après un quaternion
-    static inline CMatrix4 FromQuaternion(const CQuaternion& Quat)
+    static inline CMatrix4 fromQuaternion(const CQuaternion& Quat)
     {
         CMatrix4 Result;
 
@@ -381,7 +384,7 @@ public:
         return Result;
     }
 
-    static inline CMatrix4 FromOpenGLMatrix(const float* mOpenGLMat)
+    static inline CMatrix4 fromOpenGLMatrix(const float* mOpenGLMat)
     {
         CMatrix4 Result;
 
@@ -410,7 +413,7 @@ public:
         return Result;
     }
 
-    inline void ToOpenGLMatrix(float* mOpenGLMat)
+    inline void toOpenGLMatrix(float* mOpenGLMat)
     {
         mOpenGLMat[ 0] = (float) Data[0][0];
         mOpenGLMat[ 4] = (float) Data[0][1];
@@ -433,7 +436,7 @@ public:
         mOpenGLMat[15] = (float) Data[3][3];
     }
 
-    static inline CMatrix4 FromQtMatrix(const QMatrix4x4& mQtMat)
+    static inline CMatrix4 fromQtMatrix(const QMatrix4x4& mQtMat)
     {
         CMatrix4 Result;
 
@@ -486,12 +489,10 @@ inline CVector3 euleurAngles(CVector3 value)
     CVector3 vReturnValue;
 
     vReturnValue.Y = value.eulerYAngle();
-    value = CMatrix4::MakeRotation(CVector3(0.0, -vReturnValue.Y, 0.0)) * value;
+    value = CMatrix4::makeRotation(CVector3(0.0, -vReturnValue.Y, 0.0)) * value;
     vReturnValue.X = value.eulerXAngle();
 
     return vReturnValue;
 }
 
 }
-
-#endif // __MATRIX4__

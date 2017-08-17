@@ -271,7 +271,7 @@ void CController::mousePressEvent(QMouseEvent* event)
                             CVector3 vAngles3(vAngles2.Y, vAngles2.X, 0.0);
 
                             m_rLastRay.vOrigin = pCamera->getWorldTransform() * CVector3();
-                            m_rLastRay.vNormal = CMatrix4::MakeRotation(vAngles3) * CVector3(0.0, 0.0, 1.0);
+                            m_rLastRay.vNormal = CMatrix4::makeRotation(vAngles3) * CVector3(0.0, 0.0, 1.0);
                             m_rLastRay.vNormal = (pCamera->getWorldTransform() * m_rLastRay.vNormal) - m_rLastRay.vOrigin;
 
                             RayTracingResult aResult = pScene->intersectComponentHierarchy(m_pParent, m_rLastRay);

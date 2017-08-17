@@ -2,7 +2,7 @@
 // Qt
 #include <QTextStream>
 
-// Foundations
+// qt-plus
 #include "CLogger.h"
 
 // Application

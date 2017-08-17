@@ -2,11 +2,11 @@
 // Qt
 #include <QColor>
 
-// Foundations
+// qt-plus
 #include "CLogger.h"
-#include "CTimeSampler.h"
 
 // Application
+#include "CTimeSampler.h"
 #include "CCamera.h"
 #include "C3DScene.h"
 #include "CGLWidgetScene.h"
@@ -269,7 +269,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
         */
 
     CMatrix4 m_mInternalCameraMatrix = CCamera::getInternalCameraMatrix(vCamPos, vCamRot);
-    CMatrix4 m_mInternalProjectionMatrix = CMatrix4::FromQtMatrix(mCameraProjection);
+    CMatrix4 m_mInternalProjectionMatrix = CMatrix4::fromQtMatrix(mCameraProjection);
 
     CRenderContext Context(
                 mCameraProjection, mCameraMatrix,
@@ -384,8 +384,8 @@ void CCamera::renderDepth_RayTraced
             rCameraRay.vNormal = CVector3(0.0, 0.0, 1.0);
 
             // Apply current angles to ray
-            rCameraRay = CMatrix4().MakeRotation(CVector3(dCurrentTilt, 0.0, 0.0)) * rCameraRay;
-            rCameraRay = CMatrix4().MakeRotation(CVector3(0.0, dCurrentPan, 0.0)) * rCameraRay;
+            rCameraRay = CMatrix4().makeRotation(CVector3(dCurrentTilt, 0.0, 0.0)) * rCameraRay;
+            rCameraRay = CMatrix4().makeRotation(CVector3(0.0, dCurrentPan, 0.0)) * rCameraRay;
 
             // Apply camera transform to ray
             rCameraRay = getWorldTransform() * rCameraRay;
@@ -674,11 +674,11 @@ void CCamera::renderDepth_CubeMapped
                         rCameraRay.vNormal = CVector3(0.0, 0.0, 1.0);
 
                         // Application des angles courants au rayon
-                        rCameraRay = CMatrix4().MakeRotation(CVector3(dCurrentTilt, 0.0, 0.0)) * rCameraRay;
-                        rCameraRay = CMatrix4().MakeRotation(CVector3(0.0, dCurrentPan, 0.0)) * rCameraRay;
+                        rCameraRay = CMatrix4().makeRotation(CVector3(dCurrentTilt, 0.0, 0.0)) * rCameraRay;
+                        rCameraRay = CMatrix4().makeRotation(CVector3(0.0, dCurrentPan, 0.0)) * rCameraRay;
 
                         // Application du cap caméra au rayon
-                        rCameraRay = CMatrix4().MakeRotation(vCameraHeading) * rCameraRay;
+                        rCameraRay = CMatrix4().makeRotation(vCameraHeading) * rCameraRay;
 
                         // Calcul du point d'intersection
                         CVector3 vIntersectionPoint3D = rCameraRay.vOrigin + rCameraRay.vNormal * dDistance;
@@ -727,10 +727,10 @@ void CCamera::computeFrustum(double dFOV, double dAspectRatio, double dMinDistan
     m_pFrustumPlanes.clear();
 
     // Création des matrices de rotation des plans
-    CMatrix4 mRotateY1 = CMatrix4().MakeRotation(CVector3(0.0, dFOV *  1.0, 0.0));
-    CMatrix4 mRotateY2 = CMatrix4().MakeRotation(CVector3(0.0, dFOV * -1.0, 0.0));
-    CMatrix4 mRotateX1 = CMatrix4().MakeRotation(CVector3(dFOV *  1.0, 0.0, 0.0));
-    CMatrix4 mRotateX2 = CMatrix4().MakeRotation(CVector3(dFOV * -1.0, 0.0, 0.0));
+    CMatrix4 mRotateY1 = CMatrix4().makeRotation(CVector3(0.0, dFOV *  1.0, 0.0));
+    CMatrix4 mRotateY2 = CMatrix4().makeRotation(CVector3(0.0, dFOV * -1.0, 0.0));
+    CMatrix4 mRotateX1 = CMatrix4().makeRotation(CVector3(dFOV *  1.0, 0.0, 0.0));
+    CMatrix4 mRotateX2 = CMatrix4().makeRotation(CVector3(dFOV * -1.0, 0.0, 0.0));
 
     // Création des vecteurs normaux des plans
     CVector3 v1(-1.0,  0.0,  0.0);
@@ -805,7 +805,7 @@ QMatrix4x4 CCamera::getQtCameraMatrix(CVector3 vPosition, CVector3 vRotation)
 
 CMatrix4 CCamera::getInternalProjectionMatrix(double dFOV, double dAspectRatio, double dMinDistance, double dMaxDistance)
 {
-    return CMatrix4::FromQtMatrix(getQtProjectionMatrix(dFOV, dAspectRatio, dMinDistance, dMaxDistance));
+    return CMatrix4::fromQtMatrix(getQtProjectionMatrix(dFOV, dAspectRatio, dMinDistance, dMaxDistance));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -817,10 +817,10 @@ CMatrix4 CCamera::getInternalCameraMatrix(CVector3 vPosition, CVector3 vRotation
 
     CMatrix4 mMatrix;
 
-    mMatrix = CMatrix4().MakeRotation(CVector3(0.0, 0.0, -vRotation.Z)) * mMatrix;
-    mMatrix = CMatrix4().MakeRotation(CVector3(-vRotation.X, 0.0, 0.0)) * mMatrix;
-    mMatrix = CMatrix4().MakeRotation(CVector3(0.0, -vRotation.Y, 0.0)) * mMatrix;
-    mMatrix = CMatrix4().MakeTranslation(vPosition * -1.0) * mMatrix;
+    mMatrix = CMatrix4().makeRotation(CVector3(0.0, 0.0, -vRotation.Z)) * mMatrix;
+    mMatrix = CMatrix4().makeRotation(CVector3(-vRotation.X, 0.0, 0.0)) * mMatrix;
+    mMatrix = CMatrix4().makeRotation(CVector3(0.0, -vRotation.Y, 0.0)) * mMatrix;
+    mMatrix = CMatrix4().makeTranslation(vPosition * -1.0) * mMatrix;
 
     return mMatrix;
 }

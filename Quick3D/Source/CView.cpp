@@ -4,8 +4,10 @@
 #include <QTextCursor>
 #include <QTextDocument>
 
-// Application
+// qt-plus
 #include "CLogger.h"
+
+// Application
 #include "CView.h"
 #include "CController.h"
 #include "CPerlin.h"

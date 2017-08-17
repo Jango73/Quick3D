@@ -1,5 +1,5 @@
 
-// Foundations
+// qt-plus
 #include "CLogger.h"
 
 // Application
@@ -965,19 +965,19 @@ void CComponent::computeWorldTransform()
     CMatrix4 mPosition;
 
     // Création matrices de rotation d'origine
-    mOriginRotation = CMatrix4::MakeRotation(m_vECEFRotation);
+    mOriginRotation = CMatrix4::makeRotation(m_vECEFRotation);
 
     // Création matrices de rotation d'animation
-    mRotation = CMatrix4::MakeRotation(m_vRotation);
+    mRotation = CMatrix4::makeRotation(m_vRotation);
 
     // Création matrice de position d'origine
-    mOriginPosition = CMatrix4::MakeTranslation(m_vOriginPosition);
+    mOriginPosition = CMatrix4::makeTranslation(m_vOriginPosition);
 
     // Création matrice de position d'animation
-    mPosition = CMatrix4::MakeTranslation(m_vPosition);
+    mPosition = CMatrix4::makeTranslation(m_vPosition);
 
     // Application des matrices de transformation à m_mWorldTransform
-    m_mWorldTransform.MakeIdentity();
+    m_mWorldTransform.makeIdentity();
 
     m_mWorldTransform = m_mWorldTransform * mRotation;
     m_mWorldTransform = m_mWorldTransform * mOriginRotation;
@@ -987,7 +987,7 @@ void CComponent::computeWorldTransform()
     if (isRootObject() || m_bInheritTransform == false)
     {
         CVector3 vPosition = m_gGeoloc.toVector3();
-        mPosition = CMatrix4::MakeTranslation(vPosition);
+        mPosition = CMatrix4::makeTranslation(vPosition);
         m_mWorldTransform = m_mWorldTransform * mPosition;
     }
 
@@ -1060,7 +1060,7 @@ void CComponent::lookAt(CComponent* pTarget)
 
     double dY = vPosition.eulerYAngle();
 
-    CMatrix4 mRotationCancelPan = CMatrix4::MakeRotation(CVector3(0.0, dY * -1.0, 0.0));
+    CMatrix4 mRotationCancelPan = CMatrix4::makeRotation(CVector3(0.0, dY * -1.0, 0.0));
 
     vPosition = mRotationCancelPan * vPosition;
 

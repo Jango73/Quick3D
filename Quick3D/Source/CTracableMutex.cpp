@@ -1,8 +1,12 @@
 
-#include "CTracableMutex.h"
+// Qt
+#include <QThread>
+
+// qt-plus
 #include "CLogger.h"
 
-#include <QThread>
+// Application
+#include "CTracableMutex.h"
 
 QMap<int, QString> CTracableMutex::m_vThreadNames;
 

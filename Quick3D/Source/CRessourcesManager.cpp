@@ -3,10 +3,10 @@
 #include <QFile>
 #include <QTextStream>
 
-//-------------------------------------------------------------------------------------------------
+// qt-plus
+#include "CLogger.h"
 
 // Application
-#include "CLogger.h"
 #include "CRessourcesManager.h"
 #include "CWaterMaterial.h"
 #include "COBJLoader.h"

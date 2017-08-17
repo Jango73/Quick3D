@@ -7,7 +7,7 @@
 #include <QtOpenGL>
 #include <GL/glu.h>
 
-// Fondations
+// qt-plus
 #include "CLogger.h"
 
 // Application

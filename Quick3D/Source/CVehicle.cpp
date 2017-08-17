@@ -95,7 +95,7 @@ void CVehicle::update(double dDeltaTime)
 
             CBoundingBox box = bounds();
 
-            CMatrix4 mOrientation = CMatrix4().MakeRotation(vRotation);
+            CMatrix4 mOrientation = CMatrix4().makeRotation(vRotation);
 
             CGeoloc gBackLeft = CGeoloc(getGeoloc(), mOrientation * CVector3(box.minimum().X * 0.8, 0.0, box.minimum().Z * 0.8));
             CGeoloc gBackRight = CGeoloc(getGeoloc(), mOrientation * CVector3(box.maximum().X * 0.8, 0.0, box.minimum().Z * 0.8));

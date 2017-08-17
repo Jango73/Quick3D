@@ -4,12 +4,12 @@
 #include <QTextStream>
 #include <QDataStream>
 
-// Foundations
+// qt-plus
 #include "CLogger.h"
-#include "Angles.h"
-#include "CZip.h"
 
 // Application
+#include "Angles.h"
+#include "CZip.h"
 #include "CBILData.h"
 
 using namespace Math;

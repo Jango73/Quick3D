@@ -1,5 +1,5 @@
 
-// Fondations
+// qt-plus
 #include "CLogger.h"
 
 // Application

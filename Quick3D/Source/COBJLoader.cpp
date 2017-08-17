@@ -2,8 +2,10 @@
 // Qt
 #include <QTextStream>
 
-// Application
+// qt-plus
 #include "CLogger.h"
+
+// Application
 #include "C3DScene.h"
 #include "COBJLoader.h"
 

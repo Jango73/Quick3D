@@ -1,18 +1,13 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
-// Qt
-
 // Application
+#include "quick3d_global.h"
 #include "CMeshGeometry.h"
 
 //-------------------------------------------------------------------------------------------------
 
 class C3DScene;
-
-//-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CMeshByMaterial
 {

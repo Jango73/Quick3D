@@ -1,9 +1,13 @@
 
-#ifndef __QUATERNION__
-#define __QUATERNION__
+#pragma once
 
+// Std
 #include "math.h"
+
+// Application
 #include "CVector3.h"
+
+//-------------------------------------------------------------------------------------------------
 
 namespace Math
 {
@@ -47,5 +51,3 @@ namespace Math
 		}
 	};
 }
-
-#endif // __QUATERNION__

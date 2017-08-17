@@ -1,18 +1,17 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
 // Qt
 #include <QSharedPointer>
 
 // Application
+#include "quick3d_global.h"
 #include "CQ3DConstants.h"
 #include "CComponent.h"
 #include "CMesh.h"
 
 //-------------------------------------------------------------------------------------------------
-// Déclarations avancées
+// Forward declarations
 
 class C3DScene;
 

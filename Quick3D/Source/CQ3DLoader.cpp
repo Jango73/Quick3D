@@ -2,8 +2,10 @@
 // Qt
 #include <QTextStream>
 
-// Application
+// qt-plus
 #include "CLogger.h"
+
+// Application
 #include "C3DScene.h"
 #include "CQ3DLoader.h"
 
@@ -202,8 +204,8 @@ void CQ3DLoader::addBounds(CComponent* pContainer, CBoundingBox& bBox, CMatrix4 
         vRotation = pContainer->getOriginRotation();
     }
 
-    mLocalTransform = mLocalTransform * CMatrix4::MakeRotation(vRotation);
-    mLocalTransform = mLocalTransform * CMatrix4::MakeTranslation(vPosition);
+    mLocalTransform = mLocalTransform * CMatrix4::makeRotation(vRotation);
+    mLocalTransform = mLocalTransform * CMatrix4::makeTranslation(vPosition);
 
     mTransform = mLocalTransform * mTransform;
 

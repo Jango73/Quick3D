@@ -1,6 +1,8 @@
 
-// Application
+// qt-plus
 #include "CLogger.h"
+
+// Application
 #include "COBJLoader.h"
 #include "C3DScene.h"
 #include "CMesh.h"
@@ -695,12 +697,12 @@ void CMeshGeometry::createSphere(int iNumSegments)
     for (int iTiltIndex = 1; iTiltIndex < iTiltSegments; iTiltIndex++)
     {
         double dCurrentTilt = (((double) iTiltIndex / (double) iTiltSegments) * Math::Pi);
-        CMatrix4 mRotationTilt = CMatrix4().MakeRotation(CVector3(dCurrentTilt, 0.0, 0.0));
+        CMatrix4 mRotationTilt = CMatrix4().makeRotation(CVector3(dCurrentTilt, 0.0, 0.0));
 
         for (int iPanIndex = 0; iPanIndex < iPanSegments; iPanIndex++)
         {
             double dCurrentPan = ((double) iPanIndex / (double) iPanSegments) * (Math::Pi * 2.0);
-            CMatrix4 mRotationPan = CMatrix4().MakeRotation(CVector3(0.0, dCurrentPan, 0.0));
+            CMatrix4 mRotationPan = CMatrix4().makeRotation(CVector3(0.0, dCurrentPan, 0.0));
 
             CVector3 vPosition = mRotationPan * (mRotationTilt * CVector3(0.0, 1.0, 0.0));
 
@@ -820,7 +822,7 @@ void CMeshGeometry::createSpherePart(
         double dCurrentTilt = dStartTiltDegrees + ((dCurrentTiltNormalized) * dTiltSpanDegrees);
 
         // Création de la matrice de rotation en site
-        CMatrix4 mRotationTilt = CMatrix4().MakeRotation(CVector3(Math::Angles::toRad(dCurrentTilt), 0.0, 0.0));
+        CMatrix4 mRotationTilt = CMatrix4().makeRotation(CVector3(Math::Angles::toRad(dCurrentTilt), 0.0, 0.0));
 
         for (int iPanIndex = 0; iPanIndex < (iPanSegments + 1); iPanIndex++)
         {
@@ -828,7 +830,7 @@ void CMeshGeometry::createSpherePart(
             double dCurrentPan = dStartPanDegrees + ((dCurrentPanNormalized) * dPanSpanDegrees);
 
             // Création de la matrice de rotation en gisement
-            CMatrix4 mRotationPan = CMatrix4().MakeRotation(CVector3(0.0, Math::Angles::toRad(dCurrentPan), 0.0));
+            CMatrix4 mRotationPan = CMatrix4().makeRotation(CVector3(0.0, Math::Angles::toRad(dCurrentPan), 0.0));
 
             // Création du vecteur de position du sommet
             CVector3 vPosition = mRotationPan * (mRotationTilt * CVector3(0.0, 1.0, 0.0));
@@ -885,7 +887,7 @@ void CMeshGeometry::createCone(int iNumSegments, int iNumHeightSegments, double 
 
             double dAngle = dU * (Math::Pi * 2.0);
 
-            CMatrix4 mRotate = CMatrix4().MakeRotation(CVector3(0.0, dAngle, 0.0));
+            CMatrix4 mRotate = CMatrix4().makeRotation(CVector3(0.0, dAngle, 0.0));
 
             double dTexU = (double) iIndex / (double) (iNumSegments - 1);
             double dTexV = (double) iHeightIndex / (double) (iNumHeightSegments - 1);

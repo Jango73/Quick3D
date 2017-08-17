@@ -3,8 +3,10 @@
 #include <QGraphicsEffect>
 #include <QPainter>
 
-// Application
+// qt-plus
 #include "CLogger.h"
+
+// Application
 #include "CTimeSampler.h"
 #include "CQuick3DUtilities.h"
 #include "CImageFilter_Matrix.h"

@@ -1,10 +1,10 @@
 
-// Fondations
+// qt-plus
 #include "CLogger.h"
-#include "Angles.h"
-#include "CAxis.h"
 
 // Application
+#include "Angles.h"
+#include "CAxis.h"
 #include "CTrajectory.h"
 #include "CTrajectorable.h"
 

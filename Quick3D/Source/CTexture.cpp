@@ -1,6 +1,8 @@
 
-// Application
+// qt-plus
 #include "CLogger.h"
+
+// Application
 #include "CGLExtension.h"
 #include "C3DScene.h"
 #include "CComponent.h"

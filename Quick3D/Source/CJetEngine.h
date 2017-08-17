@@ -1,10 +1,11 @@
 
 #pragma once
 
-#include "quick3d_global.h"
+// qt-plus
+#include "CLogger.h"
 
 // Application
-#include "CLogger.h"
+#include "quick3d_global.h"
 #include "CQ3DConstants.h"
 #include "CEngine.h"
 #include "CServoPosition.h"

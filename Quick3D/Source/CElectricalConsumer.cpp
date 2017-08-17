@@ -1,9 +1,9 @@
 
-// Foundations
+// qt-plus
 #include "CLogger.h"
-#include "CConsoleBoard.h"
 
 // Application
+#include "CConsoleBoard.h"
 #include "C3DScene.h"
 #include "CElectricalConsumer.h"
 

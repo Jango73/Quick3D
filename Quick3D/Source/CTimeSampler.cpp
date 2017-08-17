@@ -1,6 +1,9 @@
 
-#include "CTimeSampler.h"
+// qt-plus
 #include "CLogger.h"
+
+// Application
+#include "CTimeSampler.h"
 
 CTimeSampler::CTimeSampler()
     : m_tMutex(QMutex::Recursive)

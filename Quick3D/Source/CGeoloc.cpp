@@ -274,8 +274,8 @@ double CGeoloc::getPlanetRadius()
 */
 CVector3 CGeoloc::toVector3_Sphere() const
 {
-    CMatrix4 mRotationX = CMatrix4::MakeRotation(CVector3(Math::Angles::toRad(Latitude), 0.0, 0.0));
-    CMatrix4 mRotationY = CMatrix4::MakeRotation(CVector3(0.0, Math::Angles::toRad(Longitude), 0.0));
+    CMatrix4 mRotationX = CMatrix4::makeRotation(CVector3(Math::Angles::toRad(Latitude), 0.0, 0.0));
+    CMatrix4 mRotationY = CMatrix4::makeRotation(CVector3(0.0, Math::Angles::toRad(Longitude), 0.0));
 
     CVector3 vPosition(0.0, 0.0, -(EARTH_RADIUS + Altitude));
 
@@ -388,7 +388,7 @@ CVector3 CGeoloc::toVector3_WGS84() const
 
     //-----------------------------------------------
 
-    CMatrix4 mRotationAdjustY = Math::CMatrix4::MakeRotation(Math::CVector3(0.0, Math::Pi / 2.0, 0.0));
+    CMatrix4 mRotationAdjustY = Math::CMatrix4::makeRotation(Math::CVector3(0.0, Math::Pi / 2.0, 0.0));
     vPosition3D = mRotationAdjustY * vPosition3D;
 
     return vPosition3D;
@@ -407,7 +407,7 @@ CGeoloc CGeoloc::fromVector3_WGS84(const CVector3& vPosition)
 
     //-----------------------------------------------
 
-    CMatrix4 mRotationAdjustY = Math::CMatrix4::MakeRotation(Math::CVector3(0.0, Math::Pi / -2.0, 0.0));
+    CMatrix4 mRotationAdjustY = Math::CMatrix4::makeRotation(Math::CVector3(0.0, Math::Pi / -2.0, 0.0));
     vPosition3D = mRotationAdjustY * vPosition3D;
 
     //-----------------------------------------------
@@ -462,13 +462,13 @@ CVector3 CGeoloc::toVector3_WGS84(const CGeoloc& gReference) const
 
     //-----------------------------------------------
 
-    CMatrix4 mRotationAdjustX = Math::CMatrix4::MakeRotation(Math::CVector3(Math::Pi / -2.0, 0.0, 0.0));
+    CMatrix4 mRotationAdjustX = Math::CMatrix4::makeRotation(Math::CVector3(Math::Pi / -2.0, 0.0, 0.0));
     CVector3 vTemp = vReference3D;
     double dAngleY = vTemp.eulerYAngle();
-    CMatrix4 mRotationInverseY = Math::CMatrix4::MakeRotation(Math::CVector3(0, dAngleY * -1.0, 0.0));
+    CMatrix4 mRotationInverseY = Math::CMatrix4::makeRotation(Math::CVector3(0, dAngleY * -1.0, 0.0));
     vTemp = mRotationInverseY * vTemp;
     double dAngleX = vTemp.eulerXAngle();
-    CMatrix4 mRotationInverseX = Math::CMatrix4::MakeRotation(Math::CVector3(dAngleX * -1.0, 0.0, 0.0));
+    CMatrix4 mRotationInverseX = Math::CMatrix4::makeRotation(Math::CVector3(dAngleX * -1.0, 0.0, 0.0));
 
     //-----------------------------------------------
     // On applique les angles inverses de la référence à la position et à la référence
@@ -513,13 +513,13 @@ CGeoloc CGeoloc::fromVector3_WGS84(const CGeoloc& gReference, const CVector3& vP
 
     //-----------------------------------------------
 
-    CMatrix4 mRotationAdjustX = Math::CMatrix4::MakeRotation(Math::CVector3(Math::Pi / -2.0, 0.0, 0.0));
+    CMatrix4 mRotationAdjustX = Math::CMatrix4::makeRotation(Math::CVector3(Math::Pi / -2.0, 0.0, 0.0));
     CVector3 vTemp = vReference3D;
     double dAngleY = vTemp.eulerYAngle();
-    CMatrix4 mRotationInverseY = Math::CMatrix4::MakeRotation(Math::CVector3(0, dAngleY * -1.0, 0.0));
+    CMatrix4 mRotationInverseY = Math::CMatrix4::makeRotation(Math::CVector3(0, dAngleY * -1.0, 0.0));
     vTemp = mRotationInverseY * vTemp;
     double dAngleX = vTemp.eulerXAngle();
-    CMatrix4 mRotationInverseX = Math::CMatrix4::MakeRotation(Math::CVector3(dAngleX * -1.0, 0.0, 0.0));
+    CMatrix4 mRotationInverseX = Math::CMatrix4::makeRotation(Math::CVector3(dAngleX * -1.0, 0.0, 0.0));
 
     //-----------------------------------------------
     // On applique les angles inverses de la référence à la référence
@@ -532,9 +532,9 @@ CGeoloc CGeoloc::fromVector3_WGS84(const CGeoloc& gReference, const CVector3& vP
 
     //-----------------------------------------------
 
-    CMatrix4 mRotationAdjustInverseX = Math::CMatrix4::MakeRotation(Math::CVector3(Math::Pi / 2.0, 0.0, 0.0));
-    CMatrix4 mRotationX = Math::CMatrix4::MakeRotation(Math::CVector3(dAngleX * 1.0, 0.0, 0.0));
-    CMatrix4 mRotationY = Math::CMatrix4::MakeRotation(Math::CVector3(0, dAngleY * 1.0, 0.0));
+    CMatrix4 mRotationAdjustInverseX = Math::CMatrix4::makeRotation(Math::CVector3(Math::Pi / 2.0, 0.0, 0.0));
+    CMatrix4 mRotationX = Math::CMatrix4::makeRotation(Math::CVector3(dAngleX * 1.0, 0.0, 0.0));
+    CMatrix4 mRotationY = Math::CMatrix4::makeRotation(Math::CVector3(0, dAngleY * 1.0, 0.0));
 
     //-----------------------------------------------
 

@@ -261,9 +261,9 @@ void CPhysicalComponent::addLocalForce_kg(CVector3 vForce_kg)
     {
         CVector3 vRotation = getOriginRotation();
 
-        vForce_kg = CMatrix4().MakeRotation(CVector3(0.0, 0.0, vRotation.Z)) * vForce_kg;
-        vForce_kg = CMatrix4().MakeRotation(CVector3(vRotation.X, 0.0, 0.0)) * vForce_kg;
-        vForce_kg = CMatrix4().MakeRotation(CVector3(0.0, vRotation.Y, 0.0)) * vForce_kg;
+        vForce_kg = CMatrix4().makeRotation(CVector3(0.0, 0.0, vRotation.Z)) * vForce_kg;
+        vForce_kg = CMatrix4().makeRotation(CVector3(vRotation.X, 0.0, 0.0)) * vForce_kg;
+        vForce_kg = CMatrix4().makeRotation(CVector3(0.0, vRotation.Y, 0.0)) * vForce_kg;
 
         m_vSummedForces_mss = m_vSummedForces_mss + (vForce_kg / totalMass_kg()) * 5.0;
     }
@@ -339,7 +339,7 @@ void CPhysicalComponent::update(double dDeltaTimeS)
 
                     CVector3 vGravityForce = CVector3(0.0, -dTotalMass_kg * 2.0, 0.0);
 
-                    vGravityForce = CMatrix4().MakeInverseRotation(vNewRotation * -1.0) * vGravityForce;
+                    vGravityForce = CMatrix4().makeInverseRotation(vNewRotation * -1.0) * vGravityForce;
 
                     addUncenteredLocalForce_kg(m_vCenterOfMass, vGravityForce);
 

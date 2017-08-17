@@ -10,7 +10,7 @@ using namespace Math;
 
 CPerlin::CPerlin()
 {
-    m_mNoiseRotation.MakeRotation(CVector3(0.0, Math::Pi, 0.0));
+    m_mNoiseRotation.makeRotation(CVector3(0.0, Math::Pi, 0.0));
 }
 
 //-------------------------------------------------------------------------------------------------

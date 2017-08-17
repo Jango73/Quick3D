@@ -1,8 +1,6 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
 // Qt
 #include <QImage>
 #include <QSharedData>
@@ -12,6 +10,7 @@
 #include <QGLFramebufferObject>
 
 // Application
+#include "quick3d_global.h"
 #include "CNamed.h"
 #include "CVector4.h"
 #include "CGeoloc.h"

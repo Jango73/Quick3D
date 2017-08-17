@@ -325,7 +325,7 @@ void C3DScene::setWindLevel(double value)
 
 void C3DScene::setRainVisible(bool bOnOff)
 {
-    if (m_pRain) m_pRain->setVisible(bOnOff);
+    if (m_pRain != nullptr) m_pRain->setVisible(bOnOff);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -383,7 +383,7 @@ void C3DScene::getLightsRecurse(QVector<QSP<CLight> >& vLights, QSP<CComponent> 
     {
         QSP<CLight> pLight = QSP_CAST(CLight, pComponent);
 
-        if (pLight)
+        if (pLight != nullptr)
         {
             vLights.append(pLight);
         }
@@ -440,7 +440,7 @@ void C3DScene::getLightsByTagRecurse(QVector<QSP<CLight> >& vLights, const QStri
     {
         QSP<CLight> pLight = QSP_CAST(CLight, pComponent);
 
-        if (pLight)
+        if (pLight != nullptr)
         {
             vLights.append(pLight);
         }

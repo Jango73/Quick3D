@@ -130,7 +130,7 @@ void CBILField::collectGarbage()
 */
 double CBILField::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 {
-    if (pRigidness) *pRigidness = 1.0;
+    if (pRigidness != nullptr) *pRigidness = 1.0;
 
     foreach (CBILData* pChunk, m_vChunks)
     {

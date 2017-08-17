@@ -57,7 +57,7 @@ void CStandardController::update(double dDeltaTime)
     QSP<CComponent> pRotationTarget = m_rRotationTarget.component();
     QSP<CComponent> pLookTarget = m_rLookTarget.component();
 
-    if (pPositionTarget)
+    if (pPositionTarget != nullptr)
     {
         double dMoveFactor = pPositionTarget->getGeoloc().Altitude / 500.0;
         if (dMoveFactor < 1.0) dMoveFactor = 1.0;
@@ -127,7 +127,7 @@ void CStandardController::update(double dDeltaTime)
         }
     }
 
-    if (pRotationTarget)
+    if (pRotationTarget != nullptr)
     {
         if (m_bTurnRight)
         {
@@ -177,7 +177,7 @@ void CStandardController::update(double dDeltaTime)
         }
     }
 
-    if (pLookTarget)
+    if (pLookTarget != nullptr)
     {
         if (m_bLookUp)
         {
@@ -317,7 +317,7 @@ void CStandardController::mouseMoveEvent(QMouseEvent* event)
 
         if (m_bControlPressed)
         {
-            if (pPositionTarget)
+            if (pPositionTarget != nullptr)
             {
                 double dMoveFactor = pPositionTarget->getGeoloc().Altitude * 0.00000005;
                 CGeoloc gPosition = pPositionTarget->getGeoloc();
@@ -328,12 +328,12 @@ void CStandardController::mouseMoveEvent(QMouseEvent* event)
         }
         else if (m_bAltPressed)
         {
-            if (pRotationTarget)
+            if (pRotationTarget != nullptr)
             {
                 pRotationTarget->setOriginRotation(CVector3(Math::Pi * 0.5, 0.0, 0.0));
             }
 
-            if (pPositionTarget)
+            if (pPositionTarget != nullptr)
             {
                 double dMoveFactor = pPositionTarget->getGeoloc().Altitude * 0.005;
                 if (dMoveFactor < 1.0) dMoveFactor = 1.0;
@@ -344,7 +344,7 @@ void CStandardController::mouseMoveEvent(QMouseEvent* event)
         }
         else
         {
-            if (pLookTarget)
+            if (pLookTarget != nullptr)
             {
                 CVector3 vRotationX = CVector3(dDeltaX * 0.005, 0.0, 0.0);
                 CVector3 vRotationY = CVector3(0.0, dDeltaY * 0.005, 0.0);

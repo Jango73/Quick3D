@@ -70,7 +70,7 @@ void CLight::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 
     CXMLNode tColorNode = xComponent.getNodeByTagName(ParamName_Color);
 
-    if (m_pMaterial)
+    if (m_pMaterial != nullptr)
     {
         if (tColorNode.isEmpty() == false)
         {

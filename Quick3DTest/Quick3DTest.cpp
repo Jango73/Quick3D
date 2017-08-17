@@ -266,7 +266,7 @@ void Quick3DTest::onTimer()
         {
             QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, m_pScene->controller()->getPositionTarget()->getRoot());
 
-            if (pPhysical)
+            if (pPhysical != nullptr)
             {
                 ViewGeoloc = pPhysical->getGeoloc();
                 ControledVelocity = pPhysical->velocity_ms();
@@ -279,7 +279,7 @@ void Quick3DTest::onTimer()
         {
             QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, m_pScene->controller()->getPositionTarget()->getRoot());
 
-            if (pPhysical)
+            if (pPhysical != nullptr)
             {
                 ViewRotation = pPhysical->getOriginRotation();
             }
@@ -664,7 +664,7 @@ void Quick3DTest::onResetClicked()
         {
             QSP<CVehicle> pVehicle = QSP_CAST(CVehicle, pComponent);
 
-            if (pVehicle)
+            if (pVehicle != nullptr)
             {
                 pVehicle->resetTrajectory();
             }

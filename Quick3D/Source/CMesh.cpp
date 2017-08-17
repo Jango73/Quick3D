@@ -41,7 +41,7 @@ void CMesh::setGeometry(QSP<CMeshGeometry> pGeometry)
 
 CBoundingBox CMesh::bounds()
 {
-    if (m_pGeometry)
+    if (m_pGeometry != nullptr)
     {
         return m_pGeometry->getBounds();
     }
@@ -53,7 +53,7 @@ CBoundingBox CMesh::bounds()
 
 CBoundingBox CMesh::worldBounds()
 {
-    if (m_pGeometry)
+    if (m_pGeometry != nullptr)
     {
         return m_pGeometry->getWorldBounds(this);
     }
@@ -67,7 +67,7 @@ void CMesh::update(double dDeltaTime)
 {
     CPhysicalComponent::update(dDeltaTime);
 
-    if (m_pGeometry)
+    if (m_pGeometry != nullptr)
     {
         m_pGeometry->update(dDeltaTime);
     }
@@ -150,7 +150,7 @@ void CMesh::solveLinks(C3DScene* pScene)
 {
     CPhysicalComponent::solveLinks(pScene);
 
-    if (m_pGeometry)
+    if (m_pGeometry != nullptr)
     {
         foreach (QString sTextureName, m_pGeometry->dynTexUpdaters().keys())
         {
@@ -162,7 +162,7 @@ void CMesh::solveLinks(C3DScene* pScene)
 
                 QSP<CComponent> pFound = pComponent->findComponent(sUpdaterName, QSP<CComponent>(this));
 
-                if (pFound)
+                if (pFound != nullptr)
                 {
                     foreach (QSP<CMaterial> pMaterial, m_pGeometry->materials())
                     {
@@ -206,7 +206,7 @@ void CMesh::flipNormals()
 {
     CPhysicalComponent::flipNormals();
 
-    if (m_pGeometry)
+    if (m_pGeometry != nullptr)
     {
         m_pGeometry->flipNormals();
     }
@@ -218,7 +218,7 @@ void CMesh::transformVertices(const CMatrix4& matrix)
 {
     CPhysicalComponent::transformVertices(matrix);
 
-    if (m_pGeometry)
+    if (m_pGeometry != nullptr)
     {
         m_pGeometry->transformVertices(matrix);
     }
@@ -228,7 +228,7 @@ void CMesh::transformVertices(const CMatrix4& matrix)
 
 RayTracingResult CMesh::intersect(CRay3 ray)
 {
-    if (m_pGeometry)
+    if (m_pGeometry != nullptr)
     {
         return m_pGeometry->intersect(this, ray);
     }
@@ -240,7 +240,7 @@ RayTracingResult CMesh::intersect(CRay3 ray)
 
 void CMesh::paint(CRenderContext* pContext)
 {
-    if (m_pGeometry)
+    if (m_pGeometry != nullptr)
     {
         m_pGeometry->paint(pContext, this);
     }
@@ -288,7 +288,7 @@ void CMesh::dump(QTextStream& stream, int iIdent)
 {
     dumpIdent(stream, iIdent, QString("[CMesh]"));
 
-    if (m_pGeometry)
+    if (m_pGeometry != nullptr)
     {
         m_pGeometry->dump(stream, iIdent);
     }

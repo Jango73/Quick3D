@@ -41,7 +41,7 @@ CHeightField::~CHeightField()
 */
 double CHeightField::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 {
-    if (pRigidness) *pRigidness = m_dRigidness;
+    if (pRigidness != nullptr) *pRigidness = m_dRigidness;
 
     return Q3D_INFINITY;
 }
@@ -55,7 +55,7 @@ double CHeightField::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 */
 double CHeightField::getHeightAt(const CVector3& vPosition, const CAxis& aAxis, double* pRigidness)
 {
-    if (pRigidness) *pRigidness = m_dRigidness;
+    if (pRigidness != nullptr) *pRigidness = m_dRigidness;
 
     return Q3D_INFINITY;
 }

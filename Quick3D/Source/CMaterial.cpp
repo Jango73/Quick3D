@@ -49,7 +49,7 @@ CMaterial::~CMaterial()
 {
     clearTextures();
 
-    if (m_pShadowBuffer)
+    if (m_pShadowBuffer != nullptr)
     {
         delete m_pShadowBuffer;
     }
@@ -222,7 +222,7 @@ void CMaterial::clearTextures()
 
 void CMaterial::enableFrameBuffer()
 {
-    if (m_pShadowBuffer)
+    if (m_pShadowBuffer != nullptr)
     {
         m_pScene->makeCurrentRenderingContext();
         m_pShadowBuffer->bind();
@@ -233,7 +233,7 @@ void CMaterial::enableFrameBuffer()
 
 void CMaterial::disableFrameBuffer()
 {
-    if (m_pShadowBuffer)
+    if (m_pShadowBuffer != nullptr)
     {
         m_pScene->makeCurrentRenderingContext();
         m_pShadowBuffer->release();
@@ -351,7 +351,7 @@ QGLShaderProgram* CMaterial::activate(CRenderContext* pContext)
 
 void CMaterial::activateShadow(CRenderContext* pContext)
 {
-    if (m_pShadowBuffer)
+    if (m_pShadowBuffer != nullptr)
     {
         GL_glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_pShadowBuffer->texture());

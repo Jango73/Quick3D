@@ -119,7 +119,7 @@ void CController::setPositionTarget(QSP<CComponent> pComponent)
         {
             QSP<CTrajectorable> pTraj = QSP_CAST(CTrajectorable, m_rPositionTarget.component());
 
-            if (pTraj)
+            if (pTraj != nullptr)
             {
                 pTraj->setTrajectoryEnabled(true);
             }
@@ -132,7 +132,7 @@ void CController::setPositionTarget(QSP<CComponent> pComponent)
     {
         QSP<CTrajectorable> pTraj = QSP_CAST(CTrajectorable, m_rPositionTarget.component());
 
-        if (pTraj)
+        if (pTraj != nullptr)
         {
             pTraj->setTrajectoryEnabled(false);
         }
@@ -239,7 +239,7 @@ void CController::mousePressEvent(QMouseEvent* event)
     m_bUseMouse = true;
     m_pPreviousMousePos = event->globalPos();
 
-    if (m_pParent) // && event->button() == Qt::RightButton)
+    if (m_pParent != nullptr) // && event->button() == Qt::RightButton)
     {
         C3DScene* pScene = m_pParent->getScene();
 
@@ -260,7 +260,7 @@ void CController::mousePressEvent(QMouseEvent* event)
                     {
                         QSP<CCamera> pCamera = pViewport->getCamera();
 
-                        if (pCamera)
+                        if (pCamera != nullptr)
                         {
                             CVector2 normalizedPoint(
                                         (point.x() - pViewport->getPosition().X) / pViewport->getSize().X,

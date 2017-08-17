@@ -60,11 +60,11 @@ void CElectricalComponent::solveLinks(C3DScene* pScene)
         {
             QSP<CComponent> pFound = pComponent->findComponent(sName, QSP<CComponent>(this));
 
-            if (pFound)
+            if (pFound != nullptr)
             {
                 QSP<CElectricalComponent> pInput = QSP_CAST(CElectricalComponent, pFound);
 
-                if (pInput)
+                if (pInput != nullptr)
                 {
                     m_vPowerInputs.append(pInput.data());
                     pInput->m_vPowerOutputs.append(this);

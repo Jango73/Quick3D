@@ -103,12 +103,12 @@ void CAircraftController::update(double dDeltaTime)
             pRightWing->setAileronAngle_norm(m_pJoystick->axisStates()[0] * -1.0);
         }
 
-        if (pElevator)
+        if (pElevator != nullptr)
         {
             pElevator->setAileronAngle_norm(m_pJoystick->axisStates()[1]);
         }
 
-        if (pRudder)
+        if (pRudder != nullptr)
         {
             pRudder->setAileronAngle_norm(m_pJoystick->axisStates()[3]);
         }
@@ -118,12 +118,12 @@ void CAircraftController::update(double dDeltaTime)
 
         double dAxis = 1.0 - ((m_pJoystick->axisStates()[2] + 1.0) * 0.5);
 
-        if (pEngine1)
+        if (pEngine1 != nullptr)
         {
             pEngine1->setCurrentFuelFlow_norm(dAxis);
         }
 
-        if (pEngine2)
+        if (pEngine2 != nullptr)
         {
             pEngine2->setCurrentFuelFlow_norm(dAxis);
         }
@@ -150,7 +150,7 @@ void CAircraftController::update(double dDeltaTime)
                 }
         }
 
-        if (pElevator)
+        if (pElevator != nullptr)
         {
             if (m_bNoseUp)
             {
@@ -167,7 +167,7 @@ void CAircraftController::update(double dDeltaTime)
                 }
         }
 
-        if (pRudder)
+        if (pRudder != nullptr)
         {
             if (m_bRudderLeft)
             {
@@ -246,12 +246,12 @@ void CAircraftController::keyPressEvent(QKeyEvent* event)
             break;
         case Qt::Key_PageUp:
         {
-            if (pEngine1)
+            if (pEngine1 != nullptr)
             {
                 pEngine1->setCurrentFuelFlow_norm(pEngine1->currentFuelFlow_norm() + 0.1);
             }
 
-            if (pEngine2)
+            if (pEngine2 != nullptr)
             {
                 pEngine2->setCurrentFuelFlow_norm(pEngine2->currentFuelFlow_norm() + 0.1);
             }
@@ -259,12 +259,12 @@ void CAircraftController::keyPressEvent(QKeyEvent* event)
             break;
         case Qt::Key_PageDown:
         {
-            if (pEngine1)
+            if (pEngine1 != nullptr)
             {
                 pEngine1->setCurrentFuelFlow_norm(pEngine1->currentFuelFlow_norm() - 0.1);
             }
 
-            if (pEngine2)
+            if (pEngine2 != nullptr)
             {
                 pEngine2->setCurrentFuelFlow_norm(pEngine2->currentFuelFlow_norm() - 0.1);
             }
@@ -356,7 +356,7 @@ void CAircraftController::q3dEvent(CQ3DEvent* event)
     {
         if (event->getAction() == CQ3DEvent::Press)
         {
-            if (pRotationTarget)
+            if (pRotationTarget != nullptr)
             {
                 pRotationTarget->setOriginRotation(CVector3((Math::Pi / 20.0) * 1.0, (Math::Pi / 4.0) * 0.0, 0.0));
             }
@@ -366,7 +366,7 @@ void CAircraftController::q3dEvent(CQ3DEvent* event)
     {
         if (event->getAction() == CQ3DEvent::Press)
         {
-            if (pRotationTarget)
+            if (pRotationTarget != nullptr)
             {
                 pRotationTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 1.0, 0.0));
             }
@@ -376,7 +376,7 @@ void CAircraftController::q3dEvent(CQ3DEvent* event)
     {
         if (event->getAction() == CQ3DEvent::Press)
         {
-            if (pRotationTarget)
+            if (pRotationTarget != nullptr)
             {
                 pRotationTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 2.0, 0.0));
             }
@@ -386,7 +386,7 @@ void CAircraftController::q3dEvent(CQ3DEvent* event)
     {
         if (event->getAction() == CQ3DEvent::Press)
         {
-            if (pRotationTarget)
+            if (pRotationTarget != nullptr)
             {
                 pRotationTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 3.0, 0.0));
             }
@@ -396,7 +396,7 @@ void CAircraftController::q3dEvent(CQ3DEvent* event)
     {
         if (event->getAction() == CQ3DEvent::Press)
         {
-            if (pRotationTarget)
+            if (pRotationTarget != nullptr)
             {
                 pRotationTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 4.0, 0.0));
             }
@@ -406,7 +406,7 @@ void CAircraftController::q3dEvent(CQ3DEvent* event)
     {
         if (event->getAction() == CQ3DEvent::Press)
         {
-            if (pRotationTarget)
+            if (pRotationTarget != nullptr)
             {
                 pRotationTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 5.0, 0.0));
             }
@@ -416,7 +416,7 @@ void CAircraftController::q3dEvent(CQ3DEvent* event)
     {
         if (event->getAction() == CQ3DEvent::Press)
         {
-            if (pRotationTarget)
+            if (pRotationTarget != nullptr)
             {
                 pRotationTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 6.0, 0.0));
             }
@@ -426,7 +426,7 @@ void CAircraftController::q3dEvent(CQ3DEvent* event)
     {
         if (event->getAction() == CQ3DEvent::Press)
         {
-            if (pRotationTarget)
+            if (pRotationTarget != nullptr)
             {
                 pRotationTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 7.0, 0.0));
             }
@@ -436,7 +436,7 @@ void CAircraftController::q3dEvent(CQ3DEvent* event)
     {
         if (event->getAction() == CQ3DEvent::Press)
         {
-            if (pRotationTarget)
+            if (pRotationTarget != nullptr)
             {
                 pRotationTarget->setOriginRotation(CVector3((Math::Pi / 4.0) * 1.0, (Math::Pi / 4.0) * 1.0, 0.0));
             }

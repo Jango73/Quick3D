@@ -130,7 +130,7 @@ CTerrain::~CTerrain()
 
 CBoundingBox CTerrain::bounds()
 {
-    if (m_pMesh)
+    if (m_pMesh != nullptr)
     {
         return m_pMesh->getBounds();
     }
@@ -142,7 +142,7 @@ CBoundingBox CTerrain::bounds()
 
 CBoundingBox CTerrain::worldBounds()
 {
-    if (m_pMesh)
+    if (m_pMesh != nullptr)
     {
         return m_pMesh->getWorldBounds(this);
     }
@@ -201,7 +201,7 @@ double CTerrain::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
     // CPerlin* pPerlin = CPerlin::getInstance();
     // return m_pFunction->process(pPerlin, vPosition);
 
-    if (pRigidness)
+    if (pRigidness != nullptr)
     {
         *pRigidness = 1.0;
     }
@@ -627,7 +627,7 @@ void CTerrain::dump(QTextStream& stream, int iIdent)
     dumpIdent(stream, iIdent, QString("Mesh :"));
 
     dumpOpenBlock(stream, iIdent); iIdent++;
-    if (m_pMesh) m_pMesh->dump(stream, iIdent);
+    if (m_pMesh != nullptr) m_pMesh->dump(stream, iIdent);
     iIdent--; dumpCloseBlock(stream, iIdent);
 
     CComponent::dump(stream, iIdent);

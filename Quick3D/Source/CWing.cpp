@@ -117,7 +117,7 @@ void CWing::update(double dDeltaTime)
     QSP<CComponent> pRoot = getRoot();
     QSP<CAircraft> pAircraft = QSP_CAST(CAircraft, pRoot);
 
-    if (pAircraft)
+    if (pAircraft != nullptr)
     {
         // Compute lift
 

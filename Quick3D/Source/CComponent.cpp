@@ -179,7 +179,7 @@ void CComponent::setSelected(bool bValue)
 void CComponent::setParent(QSP<CComponent> pParent)
 {
     // Si l'objet a déjà un parent, on le supprime de la liste d'enfants du parent
-    if (m_pParent)
+    if (m_pParent != nullptr)
     {
         m_pParent->m_vChildren.remove(m_pParent->m_vChildren.indexOf(QSP<CComponent>(this)));
     }
@@ -266,7 +266,7 @@ QSP<CComponent> CComponent::findComponent(QString sName, QSP<CComponent> pCaller
             {
                 QSP<CComponent> pFound = pChild->findComponent(sRemaining);
 
-                if (pFound)
+                if (pFound != nullptr)
                 {
                     return pFound;
                 }

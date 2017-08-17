@@ -74,7 +74,7 @@ void CTankController::update(double dDeltaTime)
     QSP<CComponent> m_pTurretYawTarget(m_rTurretYawTarget.component());
     QSP<CComponent> m_pTurretPitchTarget(m_rTurretPitchTarget.component());
 
-    if (m_pTurretYawTarget)
+    if (m_pTurretYawTarget != nullptr)
     {
         double dRotationSpeed = Math::Angles::toRad(TURN_SPEED);
 
@@ -91,7 +91,7 @@ void CTankController::update(double dDeltaTime)
             }
     }
 
-    if (m_pTurretPitchTarget)
+    if (m_pTurretPitchTarget != nullptr)
     {
         double dRotationSpeed = Math::Angles::toRad(TURN_SPEED);
 

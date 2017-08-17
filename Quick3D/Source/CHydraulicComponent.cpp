@@ -84,7 +84,7 @@ void CHydraulicComponent::update(double dDeltaTime)
     {
         QSP<CHydraulicComponent> pHydraulic = QSP_CAST(CHydraulicComponent, m_vInputs[0].component());
 
-        if (pHydraulic)
+        if (pHydraulic != nullptr)
         {
             double dPressure = pHydraulic->pull(0.0, dDeltaTime);
             push(dPressure, dDeltaTime);

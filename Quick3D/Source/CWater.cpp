@@ -61,13 +61,13 @@ void CWater::paint(CRenderContext* pContext)
 
 double CWater::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 {
-    if (pRigidness) *pRigidness = 0.0;
+    if (pRigidness != nullptr) *pRigidness = 0.0;
 
     if (m_pGeometry->materials().count() > 0)
     {
         CWaterMaterial* pMat = dynamic_cast<CWaterMaterial*>(m_pGeometry->materials()[0].data());
 
-        if (pRigidness) *pRigidness = 0.25;
+        if (pRigidness != nullptr) *pRigidness = 0.25;
 
         return pMat->WaveHeight(gPosition);
     }

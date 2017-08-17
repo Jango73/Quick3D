@@ -40,7 +40,7 @@ void CRudder::update(double dDeltaTime)
     QSP<CComponent> pRoot = getRoot();
     QSP<CAircraft> pAircraft = QSP_CAST(CAircraft, pRoot);
 
-    if (pAircraft)
+    if (pAircraft != nullptr)
     {
         // Apply aileron lift
 

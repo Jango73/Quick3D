@@ -213,7 +213,7 @@ void CQ3DLoader::addBounds(CComponent* pContainer, CBoundingBox& bBox, CMatrix4 
     {
         QSP<CMesh> pChildMesh = QSP_CAST(CMesh, pChild);
 
-        if (pChildMesh)
+        if (pChildMesh != nullptr)
         {
             addBounds(pChildMesh.data(), bBox, mTransform);
         }

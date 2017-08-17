@@ -122,7 +122,7 @@ QSP<CMeshGeometry> CRessourcesManager::loadMesh(const QString& sBaseFile, const 
 
     QSP<CMeshGeometry> pLoadedMesh = findMesh(sFullFileName);
 
-    if (pLoadedMesh)
+    if (pLoadedMesh != nullptr)
     {
         return pLoadedMesh;
     }

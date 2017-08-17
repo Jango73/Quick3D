@@ -75,7 +75,7 @@ public:
         {
             QSP<CComponent> pFound = pComponent->findComponent(m_sName, pCaller);
 
-            if (pFound)
+            if (pFound != nullptr)
             {
                 m_pComponent = pFound;
                 break;

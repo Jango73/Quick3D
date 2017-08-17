@@ -73,7 +73,7 @@ void CHGTField::parseFiles()
 
 double CHGTField::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 {
-    if (pRigidness) *pRigidness = 1.0;
+    if (pRigidness != nullptr) *pRigidness = 1.0;
 
     foreach (CHGTData* pChunk, m_vChunks)
     {

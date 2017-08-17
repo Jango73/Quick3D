@@ -20,14 +20,14 @@ CGeneratedField::CGeneratedField(CXMLNode xParameters)
 
 CGeneratedField::~CGeneratedField()
 {
-    if (m_pFunction) delete m_pFunction;
+    if (m_pFunction != nullptr) delete m_pFunction;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 double CGeneratedField::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 {
-    if (pRigidness) *pRigidness = 1.0;
+    if (pRigidness != nullptr) *pRigidness = 1.0;
 
     return m_pFunction->process(CPerlin::getInstance(), gPosition.toVector3(), CAxis());
 }
@@ -36,7 +36,7 @@ double CGeneratedField::getHeightAt(const CGeoloc& gPosition, double* pRigidness
 
 double CGeneratedField::getHeightAt(const CVector3& vPosition, const CAxis& aAxis, double* pRigidness)
 {
-    if (pRigidness) *pRigidness = 1.0;
+    if (pRigidness != nullptr) *pRigidness = 1.0;
 
     return m_pFunction->process(CPerlin::getInstance(), vPosition, aAxis);
 }

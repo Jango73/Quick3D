@@ -45,7 +45,7 @@ void CForceController::update(double dDeltaTime)
     {
         QSP<CPhysicalComponent> pPhysicalPositionTarget = QSP_CAST(CPhysicalComponent, m_rPositionTarget.component());
 
-        if (pPhysicalPositionTarget)
+        if (pPhysicalPositionTarget != nullptr)
         {
             double dMoveFactor = pPhysicalPositionTarget->getGeoloc().Altitude / 500.0;
             if (dMoveFactor < 1.0) dMoveFactor = 1.0;
@@ -92,7 +92,7 @@ void CForceController::update(double dDeltaTime)
     {
         QSP<CPhysicalComponent> pPhysicalRotationTarget = QSP_CAST(CPhysicalComponent, m_rRotationTarget.component());
 
-        if (pPhysicalRotationTarget)
+        if (pPhysicalRotationTarget != nullptr)
         {
             double dRotationSpeed = m_dForceFactor * 0.02;
 
@@ -203,7 +203,7 @@ void CForceController::q3dEvent(CQ3DEvent* event)
     {
         if (event->getAction() == CQ3DEvent::Press)
         {
-            if (pLookTarget)
+            if (pLookTarget != nullptr)
             {
                 pLookTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 0.0, 0.0));
             }
@@ -213,7 +213,7 @@ void CForceController::q3dEvent(CQ3DEvent* event)
     {
         if (event->getAction() == CQ3DEvent::Press)
         {
-            if (pLookTarget)
+            if (pLookTarget != nullptr)
             {
                 pLookTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 1.0, 0.0));
             }
@@ -223,7 +223,7 @@ void CForceController::q3dEvent(CQ3DEvent* event)
     {
         if (event->getAction() == CQ3DEvent::Press)
         {
-            if (pLookTarget)
+            if (pLookTarget != nullptr)
             {
                 pLookTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 2.0, 0.0));
             }
@@ -233,7 +233,7 @@ void CForceController::q3dEvent(CQ3DEvent* event)
     {
         if (event->getAction() == CQ3DEvent::Press)
         {
-            if (pLookTarget)
+            if (pLookTarget != nullptr)
             {
                 pLookTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 3.0, 0.0));
             }
@@ -243,7 +243,7 @@ void CForceController::q3dEvent(CQ3DEvent* event)
     {
         if (event->getAction() == CQ3DEvent::Press)
         {
-            if (pLookTarget)
+            if (pLookTarget != nullptr)
             {
                 pLookTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 4.0, 0.0));
             }
@@ -253,7 +253,7 @@ void CForceController::q3dEvent(CQ3DEvent* event)
     {
         if (event->getAction() == CQ3DEvent::Press)
         {
-            if (pLookTarget)
+            if (pLookTarget != nullptr)
             {
                 pLookTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 5.0, 0.0));
             }
@@ -263,7 +263,7 @@ void CForceController::q3dEvent(CQ3DEvent* event)
     {
         if (event->getAction() == CQ3DEvent::Press)
         {
-            if (pLookTarget)
+            if (pLookTarget != nullptr)
             {
                 pLookTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 6.0, 0.0));
             }
@@ -273,7 +273,7 @@ void CForceController::q3dEvent(CQ3DEvent* event)
     {
         if (event->getAction() == CQ3DEvent::Press)
         {
-            if (pLookTarget)
+            if (pLookTarget != nullptr)
             {
                 pLookTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 7.0, 0.0));
             }
@@ -283,7 +283,7 @@ void CForceController::q3dEvent(CQ3DEvent* event)
     {
         if (event->getAction() == CQ3DEvent::Press)
         {
-            if (pLookTarget)
+            if (pLookTarget != nullptr)
             {
                 pLookTarget->setOriginRotation(CVector3((Math::Pi / 4.0) * 1.0, (Math::Pi / 4.0) * 1.0, 0.0));
             }

@@ -39,7 +39,7 @@ double CHGTData::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 {
     QMutexLocker locker(&m_tMutex);
 
-    if (pRigidness) *pRigidness = 1.0;
+    if (pRigidness != nullptr) *pRigidness = 1.0;
 
     double dLatDiff = gPosition.Latitude - m_gGeoloc.Latitude;
     double dLonDiff = gPosition.Longitude - m_gGeoloc.Longitude;

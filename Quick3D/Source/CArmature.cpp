@@ -47,7 +47,7 @@ void CArmature::update(double dDeltaTime)
     {
         QSP<CMesh> pMesh = QSP_CAST(CMesh, pChild);
 
-        if (pMesh)
+        if (pMesh != nullptr)
         {
             updateSingleMesh(pMesh, dDeltaTime);
         }

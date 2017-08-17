@@ -158,11 +158,11 @@ void CWorldTerrain::loadParameters(const QString& sBaseFile, CXMLNode xComponent
         QString sClass = xGenerator.attributes()[ParamName_Class];
         QSP<CComponent> pComponent(CComponentFactory::getInstance()->instanciateComponent(sClass, m_pScene));
 
-        if (pComponent)
+        if (pComponent != nullptr)
         {
             QSP<CGeometryGenerator> pGenerator = QSP_CAST(CGeometryGenerator, pComponent);
 
-            if (pGenerator)
+            if (pGenerator != nullptr)
             {
                 pGenerator->loadParameters(sBaseFile, xGenerator, xFunctionsNode);
                 m_vGenerators.append(pComponent);
@@ -205,7 +205,7 @@ void CWorldTerrain::loadParameters(const QString& sBaseFile, CXMLNode xComponent
 
 void CWorldTerrain::clearLinks(C3DScene* pScene)
 {
-    if (m_pRoot)
+    if (m_pRoot != nullptr)
     {
         m_pRoot->clearLinks(pScene);
     }
@@ -579,7 +579,7 @@ void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRen
 */
 void CWorldTerrain::collectGarbage()
 {
-    if (m_pRoot)
+    if (m_pRoot != nullptr)
     {
         collectGarbageRecurse(m_pRoot);
     }
@@ -604,7 +604,7 @@ void CWorldTerrain::collectGarbageRecurse(QSP<CWorldChunk> pChunk)
     {
         QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 
-        if (pChild)
+        if (pChild != nullptr)
         {
             collectGarbageRecurse(pChild);
         }
@@ -615,7 +615,7 @@ void CWorldTerrain::collectGarbageRecurse(QSP<CWorldChunk> pChunk)
 
 double CWorldTerrain::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 {
-    if (m_pRoot)
+    if (m_pRoot != nullptr)
     {
         return getHeightAtRecurse(gPosition, m_pRoot, pRigidness);
     }
@@ -630,7 +630,7 @@ double CWorldTerrain::getHeightAtRecurse(const CGeoloc& gPosition, QSP<CWorldChu
     double dDiffLatitude = Math::Angles::angleDifferenceDegree(gPosition.Latitude, pChunk->getGeoloc().Latitude);
     double dDiffLongitude = Math::Angles::angleDifferenceDegree(gPosition.Longitude, pChunk->getGeoloc().Longitude);
 
-    if (pRigidness) *pRigidness = 0.0;
+    if (pRigidness != nullptr) *pRigidness = 0.0;
 
     if (
             fabs(dDiffLatitude) < pChunk->getSize().Latitude * 0.5 &&
@@ -646,7 +646,7 @@ double CWorldTerrain::getHeightAtRecurse(const CGeoloc& gPosition, QSP<CWorldChu
 
             if (dNewAltitude != Q3D_INFINITY)
             {
-                if (pRigidness) *pRigidness = dNewRigidness;
+                if (pRigidness != nullptr) *pRigidness = dNewRigidness;
                 return dNewAltitude;
             }
         }
@@ -670,7 +670,7 @@ double CWorldTerrain::getHeightAtRecurse(const CGeoloc& gPosition, QSP<CWorldChu
 
             if (dTerrainAltitude != Q3D_INFINITY)
             {
-                if (pRigidness) *pRigidness = dTerrainRigidness;
+                if (pRigidness != nullptr) *pRigidness = dTerrainRigidness;
                 return dTerrainAltitude;
             }
 
@@ -705,7 +705,7 @@ void CWorldTerrain::flatten(const CGeoloc& gPosition, double dRadius)
 
 RayTracingResult CWorldTerrain::intersect(Math::CRay3 ray)
 {
-    if (m_pRoot)
+    if (m_pRoot != nullptr)
     {
         return intersectRecurse(m_pRoot, ray);
     }
@@ -726,7 +726,7 @@ RayTracingResult CWorldTerrain::intersectRecurse(QSP<CWorldChunk> pChunk, const 
     {
         QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 
-        if (pChild)
+        if (pChild != nullptr)
         {
             RayTracingResult dNewResult = intersectRecurse(pChild, ray);
 
@@ -759,7 +759,7 @@ void CWorldTerrain::dump(QTextStream& stream, int iIdent)
     dumpIdent(stream, iIdent, QString("Terrain res : %1").arg(m_iTerrainResolution));
     dumpIdent(stream, iIdent, QString("Root :"));
 
-    if (m_pRoot)
+    if (m_pRoot != nullptr)
     {
         dumpOpenBlock(stream, iIdent); iIdent++;
         m_pRoot->dump(stream, iIdent);

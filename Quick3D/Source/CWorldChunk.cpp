@@ -118,7 +118,7 @@ void CWorldChunk::build()
 
     CMaterial* pMaterial = m_pAutoTerrain->material();
 
-    if (pMaterial)
+    if (pMaterial != nullptr)
     {
         gStart = pMaterial->transformGeoloc(gStart);
         gEnd = pMaterial->transformGeoloc(gEnd);
@@ -358,7 +358,7 @@ void CWorldChunk::clearTerrain()
 {
     CGeoloc gChunkPosition = getGeoloc();
 
-    if (m_pTerrain)
+    if (m_pTerrain != nullptr)
     {
         LOG_DEBUG(QString("Deleting terrain for chunk at %1, %2 (%3)")
                   .arg(gChunkPosition.Latitude)
@@ -369,7 +369,7 @@ void CWorldChunk::clearTerrain()
         m_pTerrain.reset();
     }
 
-    if (m_pWater)
+    if (m_pWater != nullptr)
     {
         m_pWater.reset();
     }
@@ -387,7 +387,7 @@ void CWorldChunk::work()
         msleep(50);
     }
 
-    if (m_pTerrain)
+    if (m_pTerrain != nullptr)
     {
         // Create bounded containers
         {
@@ -425,7 +425,7 @@ void CWorldChunk::work()
             {
                 QSP<CGeometryGenerator> pGenerator = QSP_CAST(CGeometryGenerator, pComponent);
 
-                if (pGenerator)
+                if (pGenerator != nullptr)
                 {
                     pGenerator->generate(QSP<CWorldChunk>(this));
                 }
@@ -506,7 +506,7 @@ void CWorldChunk::dump(QTextStream& stream, int iIdent)
     dumpIdent(stream, iIdent, QString("Terrain :"));
 
     dumpOpenBlock(stream, iIdent); iIdent++;
-    if (m_pTerrain) m_pTerrain->dump(stream, iIdent);
+    if (m_pTerrain != nullptr) m_pTerrain->dump(stream, iIdent);
     iIdent--; dumpCloseBlock(stream, iIdent);
 
     CComponent::dump(stream, iIdent);

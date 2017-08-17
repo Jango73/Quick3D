@@ -125,7 +125,7 @@ void CMeshGeometry::update(double dDeltaTime)
 {
     foreach (QSP<CMaterial> pMaterial, m_vMaterials)
     {
-        if (pMaterial)
+        if (pMaterial != nullptr)
         {
             pMaterial->update(dDeltaTime);
         }

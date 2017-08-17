@@ -192,7 +192,7 @@ double CPhysicalComponent::totalMass_kg() const
     {
         const QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, pChild);
 
-        if (pPhysical)
+        if (pPhysical != nullptr)
         {
             dTotalMass_kg += pPhysical->totalMass_kg();
         }
@@ -456,7 +456,7 @@ void CPhysicalComponent::update(double dDeltaTimeS)
     {
         if (m_dStickToNOLL > 0.0)
         {
-            if (m_pParent)
+            if (m_pParent != nullptr)
             {
                 if (m_pParent->getPreviousWorldTransform().isIdentity() == false)
                 {
@@ -476,7 +476,7 @@ void CPhysicalComponent::update(double dDeltaTimeS)
         if (m_dRotationLatency > 0.0)
         {
             /*
-            if (m_pParent)
+            if (m_pParent != nullptr)
             {
                 if (m_pParent->getPreviousWorldTransform().isIdentity() == false)
                 {
@@ -579,7 +579,7 @@ void CPhysicalComponent::computeCollisionsForComponent(QSP<CPhysicalComponent> p
     {
         QSP<CPhysicalComponent> pOtherPhysical = QSP_CAST(CPhysicalComponent, pOtherComponent);
 
-        if (pOtherPhysical)
+        if (pOtherPhysical != nullptr)
         {
             if (pComponent != pOtherPhysical && pOtherPhysical->isRootObject() && pOtherPhysical->collisionsActive() == true)
             {

@@ -14,10 +14,10 @@ using namespace Math;
 
 int CTerrain::m_iNumTerrains = 0;
 
-Math::Interpolator<double> CTerrain::m_iAltitudes_Sand;
-Math::Interpolator<double> CTerrain::m_iAltitudes_Dirt;
-Math::Interpolator<double> CTerrain::m_iAltitudes_Grass;
-Math::Interpolator<double> CTerrain::m_iAltitudes_Snow;
+CInterpolator<double> CTerrain::m_iAltitudes_Sand;
+CInterpolator<double> CTerrain::m_iAltitudes_Dirt;
+CInterpolator<double> CTerrain::m_iAltitudes_Grass;
+CInterpolator<double> CTerrain::m_iAltitudes_Snow;
 
 //-------------------------------------------------------------------------------------------------
 

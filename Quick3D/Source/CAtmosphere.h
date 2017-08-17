@@ -7,57 +7,57 @@
 #include "CSingleton.h"
 
 // Quick3D
-#include "Interpolator.h"
+#include "CInterpolator.h"
 
 #define N_TO_KG	(0.101971621)
 
 class QUICK3D_EXPORT CAtmosphere : public CSingleton<CAtmosphere>
 {
-	friend class CSingleton<CAtmosphere>;
+    friend class CSingleton<CAtmosphere>;
 
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructors and destructor
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructors and destructor
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	CAtmosphere();
+    //!
+    CAtmosphere();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
+    //!
     double density_kgm3(double dAltitude_m);
 
-	//!
+    //!
     double pressure_Nm2(double dAltitude_m);
 
-	//!
+    //!
     double soundSpeed_ms(double dAltitude_m);
 
-	//!
+    //!
     double temperature_K(double dAltitude_m);
 
-	//!
+    //!
     double airForceFactor(double dAltitude_m);
 
-	//!
+    //!
     double airDragFactor(double dAltitude_m);
 
-	//-------------------------------------------------------------------------------------------------
-	// Properties
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Properties
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	Math::Interpolator<double>	m_Density_kgm3;
-	Math::Interpolator<double>	m_Pressure_Nm2;
-	Math::Interpolator<double>	m_SoundSpeed_ms;
-	Math::Interpolator<double>	m_Temperature_K;
+    CInterpolator<double>   m_Density_kgm3;
+    CInterpolator<double>   m_Pressure_Nm2;
+    CInterpolator<double>   m_SoundSpeed_ms;
+    CInterpolator<double>   m_Temperature_K;
 };

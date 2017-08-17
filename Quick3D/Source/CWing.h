@@ -1,12 +1,13 @@
 
 #pragma once
 
-#include "quick3d_global.h"
+// qt-plus
+#include "CInterpolator.h"
 
 // Application
+#include "quick3d_global.h"
 #include "CQ3DConstants.h"
 #include "CPhysicalComponent.h"
-#include "Interpolator.h"
 
 class C3DScene;
 
@@ -70,13 +71,13 @@ public:
 
 protected:
 
-    double                      m_dArea_m2;
-    double                      m_dWingAngle_rad;
-    double                      m_dAileronArea_m2;
-    double                      m_dAileronMaxPositiveAngle_rad;
-    double                      m_dAileronAngle_rad;
-    double                      m_dFlapsPosition_norm;
-    Math::CVector3              m_vAileronPosition;
-    Math::Interpolator<double>  m_iBodyAirflowDotLiftFactor;
-    Math::Interpolator<double>  m_iBodyAirflowDotAileronLiftFactor;
+    double                  m_dArea_m2;
+    double                  m_dWingAngle_rad;
+    double                  m_dAileronArea_m2;
+    double                  m_dAileronMaxPositiveAngle_rad;
+    double                  m_dAileronAngle_rad;
+    double                  m_dFlapsPosition_norm;
+    Math::CVector3          m_vAileronPosition;
+    CInterpolator<double>   m_iBodyAirflowDotLiftFactor;
+    CInterpolator<double>   m_iBodyAirflowDotAileronLiftFactor;
 };

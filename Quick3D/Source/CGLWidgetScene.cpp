@@ -329,7 +329,7 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
 
             if (pContext->camera()->getGeoloc().Altitude >= 0.0)
             {
-                vSuns[0]->material()->diffuse() = m_vSunColor.getValue(m_dSunIntensity);
+                vSuns[0]->material()->diffuse() = m_iSunColor.getValue(m_dSunIntensity);
             }
             else
             {

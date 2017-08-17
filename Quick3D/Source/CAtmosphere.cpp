@@ -1,8 +1,6 @@
 
 #include "CAtmosphere.h"
 
-using namespace Math;
-
 //-------------------------------------------------------------------------------------------------
 
 CAtmosphere::CAtmosphere()

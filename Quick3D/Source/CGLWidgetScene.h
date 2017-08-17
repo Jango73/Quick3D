@@ -1,17 +1,18 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
 // Qt
 #include <QGLWidget>
 #include <QImage>
 #include <QTime>
 
+// qt-plus
+#include "CInterpolator.h"
+
 // Application
+#include "quick3d_global.h"
 #include "CVector3.h"
 #include "CMatrix4.h"
-#include "Interpolator.h"
 #include "C3DScene.h"
 #include "CMeshGeometry.h"
 

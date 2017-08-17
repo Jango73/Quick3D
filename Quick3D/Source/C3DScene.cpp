@@ -153,12 +153,12 @@ void C3DScene::init(QVector<QSP<CComponent> > vComponents)
     m_tFog.level() = 0.0;
     m_tFog.color() = CVector3(0.5, 0.5, 0.5);
 
-    m_vSunColor.clear();
-    m_vSunColor.addValue( 0.00, Vector4(0.0, 0.0, 0.0, 1.0));
-    m_vSunColor.addValue( 0.50, Vector4(1.1, 0.7, 0.2, 1.0));
-    m_vSunColor.addValue( 0.60, Vector4(1.1, 0.7, 0.2, 1.0));
-    m_vSunColor.addValue( 0.75, Vector4(1.4, 1.4, 1.2, 1.0));
-    m_vSunColor.addValue( 1.00, Vector4(1.4, 1.4, 1.2, 1.0));
+    m_iSunColor.clear();
+    m_iSunColor.addValue( 0.00, Vector4(0.0, 0.0, 0.0, 1.0));
+    m_iSunColor.addValue( 0.50, Vector4(1.1, 0.7, 0.2, 1.0));
+    m_iSunColor.addValue( 0.60, Vector4(1.1, 0.7, 0.2, 1.0));
+    m_iSunColor.addValue( 0.75, Vector4(1.4, 1.4, 1.2, 1.0));
+    m_iSunColor.addValue( 1.00, Vector4(1.4, 1.4, 1.2, 1.0));
 
     //-----------------------------------------------
     // Create particles

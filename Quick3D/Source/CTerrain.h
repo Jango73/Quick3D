@@ -7,7 +7,7 @@
 
 // Fondations
 #include "CXMLNode.h"
-#include "Interpolator.h"
+#include "CInterpolator.h"
 
 // Application
 #include "CQ3DConstants.h"
@@ -174,8 +174,8 @@ protected:
 
     static int                          m_iNumTerrains;
 
-    static Math::Interpolator<double>   m_iAltitudes_Sand;
-    static Math::Interpolator<double>   m_iAltitudes_Dirt;
-    static Math::Interpolator<double>   m_iAltitudes_Grass;
-    static Math::Interpolator<double>   m_iAltitudes_Snow;
+    static CInterpolator<double>        m_iAltitudes_Sand;
+    static CInterpolator<double>        m_iAltitudes_Dirt;
+    static CInterpolator<double>        m_iAltitudes_Grass;
+    static CInterpolator<double>        m_iAltitudes_Snow;
 };

@@ -8,7 +8,6 @@ QT += core gui network opengl xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = Quick3DTest
 TEMPLATE = app
 INCLUDEPATH += $$PWD/../Quick3D/Source
 INCLUDEPATH += $$PWD/../qt-plus/source/cpp
@@ -23,9 +22,16 @@ QMAKE_CXXFLAGS += -Wno-invalid-offsetof
 QMAKE_CXXFLAGS += -Wno-unused-parameter
 QMAKE_CXXFLAGS += -Wno-reorder
 
+# Target
+CONFIG(debug, debug|release) {
+    TARGET = Quick3DTestd
+} else {
+    TARGET = Quick3DTest
+}
+
 # Libraries
 CONFIG(debug, debug|release) {
-    LIBS += -L$$OUT_PWD/../Quick3D/bin -lQuick3D
+    LIBS += -L$$OUT_PWD/../Quick3D/bin -lQuick3Dd
 } else {
     LIBS += -L$$OUT_PWD/../Quick3D/bin -lQuick3D
 }

@@ -97,7 +97,6 @@ SOURCES += \
     Source/CHGTData.cpp \
     Source/CHGTField.cpp \
     Source/CHTTPMapClient.cpp \
-    Source/CHTTPServer.cpp \
     Source/CHydraulicComponent.cpp \
     Source/CImageFilter.cpp \
     Source/CImageFilter_Matrix.cpp \
@@ -268,7 +267,6 @@ HEADERS  += \
     Source/CHGTData.h \
     Source/CHGTField.h \
     Source/CHTTPMapClient.h \
-    Source/CHTTPServer.h \
     Source/CHydraulicComponent.h \
     Source/CImageFilter.h \
     Source/CImageFilter_Matrix.h \

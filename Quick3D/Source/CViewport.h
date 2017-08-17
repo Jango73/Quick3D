@@ -1,6 +1,5 @@
 
-#ifndef CVIEWPORT_H
-#define CVIEWPORT_H
+#pragma once
 
 #include "quick3d_global.h"
 
@@ -10,12 +9,12 @@
 #include <QTcpServer>
 #include <QImage>
 
-// Fondations
-#include "CVector2.h"
-#include "CVector3.h"
+// qt-plus
 #include "CMJPEGServer.h"
 
 // Application
+#include "CVector2.h"
+#include "CVector3.h"
 #include "CCamera.h"
 
 class C3DScene;
@@ -33,7 +32,7 @@ public:
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Constructeur
+    //! Constructor
     CViewport(C3DScene* pScene, bool bEnableMJPEGServer = false);
 
     //! Destructor
@@ -106,18 +105,16 @@ public:
 
 protected:
 
-    C3DScene*       m_pScene;				// La scène vue dans ce viewport
-    CMJPEGServer*   m_pServer;				// Le serveur de streaming du viewport
-    Math::CVector2  m_vPosition;			// La position du viewport dans la fenêtre de rendu
-    Math::CVector2  m_vSize;				// La taille du viewport
-    QImage          m_imgFrameBuffer;		// L'image capturée après rendu pour le streaming
-    bool            m_bEnabled;				// Le viewport est activé?
-    bool            m_bStreamView;			// Doit-on faire un streaming de la vue?
-    bool            m_bNeedFrameBuffer;		// A t-on besoin du frame buffer?
+    C3DScene*       m_pScene;				// The scene displayed in this viewport
+    CMJPEGServer*   m_pServer;				// The streaming server for this viewport
+    Math::CVector2  m_vPosition;			// The viewport's position in the render window
+    Math::CVector2  m_vSize;				// The viewport's size
+    QImage          m_imgFrameBuffer;		// The captured frame
+    bool            m_bEnabled;				// Is the viewport active?
+    bool            m_bStreamView;			// Is the view streaming enabled?
+    bool            m_bNeedFrameBuffer;		// Do we need the frame buffer?
 
     // Shared data
 
-    QSP<CCamera>    m_pCamera;				// La caméra associée au viewport
+    QSP<CCamera>    m_pCamera;				// The camera used by this viewport
 };
-
-#endif // CVIEWPORT_H

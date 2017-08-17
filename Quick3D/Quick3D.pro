@@ -8,7 +8,6 @@ QT += core gui network opengl xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = Quick3D
 TEMPLATE = lib
 DEFINES += QUICK3D_LIB
 DEFINES += SFML_SYSTEM_EXPORTS
@@ -29,16 +28,24 @@ QMAKE_CXXFLAGS += -Wno-invalid-offsetof
 QMAKE_CXXFLAGS += -Wno-unused-parameter
 QMAKE_CXXFLAGS += -Wno-reorder
 
-# Help
-helpfile = Quick3D.qdocconf
+# Target
+CONFIG(debug, debug|release) {
+    TARGET = Quick3Dd
+} else {
+    TARGET = Quick3D
+}
 
-QMAKE_POST_LINK += qdoc $$quote($$shell_path($$helpfile)) $$escape_expand(\\n\\t)
-
+# Libraries
 CONFIG(debug, debug|release) {
     LIBS += -L$$PWD/../qt-plus/bin -lqt-plusd
 } else {
     LIBS += -L$$PWD/../qt-plus/bin -lqt-plus
 }
+
+# Help
+helpfile = Quick3D.qdocconf
+
+QMAKE_POST_LINK += qdoc $$quote($$shell_path($$helpfile)) $$escape_expand(\\n\\t)
 
 # Code
 SOURCES += \

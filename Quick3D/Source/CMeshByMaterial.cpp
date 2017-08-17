@@ -70,7 +70,7 @@ void CMeshByMaterial::paint(CRenderContext* pContext)
         QGLShaderProgram* pProgram = pMaterial->activate(pContext);
 
         // If program ok...
-        if (pProgram != NULL)
+        if (pProgram != nullptr)
         {
             foreach (CGLMeshData* pData, m_vGeometry[pMaterial].keys())
             {
@@ -79,7 +79,7 @@ void CMeshByMaterial::paint(CRenderContext* pContext)
 
                 mModelAbsolute.setToIdentity();
 
-                if (pContainer != NULL)
+                if (pContainer != nullptr)
                 {
                     // Set transform matrix
                     CVector3 WorldPosition = pContainer->getWorldPosition() - pContext->scene()->worldOrigin();

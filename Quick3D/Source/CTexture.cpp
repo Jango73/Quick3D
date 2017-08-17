@@ -41,8 +41,8 @@ void CTextureUpdater::run()
 CTexture::CTexture(C3DScene* pScene, QString sName, const QImage& imgTexture, QSize size, int iIndex, bool bIsDynamic)
     : m_pScene(pScene)
     , m_sName(sName)
-    , m_pUpdater(NULL)
-    , m_TextureUpdateWorker(NULL)
+    , m_pUpdater(nullptr)
+    , m_TextureUpdateWorker(nullptr)
     , m_uiGLTexture(0)
     , m_bIsDynamic(bIsDynamic)
     , m_bDirty(false)
@@ -88,7 +88,7 @@ CTexture::~CTexture()
 
 void CTexture::update(double dDeltaTime)
 {
-    if (m_bIsDynamic && m_pUpdater != NULL && m_TextureUpdateWorker != NULL)
+    if (m_bIsDynamic && m_pUpdater != nullptr && m_TextureUpdateWorker != nullptr)
     {
         m_iUpdateCounter++;
 

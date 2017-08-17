@@ -58,8 +58,8 @@ CComponent* CComponent::instanciator(C3DScene* pScene)
 */
 CComponent::CComponent(C3DScene* pScene)
     : m_pScene(pScene)
-    , m_pController(NULL)
-    , m_pParent(NULL)
+    , m_pController(nullptr)
+    , m_pParent(nullptr)
     , m_vOriginPosition(0.0, 0.0, 0.0)
     , m_vOriginRotation(0.0, 0.0, 0.0)
     , m_vOriginScale(1.0, 1.0, 1.0)
@@ -274,7 +274,7 @@ QSP<CComponent> CComponent::findComponent(QString sName, QSP<CComponent> pCaller
         }
     }
 
-    return QSP<CComponent>(NULL);
+    return QSP<CComponent>(nullptr);
 }
 
 //-------------------------------------------------------------------------------------------------

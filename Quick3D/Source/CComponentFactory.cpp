@@ -129,5 +129,5 @@ CComponent* CComponentFactory::instanciateComponent(QString sClassName, C3DScene
         return s_vComponentInstanciators[sClassName](pScene);
     }
 
-    return NULL;
+    return nullptr;
 }

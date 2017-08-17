@@ -21,7 +21,7 @@ CTimeSampler::CTimeSampler(CLogger* pLogger)
 
     m_tDumpTimer.start(10000);
 
-    if (m_pLogger == NULL)
+    if (m_pLogger == nullptr)
     {
         m_pLogger = CLogger::getInstance();
     }

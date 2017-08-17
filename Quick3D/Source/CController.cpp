@@ -17,7 +17,7 @@ using namespace Math;
 
 CController::CController(C3DScene* pScene)
     : CComponent(pScene)
-    , m_pJoystick(NULL)
+    , m_pJoystick(nullptr)
     , m_bUseMouse(false)
     , m_bControlPressed(false)
     , m_bAltPressed(false)
@@ -40,7 +40,7 @@ CController::CController(C3DScene* pScene)
 
 CController::~CController()
 {
-    if (m_pJoystick != NULL)
+    if (m_pJoystick != nullptr)
     {
         delete m_pJoystick;
     }
@@ -100,7 +100,7 @@ void CController::update(double dDeltaTime)
 {
     CComponent::update(dDeltaTime);
 
-    if (m_pJoystick != NULL)
+    if (m_pJoystick != nullptr)
     {
         sf::Joystick::Update();
         m_pJoystick->update(dDeltaTime);
@@ -243,13 +243,13 @@ void CController::mousePressEvent(QMouseEvent* event)
     {
         C3DScene* pScene = m_pParent->getScene();
 
-        if (pScene != NULL)
+        if (pScene != nullptr)
         {
             QPointF point = event->localPos();
 
             foreach (CViewport* pViewport, pScene->viewports().values())
             {
-                if (pViewport != NULL)
+                if (pViewport != nullptr)
                 {
                     if (
                             point.x() >= pViewport->getPosition().X &&
@@ -278,7 +278,7 @@ void CController::mousePressEvent(QMouseEvent* event)
 
                             if (aResult.m_dDistance < Q3D_INFINITY)
                             {
-                                if (aResult.m_pObject != NULL)
+                                if (aResult.m_pObject != nullptr)
                                 {
                                     CComponent* pComponent = (CComponent*)aResult.m_pObject;
 

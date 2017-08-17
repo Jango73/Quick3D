@@ -31,7 +31,7 @@ void CPluginLoader::loadPlugins()
         {
             PluginEntry pEntry = (PluginEntry) library.resolve(STR(PLUGIN_ENTRY_NAME));
 
-            if (pEntry != NULL)
+            if (pEntry != nullptr)
             {
                 pEntry(CPluginInterface::getInstance());
             }

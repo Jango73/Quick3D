@@ -74,7 +74,7 @@ namespace Math
 
             if (dot <= 0) return 0;
 
-			return RayTracingResult(t, NULL, vNormal);
+			return RayTracingResult(t, nullptr, vNormal);
 		}
 
 		//! Normalisation

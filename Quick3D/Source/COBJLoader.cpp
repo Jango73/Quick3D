@@ -187,7 +187,7 @@ void COBJLoader::loadMaterials(const QString& sBaseFile, C3DScene* pScene, CMesh
 
     QTextStream sInput(&sText, QIODevice::ReadOnly);
 
-    CMaterial* pMaterial = NULL;
+    CMaterial* pMaterial = nullptr;
 
     pMesh->deleteMaterials();
 
@@ -217,7 +217,7 @@ void COBJLoader::loadMaterials(const QString& sBaseFile, C3DScene* pScene, CMesh
                     // Couleur ambiante
                     // Ambient color
 
-                    if (pMaterial != NULL)
+                    if (pMaterial != nullptr)
                     {
                         pMaterial->ambient().X = lWords.at(1).toDouble();
                         pMaterial->ambient().Y = lWords.at(2).toDouble();
@@ -229,7 +229,7 @@ void COBJLoader::loadMaterials(const QString& sBaseFile, C3DScene* pScene, CMesh
                     // Couleur diffuse
                     // Diffuse color
 
-                    if (pMaterial != NULL)
+                    if (pMaterial != nullptr)
                     {
                         pMaterial->diffuse().X = lWords.at(1).toDouble();
                         pMaterial->diffuse().Y = lWords.at(2).toDouble();
@@ -241,7 +241,7 @@ void COBJLoader::loadMaterials(const QString& sBaseFile, C3DScene* pScene, CMesh
                     // Couleur spéculaire
                     // Specular color
 
-                    if (pMaterial != NULL)
+                    if (pMaterial != nullptr)
                     {
                         pMaterial->specular().X = lWords.at(1).toDouble();
                         pMaterial->specular().Y = lWords.at(2).toDouble();
@@ -261,7 +261,7 @@ void COBJLoader::loadMaterials(const QString& sBaseFile, C3DScene* pScene, CMesh
                 }
                 else if (sFirstWord == TOKEN_texture_diffuse && lWords.count() > 1)
                 {
-                    if (pMaterial != NULL)
+                    if (pMaterial != nullptr)
                     {
                         QString sTextureName = lWords.at(1);
                         sTextureName = sTextureName.replace("\\\\", "/");

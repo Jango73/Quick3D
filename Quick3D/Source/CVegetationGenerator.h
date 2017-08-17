@@ -34,9 +34,9 @@ public:
     CVegetation()
         : m_eType(evtNone)
         , m_dSpread(0.0)
-        , m_pFunction(NULL)
-        , m_pMesh(NULL)
-        , m_pMaterial(NULL)
+        , m_pFunction(nullptr)
+        , m_pMesh(nullptr)
+        , m_pMaterial(nullptr)
     {
     }
 
@@ -51,8 +51,8 @@ public:
 
     virtual ~CVegetation()
     {
-        if (m_pFunction != NULL) delete m_pFunction;
-        if (m_pMesh != NULL) delete m_pMesh;
+        if (m_pFunction != nullptr) delete m_pFunction;
+        if (m_pMesh != nullptr) delete m_pMesh;
     }
 
     EVegetationType     m_eType;

@@ -67,7 +67,7 @@ public:
     CGeoloc getSize() const { return m_gSize; }
 
     //! Retourne l'altitude à la géolocalisation spécifiée
-    double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);
+    double getHeightAt(const CGeoloc& gPosition, double* pRigidness = nullptr);
 
     //! Retourne le nombre de cellules en largeur
     int getNumCellsWidth() const { return m_iNumCellsWidth; }

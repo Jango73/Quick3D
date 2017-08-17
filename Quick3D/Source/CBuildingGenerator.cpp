@@ -14,7 +14,7 @@ using namespace Math;
 CBuildingGenerator::CBuildingGenerator(C3DScene* pScene)
     : m_mMutex(QMutex::Recursive)
     , m_pScene(pScene)
-    , m_pBuilding1(NULL)
+    , m_pBuilding1(nullptr)
 {
     m_pBuilding1 = QSP<CMesh>(new CBox(m_pScene, 150.0));
 
@@ -31,10 +31,10 @@ CBuildingGenerator::~CBuildingGenerator()
 
 CMeshInstance* CBuildingGenerator::getBuilding(EBuildingType eType, CGeoloc gPosition, double dRadius, double dSeed)
 {
-    return NULL;
+    return nullptr;
 
     /*
-    if (m_pScene == NULL) return NULL;
+    if (m_pScene == nullptr) return nullptr;
 
     QMutexLocker locker(&m_mMutex);
 

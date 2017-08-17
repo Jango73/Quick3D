@@ -97,7 +97,7 @@ double CHGTField::getHeightAt(const CVector3& vPosition, const CAxis& aAxis, dou
 
 double CHGTField::getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, bool bForPhysics)
 {
-    double dReturnValue = getHeightAt(CGeoloc(vPosition), NULL);
+    double dReturnValue = getHeightAt(CGeoloc(vPosition), nullptr);
 
     if (!bForPhysics)
     {

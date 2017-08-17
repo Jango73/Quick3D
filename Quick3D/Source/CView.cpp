@@ -19,7 +19,7 @@ using namespace Math;
 
 CView::CView(QWidget *parent)
     : QGraphicsView(parent)
-    , m_pScene(NULL)
+    , m_pScene(nullptr)
 {
     LOG_DEBUG("CView::CView()");
 
@@ -35,7 +35,7 @@ CView::CView(QWidget *parent)
 
 CView::CView(CGLWidgetScene* pScene, QWidget *parent)
     : QGraphicsView(parent)
-    , m_pScene(NULL)
+    , m_pScene(nullptr)
 {
     LOG_DEBUG("CView::CView()");
 
@@ -65,7 +65,7 @@ void CView::setScene(CGLWidgetScene* pScene)
 
     m_pScene = pScene;
 
-    if (m_pScene != NULL)
+    if (m_pScene != nullptr)
     {
         m_pScene->makeCurrentRenderingContext();
 
@@ -77,7 +77,7 @@ void CView::setScene(CGLWidgetScene* pScene)
 
 void CView::keyPressEvent(QKeyEvent* event)
 {
-    if (m_pScene != NULL)
+    if (m_pScene != nullptr)
     {
         if (m_pScene->editMode())
         {
@@ -85,7 +85,7 @@ void CView::keyPressEvent(QKeyEvent* event)
         }
         else
         {
-            if (m_pScene->controller() != NULL)
+            if (m_pScene->controller() != nullptr)
             {
                 m_pScene->controller()->keyPressEvent(event);
             }
@@ -97,7 +97,7 @@ void CView::keyPressEvent(QKeyEvent* event)
 
 void CView::keyReleaseEvent(QKeyEvent *event)
 {
-    if (m_pScene != NULL)
+    if (m_pScene != nullptr)
     {
         if (m_pScene->editMode())
         {
@@ -105,7 +105,7 @@ void CView::keyReleaseEvent(QKeyEvent *event)
         }
         else
         {
-            if (m_pScene->controller() != NULL)
+            if (m_pScene->controller() != nullptr)
             {
                 m_pScene->controller()->keyReleaseEvent(event);
             }
@@ -117,7 +117,7 @@ void CView::keyReleaseEvent(QKeyEvent *event)
 
 void CView::mousePressEvent(QMouseEvent* event)
 {
-    if (m_pScene != NULL)
+    if (m_pScene != nullptr)
     {
         if (m_pScene->editMode())
         {
@@ -125,7 +125,7 @@ void CView::mousePressEvent(QMouseEvent* event)
         }
         else
         {
-            if (m_pScene->controller() != NULL)
+            if (m_pScene->controller() != nullptr)
             {
                 m_pScene->controller()->mousePressEvent(event);
             }
@@ -137,7 +137,7 @@ void CView::mousePressEvent(QMouseEvent* event)
 
 void CView::mouseReleaseEvent(QMouseEvent* event)
 {
-    if (m_pScene != NULL)
+    if (m_pScene != nullptr)
     {
         if (m_pScene->editMode())
         {
@@ -145,7 +145,7 @@ void CView::mouseReleaseEvent(QMouseEvent* event)
         }
         else
         {
-            if (m_pScene->controller() != NULL)
+            if (m_pScene->controller() != nullptr)
             {
                 m_pScene->controller()->mouseReleaseEvent(event);
             }
@@ -157,7 +157,7 @@ void CView::mouseReleaseEvent(QMouseEvent* event)
 
 void CView::mouseMoveEvent(QMouseEvent* event)
 {
-    if (m_pScene != NULL)
+    if (m_pScene != nullptr)
     {
         if (m_pScene->editMode())
         {
@@ -165,7 +165,7 @@ void CView::mouseMoveEvent(QMouseEvent* event)
         }
         else
         {
-            if (m_pScene->controller() != NULL)
+            if (m_pScene->controller() != nullptr)
             {
                 m_pScene->controller()->mouseMoveEvent(event);
             }
@@ -177,7 +177,7 @@ void CView::mouseMoveEvent(QMouseEvent* event)
 
 void CView::wheelEvent(QWheelEvent *event)
 {
-    if (m_pScene != NULL)
+    if (m_pScene != nullptr)
     {
         if (m_pScene->editMode())
         {
@@ -185,7 +185,7 @@ void CView::wheelEvent(QWheelEvent *event)
         }
         else
         {
-            if (m_pScene->controller() != NULL)
+            if (m_pScene->controller() != nullptr)
             {
                 m_pScene->controller()->wheelEvent(event);
             }
@@ -197,14 +197,14 @@ void CView::wheelEvent(QWheelEvent *event)
 
 void CView::focusOutEvent(QFocusEvent* event)
 {
-    if (m_pScene != NULL)
+    if (m_pScene != nullptr)
     {
         if (m_pScene->editMode())
         {
         }
         else
         {
-            if (m_pScene->controller() != NULL)
+            if (m_pScene->controller() != nullptr)
             {
                 {
                     QKeyEvent tEvent(QEvent::KeyRelease, Qt::Key_Control, Qt::NoModifier);
@@ -227,7 +227,7 @@ void CView::update(double dDeltaTimeS)
     if (dDeltaTimeS < 0.0) dDeltaTimeS = 0.0;
     if (dDeltaTimeS > 1.0) dDeltaTimeS = 1.0;
 
-    if (m_pScene != NULL)
+    if (m_pScene != nullptr)
     {
         if (m_pScene->editMode())
         {

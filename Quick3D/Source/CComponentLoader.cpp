@@ -56,9 +56,9 @@ QVector<QSP<CComponent> > CComponentLoader::load(const QString& sBaseFile, C3DSc
 
             foreach (CXMLNode xComponent, xComponents)
             {
-                CComponent* pComponent = loadComponent(sBaseFile, pScene, xComponent, NULL);
+                CComponent* pComponent = loadComponent(sBaseFile, pScene, xComponent, nullptr);
 
-                if (pComponent != NULL)
+                if (pComponent != nullptr)
                 {
                     vOutput.append(QSP<CComponent>(pComponent));
                 }
@@ -88,7 +88,7 @@ QVector<QSP<CComponent> > CComponentLoader::load(const QString& sBaseFile, C3DSc
             }
         }
 
-        if (pControlledFound && pControlledFound->getController() != NULL)
+        if (pControlledFound && pControlledFound->getController() != nullptr)
         {
             pScene->setController(pControlledFound->getController());
         }
@@ -105,7 +105,7 @@ CComponent* CComponentLoader::loadComponent(const QString& sBaseFile, C3DScene* 
 {
     CXMLNode xComponent = CXMLNode::loadXMLFromFile(sBaseFile);
 
-    CComponent* pNewComponent = loadComponent(sBaseFile, pScene, xComponent, NULL);
+    CComponent* pNewComponent = loadComponent(sBaseFile, pScene, xComponent, nullptr);
 
     return pNewComponent;
 }
@@ -118,9 +118,9 @@ CComponent* CComponentLoader::loadComponent(const QString& sBaseFile, C3DScene* 
 
     CComponent* pComponent = CComponentFactory::getInstance()->instanciateComponent(sClass, pScene);
 
-    if (pComponent != NULL)
+    if (pComponent != nullptr)
     {
-        if (pParent != NULL)
+        if (pParent != nullptr)
         {
             pComponent->setParentName(pParent->name());
         }
@@ -137,7 +137,7 @@ CComponent* CComponentLoader::loadComponent(const QString& sBaseFile, C3DScene* 
         {
             CComponent* pChildComponent = loadComponent(sBaseFile, pScene, xChildComponent, pComponent);
 
-            if (pChildComponent != NULL)
+            if (pChildComponent != nullptr)
             {
                 pChildComponent->setParent(QSP<CComponent>(pComponent));
             }
@@ -153,7 +153,7 @@ CComponent* CComponentLoader::loadComponent(const QString& sBaseFile, C3DScene* 
 
             CComponent* pControllerComponent = CComponentFactory::getInstance()->instanciateComponent(sControllerClass, pScene);
 
-            if (pControllerComponent != NULL)
+            if (pControllerComponent != nullptr)
             {
                 pControllerComponent->loadParameters(sBaseFile, xController);
 
@@ -165,5 +165,5 @@ CComponent* CComponentLoader::loadComponent(const QString& sBaseFile, C3DScene* 
         return pComponent;
     }
 
-    return NULL;
+    return nullptr;
 }

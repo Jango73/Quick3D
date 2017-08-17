@@ -37,10 +37,10 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);
+    virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = nullptr);
 
     //!
-    virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, double* pRigidness = NULL);
+    virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, double* pRigidness = nullptr);
 
     //!
     virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, bool bForPhysics = true);

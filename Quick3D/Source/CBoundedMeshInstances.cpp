@@ -19,7 +19,7 @@ CBoundedMeshInstances::~CBoundedMeshInstances()
 {
     foreach (CMeshInstance* pMesh, m_vMeshes)
     {
-        if (pMesh != NULL)
+        if (pMesh != nullptr)
         {
             delete pMesh;
         }
@@ -77,7 +77,7 @@ void CBoundedMeshInstances::paint(CRenderContext* pContext)
 
 void CBoundedMeshInstances::add(CMeshInstance* pMeshInstance)
 {
-    if (pMeshInstance != NULL && m_vMeshes.contains(pMeshInstance) == false)
+    if (pMeshInstance != nullptr && m_vMeshes.contains(pMeshInstance) == false)
     {
         m_vMeshes.append(pMeshInstance);
     }

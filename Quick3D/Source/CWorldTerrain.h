@@ -28,7 +28,7 @@ public:
 
     CBuildings()
         : m_dSpread(0.0)
-        , m_pFunction(NULL)
+        , m_pFunction(nullptr)
     {
     }
 
@@ -68,7 +68,7 @@ public:
     static CComponent* instanciator(C3DScene* pScene);
 
     //!
-    CWorldTerrain(C3DScene* pScene, CGeoloc gCameraPosition = CGeoloc(), CHeightField* pHeights = NULL, bool bGenerateNow = false);
+    CWorldTerrain(C3DScene* pScene, CGeoloc gCameraPosition = CGeoloc(), CHeightField* pHeights = nullptr, bool bGenerateNow = false);
 
     //!
     virtual ~CWorldTerrain();
@@ -119,7 +119,7 @@ public:
     virtual void postUpdate(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //!
-    virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);
+    virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = nullptr);
 
     //!
     virtual void flatten(const CGeoloc& gPosition, double dRadius);
@@ -149,7 +149,7 @@ protected:
     void buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pContext, int iLevel);
 
     //!
-    double getHeightAtRecurse(const CGeoloc& gPosition, QSP<CWorldChunk> pChunk, double* pRigidness = NULL);
+    double getHeightAtRecurse(const CGeoloc& gPosition, QSP<CWorldChunk> pChunk, double* pRigidness = nullptr);
 
     //!
     void collectGarbage();

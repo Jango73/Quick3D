@@ -38,7 +38,7 @@ QString CUtility::FormatString(const char *szFormat, va_list &arg_ptr)
 #ifdef _MSC_VER
     int nSize = _vscprintf(szFormat,arg_ptr) + 1;
 #else
-    int nSize = vsnprintf(NULL, 0, szFormat,arg_ptr) + 1;
+    int nSize = vsnprintf(nullptr, 0, szFormat,arg_ptr) + 1;
 #endif
     char *szRet = new char[nSize];
 
@@ -140,9 +140,9 @@ bool CUtility::findProcessByName(const QString& sName)
     char szCommand[256];
     sprintf(szCommand,"pidof %s",sName.toStdString().c_str());
     fp = popen(szCommand, "r");
-    if (fp != NULL)
+    if (fp != nullptr)
     {
-        if (fgets(szPid, 10, fp) != NULL)
+        if (fgets(szPid, 10, fp) != nullptr)
         {
             ulRetPID = atoi(szPid);
         }

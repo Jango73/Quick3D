@@ -37,7 +37,7 @@ CHeightField::~CHeightField()
 
 /*!
     Returns the height at the specified \a gPosition. \br\br
-    \a pRigidness, if not NULL, is filled with the terrain rigidness at the specified location.
+    \a pRigidness, if not nullptr, is filled with the terrain rigidness at the specified location.
 */
 double CHeightField::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 {
@@ -50,7 +50,7 @@ double CHeightField::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 
 /*!
     Returns the height at the specified \a gPosition. \br\br
-    \a pRigidness, if not NULL, is filled with the terrain rigidness at the specified location.
+    \a pRigidness, if not nullptr, is filled with the terrain rigidness at the specified location.
     \a aAxis
 */
 double CHeightField::getHeightAt(const CVector3& vPosition, const CAxis& aAxis, double* pRigidness)

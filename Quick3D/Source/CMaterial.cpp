@@ -29,7 +29,7 @@ CMaterial::CMaterial(C3DScene* pScene, QString sName)
     , m_dReflectionSteepness(0.0)
     , m_dSSSFactor(0.0)
     , m_dSSSRadius(0.02)
-    , m_pShadowBuffer(NULL)
+    , m_pShadowBuffer(nullptr)
     , m_dIRFactor(0.8)
     , m_bHasAlpha(false)
     , m_bUseSky(false)
@@ -244,7 +244,7 @@ void CMaterial::disableFrameBuffer()
 
 QGLShaderProgram* CMaterial::activate(CRenderContext* pContext)
 {
-    QGLShaderProgram* pProgram = NULL;
+    QGLShaderProgram* pProgram = nullptr;
 
     if (m_bBillBoard)
     {
@@ -259,7 +259,7 @@ QGLShaderProgram* CMaterial::activate(CRenderContext* pContext)
         pProgram = pContext->scene()->shaders()->getShader(SP_Standard_Mesh);
     }
 
-    if (pProgram != NULL)
+    if (pProgram != nullptr)
     {
         if (pContext->pActiveMaterial != this)
         {

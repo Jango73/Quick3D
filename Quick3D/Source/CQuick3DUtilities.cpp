@@ -16,7 +16,7 @@ using namespace Math;
 //-------------------------------------------------------------------------------------------------
 
 CQuick3DUtilities::CQuick3DUtilities()
-    : m_pCMScene(NULL)
+    : m_pCMScene(nullptr)
 {
 }
 
@@ -24,7 +24,7 @@ CQuick3DUtilities::CQuick3DUtilities()
 
 CQuick3DUtilities::~CQuick3DUtilities()
 {
-    if (m_pCMScene != NULL)
+    if (m_pCMScene != nullptr)
     {
         // Destruction des éléments 3D
         delete m_pCMScene;
@@ -36,7 +36,7 @@ CQuick3DUtilities::~CQuick3DUtilities()
 
 void CQuick3DUtilities::prepareSceneForMatrices_CubeMapped(CPanoramicMatrixParams& tParams)
 {
-    if (m_pCMScene == NULL)
+    if (m_pCMScene == nullptr)
     {
         // Création de la scène
         m_pCMScene = new CGLWidgetScene();

@@ -67,7 +67,7 @@ CBILData::CBILData(double dValueForNoData)
     , m_iNumCellsWidth(0)
     , m_iNumCellsHeight(0)
     , m_ui16NoDataValue(0)
-    , m_vData(NULL)
+    , m_vData(nullptr)
 {
     setUsedNow();
 }
@@ -86,11 +86,11 @@ CBILData::CBILData(
     : CExpendable(20)
     , m_tMutex(QMutex::Recursive)
     , m_dValueForNoData(dValueForNoData)
-    , m_vData(NULL)
+    , m_vData(nullptr)
 {
     setUsedNow();
 
-    if (iNumCellsWidth > 0 && iNumCellsHeight > 0 && vData != NULL)
+    if (iNumCellsWidth > 0 && iNumCellsHeight > 0 && vData != nullptr)
     {
         m_gGeoloc			= gGeoloc;
         m_gSize				= gSize;
@@ -113,7 +113,7 @@ CBILData::CBILData(const CBILData& target)
 
 CBILData::~CBILData()
 {
-    if (m_vData != NULL)
+    if (m_vData != nullptr)
     {
         delete m_vData;
     }
@@ -129,9 +129,9 @@ CBILData& CBILData::operator = (const CBILData& target)
     m_iNumCellsHeight	= target.m_iNumCellsHeight;
     m_ui16NoDataValue	= target.m_ui16NoDataValue;
     m_dValueForNoData	= target.m_dValueForNoData;
-    m_vData				= NULL;
+    m_vData				= nullptr;
 
-    if (target.m_iNumCellsWidth > 0 && target.m_iNumCellsHeight > 0 && target.m_vData != NULL)
+    if (target.m_iNumCellsWidth > 0 && target.m_iNumCellsHeight > 0 && target.m_vData != nullptr)
     {
         m_vData = new qint16[target.m_iNumCellsWidth * target.m_iNumCellsHeight];
         memcpy(m_vData, target.m_vData, (target.m_iNumCellsWidth * target.m_iNumCellsHeight) * sizeof(qint16));
@@ -148,17 +148,17 @@ double CBILData::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 
     setUsedNow();
 
-    if (pRigidness != NULL)
+    if (pRigidness != nullptr)
     {
         *pRigidness = 1.0;
     }
 
-    if (m_vData == NULL)
+    if (m_vData == nullptr)
     {
         readData();
     }
 
-    if (m_vData != NULL)
+    if (m_vData != nullptr)
     {
         double dLatDiff = gPosition.Latitude - m_gGeoloc.Latitude;
         double dLonDiff = gPosition.Longitude - m_gGeoloc.Longitude;
@@ -252,12 +252,12 @@ void CBILData::setFileName(QString sFileName)
 
     m_sFileName = sFileName;
 
-    if (m_vData != NULL)
+    if (m_vData != nullptr)
     {
         delete m_vData;
     }
 
-    m_vData = NULL;
+    m_vData = nullptr;
 
     QStringList lHeader = readHeader();
 
@@ -343,9 +343,9 @@ void CBILData::readData()
 
 void CBILData::clearData()
 {
-    if (m_vData != NULL)
+    if (m_vData != nullptr)
     {
         delete [] m_vData;
-        m_vData = NULL;
+        m_vData = nullptr;
     }
 }

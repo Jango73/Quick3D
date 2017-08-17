@@ -18,7 +18,7 @@ CHGTData::CHGTData(const CGeoloc& gGeoloc, const CGeoloc& gSize)
     , m_gSize(gSize)
     , m_iNumCellsWidth(1201)
     , m_iNumCellsHeight(1201)
-    , m_pFile(NULL)
+    , m_pFile(nullptr)
 {
 }
 
@@ -26,7 +26,7 @@ CHGTData::CHGTData(const CGeoloc& gGeoloc, const CGeoloc& gSize)
 
 CHGTData::~CHGTData()
 {
-    if (m_pFile != NULL)
+    if (m_pFile != nullptr)
     {
         m_pFile->close();
         delete m_pFile;
@@ -123,7 +123,7 @@ void CHGTData::setFileName(QString sFileName)
 {
     m_sFileName = sFileName;
 
-    if (m_pFile != NULL)
+    if (m_pFile != nullptr)
     {
         m_pFile->close();
         delete m_pFile;

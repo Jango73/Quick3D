@@ -362,7 +362,7 @@ void CCamera::renderDepth_RayTraced
 
     for (int iTilt = 0; iTilt < tParams.m_sResolution.height(); iTilt++)
     {
-        if (pProgressListener != NULL)
+        if (pProgressListener != nullptr)
         {
             double dPercent = (((double) (iTilt * tParams.m_sResolution.width())) / (double) (tParams.m_sResolution.width() * tParams.m_sResolution.height())) * 100.0;
             pProgressListener->notifyProgress("", dPercent);
@@ -469,7 +469,7 @@ void CCamera::renderDepth_CubeMapped
 {
     CGLWidgetScene* pGLWidgetScene = dynamic_cast<CGLWidgetScene*>(pScene);
 
-    if (pGLWidgetScene != NULL)
+    if (pGLWidgetScene != nullptr)
     {
         START_SAMPLE("CCamera::renderDepth_CubeMapped:prepare");
 

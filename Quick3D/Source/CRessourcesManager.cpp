@@ -19,10 +19,10 @@ using namespace Math;
 CRessourcesManager::CRessourcesManager(C3DScene* pScene)
     : m_pScene(pScene)
     , m_mMutex(QMutex::Recursive)
-    , m_pDefaultMaterial(NULL)
-    , m_pWaterMaterial(NULL)
-    , m_pSkyboxMaterial(NULL)
-    , m_pTreeMaterial(NULL)
+    , m_pDefaultMaterial(nullptr)
+    , m_pWaterMaterial(nullptr)
+    , m_pSkyboxMaterial(nullptr)
+    , m_pTreeMaterial(nullptr)
 {
     m_pDefaultMaterial = QSP<CMaterial>(new CMaterial(pScene));
 
@@ -111,7 +111,7 @@ QSP<CMeshGeometry> CRessourcesManager::findMesh(const QString& sFullFileName)
         }
     }
 
-    return QSP<CMeshGeometry>(NULL);
+    return QSP<CMeshGeometry>(nullptr);
 }
 
 //-------------------------------------------------------------------------------------------------

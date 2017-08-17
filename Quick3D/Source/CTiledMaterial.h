@@ -34,7 +34,7 @@ public:
 
         CTile()
             : m_iLevel(0)
-            , m_pTexture(NULL)
+            , m_pTexture(nullptr)
         {
             m_tLastUsed = QDateTime::currentDateTime();
         }
@@ -48,7 +48,7 @@ public:
 
         ~CTile()
         {
-            if (m_pTexture != NULL)
+            if (m_pTexture != nullptr)
             {
                 delete m_pTexture;
             }

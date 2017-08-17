@@ -22,7 +22,7 @@ class RayTracingResult
 {
 public:
 
-    inline RayTracingResult(double dDistance, const void* pObject = NULL, CVector3 vNormal = CVector3())
+    inline RayTracingResult(double dDistance, const void* pObject = nullptr, CVector3 vNormal = CVector3())
         : m_dDistance(dDistance)
         , m_pObject(pObject)
         , m_vNormal(vNormal)

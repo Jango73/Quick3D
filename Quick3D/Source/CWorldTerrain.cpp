@@ -50,9 +50,9 @@ CComponent* CWorldTerrain::instanciator(C3DScene* pScene)
 CWorldTerrain::CWorldTerrain(C3DScene* pScene, CGeoloc gCameraPosition, CHeightField* pHeights, bool bGenerateNow)
     : CComponent(pScene)
     , m_bGenerateNow(bGenerateNow)
-    , m_pRoot(NULL)
+    , m_pRoot(nullptr)
     , m_pHeights(pHeights)
-    , m_pMaterial(NULL)
+    , m_pMaterial(nullptr)
     , m_iLevels(15)
     , m_iTerrainResolution(31)
 {
@@ -369,7 +369,7 @@ void CWorldTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pConte
             {
                 CTiledMaterial* pTiled = dynamic_cast<CTiledMaterial*>(m_pMaterial.data());
 
-                if (pTiled == NULL)
+                if (pTiled == nullptr)
                 {
                     QSP<CTerrain> pWater = QSP<CTerrain>(new CTerrain(
                                 m_pScene,

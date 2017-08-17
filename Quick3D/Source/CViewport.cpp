@@ -15,8 +15,8 @@ CViewport::CViewport(C3DScene* pScene, bool bEnableMJPEGServer)
     , m_bEnabled(false)
     , m_bStreamView(false)
     , m_bNeedFrameBuffer(false)
-    , m_pCamera(NULL)
-    , m_pServer(NULL)
+    , m_pCamera(nullptr)
+    , m_pServer(nullptr)
 {
     static int iPort = 6666;
 
@@ -37,7 +37,7 @@ CViewport::~CViewport()
 {
     LOG_DEBUG("CViewport::~CViewport()");
 
-    if (m_pServer != NULL)
+    if (m_pServer != nullptr)
     {
         delete m_pServer;
     }
@@ -47,7 +47,7 @@ CViewport::~CViewport()
 
 void CViewport::update(double dDeltaTime)
 {
-    if ((m_bStreamView && m_pServer != NULL) || m_bNeedFrameBuffer)
+    if ((m_bStreamView && m_pServer != nullptr) || m_bNeedFrameBuffer)
     {
         if (m_pScene->frameBuffer().width() > 0 && m_pScene->frameBuffer().height() > 0)
         {
@@ -64,7 +64,7 @@ void CViewport::update(double dDeltaTime)
 
                 if (m_imgFrameBuffer.width() > 0 && m_imgFrameBuffer.height() > 0)
                 {
-                    if (m_pServer != NULL)
+                    if (m_pServer != nullptr)
                     {
                         m_pServer->sendImage(m_imgFrameBuffer);
                     }

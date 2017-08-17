@@ -50,5 +50,5 @@ QGLShaderProgram* CShaderCollection::getShader(QString sName)
         return m_vShaders[sName];
     }
 
-    return NULL;
+    return nullptr;
 }

@@ -8,7 +8,7 @@
 //-------------------------------------------------------------------------------------------------
 
 CHTTPMapClient::CHTTPMapClient()
-    : m_pReply(NULL)
+    : m_pReply(nullptr)
 {
     LOG_DEBUG("CHTTPMapClient::CHTTPMapClient()");
 
@@ -59,7 +59,7 @@ QImage CHTTPMapClient::getTile(QString sTileName)
 
 void CHTTPMapClient::loadNextTile()
 {
-    if (m_pReply == NULL)
+    if (m_pReply == nullptr)
     {
         if (m_vRequestedTiles.count() > 0)
         {
@@ -137,7 +137,7 @@ void CHTTPMapClient::httpFinished()
     m_baIncomingData.clear();
 
     m_pReply->deleteLater();
-    m_pReply = NULL;
+    m_pReply = nullptr;
 
     loadNextTile();
 }
@@ -151,7 +151,7 @@ void CHTTPMapClient::httpError(QNetworkReply::NetworkError code)
     m_baIncomingData.clear();
 
     m_pReply->deleteLater();
-    m_pReply = NULL;
+    m_pReply = nullptr;
 
     loadNextTile();
 }

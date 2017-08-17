@@ -30,10 +30,10 @@ CRenderContext::CRenderContext(
     , m_pScene(pScene)
     , m_pCamera(pCamera)
     , m_pMeshByMaterial(new CMeshByMaterial())
-    , m_pFog(NULL)
+    , m_pFog(nullptr)
     , bUseIR(false)
     , bUseInversePolarity(false)
-    , pActiveMaterial(NULL)
+    , pActiveMaterial(nullptr)
 {
 }
 

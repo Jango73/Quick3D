@@ -77,7 +77,7 @@ CSRTMData::CSRTMData(double dValueForNoData)
     , m_iNumCellsWidth(0)
     , m_iNumCellsHeight(0)
     , m_ui16NoDataValue(0)
-    , m_vData(NULL)
+    , m_vData(nullptr)
 {
 }
 
@@ -94,9 +94,9 @@ CSRTMData::CSRTMData(
         )
     : m_tMutex(QMutex::Recursive)
     , m_dValueForNoData(dValueForNoData)
-    , m_vData(NULL)
+    , m_vData(nullptr)
 {
-    if (iNumCellsWidth > 0 && iNumCellsHeight > 0 && vData != NULL)
+    if (iNumCellsWidth > 0 && iNumCellsHeight > 0 && vData != nullptr)
     {
         m_gGeoloc			= gGeoloc;
         m_gSize				= gSize;
@@ -119,7 +119,7 @@ CSRTMData::CSRTMData(const CSRTMData& target)
 
 CSRTMData::~CSRTMData()
 {
-    if (m_vData != NULL)
+    if (m_vData != nullptr)
     {
         delete m_vData;
     }
@@ -135,9 +135,9 @@ CSRTMData& CSRTMData::operator = (const CSRTMData& target)
     m_iNumCellsHeight	= target.m_iNumCellsHeight;
     m_ui16NoDataValue	= target.m_ui16NoDataValue;
     m_dValueForNoData	= target.m_dValueForNoData;
-    m_vData				= NULL;
+    m_vData				= nullptr;
 
-    if (target.m_iNumCellsWidth > 0 && target.m_iNumCellsHeight > 0 && target.m_vData != NULL)
+    if (target.m_iNumCellsWidth > 0 && target.m_iNumCellsHeight > 0 && target.m_vData != nullptr)
     {
         m_vData = new qint16[target.m_iNumCellsWidth * target.m_iNumCellsHeight];
         memcpy(m_vData, target.m_vData, (target.m_iNumCellsWidth * target.m_iNumCellsHeight) * sizeof(qint16));
@@ -152,17 +152,17 @@ double CSRTMData::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 {
     QMutexLocker locker(&m_tMutex);
 
-    if (pRigidness != NULL)
+    if (pRigidness != nullptr)
     {
         *pRigidness = 1.0;
     }
 
-    if (m_vData == NULL)
+    if (m_vData == nullptr)
     {
         readSRTMData();
     }
 
-    if (m_vData != NULL)
+    if (m_vData != nullptr)
     {
         double dLatDiff = gPosition.Latitude - m_gGeoloc.Latitude;
         double dLonDiff = gPosition.Longitude - m_gGeoloc.Longitude;
@@ -254,10 +254,10 @@ void CSRTMData::setFileName(QString sFileName)
 {
     m_sFileName = sFileName;
 
-    if (m_vData != NULL)
+    if (m_vData != nullptr)
         delete m_vData;
 
-    m_vData = NULL;
+    m_vData = nullptr;
 
     QStringList lHeader = readSRTMHeader();
 

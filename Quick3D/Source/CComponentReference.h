@@ -21,13 +21,13 @@ public:
 
     //!
     CComponentReference()
-        : m_pComponent(NULL)
+        : m_pComponent(nullptr)
     {
     }
 
     //!
     CComponentReference(QString sName)
-        : m_pComponent(NULL)
+        : m_pComponent(nullptr)
         , m_sName(sName)
     {
     }

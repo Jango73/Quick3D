@@ -52,7 +52,7 @@ void CForceController::update(double dDeltaTime)
 
             dMoveSpeed = dMoveSpeed * dMoveFactor;
 
-            if (m_pJoystick != NULL && m_pJoystick->connected())
+            if (m_pJoystick != nullptr && m_pJoystick->connected())
             {
                 pPhysicalPositionTarget->addLocalForce_kg(CVector3(0.0, 0.0, m_pJoystick->axisStates()[1] * -dMoveSpeed));
             }
@@ -109,7 +109,7 @@ void CForceController::update(double dDeltaTime)
                 pPhysicalRotationTarget->setOriginRotation(m_rRotationTarget.component()->getOriginRotation() + vRotation);
             }
 
-            if (m_pJoystick != NULL && m_pJoystick->connected())
+            if (m_pJoystick != nullptr && m_pJoystick->connected())
             {
                 pPhysicalRotationTarget->addLocalTorque_kg(CVector3(0.0, m_pJoystick->axisStates()[0] * dRotationSpeed, 0.0));
             }

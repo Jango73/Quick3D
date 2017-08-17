@@ -24,8 +24,8 @@ CBasicAnimator::CBasicAnimator(C3DScene* pScene)
 {
     LOG_DEBUG("CBasicAnimator::CBasicAnimator()");
 
-    m_pTranslationFrame = NULL;
-    m_pRotationFrame = NULL;
+    m_pTranslationFrame = nullptr;
+    m_pRotationFrame = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -34,12 +34,12 @@ CBasicAnimator::~CBasicAnimator()
 {
     LOG_DEBUG("CBasicAnimator::CBasicAnimator()");
 
-    if (m_pTranslationFrame != NULL)
+    if (m_pTranslationFrame != nullptr)
     {
         delete m_pTranslationFrame;
     }
 
-    if (m_pRotationFrame != NULL)
+    if (m_pRotationFrame != nullptr)
     {
         delete m_pRotationFrame;
     }
@@ -49,14 +49,14 @@ CBasicAnimator::~CBasicAnimator()
 
 void CBasicAnimator::addTranslationStep(CBasicAnimationStep value)
 {
-    if (m_pTranslationFrame != NULL) m_pTranslationFrame->addStep(value);
+    if (m_pTranslationFrame != nullptr) m_pTranslationFrame->addStep(value);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CBasicAnimator::addRotationStep(CBasicAnimationStep value)
 {
-    if (m_pRotationFrame != NULL) m_pRotationFrame->addStep(value);
+    if (m_pRotationFrame != nullptr) m_pRotationFrame->addStep(value);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -95,12 +95,12 @@ void CBasicAnimator::loadParameters(const QString& sBaseFile, CXMLNode xNode)
         }
     }
 
-    if (m_pTranslationFrame == NULL)
+    if (m_pTranslationFrame == nullptr)
     {
         m_pTranslationFrame = new CBasicAnimatorFrame();
     }
 
-    if (m_pRotationFrame == NULL)
+    if (m_pRotationFrame == nullptr)
     {
         m_pRotationFrame = new CBasicAnimatorFrame();
     }
@@ -186,13 +186,13 @@ void CBasicAnimator::update(double dDeltaTime)
 {
     if (m_bIsPlaying)
     {
-        if (m_rPositionTarget.component() && m_pTranslationFrame != NULL)
+        if (m_rPositionTarget.component() && m_pTranslationFrame != nullptr)
         {
             // m_pPositionTarget->setPosition(m_pTranslationFrame->compute(dDeltaTime, m_pPositionTarget->getPosition()));
             m_rPositionTarget.component()->setOriginPosition(m_pTranslationFrame->compute(dDeltaTime, m_rPositionTarget.component()->getOriginPosition()));
         }
 
-        if (m_rRotationTarget.component() && m_pRotationFrame != NULL)
+        if (m_rRotationTarget.component() && m_pRotationFrame != nullptr)
         {
             // m_pRotationTarget->setRotation(m_pRotationFrame->compute(dDeltaTime, m_pRotationTarget->getRotation()));
             m_rRotationTarget.component()->setOriginRotation(m_pRotationFrame->compute(dDeltaTime, m_rRotationTarget.component()->getOriginRotation()));

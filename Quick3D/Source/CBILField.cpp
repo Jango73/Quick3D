@@ -126,7 +126,7 @@ void CBILField::collectGarbage()
 
 /*!
     Returns the height at the specified \a gPosition. \br\br
-    \a pRigidness, if not NULL, is filled with the terrain rigidness at the specified location. Always 1.0 for now.
+    \a pRigidness, if not nullptr, is filled with the terrain rigidness at the specified location. Always 1.0 for now.
 */
 double CBILField::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 {
@@ -149,7 +149,7 @@ double CBILField::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 
 /*!
     Returns the height at the specified \a gPosition. \br\br
-    \a pRigidness, if not NULL, is filled with the terrain rigidness at the specified location. Always 1.0 for now.
+    \a pRigidness, if not nullptr, is filled with the terrain rigidness at the specified location. Always 1.0 for now.
     \a aAxis
 */
 double CBILField::getHeightAt(const CVector3& vPosition, const CAxis& aAxis, double* pRigidness)
@@ -170,7 +170,7 @@ double CBILField::getHeightAt(const CVector3& vPosition, const CAxis& aAxis, dou
 */
 double CBILField::getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, bool bForPhysics)
 {
-    double dReturnValue = getHeightAt(CGeoloc(vPosition), NULL);
+    double dReturnValue = getHeightAt(CGeoloc(vPosition), nullptr);
 
     collectGarbage();
 

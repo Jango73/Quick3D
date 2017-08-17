@@ -30,7 +30,7 @@ int CZip::zipFiles(QStringList sFiles)
 
 	zipFile pFile = zipOpen(szZipFileName, APPEND_STATUS_CREATE);
 
-	if (pFile != NULL)
+	if (pFile != nullptr)
 	{
 		foreach (QString sFile, sFiles)
 		{
@@ -53,11 +53,11 @@ int CZip::zipFiles(QStringList sFiles)
 			QFileInfo tFileInfo(sFile);
 			strcpy(szFileName, tFileInfo.fileName().toLatin1().constData());
 
-			if (zipOpenNewFileInZip(pFile, szFileName, &info, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION) == 0)
+			if (zipOpenNewFileInZip(pFile, szFileName, &info, nullptr, 0, nullptr, 0, nullptr, Z_DEFLATED, Z_DEFAULT_COMPRESSION) == 0)
 			{
 				FILE* f = fopen(szFullQualifiedFileName, "rb");
 
-				if (f != NULL)
+				if (f != nullptr)
 				{
 					fseek(f, 0, SEEK_END);
 					int size = ftell(f);
@@ -76,7 +76,7 @@ int CZip::zipFiles(QStringList sFiles)
 			}
 		}
 
-		zipClose(pFile, NULL);
+		zipClose(pFile, nullptr);
 	}
 	else
 	{
@@ -96,7 +96,7 @@ QStringList CZip::getZipFileList()
 
 	unzFile pFile = unzOpen(szZipFileName);
 
-	if (pFile != NULL)
+	if (pFile != nullptr)
 	{
 		unz_file_info tCurrentFileInfo;
 		char szCurrentFileName [256];
@@ -107,8 +107,8 @@ QStringList CZip::getZipFileList()
 				pFile,
 				&tCurrentFileInfo,
 				szCurrentFileName, sizeof(szCurrentFileName),
-				NULL, 0,
-				NULL, 0
+				nullptr, 0,
+				nullptr, 0
 				) == UNZ_OK)
 			{
 				slFiles.append(QString(szCurrentFileName));
@@ -120,8 +120,8 @@ QStringList CZip::getZipFileList()
 					pFile,
 					&tCurrentFileInfo,
 					szCurrentFileName, sizeof(szCurrentFileName),
-					NULL, 0,
-					NULL, 0
+					nullptr, 0,
+					nullptr, 0
 					) == UNZ_OK)
 				{
 					slFiles.append(QString(szCurrentFileName));
@@ -145,7 +145,7 @@ QByteArray CZip::getZipFileContent(QString& sFile)
 
 	unzFile pFile = unzOpen(szZipFileName);
 
-	if (pFile != NULL)
+	if (pFile != nullptr)
 	{
 		if (unzLocateFile(pFile, sFile.toLatin1().constData(), 2) == UNZ_OK)
 		{
@@ -156,8 +156,8 @@ QByteArray CZip::getZipFileContent(QString& sFile)
 				pFile,
 				&tCurrentFileInfo,
 				szCurrentFileName, sizeof(szCurrentFileName),
-				NULL, 0,
-				NULL, 0
+				nullptr, 0,
+				nullptr, 0
 				) == UNZ_OK)
 			{
 				qint64 uiSize = tCurrentFileInfo.uncompressed_size;

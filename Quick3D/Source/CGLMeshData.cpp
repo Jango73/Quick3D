@@ -18,8 +18,8 @@ CGLMeshData::CGLMeshData(C3DScene* pScene)
     : m_pScene(pScene)
     , m_iNumRenderPoints(0)
     , m_iNumRenderIndices(0)
-    , m_vRenderPoints(NULL)
-    , m_vRenderIndices(NULL)
+    , m_vRenderPoints(nullptr)
+    , m_vRenderIndices(nullptr)
     , m_bNeedTransferBuffers(true)
 {
     m_iVBO[0] = 0;
@@ -36,12 +36,12 @@ CGLMeshData::~CGLMeshData()
 {
     GL_glDeleteBuffers(2, m_iVBO);
 
-    if (m_vRenderPoints != NULL)
+    if (m_vRenderPoints != nullptr)
     {
         delete [] m_vRenderPoints;
     }
 
-    if (m_vRenderIndices != NULL)
+    if (m_vRenderIndices != nullptr)
     {
         delete [] m_vRenderIndices;
     }

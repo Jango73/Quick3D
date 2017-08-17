@@ -168,7 +168,7 @@ int CTerrain::getPointIndexForXZ (int iX, int iZ) const
 
 int CTerrain::getFaceIndexForVertices(int v1, int v2, int v3, int v4) const
 {
-    if (m_pMesh != NULL)
+    if (m_pMesh != nullptr)
     {
         QString sKey = QString("%1%2%3%4")
                 .arg(v1)
@@ -214,8 +214,8 @@ double CTerrain::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
     if (m_bIsWater)
     {
         if (
-                m_pMesh != NULL && m_pMesh->materials().count() > 0 &&
-                dynamic_cast<CHeightField*>(m_pMesh->materials()[0].data()) != NULL
+                m_pMesh != nullptr && m_pMesh->materials().count() > 0 &&
+                dynamic_cast<CHeightField*>(m_pMesh->materials()[0].data()) != nullptr
                 )
         {
             CHeightField* pField = dynamic_cast<CHeightField*>(m_pMesh->materials()[0].data());
@@ -331,7 +331,7 @@ void CTerrain::work()
     CVector3 vFinalCenter = getGeoloc().toVector3();
 
     // Récupération du matériau du mesh
-    CMaterial* pMaterial = NULL;
+    CMaterial* pMaterial = nullptr;
 
     if (m_pMesh->materials().count() > 0)
     {
@@ -349,7 +349,7 @@ void CTerrain::work()
         gPosition.Latitude = m_gOriginalGeoloc.Latitude + vPosition.Z * m_gOriginalSize.Latitude;
         gPosition.Longitude = m_gOriginalGeoloc.Longitude + vPosition.X * m_gOriginalSize.Longitude;
 
-        if (pMaterial != NULL)
+        if (pMaterial != nullptr)
         {
             gPosition = pMaterial->transformGeoloc(gPosition);
         }
@@ -377,7 +377,7 @@ void CTerrain::work()
         m_pMesh->vertices()[iIndex].tangent() = aNOLLAxis.Front;
         m_pMesh->vertices()[iIndex].gravity() = m_pMesh->vertices()[iIndex].normal() * -1.0;
 
-        if (pMaterial != NULL && pTiledMaterial == NULL)
+        if (pMaterial != nullptr && pTiledMaterial == nullptr)
         {
             m_pMesh->vertices()[iIndex].texCoord() = pMaterial->texCoords(gPosition, m_iLevel);
         }
@@ -399,7 +399,7 @@ void CTerrain::work()
     {
         double dTerrainAltitude = 0.0;
 
-        if (m_pHeights != NULL)
+        if (m_pHeights != nullptr)
         {
             // Ce test est important : avec les terrains non générés, on veut éviter de charger trop de données MNT en RAM
             // Donc on ne récupère une altitude que pour les niveaux proches de la mer (x < niveau max / 2)
@@ -458,7 +458,7 @@ void CTerrain::work()
     vVertexCount = 0;
 
     // Loop over vertices
-    if (pMaterial != NULL && pTiledMaterial == NULL)
+    if (pMaterial != nullptr && pTiledMaterial == nullptr)
     {
         LOG_DEBUG(QString("CTerrain::work() : Setting up terrain textures for non-tiled material"));
 
@@ -579,7 +579,7 @@ void CTerrain::flatten(const CGeoloc& gPosition, double dRadius)
 
 RayTracingResult CTerrain::intersect(Math::CRay3 ray)
 {
-    if (m_pMesh != NULL)
+    if (m_pMesh != nullptr)
     {
         return m_pMesh->intersect(this, ray);
     }
@@ -593,7 +593,7 @@ void CTerrain::buildVerticesToFaceMap()
 {
     m_mVerticesToFace.clear();
 
-    if (m_pMesh != NULL)
+    if (m_pMesh != nullptr)
     {
         for (int iIndex = 0; iIndex < m_pMesh->faces().count(); iIndex++)
         {

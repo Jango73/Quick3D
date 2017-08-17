@@ -70,13 +70,13 @@ QGLShaderProgram* CTiledMaterial::activate(CRenderContext* pContext)
 {
     QGLShaderProgram* pProgram = CMaterial::activate(pContext);
 
-    if (pProgram != NULL)
+    if (pProgram != nullptr)
     {
         pProgram->setUniformValue("u_texture_diffuse_enable", (GLint) 0);
 
         if (m_mTiles.contains(m_sCurrentQuadKey))
         {
-            if (m_mTiles[m_sCurrentQuadKey].m_pTexture != NULL)
+            if (m_mTiles[m_sCurrentQuadKey].m_pTexture != nullptr)
             {
                 m_mTiles[m_sCurrentQuadKey].m_tLastUsed = QDateTime::currentDateTime();
                 m_mTiles[m_sCurrentQuadKey].m_pTexture->activate();

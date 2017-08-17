@@ -42,12 +42,12 @@ using namespace Math;
     \a bForDisplay tells if the scene will be displayed
 */
 C3DScene::C3DScene(bool bForDisplay)
-    : m_pRessourcesManager(NULL)
-    , m_pBuildingGenerator(NULL)
-    , m_pTreeGenerator(NULL)
-    , m_vShaders(NULL)
-    , m_pController(NULL)
-    , m_pDefaultController(NULL)
+    : m_pRessourcesManager(nullptr)
+    , m_pBuildingGenerator(nullptr)
+    , m_pTreeGenerator(nullptr)
+    , m_vShaders(nullptr)
+    , m_pController(nullptr)
+    , m_pDefaultController(nullptr)
     , m_bForDisplay(bForDisplay)
     , m_bFrustumCheck(true)
     , m_bEditMode(false)
@@ -55,7 +55,7 @@ C3DScene::C3DScene(bool bForDisplay)
     , m_bBoundsOnly(false)
     , m_bNormalsOnly(false)
     , m_dShaderQuality(0.5)
-    , m_pRain(NULL)
+    , m_pRain(nullptr)
     , m_tTimeOfDay(12, 0, 0)
     , m_dTime(0.0)
     , m_dWindLevel(0.5)
@@ -83,11 +83,11 @@ C3DScene::~C3DScene()
     clearComponents();
     clearViewports();
 
-    if (m_pGLExtension != NULL) delete m_pGLExtension;
-    if (m_vShaders != NULL) delete m_vShaders;
-    if (m_pTreeGenerator != NULL) delete m_pTreeGenerator;
-    if (m_pBuildingGenerator != NULL) delete m_pBuildingGenerator;
-    if (m_pRessourcesManager != NULL) delete m_pRessourcesManager;
+    if (m_pGLExtension != nullptr) delete m_pGLExtension;
+    if (m_vShaders != nullptr) delete m_vShaders;
+    if (m_pTreeGenerator != nullptr) delete m_pTreeGenerator;
+    if (m_pBuildingGenerator != nullptr) delete m_pBuildingGenerator;
+    if (m_pRessourcesManager != nullptr) delete m_pRessourcesManager;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -205,7 +205,7 @@ void C3DScene::init(QVector<QSP<CComponent> > vComponents)
     //-----------------------------------------------
 
     /*
-    if (m_pController != NULL)
+    if (m_pController != nullptr)
     {
         m_pController->solveLinks(this);
     }
@@ -247,7 +247,7 @@ void C3DScene::setWorldOrigin(Math::CVector3 value)
 */
 void C3DScene::setController(CController* pController)
 {
-    if (pController != NULL)
+    if (pController != nullptr)
     {
         m_pController = pController;
     }
@@ -467,7 +467,7 @@ void C3DScene::updateScene(double dDeltaTimeS)
         m_pSegments->clear();
     }
 
-    if (m_pController != NULL)
+    if (m_pController != nullptr)
     {
         m_pController->update(dDeltaTimeS);
     }
@@ -510,7 +510,7 @@ void C3DScene::paintComponents(CRenderContext* pContext)
     pContext->meshByMaterial()->paint(pContext);
 #endif
 
-    m_pSegments->paint(pContext, NULL);
+    m_pSegments->paint(pContext, nullptr);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -577,21 +577,21 @@ void C3DScene::addComponent(QSP<CComponent> pComponent)
 
 void C3DScene::autoResolveHeightFields()
 {
-    CHeightField* pTerrain = NULL;
+    CHeightField* pTerrain = nullptr;
 
     foreach (QSP<CComponent> pComponent, m_vComponents)
     {
-        if (dynamic_cast<CWorldTerrain*>(pComponent.data()) != NULL)
+        if (dynamic_cast<CWorldTerrain*>(pComponent.data()) != nullptr)
         {
             pTerrain = dynamic_cast<CHeightField*>(pComponent.data());
         }
         else
         {
-            if (dynamic_cast<CTrajectorable*>(pComponent.data()) != NULL)
+            if (dynamic_cast<CTrajectorable*>(pComponent.data()) != nullptr)
             {
                 CPhysicalComponent* pPhysical = dynamic_cast<CPhysicalComponent*>(pComponent.data());
 
-                if (pPhysical != NULL && pTerrain != NULL)
+                if (pPhysical != nullptr && pTerrain != nullptr)
                 {
                     pPhysical->addField(pTerrain);
                 }

@@ -87,7 +87,7 @@ void CAircraftController::update(double dDeltaTime)
     QSP<CElevator> pElevator = QSP_CAST(CElevator, m_rElevatorTarget.component());
     QSP<CRudder> pRudder = QSP_CAST(CRudder, m_rRudderTarget.component());
 
-    if (m_pJoystick != NULL && m_pJoystick->connected())
+    if (m_pJoystick != nullptr && m_pJoystick->connected())
     {
         LOG_VALUE(QString("JOY X / Y / Z / R"),
                   QString("%1 / %2 / %3 / %4")

@@ -26,7 +26,7 @@ QGLShaderProgram* CWaterMaterial::activate(CRenderContext* pContext)
 {
     QGLShaderProgram* pProgram = CMaterial::activate(pContext);
 
-    if (pProgram != NULL)
+    if (pProgram != nullptr)
     {
         double dAmplitude = m_pScene->windLevel() * 4.0;
 
@@ -39,7 +39,7 @@ QGLShaderProgram* CWaterMaterial::activate(CRenderContext* pContext)
 
 double CWaterMaterial::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 {
-    if (pRigidness != NULL)
+    if (pRigidness != nullptr)
     {
         *pRigidness = m_dRigidness;
     }
@@ -49,7 +49,7 @@ double CWaterMaterial::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 
 double CWaterMaterial::getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, double* pRigidness)
 {
-    if (pRigidness != NULL)
+    if (pRigidness != nullptr)
     {
         *pRigidness = m_dRigidness;
     }

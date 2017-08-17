@@ -23,8 +23,8 @@ int CWorldChunk::m_iNumWorldChunks = 0;
 CWorldChunk::CWorldChunk(C3DScene* pScene, CWorldTerrain* pAutoTerrain, CHeightField* pContainer)
     : CComponent(pScene)
     , m_pAutoTerrain(pAutoTerrain)
-    , m_pTerrain(NULL)
-    , m_pWater(NULL)
+    , m_pTerrain(nullptr)
+    , m_pWater(nullptr)
     , m_pContainer(pContainer)
     , m_mMutex(QMutex::Recursive)
     , m_dDistance(0.0)
@@ -230,7 +230,7 @@ void CWorldChunk::paint(CRenderContext* pContext)
 
             CTiledMaterial* pTiled = dynamic_cast<CTiledMaterial*>(pMaterial);
 
-            if (pTiled != NULL)
+            if (pTiled != nullptr)
             {
                 pTiled->setCurrentPositionAndLevel(m_gOriginalGeoloc, m_pTerrain->level());
             }

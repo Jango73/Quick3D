@@ -1589,7 +1589,7 @@ void CMeshGeometry::paint(CRenderContext* pContext, CComponent* pContainer)
     {
         bool bFrustumCheck = false;
 
-        if (pContainer != NULL && pContext->scene()->frustumCheck())
+        if (pContainer != nullptr && pContext->scene()->frustumCheck())
         {
             CBoundingBox bWorldBounds = pContainer->worldBounds();
             CVector3 vPosition = pContext->internalCameraMatrix() * bWorldBounds.center();
@@ -1625,12 +1625,12 @@ void CMeshGeometry::paint(CRenderContext* pContext, CComponent* pContainer)
                 QGLShaderProgram* pProgram = pMaterial->activate(pContext);
 
                 // If program ok...
-                if (pProgram != NULL)
+                if (pProgram != nullptr)
                 {
                     QMatrix4x4 mModelAbsolute;
                     mModelAbsolute.setToIdentity();
 
-                    if (pContainer != NULL)
+                    if (pContainer != nullptr)
                     {
                         // Set transform matrix
                         CVector3 WorldPosition = pContainer->getWorldPosition() - pContext->scene()->worldOrigin();

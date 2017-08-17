@@ -88,7 +88,7 @@ double CSRTMField::getHeightAt(const CVector3& vPosition, const CAxis& aAxis, do
 
 double CSRTMField::getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, bool bForPhysics)
 {
-    return getHeightAt(CGeoloc(vPosition), NULL);
+    return getHeightAt(CGeoloc(vPosition), nullptr);
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -63,7 +63,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);
+    double getHeightAt(const CGeoloc& gPosition, double* pRigidness = nullptr);
 
     //!
     int numCellsWidth() { return m_iNumCellsWidth; }

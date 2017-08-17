@@ -110,7 +110,7 @@ void CVegetationGenerator::loadParameters(const QString& sBaseFile, CXMLNode xVe
             vMeshes.append(QSP<CMesh>(pMesh));
         }
 
-        m_vVegetation.append(QSP<CVegetation>(new CVegetation(CVegetation::evtTree, dSpread, pFunction, new CMeshInstance(vMeshes), NULL)));
+        m_vVegetation.append(QSP<CVegetation>(new CVegetation(CVegetation::evtTree, dSpread, pFunction, new CMeshInstance(vMeshes), nullptr)));
     }
 
     QVector<CXMLNode> xBushes = xVegetationNode.getNodesByTagName(ParamName_Bush);
@@ -133,7 +133,7 @@ void CVegetationGenerator::loadParameters(const QString& sBaseFile, CXMLNode xVe
                 pMaterial->loadParameters(sBaseFile, xMaterial);
                 pMaterial->setBillBoard(true);
                 pMaterial->setHasAlpha(true);
-                m_vVegetation.append(QSP<CVegetation>(new CVegetation(CVegetation::evtBush, dSpread, pFunction, NULL, pMaterial)));
+                m_vVegetation.append(QSP<CVegetation>(new CVegetation(CVegetation::evtBush, dSpread, pFunction, nullptr, pMaterial)));
             }
         }
     }
@@ -227,7 +227,7 @@ void CVegetationGenerator::placeTree(QSP<CWorldChunk> pChunk, CGeoloc gPosition,
     {
         CMeshInstance* pMeshInstance = m_vVegetation[iVegetIndex]->m_pMesh->clone();
 
-        if (pMeshInstance != NULL)
+        if (pMeshInstance != nullptr)
         {
             pMeshInstance->setGeoloc(gPosition);
             pMeshInstance->setOriginRotation(CVector3(0.0, ((double) rand() / 32768.0) * Math::Pi * 2.0, 0.0));

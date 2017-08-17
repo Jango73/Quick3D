@@ -272,7 +272,7 @@ public:
     virtual void clearLinks(C3DScene* pScene);
 
     //! Recherche un composant dans la hiérarchie de cet objet
-    virtual QSP<CComponent> findComponent(QString sName, QSP<CComponent> pCaller = QSP<CComponent>(NULL));
+    virtual QSP<CComponent> findComponent(QString sName, QSP<CComponent> pCaller = QSP<CComponent>(nullptr));
 
     //! Cette méthode permet à l'objet de rajouter des items dans la scène qui le contient
     virtual void addItems(C3DScene* pScene);

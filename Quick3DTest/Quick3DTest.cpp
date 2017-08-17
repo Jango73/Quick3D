@@ -146,7 +146,7 @@ void Quick3DTest::resizeEvent(QResizeEvent *event)
 
 void Quick3DTest::onResize()
 {
-    if (m_pScene != NULL)
+    if (m_pScene != nullptr)
     {
         m_pView->setGeometry(0, 0, ui.Render1->width(), ui.Render1->height());
         m_pScene->setGeometry(0, 0, m_pView->width(), m_pView->height());
@@ -243,7 +243,7 @@ void Quick3DTest::onTimer()
 {
     m_tTimer.stop();
 
-    if (m_pScene != NULL && m_bRun == true)
+    if (m_pScene != nullptr && m_bRun == true)
     {
         QDateTime tCurrentTime = QDateTime::currentDateTime();
         double dDeltaTime = (double) m_tPreviousTime.msecsTo(tCurrentTime) / 1000.0;
@@ -262,7 +262,7 @@ void Quick3DTest::onTimer()
         CVector3 TorqueAcceleration;
         double dSpeedMS = 0.0;
 
-        if (m_pScene->controller() != NULL && m_pScene->controller()->getPositionTarget())
+        if (m_pScene->controller() != nullptr && m_pScene->controller()->getPositionTarget())
         {
             QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, m_pScene->controller()->getPositionTarget()->getRoot());
 
@@ -275,7 +275,7 @@ void Quick3DTest::onTimer()
             }
         }
 
-        if (m_pScene->controller() != NULL && m_pScene->controller()->getRotationTarget())
+        if (m_pScene->controller() != nullptr && m_pScene->controller()->getRotationTarget())
         {
             QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, m_pScene->controller()->getPositionTarget()->getRoot());
 
@@ -352,7 +352,7 @@ void Quick3DTest::onExportTerrainClicked()
 
     if (result == QDialog::Accepted)
     {
-        CWorldTerrain* pTerrain = NULL;
+        CWorldTerrain* pTerrain = nullptr;
 
         foreach (QSP<CComponent> pComponent, m_pScene->components())
         {
@@ -364,7 +364,7 @@ void Quick3DTest::onExportTerrainClicked()
             }
         }
 
-        if (pTerrain != NULL)
+        if (pTerrain != nullptr)
         {
             double dStartLat = ExportDialog.m_tbStartLat->displayText().toDouble();
             double dStartLon = ExportDialog.m_tbStartLon->displayText().toDouble();
@@ -438,7 +438,7 @@ void Quick3DTest::onExportTerrainClicked()
 
 void Quick3DTest::onGenerateMatrixClicked()
 {
-    CCamera* pCamera = NULL;
+    CCamera* pCamera = nullptr;
 
     foreach (QSP<CComponent> pComponent, m_pScene->components())
     {
@@ -449,7 +449,7 @@ void Quick3DTest::onGenerateMatrixClicked()
         }
     }
 
-    if (pCamera != NULL)
+    if (pCamera != nullptr)
     {
         // Dump de la scène
 
@@ -480,7 +480,7 @@ void Quick3DTest::onGenerateMatrixClicked()
         tParams.m_vEndPanTiltDegrees		= CVector2(60.0, 180.0);			// End tilt and pan
         tParams.m_vPanTiltOffsetDegrees		= CVector2(0.0, 0.0); 			// Tilt and pan offset
 
-        pCamera->renderDepth_RayTraced(m_pScene, 10000.0, tParams, NULL);
+        pCamera->renderDepth_RayTraced(m_pScene, 10000.0, tParams, nullptr);
 
         if (vDepth.count() > 0)
         {
@@ -563,7 +563,7 @@ void Quick3DTest::onTerrainResChanged(int iValue)
         {
             CWorldTerrain* pTerrain = dynamic_cast<CWorldTerrain*>(pComponent.data());
 
-            if (pTerrain != NULL)
+            if (pTerrain != nullptr)
             {
                 pTerrain->setTerrainResolution(iValue);
             }
@@ -575,7 +575,7 @@ void Quick3DTest::onTerrainResChanged(int iValue)
 
 void Quick3DTest::onMoveSpeedChanged(int iValue)
 {
-    if (m_pScene->controller() != NULL)
+    if (m_pScene->controller() != nullptr)
     {
         m_pScene->controller()->setMoveSpeed((double) iValue / 100.0);
     }
@@ -645,7 +645,7 @@ void Quick3DTest::onControllableIndexChanged(const QString& sName)
         {
             QSP<CComponent> pFound = pComponent->findComponent(sName);
 
-            if (pFound && pFound->getController() != NULL)
+            if (pFound && pFound->getController() != nullptr)
             {
                 m_pScene->setController(pFound->getController());
                 break;

@@ -56,7 +56,7 @@ void CQ3DLoader::loadComponent(
     CXMLNode xRotationNode = xComponent.getNodeByTagName(ParamName_Rotation);
 
     // Assignation du parent
-    if (pParent != NULL)
+    if (pParent != nullptr)
     {
         pContainer->setParent(QSP<CComponent>(pParent));
     }
@@ -121,7 +121,7 @@ void CQ3DLoader::loadComponent(
 
     // Le composant racine doit stocker tous les matériaux pour permettre
     // l'activation des textures dynamiques
-    if (pParent == NULL)
+    if (pParent == nullptr)
     {
         for (int iIndex = 0; iIndex < vMaterials.count(); iIndex++)
         {

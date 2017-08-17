@@ -127,7 +127,7 @@ void CHTTPServer::onSocketReadyRead()
     QTcpSocket* pSocket = dynamic_cast<QTcpSocket*>(QObject::sender());
 
     // Est-ce que la socket est valide?
-    if (pSocket != NULL)
+    if (pSocket != nullptr)
     {
         // Si le serveur est désactivé, on libére la socket et les données utilisateur associées
         if (m_bDisabled)
@@ -141,7 +141,7 @@ void CHTTPServer::onSocketReadyRead()
         // Récupération des données utilisateurs associées à la socket
         CClientData* pData = CClientData::getFromSocket(pSocket);
 
-        if (pData != NULL)
+        if (pData != nullptr)
         {
             // Si la socket est en état connecté
             if (pSocket->state() == QTcpSocket::ConnectedState)
@@ -292,7 +292,7 @@ void CHTTPServer::processRequest(QTcpSocket* pSocket)
     }
 #endif
 
-    if (pData != NULL)
+    if (pData != nullptr)
     {
         bool bKeepAlive = false;
 

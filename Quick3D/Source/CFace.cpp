@@ -26,7 +26,7 @@ const double EPSILON = 0.00001;
     Constructs a CFace with its default parameters.
 */
 CFace::CFace()
-    : m_pParent(NULL)
+    : m_pParent(nullptr)
     , m_iSmoothingGroup(0)
     , m_iMaterialIndex(0)
 {
@@ -134,7 +134,7 @@ bool CFace::operator < (const CFace& target) const
 */
 void CFace::computeNormal()
 {
-    if (m_pParent != NULL)
+    if (m_pParent != nullptr)
     {
         CVertex v1, v2, v3;
 
@@ -213,7 +213,7 @@ RayTracingResult CFace::intersectTriangle(
             if ((v3.Y - s) * (v3.Z - v2.Z) < (v3.Z - t) * (v3.Y - v2.Y)) return RayTracingResult(Q3D_INFINITY);
             if ((v1.Y - s) * (v1.Z - v3.Z) < (v1.Z - t) * (v1.Y - v3.Y)) return RayTracingResult(Q3D_INFINITY);
 
-            return RayTracingResult(fabs(dDepth), NULL, vNormal);
+            return RayTracingResult(fabs(dDepth), nullptr, vNormal);
 
         case 1:
 
@@ -224,7 +224,7 @@ RayTracingResult CFace::intersectTriangle(
             if ((v3.X - s) * (v3.Z - v2.Z) < (v3.Z - t) * (v3.X - v2.X)) return RayTracingResult(Q3D_INFINITY);
             if ((v1.X - s) * (v1.Z - v3.Z) < (v1.Z - t) * (v1.X - v3.X)) return RayTracingResult(Q3D_INFINITY);
 
-            return RayTracingResult(fabs(dDepth), NULL, vNormal);
+            return RayTracingResult(fabs(dDepth), nullptr, vNormal);
 
         case 2:
 
@@ -235,7 +235,7 @@ RayTracingResult CFace::intersectTriangle(
             if ((v3.X - s) * (v3.Y - v2.Y) < (v3.Y - t) * (v3.X - v2.X)) return RayTracingResult(Q3D_INFINITY);
             if ((v1.X - s) * (v1.Y - v3.Y) < (v1.Y - t) * (v1.X - v3.X)) return RayTracingResult(Q3D_INFINITY);
 
-            return RayTracingResult(fabs(dDepth), NULL, vNormal);
+            return RayTracingResult(fabs(dDepth), nullptr, vNormal);
     }
 
     return RayTracingResult(Q3D_INFINITY);

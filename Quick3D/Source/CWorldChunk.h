@@ -110,7 +110,7 @@ public:
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //!
-    virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);
+    virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = nullptr);
 
     //!
     virtual void flatten(const CGeoloc& gPosition, double dRadius);

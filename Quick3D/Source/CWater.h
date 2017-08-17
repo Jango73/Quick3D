@@ -46,7 +46,7 @@ public:
     virtual void paint(CRenderContext* pContext) Q_DECL_OVERRIDE;
 
     //!
-    virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = NULL);
+    virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = nullptr);
 
     //-------------------------------------------------------------------------------------------------
     // Control methods

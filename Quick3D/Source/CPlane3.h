@@ -60,7 +60,7 @@ namespace Math
 		inline RayTracingResult intersect(const CRay3& rRay)
 		{
 			// Find t.
-			double t = - (vNormal.DotProduct(rRay.vOrigin) + dDistance) / (vNormal.DotProduct(rRay.vNormal));
+			double t = - (vNormal.dot(rRay.vOrigin) + dDistance) / (vNormal.dot(rRay.vNormal));
 
 			if (t < 0) // the ray does not hit the surface, that is, the surface is "behind" the ray
 				return 0;
@@ -70,7 +70,7 @@ namespace Math
 
 			// Does the ray intersect the plane inside or outside?
 			CVector3 planeToRayStart = rRay.vOrigin - p;
-			double dot = planeToRayStart.DotProduct(vNormal);
+			double dot = planeToRayStart.dot(vNormal);
 
             if (dot <= 0) return 0;
 
@@ -80,7 +80,7 @@ namespace Math
 		//! Normalisation
 		inline void normalize()
 		{
-			vNormal = vNormal.Normalize();
+			vNormal = vNormal.normalized();
 		}
 	};
 }

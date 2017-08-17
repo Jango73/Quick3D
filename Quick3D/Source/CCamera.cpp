@@ -132,7 +132,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
 
             pLight->saveTransform();
 
-            CVector3 vDirection = (pLight->getWorldPosition() - this->getWorldPosition()).Normalize();
+            CVector3 vDirection = (pLight->getWorldPosition() - this->getWorldPosition()).normalized();
             pLight->setOriginPosition(this->getWorldPosition() + vDirection * 1000.0);
             pLight->lookAt(this);
 
@@ -212,7 +212,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
 
             pLight->saveTransform();
 
-            CVector3 vDirection = (pLight->getWorldPosition() - this->getWorldPosition()).Normalize();
+            CVector3 vDirection = (pLight->getWorldPosition() - this->getWorldPosition()).normalized();
             pLight->setOriginPosition(this->getWorldPosition() + vDirection * 1000.0);
             pLight->lookAt(this);
 
@@ -423,7 +423,7 @@ void CCamera::renderDepth_RayTraced
                             CVector2(vLocalIntersectionPoint3D.X, vLocalIntersectionPoint3D.Z)
                             );
 
-                iDotRayNormal = (int) (rCameraRay.vNormal.DotProduct(dResult.m_vNormal) * -255.0);
+                iDotRayNormal = (int) (rCameraRay.vNormal.dot(dResult.m_vNormal) * -255.0);
                 iDotRayNormal = Math::Angles::clipInt(iDotRayNormal, 0, 255);
             }
             else
@@ -756,7 +756,7 @@ bool CCamera::contains(const CVector3& vPosition, double dRadius) const
     // Test du vecteur avec chaque plan du frustum
     foreach (CPlane3 plane, m_pFrustumPlanes)
     {
-        double dDistance = plane.vNormal.DotProduct(vPosition) + plane.dDistance;
+        double dDistance = plane.vNormal.dot(vPosition) + plane.dDistance;
         if (dDistance < -dRadius) return false;
     }
 

@@ -271,7 +271,7 @@ void Quick3DTest::onTimer()
                 ViewGeoloc = pPhysical->getGeoloc();
                 ControledVelocity = pPhysical->velocity_ms();
                 ControledTorque = pPhysical->angularVelocity_rs();
-                dSpeedMS = ControledVelocity.getMagnitude();
+                dSpeedMS = ControledVelocity.magnitude();
             }
         }
 

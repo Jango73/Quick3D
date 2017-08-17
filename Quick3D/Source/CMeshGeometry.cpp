@@ -954,12 +954,12 @@ void CMeshGeometry::createAdaptiveTriPatch(Math::CVector3 vCenter, int iNumItera
             CVector3 vCenter = (pV1 + pV2 + pV3) / 3.0;
 
             // Subdivide the face if centroid is less than current distance
-            if (vCenter.getMagnitude() < dDistance)
+            if (vCenter.magnitude() < dDistance)
             {
                 // Get edge lengths
-                double dEdgeAB = (pV2 - pV1).getMagnitude();
-                double dEdgeBC = (pV3 - pV2).getMagnitude();
-                double dEdgeCA = (pV1 - pV3).getMagnitude();
+                double dEdgeAB = (pV2 - pV1).magnitude();
+                double dEdgeBC = (pV3 - pV2).magnitude();
+                double dEdgeCA = (pV1 - pV3).magnitude();
 
                 if (dEdgeAB >= dEdgeBC && dEdgeAB >= dEdgeCA)
                 {
@@ -1073,7 +1073,7 @@ void CMeshGeometry::createAdaptiveQuadPatch(Math::CVector3 vCenter, int iNumIter
             CVector3 vCenter = (pVA + pVB + pVC + pVD) / 4.0;
 
             // Subdivide the face if centroid is less than current distance
-            if (vCenter.getMagnitude() < dDistance)
+            if (vCenter.magnitude() < dDistance)
             {
                 if (!(vEdges.contains(CEdge(iVA, iVB)) || vEdges.contains(CEdge(iVB, iVA))))
                 {
@@ -1290,7 +1290,7 @@ void CMeshGeometry::createSurfaceFromFFD(const QVector<Math::CVector3>& vFFDFrom
                 CVector3 vTargetPosition = vFFDTo[iFFDIndex];
                 CVector3 vMovement = vTargetPosition - vOriginalPosition;
 
-                double dDistance = (m_vVertices[iVertexIndex].position() - vOriginalPosition).getMagnitude();
+                double dDistance = (m_vVertices[iVertexIndex].position() - vOriginalPosition).magnitude();
                 double dWeight = pow(1.0 - Angles::clipDouble(dDistance, 0.0, 1.0), 2.0);
 
                 vNewPosition += vMovement * dWeight;
@@ -1599,7 +1599,7 @@ void CMeshGeometry::paint(CRenderContext* pContext, CComponent* pContainer)
 
             if (
                     pContext->camera()->contains(vPosition, dRadius) &&
-                    vPosition.getMagnitude() < m_dMaxDistance
+                    vPosition.magnitude() < m_dMaxDistance
                     )
             {
                 bFrustumCheck = true;

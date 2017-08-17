@@ -231,7 +231,7 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
         CVector3 vCamTruePos = pContext->camera()->getWorldPosition();
         CVector3 vCamPos = pContext->camera()->getWorldPosition() - m_vWorldOrigin;
         CVector3 vCamRot = pContext->camera()->getWorldRotation();
-        CVector3 vWorldUp = pContext->camera()->getWorldPosition().Normalize();
+        CVector3 vWorldUp = pContext->camera()->getWorldPosition().normalized();
 
         QMatrix4x4 mCameraMatrix;
         mCameraMatrix.setToIdentity();
@@ -295,7 +295,7 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
         CVector3 vSunPosition = gSunPosition.toVector3();
 
         // Compute sun intensity
-        m_dSunIntensity = vSunPosition.Normalize().DotProduct(pContext->camera()->getWorldPosition().Normalize());
+        m_dSunIntensity = vSunPosition.normalized().dot(pContext->camera()->getWorldPosition().normalized());
         m_dSunIntensity = (m_dSunIntensity + 1.0) * 0.5;
 
         if (pContext->camera()->getGeoloc().Altitude < 0.0)
@@ -362,7 +362,7 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
                 CVector3 vWorldPosition = vLightPosition - m_vWorldOrigin;
                 CVector3 vWorldDirection = vLights[iLightIndex]->getWorldDirection();
 
-                double dLightDistance = (vLightPosition - pContext->camera()->getWorldPosition()).getMagnitude();
+                double dLightDistance = (vLightPosition - pContext->camera()->getWorldPosition()).magnitude();
 
                 if (vLights[iLightIndex]->getTag() == "SUN" || dLightDistance < 2000.0)
                 {
@@ -428,7 +428,7 @@ void CGLWidgetScene::computeLightsOcclusion(CRenderContext* pContext)
     {
         CRay3 aRay;
         aRay.vOrigin = pLight->getWorldPosition();
-        aRay.vNormal = (pContext->camera()->getWorldPosition() - aRay.vOrigin).Normalize();
+        aRay.vNormal = (pContext->camera()->getWorldPosition() - aRay.vOrigin).normalized();
 
         RayTracingResult aResult = pContext->scene()->intersect(aRay);
 

@@ -485,9 +485,9 @@ inline CVector3 euleurAngles(CVector3 value)
 {
     CVector3 vReturnValue;
 
-    vReturnValue.Y = value.AngleY();
+    vReturnValue.Y = value.eulerYAngle();
     value = CMatrix4::MakeRotation(CVector3(0.0, -vReturnValue.Y, 0.0)) * value;
-    vReturnValue.X = value.AngleX();
+    vReturnValue.X = value.eulerXAngle();
 
     return vReturnValue;
 }

@@ -12,6 +12,8 @@
 #include "Angles.h"
 #include "CVector2.h"
 
+//-------------------------------------------------------------------------------------------------
+
 namespace Math
 {
 #define VECTOR_EQUALITY_EPSILON	0.0001
@@ -26,7 +28,7 @@ public:
     double Z;
 
     //! Default constructor
-    inline CVector3 ()
+    inline CVector3()
     {
         X = 0.0;
         Y = 0.0;
@@ -34,7 +36,7 @@ public:
     }
 
     //! Constructeur par composants
-    inline CVector3 (double NewX, double NewY, double NewZ)
+    inline CVector3(double NewX, double NewY, double NewZ)
     {
         X = NewX;
         Y = NewY;
@@ -42,7 +44,7 @@ public:
     }
 
     //! Constructeur par valeur
-    inline CVector3 (double value)
+    inline CVector3(double value)
     {
         X = value;
         Y = value;
@@ -50,7 +52,7 @@ public:
     }
 
     //! Constructeur par valeur
-    inline CVector3 (int value)
+    inline CVector3(int value)
     {
         X = (double) value;
         Y = (double) value;
@@ -58,7 +60,7 @@ public:
     }
 
     //! Constructeur par valeur
-    inline CVector3 (const CVector2& value)
+    inline CVector3(const CVector2& value)
     {
         X = value.X;
         Y = value.Y;
@@ -66,7 +68,7 @@ public:
     }
 
     //! Constructeur de copie
-    inline CVector3 (const CVector3& Target)
+    inline CVector3(const CVector3& Target)
     {
         *this = Target;
     }
@@ -83,20 +85,20 @@ public:
                 fabs(Z - value.Z) < VECTOR_EQUALITY_EPSILON;
     }
 
-    //! Renvoie la longueur du vecteur
-    inline double getMagnitude () const
+    //! Returns the length of this vector
+    inline double magnitude () const
     {
-        return sqrt(SumComponentSqrs());
+        return sqrt(sumComponentSqrs());
     }
 
-    //! Assigne la longueur du vecteur
+    //! Assigns a length to this vector
     inline void setMagnitude (double value)
     {
         if (value >= 0.0)
         {
             if (*this != CVector3(0.0, 0.0, 0.0))
             {
-                CVector3 Res = (*this) * (value / getMagnitude());
+                CVector3 Res = (*this) * (value / magnitude());
 
                 X = Res.X;
                 Y = Res.Y;
@@ -105,18 +107,18 @@ public:
         }
     }
 
-    //! Renvoie vrai si le vecteur est unitaire
-    inline bool IsUnitVector()
+    //! Returns \c true if this vector is of unit length
+    inline bool isUnitVector()
     {
-        return getMagnitude() == 1.0;
+        return magnitude() == 1.0;
     }
 
-    //! Normalise le vecteur = longueur de 1.0
-    inline CVector3 Normalize() const
+    //! Returns a normalized version of this vector (length = 1.0)
+    inline CVector3 normalized() const
     {
-        if (getMagnitude() != 0.0)
+        if (magnitude() != 0.0)
         {
-            double inverse = 1.0 / getMagnitude();
+            double inverse = 1.0 / magnitude();
 
             return CVector3
                     (
@@ -129,14 +131,14 @@ public:
         return CVector3();
     }
 
-    //! Renvoie la somme des composants
-    inline double SumComponents() const
+    //! Returns the sum of this vector's components
+    inline double sumComponents() const
     {
         return (X + Y + Z);
     }
 
     //! Calcule la racine carrée des composants
-    inline CVector3 SqrtComponents() const
+    inline CVector3 sqrtComponents() const
     {
         return CVector3
                 (
@@ -146,8 +148,8 @@ public:
                     );
     }
 
-    //! Calcule le carré des composants
-    inline CVector3 SqrComponents () const
+    //! Returns this vector after squaring each component
+    inline CVector3 sqrComponents () const
     {
         return CVector3
                 (
@@ -158,17 +160,17 @@ public:
     }
 
     //! Calcule la somme des carrés des composants
-    inline static double SumComponentSqrs (const CVector3& v1)
+    inline static double sumComponentSqrs (const CVector3& v1)
     {
-        CVector3 v2 = v1.SqrComponents();
+        CVector3 v2 = v1.sqrComponents();
 
-        return v2.SumComponents();
+        return v2.sumComponents();
     }
 
     //! Calcule la somme des carrés des composants
-    inline double SumComponentSqrs() const
+    inline double sumComponentSqrs() const
     {
-        return SumComponentSqrs(*this);
+        return sumComponentSqrs(*this);
     }
 
     //! Opérateur d'égalité
@@ -308,8 +310,8 @@ public:
         return (&X)[index];
     }
 
-    //! Produit vectoriel
-    inline CVector3 CrossProduct(CVector3& v2) const
+    //! Cross product
+    inline CVector3 cross(CVector3& v2) const
     {
         return CVector3
                 (
@@ -319,8 +321,8 @@ public:
                     );
     }
 
-    //! Produit scalaire
-    inline double DotProduct(const CVector3& v2) const
+    //! Dot product
+    inline double dot(const CVector3& v2) const
     {
         return
                 (
@@ -330,15 +332,15 @@ public:
                     );
     }
 
-    // Renvoie l'angle sur l'axe des X
-    inline double AngleX() const
+    //! Returns the euler X angle
+    inline double eulerXAngle() const
     {
         if (Y == 0.0) return 0.0;
         return atan2(Z, Y) - (Math::Pi / 2.0);
     }
 
-    // Renvoie l'angle sur l'axe des Y
-    inline double AngleY() const
+    //! Returns the euler Y angle
+    inline double eulerYAngle() const
     {
         if (Z == 0.0)
         {
@@ -348,14 +350,14 @@ public:
         return atan2(X, Z);
     }
 
-    // Renvoie l'angle sur l'axe des Z
-    inline double AngleZ() const
+    //! Returns the euler Z angle
+    inline double eulerZAngle() const
     {
         if (X == 0.0) return 0.0;
         return atan2(Y, X);
     }
 
-    //! Transforme un vecteur d'angles de degrés en radians
+    //! Transforms a angle vector from degrees to radians
     inline CVector3 degreesToRadians()
     {
         return CVector3(
@@ -365,7 +367,7 @@ public:
                     );
     }
 
-    //! Transforme un vecteur d'angles de radians en degrés
+    //! Transforms a angle vector from radians to degrees
     inline CVector3 radiansToDegrees()
     {
         return CVector3(
@@ -375,7 +377,7 @@ public:
                     );
     }
 
-    //! Transforme en chaine de caractères
+    //! Returns a string representation of this vector
     inline QString toString()
     {
         return QString("<%1, %2, %3>").arg(X).arg(Y).arg(Z);

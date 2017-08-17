@@ -891,7 +891,7 @@ CVector3 CComponent::getWorldDirection() const
     CVector3 vVec1(0.0, 0.0, 0.0);
     CVector3 vVec2(0.0, 0.0, 1.0);
 
-    return ((m_mWorldTransform * vVec2) - (m_mWorldTransform * vVec1)).Normalize();
+    return ((m_mWorldTransform * vVec2) - (m_mWorldTransform * vVec1)).normalized();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1058,13 +1058,13 @@ void CComponent::lookAt(CComponent* pTarget)
 {
     CVector3 vPosition = pTarget->getGeoloc().toVector3(getGeoloc());
 
-    double dY = vPosition.AngleY();
+    double dY = vPosition.eulerYAngle();
 
     CMatrix4 mRotationCancelPan = CMatrix4::MakeRotation(CVector3(0.0, dY * -1.0, 0.0));
 
     vPosition = mRotationCancelPan * vPosition;
 
-    double dX = vPosition.AngleX();
+    double dX = vPosition.eulerXAngle();
 
     setOriginRotation(CVector3(dX, dY, 0.0));
 

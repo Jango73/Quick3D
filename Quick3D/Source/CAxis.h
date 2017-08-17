@@ -1,6 +1,5 @@
 
-#ifndef __AXIS_H__
-#define __AXIS_H__
+#pragma once
 
 #include "CVector3.h"
 #include "CMatrix4.h"
@@ -30,7 +29,7 @@ public:
         : Front(NewFront)
         , Up(NewUp)
     {
-        Right = Up.CrossProduct(Front);
+        Right = Up.cross(Front);
     }
 
     //! Constructeur avec composants
@@ -150,21 +149,21 @@ public:
         CVector3 vDiff1 = Front;
         CVector3 vDiff2 = Right;
 
-        double dY = vDiff1.AngleY();
+        double dY = vDiff1.eulerYAngle();
 
-        CMatrix4 mRotationCancelPan = CMatrix4::MakeRotation(CVector3(0.0, vDiff1.AngleY() * -1.0, 0.0));
+        CMatrix4 mRotationCancelPan = CMatrix4::MakeRotation(CVector3(0.0, vDiff1.eulerYAngle() * -1.0, 0.0));
 
         vDiff1 = mRotationCancelPan * vDiff1;
         vDiff2 = mRotationCancelPan * vDiff2;
 
-        double dX = vDiff1.AngleX();
+        double dX = vDiff1.eulerXAngle();
 
-        CMatrix4 mRotationCancelTilt = CMatrix4::MakeRotation(CVector3(vDiff1.AngleX() * -1.0, 0.0, 0.0));
+        CMatrix4 mRotationCancelTilt = CMatrix4::MakeRotation(CVector3(vDiff1.eulerXAngle() * -1.0, 0.0, 0.0));
 
         vDiff1 = mRotationCancelTilt * vDiff1;
         vDiff2 = mRotationCancelTilt * vDiff2;
 
-        double dZ = vDiff2.AngleZ();
+        double dZ = vDiff2.eulerZAngle();
 
         dX = Math::Angles::clipAngleRadianPIMinusPI(dX);
         dY = Math::Angles::clipAngleRadianPIMinusPI(dY);
@@ -175,5 +174,3 @@ public:
 };
 
 }
-
-#endif // __AXIS_H__

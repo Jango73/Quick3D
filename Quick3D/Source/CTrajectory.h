@@ -11,6 +11,8 @@
 #include "CVector3.h"
 #include "CGeoloc.h"
 
+//-------------------------------------------------------------------------------------------------
+
 class CTrajectorable;
 
 class QUICK3D_EXPORT CTrajectory

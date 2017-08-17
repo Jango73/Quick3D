@@ -60,7 +60,7 @@ public:
     Math::CVector3 halfSizes() const { return (m_vMaximum - m_vMinimum) * 0.5; }
 
     //!
-    double radius() const { return (m_vMaximum - m_vMinimum).getMagnitude() * 0.5; }
+    double radius() const { return (m_vMaximum - m_vMinimum).magnitude() * 0.5; }
 
     //!
     void expand(Math::CVector3 vAmount);

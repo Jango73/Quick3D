@@ -23,47 +23,47 @@ namespace Math
 		double Y;
 
 		//! Default constructor
-		inline CVector2 ()
+        inline CVector2()
 		{
 			X = 0.0f;
 			Y = 0.0f;
 		}
 
 		//! Constructeur par composants
-		inline CVector2 (double NewX, double NewY)
+        inline CVector2(double NewX, double NewY)
 		{
 			X = NewX;
 			Y = NewY;
 		}
 
 		//! Constructeur par valeur
-		inline CVector2 (double value)
+        inline CVector2(double value)
 		{
 			X = value;
 			Y = value;
 		}
 
 		//! Constructeur de copie
-		inline CVector2 (const CVector2& Target)
+        inline CVector2(const CVector2& Target)
 		{
 			X = Target.X;
 			Y = Target.Y;
 		}
 
 		//! Renvoie la longueur du vecteur
-		inline double getMagnitude () const
+        inline double magnitude() const
 		{
-			return sqrt(SumComponentSqrs());
+            return sqrt(sumComponentSqrs());
 		}
 
 		//! Assigne la longueur du vecteur
-		inline void setMagnitude (double value)
+        inline void setMagnitude(double value)
 		{
 			if (value >= 0.0f)
 			{
 				if (*this != CVector2(0.0f, 0.0f))
 				{
-					CVector2 Res = (*this) * (value / getMagnitude());
+                    CVector2 Res = (*this) * (value / magnitude());
 
 					X = Res.X;
 					Y = Res.Y;
@@ -72,17 +72,17 @@ namespace Math
 		}
 
 		//! Renvoie vrai si le vecteur est unitaire
-		inline bool IsUnitVector()
+        inline bool isUnitVector()
 		{
-			return getMagnitude() == 1.0f;
+            return magnitude() == 1.0f;
 		}
 
 		//! Normalise le vecteur = longueur de 1.0
-		inline CVector2 Normalize()
+        inline CVector2 normalized() const
 		{
-			if (getMagnitude() != 0.0f)
+            if (magnitude() != 0.0f)
 			{
-				double inverse = 1.0f / getMagnitude();
+                double inverse = 1.0f / magnitude();
 
 				return CVector2(X * inverse, Y * inverse);
 			}
@@ -91,33 +91,33 @@ namespace Math
 		}
 
 		//! Renvoie la somme des composants
-		inline double SumComponents() const
+        inline double sumComponents() const
 		{
 			return (X + Y);
 		}
 
 		//! Calcule la racine carrée des composants
-		inline CVector2 SqrtComponents() const
+        inline CVector2 sqrtComponents() const
 		{
 			return CVector2(sqrt(X), sqrt(Y));
 		}
 
 		//! Calcule le carré des composants
-		inline CVector2 SqrComponents () const
+        inline CVector2 sqrComponents () const
 		{
 			return CVector2(X * X, Y * Y);
 		}
 
-		inline static double SumComponentSqrs (const CVector2& v1)
+        inline static double sumComponentSqrs (const CVector2& v1)
 		{
-			CVector2 v2 = v1.SqrComponents();
+            CVector2 v2 = v1.sqrComponents();
 
-			return v2.SumComponents();
+            return v2.sumComponents();
 		}
 
-		inline double SumComponentSqrs() const
+        inline double sumComponentSqrs() const
 		{
-			return SumComponentSqrs(*this);
+            return sumComponentSqrs(*this);
 		}
 
 		inline bool operator == (const CVector2& V2) const
@@ -194,8 +194,8 @@ namespace Math
 			return (&X)[index];
 		}
 
-		//! Produit vectoriel
-		inline CVector2 CrossProduct(CVector2& v2) const
+        //! Cross product
+        inline CVector2 cross(CVector2& v2) const
 		{
 			return CVector2
 			(
@@ -204,14 +204,14 @@ namespace Math
 			);
 		}
 
-		//! Produit scalaire
-		inline double DotProduct(const CVector2& v2) const
+        //! Dot product
+        inline double dot(const CVector2& v2) const
 		{
 			return (X * v2.X + Y * v2.Y);
 		}
 
-		// Renvoie l'angle
-		inline double Angle() const
+        //! Returns the euler angle
+        inline double eulerAngle() const
 		{
 			if (X == 0.0f) return 0.0f;
 			return atan2(Y, X);

@@ -509,7 +509,7 @@ void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRen
                             gChunkPosition.toVector3() -
                             pContext->camera()->getGeoloc().toVector3()
                             )
-                        .getMagnitude()
+                        .magnitude()
                         );
 
             // Paint this chunk
@@ -563,7 +563,7 @@ void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRen
                             gChunkPosition.toVector3() -
                             pContext->camera()->getGeoloc().toVector3()
                             )
-                        .getMagnitude()
+                        .magnitude()
                         );
 
             // Paint this chunk

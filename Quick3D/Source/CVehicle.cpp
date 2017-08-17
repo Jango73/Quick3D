@@ -129,13 +129,13 @@ void CVehicle::update(double dDeltaTime)
                     CVector3 Front = CVector3(0.0, (hdFrontLeft + hdFrontRight) / 2.0, box.maximum().Z * 0.8);
                     CVector3 Back = CVector3(0.0, (hdBackLeft + hdBackRight) / 2.0, box.minimum().Z * 0.8);
 
-                    double dDiffX = (Front - Back).AngleX();
+                    double dDiffX = (Front - Back).eulerXAngle();
 
                     // Z
                     CVector3 Right = CVector3(box.maximum().X * 0.8, (hdBackRight + hdFrontRight) / 2.0, 0.0);
                     CVector3 Left = CVector3(box.minimum().X * 0.8, (hdBackLeft + hdFrontLeft) / 2.0, 0.0);
 
-                    double dDiffZ = (Right - Left).AngleZ();
+                    double dDiffZ = (Right - Left).eulerZAngle();
 
                     CVector3 torque(-dDiffX * 4.0, 0.0, -dDiffZ);
 

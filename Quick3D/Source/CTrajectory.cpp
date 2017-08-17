@@ -80,7 +80,7 @@ void CTrajectory::processObject(CTrajectorable* pObject, double dDeltaTime)
 
         CVector3 vDirection = gTargetGround.toVector3(gPositionGround);
 
-        if ((vDirection).getMagnitude() < 10.0)
+        if ((vDirection).magnitude() < 10.0)
         {
             m_iCurrentPoint++;
             if (m_iCurrentPoint >= m_vPoints.count()) m_iCurrentPoint = 0;
@@ -96,7 +96,7 @@ void CTrajectory::processObject(CTrajectorable* pObject, double dDeltaTime)
 
         CVector3 vRotation = pObject->getOriginRotation();
         double dCurrentAngleY = vRotation.Y;
-        double dTargetAngleY = vDirection.AngleY();
+        double dTargetAngleY = vDirection.eulerYAngle();
         double dDiffAngleY = Math::Angles::angleDifferenceRadian(dTargetAngleY, dCurrentAngleY) * 2.0;
 
         if (dDiffAngleY >  1.0) dDiffAngleY =  1.0;

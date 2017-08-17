@@ -1,6 +1,5 @@
 
-#ifndef ANGLES_H
-#define ANGLES_H
+#pragma once
 
 // Std
 #include "math.h"
@@ -148,19 +147,19 @@ namespace Math
 		}
 
 		//! Convertit un angle millièmes en radians sens horaire
-		static double MiltoRad(const double angleMil)
+        static double miltoRad(const double angleMil)
 		{
 			return (angleMil / 6400.) * _2Pi;
 		}
 
 		//! Convertit un angle degrés en millièmes
-		static int DegtoMil(const double angleDeg)
+        static int degToMil(const double angleDeg)
 		{
 			return (int) ((clipAngleDegree(angleDeg) / 360.0) * 6400.0);
 		}
 
 		//! Convertit un angle millièmes en degrés
-		static double MiltoDeg(const int angleMil)
+        static double milToDeg(const int angleMil)
 		{
 			return ((double) angleMil / 6400.0) * 360.0;
 		}
@@ -201,5 +200,3 @@ namespace Math
 		}
 	};
 }
-
-#endif // ANGLES_H

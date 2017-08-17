@@ -220,9 +220,9 @@ CAxis CGeoloc::getNOLLAxis() const
     CVector3 vPos2 = gPos2.toVector3();
     CVector3 vPos3 = gPos3.toVector3();
 
-    aReturnValue.Front = (vPos2 - vPos1).Normalize();
-    aReturnValue.Up = (vPos3 - vPos1).Normalize();
-    aReturnValue.Right = aReturnValue.Up.CrossProduct(aReturnValue.Front);
+    aReturnValue.Front = (vPos2 - vPos1).normalized();
+    aReturnValue.Up = (vPos3 - vPos1).normalized();
+    aReturnValue.Right = aReturnValue.Up.cross(aReturnValue.Front);
 
     return aReturnValue;
 }
@@ -464,10 +464,10 @@ CVector3 CGeoloc::toVector3_WGS84(const CGeoloc& gReference) const
 
     CMatrix4 mRotationAdjustX = Math::CMatrix4::MakeRotation(Math::CVector3(Math::Pi / -2.0, 0.0, 0.0));
     CVector3 vTemp = vReference3D;
-    double dAngleY = vTemp.AngleY();
+    double dAngleY = vTemp.eulerYAngle();
     CMatrix4 mRotationInverseY = Math::CMatrix4::MakeRotation(Math::CVector3(0, dAngleY * -1.0, 0.0));
     vTemp = mRotationInverseY * vTemp;
-    double dAngleX = vTemp.AngleX();
+    double dAngleX = vTemp.eulerXAngle();
     CMatrix4 mRotationInverseX = Math::CMatrix4::MakeRotation(Math::CVector3(dAngleX * -1.0, 0.0, 0.0));
 
     //-----------------------------------------------
@@ -515,10 +515,10 @@ CGeoloc CGeoloc::fromVector3_WGS84(const CGeoloc& gReference, const CVector3& vP
 
     CMatrix4 mRotationAdjustX = Math::CMatrix4::MakeRotation(Math::CVector3(Math::Pi / -2.0, 0.0, 0.0));
     CVector3 vTemp = vReference3D;
-    double dAngleY = vTemp.AngleY();
+    double dAngleY = vTemp.eulerYAngle();
     CMatrix4 mRotationInverseY = Math::CMatrix4::MakeRotation(Math::CVector3(0, dAngleY * -1.0, 0.0));
     vTemp = mRotationInverseY * vTemp;
-    double dAngleX = vTemp.AngleX();
+    double dAngleX = vTemp.eulerXAngle();
     CMatrix4 mRotationInverseX = Math::CMatrix4::MakeRotation(Math::CVector3(dAngleX * -1.0, 0.0, 0.0));
 
     //-----------------------------------------------

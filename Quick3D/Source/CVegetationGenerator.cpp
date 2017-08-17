@@ -271,7 +271,7 @@ void CVegetationGenerator::placeBush(QSP<CWorldChunk> pChunk, CGeoloc gPosition,
             CVector3 vPosition = vGeocentricPosition - pChunk->getWorldPosition();
 
             CVertex newVertex(vPosition);
-            newVertex.setNormal(vGeocentricPosition.Normalize());
+            newVertex.setNormal(vGeocentricPosition.normalized());
             pChunk->bushMeshes()[sMaterialName]->vertices().append(newVertex);
         }
     }

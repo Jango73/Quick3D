@@ -135,7 +135,7 @@ void CWing::update(double dDeltaTime)
         double dDotBodyAirflowAileronCorrected = m_iBodyAirflowDotAileronLiftFactor.getValue(dDotBodyAirflow);
 
         double dAirDragFactor = CAtmosphere::getInstance()->airDragFactor(pAircraft->getGeoloc().Altitude);
-        double dVelocity = pAircraft->velocity_ms().getMagnitude();
+        double dVelocity = pAircraft->velocity_ms().magnitude();
         double dTotalMass_kg = pAircraft->totalMass_kg();
         double dMassMultiplier = sqrt(dTotalMass_kg);					// 245
         double dAreaOnMass = m_dArea_m2 / dMassMultiplier;				// 0.32

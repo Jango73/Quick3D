@@ -57,7 +57,7 @@ void CRudder::update(double dDeltaTime)
         double dDotBodyAirflowAileronCorrected = m_iBodyAirflowDotAileronLiftFactor.getValue(dDotBodyAirflow);
 
         double dAirDragFactor = CAtmosphere::getInstance()->airDragFactor(pAircraft->getGeoloc().Altitude);
-        double dVelocity = pAircraft->velocity_ms().getMagnitude();
+        double dVelocity = pAircraft->velocity_ms().magnitude();
         double dTotalMass_kg = pAircraft->totalMass_kg();
         double dMassMultiplier = sqrt(dTotalMass_kg);
         double dAileronAreaOnMass = m_dAileronArea_m2 / dMassMultiplier;

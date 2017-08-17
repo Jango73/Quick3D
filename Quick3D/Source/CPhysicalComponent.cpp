@@ -224,18 +224,18 @@ void CPhysicalComponent::addUncenteredLocalForce_kg(CVector3 vPosition, CVector3
     {
         CVector3 vSavedForce_kg = vForce_kg;
 
-        double dDistanceAttenuation = (1.0 / (1.0 + vPosition.getMagnitude())) * 2.3;
+        double dDistanceAttenuation = (1.0 / (1.0 + vPosition.magnitude())) * 2.3;
         vForce_kg *= dDistanceAttenuation;
         addLocalForce_kg(vForce_kg);
 
-        double dDistanceMultiplier = vPosition.getMagnitude() * 0.001;
+        double dDistanceMultiplier = vPosition.magnitude() * 0.001;
 
-        CVector3 vForceNormalized = vSavedForce_kg.Normalize();
+        CVector3 vForceNormalized = vSavedForce_kg.normalized();
 
         CAxis aPositionAxis(euleurAngles(vPosition));
 
-        double dXForce = aPositionAxis.Up.DotProduct(vForceNormalized);
-        double dYForce = aPositionAxis.Right.DotProduct(vForceNormalized);
+        double dXForce = aPositionAxis.Up.dot(vForceNormalized);
+        double dYForce = aPositionAxis.Right.dot(vForceNormalized);
 
         CVector3 vForceOnAxis(dXForce, dYForce, 0.0);
 
@@ -245,7 +245,7 @@ void CPhysicalComponent::addUncenteredLocalForce_kg(CVector3 vPosition, CVector3
         aForceAxis = aForceAxis.rotate(vForceOnAxis);
         aForceAxis = aForceAxis.transferFrom(aPositionAxis);
 
-        addLocalTorque_kg(aForceAxis.euleurAngles() * (vSavedForce_kg.getMagnitude() * dDistanceMultiplier));
+        addLocalTorque_kg(aForceAxis.euleurAngles() * (vSavedForce_kg.magnitude() * dDistanceMultiplier));
     }
 }
 
@@ -345,13 +345,13 @@ void CPhysicalComponent::update(double dDeltaTimeS)
 
                     // Add drag
 
-                    double dVelocitySquared_ms = m_vVelocity_ms.getMagnitude();
+                    double dVelocitySquared_ms = m_vVelocity_ms.magnitude();
 
                     dVelocitySquared_ms = dVelocitySquared_ms * dVelocitySquared_ms;
 
                     double dDrag = dVelocitySquared_ms * m_dDrag_norm * dAirDragFactor * dTotalMass_kg;
 
-                    CVector3 vDragForce = m_vVelocity_ms.Normalize() * -dDrag;
+                    CVector3 vDragForce = m_vVelocity_ms.normalized() * -dDrag;
 
                     addForce_kg(vDragForce);
 
@@ -443,7 +443,7 @@ void CPhysicalComponent::update(double dDeltaTimeS)
                 // Update the body's position if its speed is greater than 1cm/s
                 // Or if it has gone below the ground
 
-                if (m_vVelocity_ms.getMagnitude() > 0.01 || m_bOnGround)
+                if (m_vVelocity_ms.magnitude() > 0.01 || m_bOnGround)
                 {
                     setGeoloc(gNewGeoloc);
                 }
@@ -556,7 +556,7 @@ void CPhysicalComponent::computeCollisions(QVector<QSP<CComponent> >& vComponent
             if (pPhysical->isRootObject() && pPhysical->collisionsActive() == true)
             {
                 // On ne calcule de collision que si l'objet a une vitesse non nulle
-                if (pPhysical->velocity_ms().getMagnitude() > 0.0)
+                if (pPhysical->velocity_ms().magnitude() > 0.0)
                 {
                     computeCollisionsForComponent(pPhysical, vComponents, dDeltaTimeS);
                 }
@@ -592,12 +592,12 @@ void CPhysicalComponent::computeCollisionsForComponent(QSP<CPhysicalComponent> p
                     double dRadiusSum = pComponent->worldBounds().radius() + pOtherPhysical->worldBounds().radius();
 
                     // Est-ce que les deux sphères se recoupent?
-                    if (vPosition.getMagnitude() < dRadiusSum)
+                    if (vPosition.magnitude() < dRadiusSum)
                     {
                         // Si oui, on fait rebondir les objets
 
-                        double dForce = pComponent->m_vVelocity_ms.getMagnitude() * pComponent->totalMass_kg() * 4.0;
-                        CVector3 vForceDirection = vPosition.Normalize() * 0.5 * dForce;
+                        double dForce = pComponent->m_vVelocity_ms.magnitude() * pComponent->totalMass_kg() * 4.0;
+                        CVector3 vForceDirection = vPosition.normalized() * 0.5 * dForce;
                         double dTotalMass = pComponent->totalMass_kg() + pOtherPhysical->totalMass_kg();
                         double dForceThisComponent = 1.0 - (pComponent->totalMass_kg() / dTotalMass);
                         double dForceOtherComponent = 1.0 - (pOtherPhysical->totalMass_kg() / dTotalMass);

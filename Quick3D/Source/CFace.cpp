@@ -147,8 +147,8 @@ void CFace::computeNormal()
             CVector3 U = v3.position() - v1.position();
             CVector3 V = v2.position() - v1.position();
 
-            m_vNormal = U.CrossProduct(V).Normalize();
-            m_vTangent = U.Normalize();
+            m_vNormal = U.cross(V).normalized();
+            m_vTangent = U.normalized();
         }
     }
 }
@@ -170,7 +170,7 @@ RayTracingResult CFace::intersectTriangle(
     CVector3 U = v3 - v1;
     CVector3 V = v2 - v1;
 
-    CVector3 vNormal = U.CrossProduct(V).Normalize();
+    CVector3 vNormal = U.cross(V).normalized();
 
     // Get dominant axis
     int iMajorAxis = 0;
@@ -192,13 +192,13 @@ RayTracingResult CFace::intersectTriangle(
     }
 
     //
-    double dNormalDotDirection = vNormal.DotProduct(ray.vNormal);
+    double dNormalDotDirection = vNormal.dot(ray.vNormal);
 
     if (fabs(dNormalDotDirection) < EPSILON) return RayTracingResult(Q3D_INFINITY);
 
-    double dNormalDotOrigin = vNormal.DotProduct(ray.vOrigin);
+    double dNormalDotOrigin = vNormal.dot(ray.vOrigin);
 
-    double dDistance = vNormal.DotProduct(v1) * -1.0;
+    double dDistance = vNormal.dot(v1) * -1.0;
     double dDepth = -(dDistance + dNormalDotOrigin) / dNormalDotDirection;
     double s, t;
 

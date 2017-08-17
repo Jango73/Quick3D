@@ -231,7 +231,7 @@ double CTerrain::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
     CGeoloc gLocalGeoloc(dLatitudeDiff, dLongitudeDiff, 0.0);
     CVector3 vCenter = getGeoloc().toVector3();
     CVector3 vLocal = gPosition.toVector3() - vCenter;
-    CVector3 vUp = vCenter.Normalize();
+    CVector3 vUp = vCenter.normalized();
 
     int iX = (int) (((gLocalGeoloc.Longitude / (m_gSize.Longitude)) + 0.5) * (m_iNumPoints - 1));
     int iZ = (int) (((gLocalGeoloc.Latitude / (m_gSize.Latitude)) + 0.5) * (m_iNumPoints - 1));
@@ -373,7 +373,7 @@ void CTerrain::work()
         CAxis aNOLLAxis = gPosition.getNOLLAxis();
 
         m_pMesh->vertices()[iIndex].position() = gPosition.toVector3();
-        m_pMesh->vertices()[iIndex].normal() = m_pMesh->vertices()[iIndex].position().Normalize();
+        m_pMesh->vertices()[iIndex].normal() = m_pMesh->vertices()[iIndex].position().normalized();
         m_pMesh->vertices()[iIndex].tangent() = aNOLLAxis.Front;
         m_pMesh->vertices()[iIndex].gravity() = m_pMesh->vertices()[iIndex].normal() * -1.0;
 
@@ -467,7 +467,7 @@ void CTerrain::work()
         {
             if (m_bIsWater == false)
             {
-                double dSlope = fabs(m_pMesh->vertices()[iIndex].normal().DotProduct(
+                double dSlope = fabs(m_pMesh->vertices()[iIndex].normal().dot(
                                          m_pMesh->vertices()[iIndex].gravity() * -1.0
                                          ));
 

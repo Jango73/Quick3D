@@ -41,7 +41,7 @@ static inline double clamp(double value, double min, double max)
 
 static inline double dot(CVector3 a, CVector3 b)
 {
-    return a.DotProduct(b);
+    return a.dot(b);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -69,7 +69,7 @@ static inline CVector3 fract(CVector3 a)
 
 static inline double distance(CVector3 a, CVector3 b)
 {
-    return (a - b).getMagnitude();
+    return (a - b).magnitude();
 }
 
 //-------------------------------------------------------------------------------------------------

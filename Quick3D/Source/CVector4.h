@@ -1,9 +1,13 @@
 
-#ifndef __VECTOR4_H__
-#define __VECTOR4_H__
+#pragma once
 
+// Std
 #include "math.h"
+
+// Application
 #include "Angles.h"
+
+//-------------------------------------------------------------------------------------------------
 
 namespace Math
 {
@@ -42,9 +46,9 @@ namespace Math
 		}
 
 		//! Renvoie la longueur du vecteur
-		inline double getMagnitude () const
+        inline double magnitude () const
 		{
-			return sqrt(SumComponentSqrs());
+            return sqrt(sumComponentSqrs());
 		}
 
 		//! Assigne la longueur du vecteur
@@ -54,7 +58,7 @@ namespace Math
 			{
 				if (*this != Vector4(0.0, 0.0, 0.0, 0.0))
 				{
-					Vector4 Res = (*this) * (value / getMagnitude());
+                    Vector4 Res = (*this) * (value / magnitude());
 
 					X = Res.X;
 					Y = Res.Y;
@@ -65,17 +69,17 @@ namespace Math
 		}
 
 		//! Renvoie vrai si le vecteur est unitaire
-		inline bool IsUnitVector()
+        inline bool isUnitVector()
 		{
-			return getMagnitude() == 1.0;
+            return magnitude() == 1.0;
 		}
 
 		//! Normalise le vecteur = longueur de 1.0
-		inline Vector4 Normalize()
+        inline Vector4 normalized() const
 		{
-			if (getMagnitude() != 0.0)
+            if (magnitude() != 0.0)
 			{
-				double inverse = 1.0 / getMagnitude();
+                double inverse = 1.0 / magnitude();
 
 				return Vector4
 				(
@@ -90,13 +94,13 @@ namespace Math
 		}
 
 		//! Renvoie la somme des composants
-		inline double SumComponents() const
+        inline double sumComponents() const
 		{
 			return (X + Y + Z + W);
 		}
 
 		//! Calcule la racine carrée des composants
-		inline Vector4 SqrtComponents() const
+        inline Vector4 sqrtComponents() const
 		{
 			return Vector4
 			(
@@ -108,7 +112,7 @@ namespace Math
 		}
 
 		//! Calcule le carré des composants
-		inline Vector4 SqrComponents () const
+        inline Vector4 sqrComponents () const
 		{
 			return Vector4
 			(
@@ -120,17 +124,17 @@ namespace Math
 		}
 
 		//! Calcule la somme des carrés des composants
-		inline static double SumComponentSqrs (const Vector4& v1)
+        inline static double sumComponentSqrs (const Vector4& v1)
 		{
-			Vector4 v2 = v1.SqrComponents();
+            Vector4 v2 = v1.sqrComponents();
 
-			return v2.SumComponents();
+            return v2.sumComponents();
 		}
 
 		//! Calcule la somme des carrés des composants
-		inline double SumComponentSqrs() const
+        inline double sumComponentSqrs() const
 		{
-			return SumComponentSqrs(*this);
+            return sumComponentSqrs(*this);
 		}
 
 		//! Opérateur d'égalité
@@ -228,8 +232,8 @@ namespace Math
 			return (&X)[index];
 		}
 
-		//! Produit vectoriel
-		inline Vector4 CrossProduct(Vector4& v2) const
+        //! Cross product
+        inline Vector4 cross(Vector4& v2) const
 		{
 			return Vector4
 			(
@@ -240,8 +244,8 @@ namespace Math
 			);
 		}
 
-		//! Produit scalaire
-		inline double DotProduct(const Vector4& v2) const
+        //! Dot product
+        inline double dot(const Vector4& v2) const
 		{
 			return
 			(
@@ -251,31 +255,29 @@ namespace Math
 			);
 		}
 
-		// Renvoie l'angle sur l'axe des X
-		inline double AngleX() const
-		{
-			if (Y == 0.0) return 0.0;
-			return atan2(Z, Y) - (Math::Pi / 2.0);
-		}
+        //! Returns the euler X angle
+        inline double eulerXAngle() const
+        {
+            if (Y == 0.0) return 0.0;
+            return atan2(Z, Y) - (Math::Pi / 2.0);
+        }
 
-		// Renvoie l'angle sur l'axe des Y
-		inline double AngleY() const
-		{
-			if (Z == 0.0)
-			{
-				if (X == 0.0) return 0.0;
-				return atan2(Z, X) + (Math::Pi / 2.0);
-			}
-			return atan2(X, Z);
-		}
+        //! Returns the euler Y angle
+        inline double eulerYAngle() const
+        {
+            if (Z == 0.0)
+            {
+                if (X == 0.0) return 0.0;
+                return atan2(Z, X) + (Math::Pi / 2.0);
+            }
+            return atan2(X, Z);
+        }
 
-		// Renvoie l'angle sur l'axe des Z
-		inline double AngleZ() const
-		{
-			if (X == 0.0) return 0.0;
-			return atan2(Y, X);
-		}
-	};
+        //! Returns the euler Z angle
+        inline double eulerZAngle() const
+        {
+            if (X == 0.0) return 0.0;
+            return atan2(Y, X);
+        }
+    };
 }
-
-#endif // __VECTOR4_H__

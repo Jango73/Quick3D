@@ -64,11 +64,11 @@ void CAircraft::update(double dDeltaTime)
 
 	m_dAngleOfAttack_rad = aVelocityAxis.euleurAngles().X;
 
-	m_dTrueAirSpeed_ms = m_vVelocity_ms.getMagnitude();
+	m_dTrueAirSpeed_ms = m_vVelocity_ms.magnitude();
 
 	m_dIndicatedAirSpeed_ms = m_dTrueAirSpeed_ms * sqrt(dDensity_kgm3);
 
-	m_dGroundSpeed_ms = CVector2(m_vVelocity_ms.X, m_vVelocity_ms.Z).getMagnitude();
+	m_dGroundSpeed_ms = CVector2(m_vVelocity_ms.X, m_vVelocity_ms.Z).magnitude();
 
 	m_dTrueHeading_deg = Math::Angles::toDeg(getOriginRotation().Y);
 

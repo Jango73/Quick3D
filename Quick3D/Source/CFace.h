@@ -1,18 +1,16 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
 // Fondations
 #include "CVector3.h"
 #include "CRay3.h"
 
+// Application
+#include "quick3d_global.h"
+
 //-------------------------------------------------------------------------------------------------
-// Déclarations avancées
 
 class CMeshGeometry;
-
-//-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CEdge
 {

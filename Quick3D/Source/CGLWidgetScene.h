@@ -1,6 +1,5 @@
 
-#ifndef CGLWIDGETSCENE_H
-#define CGLWIDGETSCENE_H
+#pragma once
 
 #include "quick3d_global.h"
 
@@ -9,12 +8,10 @@
 #include <QImage>
 #include <QTime>
 
-// Fondations
+// Application
 #include "CVector3.h"
 #include "CMatrix4.h"
 #include "Interpolator.h"
-
-// Application
 #include "C3DScene.h"
 #include "CMeshGeometry.h"
 
@@ -82,5 +79,3 @@ protected:
     GLfloat         u_light_occlusion [MAX_GL_LIGHTS];
     QVector3D       vSunColor;
 };
-
-#endif // CGLWIDGETSCENE_H

@@ -1,18 +1,18 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
-//-------------------------------------------------------------------------------------------------
-
 // Qt
 #include <QString>
 #include <QVector>
 
+// qt-plus
 #include "CSingleton.h"
 
 // Application
+#include "quick3d_global.h"
 #include "ComponentInstanciator.h"
+
+//-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CComponentFactory : public CSingleton<CComponentFactory>
 {

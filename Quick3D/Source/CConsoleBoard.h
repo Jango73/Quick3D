@@ -1,19 +1,22 @@
 
-#ifndef CCONSOLEBOARD_H
-#define CCONSOLEBOARD_H
+#pragma once
 
-#include "quick3d_global.h"
-
+// Std
 #ifdef linux
 #include <stdio.h>
 #endif
 
+// Qt
 #include <QObject>
 #include <QTimer>
 #include <QMutex>
 #include <QMutexLocker>
 
+// qt-plus
 #include "CSingleton.h"
+
+// Application
+#include "quick3d_global.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -91,5 +94,3 @@ protected:
 	QMutex					m_tMutex;
 	QMap<QString, QString>	m_mValues;
 };
-
-#endif // CCONSOLEBOARD_H

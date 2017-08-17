@@ -1,15 +1,17 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
-// Fondations
-#include "CVector3.h"
-#include "CGeoloc.h"
+// qt-plus
 #include "CXMLNode.h"
 
+// Application
+#include "quick3d_global.h"
+#include "CVector3.h"
+#include "CGeoloc.h"
 #include "CHeightField.h"
 #include "CGenerateFunction.h"
+
+//-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CGeneratedField : public CHeightField
 {

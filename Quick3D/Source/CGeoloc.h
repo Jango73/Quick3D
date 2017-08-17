@@ -1,10 +1,6 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
-//-------------------------------------------------------------------------------------------------
-
 // Std
 #include "math.h"
 
@@ -14,6 +10,7 @@
 #include <QString>
 
 // Application
+#include "quick3d_global.h"
 #include "CVector3.h"
 #include "CAxis.h"
 

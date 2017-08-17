@@ -1,16 +1,13 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
-//-------------------------------------------------------------------------------------------------
-
-// Fondations
-#include "CVector3.h"
-#include "CGeoloc.h"
+// qt-plus
 #include "CXMLNode.h"
 
 // Application
+#include "quick3d_global.h"
+#include "CVector3.h"
+#include "CGeoloc.h"
 #include "CHeightField.h"
 #include "CHGTData.h"
 
@@ -69,7 +66,7 @@ protected:
 
 protected:
 
-    CXMLNode			m_xParameters;
-    QString				m_sPath;
-    QVector<CHGTData*>	m_vChunks;
+    CXMLNode            m_xParameters;
+    QString             m_sPath;
+    QVector<CHGTData*>  m_vChunks;
 };

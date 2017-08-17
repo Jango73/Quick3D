@@ -1,18 +1,17 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
 // Fondations
 #include "CVector3.h"
 #include "CMatrix4.h"
 #include "CGeoloc.h"
 
+// Application
+#include "quick3d_global.h"
+
 //-------------------------------------------------------------------------------------------------
 
 class C3DScene;
-
-//-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CBoundingBox
 {

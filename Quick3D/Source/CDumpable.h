@@ -1,12 +1,12 @@
 
-#ifndef CDUMPABLE_H
-#define CDUMPABLE_H
-
-#include "quick3d_global.h"
+#pragma once
 
 // Qt
 #include <QTextStream>
 #include <QString>
+
+// Application
+#include "quick3d_global.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -32,5 +32,3 @@ public:
     //! Ecrit un texte indenté dans le fichier de sortie
     void dumpIdent(QTextStream& stream, int iIdent, QString sText);
 };
-
-#endif // CDUMPABLE_H

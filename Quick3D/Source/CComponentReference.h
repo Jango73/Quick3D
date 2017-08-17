@@ -1,10 +1,8 @@
 
 #pragma once
 
+// Application
 #include "quick3d_global.h"
-
-//-------------------------------------------------------------------------------------------------
-
 #include "CComponent.h"
 #include "C3DScene.h"
 

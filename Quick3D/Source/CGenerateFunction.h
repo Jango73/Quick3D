@@ -1,15 +1,18 @@
 
 #pragma once
 
-#include "quick3d_global.h"
+// qt-plus
+#include "CXMLNode.h"
 
 // Application
+#include "quick3d_global.h"
 #include "CQ3DConstants.h"
 #include "CNamed.h"
 #include "CVector3.h"
 #include "CGeoloc.h"
-#include "CXMLNode.h"
 #include "CPerlin.h"
+
+//-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CGenerateFunction : public CNamed
 {

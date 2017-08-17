@@ -1,10 +1,11 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
 // Application
+#include "quick3d_global.h"
 #include "CMeshInstance.h"
+
+//-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CBuildingGenerator
 {

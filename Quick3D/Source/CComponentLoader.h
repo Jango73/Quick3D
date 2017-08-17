@@ -1,13 +1,12 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
-// Fondations
+// qt-plus
 #include "CSingleton.h"
 #include "CXMLNode.h"
 
-// Quick3D
+// Application
+#include "quick3d_global.h"
 #include "CComponent.h"
 
 //-------------------------------------------------------------------------------------------------

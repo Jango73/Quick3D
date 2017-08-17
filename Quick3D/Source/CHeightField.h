@@ -9,6 +9,8 @@
 #include "CAxis.h"
 #include "CRay3.h"
 
+//-------------------------------------------------------------------------------------------------
+
 class QUICK3D_EXPORT CHeightField
 {
 public:

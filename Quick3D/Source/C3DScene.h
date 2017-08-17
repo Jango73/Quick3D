@@ -1,14 +1,13 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
 // Qt
 #include <QGLWidget>
 #include <QImage>
 #include <QTime>
 
 // Application
+#include "quick3d_global.h"
 #include "C3DSceneStatistics.h"
 #include "CVector3.h"
 #include "CMatrix4.h"

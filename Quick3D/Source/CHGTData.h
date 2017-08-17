@@ -1,18 +1,19 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
 //-------------------------------------------------------------------------------------------------
 
 // Qt
 #include <QMutex>
 #include <QFile>
 
-// Fondations
+// qt-plus
+#include "CXMLNode.h"
+
+// Application
+#include "quick3d_global.h"
 #include "CVector3.h"
 #include "CGeoloc.h"
-#include "CXMLNode.h"
 
 //-------------------------------------------------------------------------------------------------
 

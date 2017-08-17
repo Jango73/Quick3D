@@ -45,7 +45,7 @@ CVector3 CServoAnimatorFrame::compute(double dDeltaTime, CVector3 vCurrentValue)
 
 	if (m_vSteps.count() > 0)
 	{
-		// Est-on dans une boucle d'attente?
+        // Are we in a waiting loop?
 		if (m_dTime > 0.0)
 		{
 			m_dTime -= dDeltaTime;
@@ -64,6 +64,7 @@ CVector3 CServoAnimatorFrame::compute(double dDeltaTime, CVector3 vCurrentValue)
 				}
 			}
 
+            // Get values for current step
 			if (m_iCurrentStep < m_vSteps.count())
 			{
 				CVector3 vTarget = m_vSteps[m_iCurrentStep].target();

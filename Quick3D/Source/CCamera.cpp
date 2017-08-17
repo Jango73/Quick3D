@@ -202,7 +202,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     glViewport((int) pViewport->getPosition().X, (int) pViewport->getPosition().Y, iWidth, iHeight);
 
     //-------------------------------------------------------------------------------------------------
-    // Contexte de rendu et matrices de transformation
+    // Rendering context and transform matrices
 
     if (pScene->shaderQuality() >= 0.90)
     {
@@ -283,7 +283,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     computeFrustum(Math::Angles::toRad(dFOV), (double) iWidth / (double) iHeight, m_dMinDistance, m_dMaxDistance);
 
     //-------------------------------------------------------------------------------------------------
-    // Mise à jour des objets
+    // Update objects
 
     foreach(QSP<CComponent> pComponent, pScene->components())
     {
@@ -348,7 +348,7 @@ void CCamera::renderDepth_RayTraced
 
     CGeoloc gReference = getGeoloc();
 
-    // Création des polygones de zone dans le repère 3D local vu de dessus (X et Z)
+    // Create polygons in local 3D space and viewed from top (X et Z)
     for (QVector<CGeoZone>::iterator gZone = tParams.m_vZones.begin(); gZone != tParams.m_vZones.end(); gZone++)
     {
         (*gZone).getLocalPoints().clear();
@@ -376,21 +376,21 @@ void CCamera::renderDepth_RayTraced
             double dCurrentPan = Math::Angles::toRad(tParams.m_vStartPanTiltDegrees.Y + (dPanNormalized * (tParams.m_vEndPanTiltDegrees.Y - tParams.m_vStartPanTiltDegrees.Y)));
             double dCurrentTilt = Math::Angles::toRad(tParams.m_vStartPanTiltDegrees.X + (dTiltNormalized * (tParams.m_vEndPanTiltDegrees.X - tParams.m_vStartPanTiltDegrees.X)));
 
-            // Création du rayon correspondant au point actuel
+            // Create the ray for the current pixel
             CRay3 rCameraRay;
 
-            // Le rayon pointe vers +Z
+            // Ray points to +Z
             rCameraRay.vOrigin = CVector3(0.0, 0.0, 0.0);
             rCameraRay.vNormal = CVector3(0.0, 0.0, 1.0);
 
-            // Application des angles courants au rayon
+            // Apply current angles to ray
             rCameraRay = CMatrix4().MakeRotation(CVector3(dCurrentTilt, 0.0, 0.0)) * rCameraRay;
             rCameraRay = CMatrix4().MakeRotation(CVector3(0.0, dCurrentPan, 0.0)) * rCameraRay;
 
-            // Application de la transformation caméra au rayon
+            // Apply camera transform to ray
             rCameraRay = getWorldTransform() * rCameraRay;
 
-            // Initialisation de la distance trouvée pour ce point
+            // Initialize tracing distance
             RayTracingResult dResult(Q3D_INFINITY);
 
             foreach (QSP<CComponent> pComponent, pScene->components())
@@ -417,7 +417,7 @@ void CCamera::renderDepth_RayTraced
                 CGeoloc gIntersectionPoint(vIntersectionPoint3D);
                 CVector3 vLocalIntersectionPoint3D = gIntersectionPoint.toVector3(gReference);
 
-                // On récupère le flag correspondant aux zones de détection
+                // Get the current flag for detection zones
                 eDetectionFlag = categorizePointFromZones(
                             tParams.m_vZones,
                             CVector2(vLocalIntersectionPoint3D.X, vLocalIntersectionPoint3D.Z)
@@ -431,7 +431,7 @@ void CCamera::renderDepth_RayTraced
                 dResult.m_dDistance = -1.0;
             }
 
-            // Remplissage des matrices
+            // Fill matrices
             tParams.m_vDetection.append((char) eDetectionFlag);
             tParams.m_vEdges.append((char) iDotRayNormal);
             tParams.m_vDepth.append(dResult.m_dDistance);

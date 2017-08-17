@@ -91,7 +91,7 @@ void CPhysicalComponent::loadParameters(const QString& sBaseFile, CXMLNode xComp
 {
     CComponent::loadParameters(sBaseFile, xComponent);
 
-    // Properties physiques
+    // Physical properties
 
     CXMLNode xPhysicsNode = xComponent.getNodeByTagName(ParamName_Physics);
     CXMLNode xCenterOfMassNode = xComponent.getNodeByTagName(ParamName_CenterOfMass);
@@ -335,7 +335,7 @@ void CPhysicalComponent::update(double dDeltaTimeS)
                     // double dAirForceFactor = CAtmosphere::getInstance()->getAirForceFactor(getGeoloc().Altitude);
                     double dAirDragFactor = CAtmosphere::getInstance()->airDragFactor(getGeoloc().Altitude);
 
-                    // Ajout force de gravité
+                    // Add gravity force
 
                     CVector3 vGravityForce = CVector3(0.0, -dTotalMass_kg * 2.0, 0.0);
 
@@ -343,7 +343,7 @@ void CPhysicalComponent::update(double dDeltaTimeS)
 
                     addUncenteredLocalForce_kg(m_vCenterOfMass, vGravityForce);
 
-                    // Ajout trainée
+                    // Add drag
 
                     double dVelocitySquared_ms = m_vVelocity_ms.getMagnitude();
 
@@ -355,15 +355,15 @@ void CPhysicalComponent::update(double dDeltaTimeS)
 
                     addForce_kg(vDragForce);
 
-                    // Mise à jour vélocité axiale selon accumulateurs de forces
+                    // Update axial velocity according to force accumulators
 
                     m_vVelocity_ms = m_vVelocity_ms + (m_vSummedForces_mss * dDeltaTimeS);
 
-                    // Mise à jour vélocité angulaire selon accumulateurs de couple
+                    // Update angular velocity according to torque accumulators
 
                     m_vAngularVelocity_rs = m_vAngularVelocity_rs + (m_vSummedTorques_rss * dDeltaTimeS);
 
-                    // Application trainée angulaire
+                    // Add angular drag
 
                     m_vAngularVelocity_rs = m_vAngularVelocity_rs - (m_vAngularVelocity_rs * ((m_dAngularDrag_norm * dDeltaTimeS) * dAirDragFactor));
 
@@ -373,11 +373,11 @@ void CPhysicalComponent::update(double dDeltaTimeS)
                         m_vAngularVelocity_rs = m_vAngularVelocity_rs - (m_vAngularVelocity_rs * (m_dFriction_norm * dDeltaTimeS));
                     }
 
-                    // Récupération référence NOLL (North-Oriented Local Level)
+                    // Get the NOLL reference (North-Oriented Local Level)
 
                     CAxis aLocalAxis(getGeoloc().getNOLLAxis());
 
-                    // Rotation du corps selon son axe local
+                    // Rotate the body around its local axis
 
                     CAxis aRotationAxis(vNewRotation);
                     CAxis aVelocityAxis(vNewRotation);
@@ -386,14 +386,14 @@ void CPhysicalComponent::update(double dDeltaTimeS)
                     aVelocityAxis = aVelocityAxis.transferTo(aRotationAxis);
                     vNewRotation = aVelocityAxis.euleurAngles();
 
-                    // Translation du corps
+                    // Translate the body
 
                     vNewPosition += aLocalAxis.Right * m_vVelocity_ms.X * dDeltaTimeS;
                     vNewPosition += aLocalAxis.Up * m_vVelocity_ms.Y * dDeltaTimeS;
                     vNewPosition += aLocalAxis.Front * m_vVelocity_ms.Z * dDeltaTimeS;
                 }
 
-                // Gestion altitude
+                // Manage altitude
 
                 CGeoloc gNewGeoloc(vNewPosition);
 
@@ -406,28 +406,30 @@ void CPhysicalComponent::update(double dDeltaTimeS)
                 {
                     double dHeight = pField->getHeightAt(gNewGeoloc);
 
-                    // Est-ce qu'il y a du sol sous l'objet?
+                    // Is there ground below the body?
                     if (!(fabs(dHeight - Q3D_INFINITY) < 0.01))
                     {
-                        // Est-ce que l'objet est proche du sol?
+                        // Is the body close to the ground?
                         if (fabs(dLowestAltitude - dHeight) < 0.2)
                         {
                             m_bOnGround = true;
                         }
 
-                        // Est-ce que l'objet passe sous le sol?
+                        // Is the body going under the ground?
                         if (dLowestAltitude < dHeight)
                         {
                             gNewGeoloc.Altitude = dHeight - dBoundsYOffset;
 
-                            // Remise à zéro de la vitesse verticale
+                            // Reset vertical speed
                             m_vVelocity_ms.Y = 0.0;
 
                             m_bOnGround = true;
                         }
                         else
                         {
-                            // Ici on est sous l'eau, on fait remonter l'objet légèrement
+                            // Here we are underwater, make the body go up slowly
+                            // TODO : obey to fluid laws
+
                             if (gNewGeoloc.Altitude < 0.0)
                             {
                                 double dUpRate = 0.0 - gNewGeoloc.Altitude;
@@ -438,8 +440,9 @@ void CPhysicalComponent::update(double dDeltaTimeS)
                     }
                 }
 
-                // La position de l'objet est mise à jour si sa vitesse est supérieure à 1cm/s
-                // Ou s'il a traversé le sol
+                // Update the body's position if its speed is greater than 1cm/s
+                // Or if it has gone below the ground
+
                 if (m_vVelocity_ms.getMagnitude() > 0.01 || m_bOnGround)
                 {
                     setGeoloc(gNewGeoloc);
@@ -503,7 +506,7 @@ void CPhysicalComponent::update(double dDeltaTimeS)
         }
     }
 
-    // Remise à zéro des accumulateurs de forces
+    // Reset force and torque accumulators
 
     m_vSummedForces_mss = CVector3();
     m_vSummedTorques_rss = CVector3();

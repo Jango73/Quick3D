@@ -313,7 +313,7 @@ void CTerrain::work()
 
     CPerlin* pPerlin = CPerlin::getInstance();
 
-    // Patch initial
+    // Initial patch
     if (m_bIsWater == false && m_iLevel < m_iMaxLevel / 2)
     {
         // Skirt
@@ -330,7 +330,7 @@ void CTerrain::work()
 
     CVector3 vFinalCenter = getGeoloc().toVector3();
 
-    // Récupération du matériau du mesh
+    // Get the mesh's material
     CMaterial* pMaterial = nullptr;
 
     if (m_pMesh->materials().count() > 0)
@@ -401,8 +401,9 @@ void CTerrain::work()
 
         if (m_pHeights != nullptr)
         {
-            // Ce test est important : avec les terrains non générés, on veut éviter de charger trop de données MNT en RAM
-            // Donc on ne récupère une altitude que pour les niveaux proches de la mer (x < niveau max / 2)
+            // This test is important: with non-generated terrain, we don't want to load too much data in RAM
+            // We therefore get an altitude only for levels that are close to sea (x < niveau max / 2)
+
             if (m_pHeights->isGenerated() || m_iLevel < m_iMaxLevel / 2)
             {
                 dTerrainAltitude = m_pHeights->getHeightAt(

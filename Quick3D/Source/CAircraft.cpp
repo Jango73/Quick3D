@@ -55,7 +55,7 @@ void CAircraft::update(double dDeltaTime)
 	double dDensity_kgm3 = CAtmosphere::getInstance()->density_kgm3(m_dAltitude_m);
 	double dSpeedOfSound_ms = CAtmosphere::getInstance()->soundSpeed_ms(m_dAltitude_m);
 
-	// Stockage des données de vol
+    // Store flight data
 
 	CAxis aRotationAxis(getOriginRotation());
 	CAxis aVelocityAxis(euleurAngles(m_vVelocity_ms));

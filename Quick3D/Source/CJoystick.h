@@ -10,42 +10,42 @@ class QUICK3D_EXPORT CJoystick
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructors and destructor
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructors and destructor
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	CJoystick(int iJoystickIndex);
+    //!
+    CJoystick(int iJoystickIndex);
 
-	//!
-	~CJoystick();
+    //!
+    ~CJoystick();
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	bool connected() const { return m_bConnected; }
+    //!
+    bool connected() const { return m_bConnected; }
 
-	//
+    //
     QMap<int, bool>& buttonStates() { return m_mButtonStates; }
 
-	//
+    //
     QMap<int, double>& axisStates() { return m_dAxisStates; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Control methods
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Control methods
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	void update(double dDeltaTime);
+    //!
+    void update(double dDeltaTime);
 
 protected:
 
-	bool				m_bConnected;
-	int					m_iJoystickIndex;
-	int					m_iNumButtons;
-	int					m_iNumAxis;
-	QMap<int, bool>		m_mButtonStates;
-	QMap<int, double>	m_dAxisStates;
+    bool                m_bConnected;
+    int                 m_iJoystickIndex;
+    int                 m_iNumButtons;
+    int                 m_iNumAxis;
+    QMap<int, bool>     m_mButtonStates;
+    QMap<int, double>   m_dAxisStates;
 };

@@ -10,6 +10,8 @@
 #include "CEngine.h"
 #include "CServoPosition.h"
 
+//-------------------------------------------------------------------------------------------------
+
 class C3DScene;
 
 class QUICK3D_EXPORT CJetEngine : public CEngine

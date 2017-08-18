@@ -12,8 +12,6 @@
 class CComponent;
 class C3DScene;
 
-//-------------------------------------------------------------------------------------------------
-
 class QUICK3D_EXPORT CPhysicalComponent : public CComponent
 {
 public:

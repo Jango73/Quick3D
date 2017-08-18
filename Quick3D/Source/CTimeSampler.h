@@ -1,60 +1,61 @@
 
-#ifndef CTIMESAMPLER_H
-#define CTIMESAMPLER_H
+#pragma once
 
-#include "quick3d_global.h"
-
-// QT
+// Qt
 #include <QObject>
 #include <QDateTime>
 #include <QTimer>
 
-// Fondations
+// qt-plus
 #include "CSingleton.h"
+
+// Fondations
+#include "quick3d_global.h"
 #include "CTracableMutex.h"
-
-#define START_SAMPLE(a)			CTimeSampler::getInstance()->startSample(a)
-#define STOP_SAMPLE(a)			CTimeSampler::getInstance()->stopSample(a)
-#define STOP_SAMPLE_AND_LOG(a)	CTimeSampler::getInstance()->stopSampleAndLog(a)
-
-class CLogger;
 
 //-------------------------------------------------------------------------------------------------
 
+#define START_SAMPLE(a)         CTimeSampler::getInstance()->startSample(a)
+#define STOP_SAMPLE(a)          CTimeSampler::getInstance()->stopSample(a)
+#define STOP_SAMPLE_AND_LOG(a)  CTimeSampler::getInstance()->stopSampleAndLog(a)
+
+class CLogger;
+
 class QUICK3D_EXPORT CTimeSampler : public QObject, public CSingleton<CTimeSampler>
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
 
-	//! Default constructor
-	CTimeSampler();
+    //! Default constructor
+    CTimeSampler();
 
-	CTimeSampler(CLogger* pLogger);
+    CTimeSampler(CLogger* pLogger);
 
-	//! Destructor
-	virtual ~CTimeSampler();
+    //! Destructor
+    virtual ~CTimeSampler();
 
-	void startSample(const QString& sName);
+    //! Starts sampling
+    void startSample(const QString& sName);
 
-	void stopSample(const QString& sName);
+    //! Stops sampling
+    void stopSample(const QString& sName);
 
-	void stopSampleAndLog(const QString& sName);
+    //! Stops sampling and log results
+    void stopSampleAndLog(const QString& sName);
 
-	void dumpAccumulatedTimes();
+    void dumpAccumulatedTimes();
 
 private slots:
 
-	void onTimer();
+    void onTimer();
 
 private:
 
-	CTracableMutex				m_tMutex;
-	QMap<QString, QDateTime>	m_mStartTimes;
-	QMap<QString, qint64>		m_mAccumTimes;
-	QMap<QString, qint64>		m_mNumCalls;
-	QTimer						m_tDumpTimer;
-	CLogger*				m_pLogger;
+    CTracableMutex              m_tMutex;
+    QMap<QString, QDateTime>    m_mStartTimes;
+    QMap<QString, qint64>       m_mAccumTimes;
+    QMap<QString, qint64>       m_mNumCalls;
+    QTimer                      m_tDumpTimer;
+    CLogger*                    m_pLogger;
 };
-
-#endif // CTIMESAMPLER_H

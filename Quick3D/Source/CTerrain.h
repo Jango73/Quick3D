@@ -104,7 +104,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    virtual QString getClassName() const { return ClassName_CTerrain; }
+    virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CTerrain; }
 
     //!
     virtual CBoundingBox bounds();

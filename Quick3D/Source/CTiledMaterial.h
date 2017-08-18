@@ -86,7 +86,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Returns this object's class name
-    virtual QString getClassName() const { return ClassName_CTiledMaterial; }
+    virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CTiledMaterial; }
 
     //! Returns texture coordinates for a given geo loc
     virtual Math::CVector2 texCoords(const CGeoloc& gPosition, int iLevel);

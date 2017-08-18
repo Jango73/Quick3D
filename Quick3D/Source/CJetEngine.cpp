@@ -32,7 +32,7 @@ CJetEngine::~CJetEngine()
 
 double CJetEngine::currentThrust_kg() const
 {
-    // return m_dN1.getPosition() * m_dMaxThrust_kg;
+    // We just take into account N1 that is above 0.5, because 0.5 is idle N1 and below that no thrust is produced
     double dFactor = Math::Angles::clipDouble((m_dN1.position() - 0.5) * 2.0, 0.0, 1.0);
     return dFactor * m_dMaxThrust_kg;
 }

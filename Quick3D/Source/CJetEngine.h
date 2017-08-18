@@ -39,26 +39,26 @@ public:
     // Getters
     //-------------------------------------------------------------------------------------------------
 
-    //!
+    //! Returns thrust in kilograms
     virtual double currentThrust_kg() const;
 
-    //!
+    //! Returns fuel consumption in liters per second
     virtual double currentFuelCons_ls() const;
 
-    //!
+    //! Returns normalized N1
     virtual double n1_norm() const;
 
-    //!
+    //! Returns normalized N2
     virtual double n2_norm() const;
 
     //-------------------------------------------------------------------------------------------------
     // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
-    //!
-    virtual QString getClassName() const { return ClassName_CJetEngine; }
+    //! Returns this object's class name
+    virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CJetEngine; }
 
-    //!
+    //! Updates this object
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------

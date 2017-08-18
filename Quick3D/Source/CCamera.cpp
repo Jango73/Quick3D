@@ -584,7 +584,7 @@ void CCamera::renderDepth_CubeMapped
                 anAxis = anAxis.rotate(vCameraHeading);
 
                 // Application des angles de l'axe à la caméra
-                setOriginRotation(anAxis.euleurAngles());
+                setOriginRotation(anAxis.eulerAngles());
 
                 // Rendu OpenGL
                 pGLWidgetScene->paintGL();

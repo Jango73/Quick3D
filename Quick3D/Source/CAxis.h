@@ -93,7 +93,7 @@ public:
     {
         CAxis aResult(*this);
 
-        CVector3 vAngles = aTarget.euleurAngles();
+        CVector3 vAngles = aTarget.eulerAngles();
 
         CMatrix4 mRotationX = CMatrix4::makeRotation(CVector3(vAngles.X, 0.0, 0.0));
         CMatrix4 mRotationY = CMatrix4::makeRotation(CVector3(0.0, vAngles.Y, 0.0));
@@ -117,7 +117,7 @@ public:
     {
         CAxis aResult(*this);
 
-        CVector3 vAngles = aTarget.euleurAngles();
+        CVector3 vAngles = aTarget.eulerAngles();
 
         CMatrix4 mRotationX = CMatrix4::makeRotation(CVector3(-vAngles.X, 0.0, 0.0));
         CMatrix4 mRotationY = CMatrix4::makeRotation(CVector3(0.0, -vAngles.Y, 0.0));
@@ -145,7 +145,7 @@ public:
     }
 
     //! returns the euler angles of this axis
-    inline CVector3 euleurAngles() const
+    inline CVector3 eulerAngles() const
     {
         CVector3 vDiff1 = Front;
         CVector3 vDiff2 = Right;

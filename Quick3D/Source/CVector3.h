@@ -12,7 +12,28 @@
 #include "Angles.h"
 #include "CVector2.h"
 
-//-------------------------------------------------------------------------------------------------
+/*-------------------------------------------------------------------------------------------------
+    Axis conventions
+
+    The conventions used throughout the vector/matrix classes in this library are those of the painter.
+
+    X axis is positive right (width)
+    Y axis is positive up (height)
+    Z axis is positive front (depth)
+
+    A positive rotation around the X axis (pitch) makes the Z axis go down
+    A positive rotation around the Y axis (yaw) makes the Z axis go right
+    A positive rotation around the Z axis (roll) makes the X axis go up
+
+    Y
+    ^    Z
+    |   A
+    |  /
+    | /
+    |/
+    --------> X
+
+-------------------------------------------------------------------------------------------------*/
 
 namespace Math
 {
@@ -35,7 +56,7 @@ public:
         Z = 0.0;
     }
 
-    //! Constructeur par composants
+    //! Constructor with components
     inline CVector3(double NewX, double NewY, double NewZ)
     {
         X = NewX;
@@ -43,7 +64,7 @@ public:
         Z = NewZ;
     }
 
-    //! Constructeur par valeur
+    //! Constructor with double scalar for all components
     inline CVector3(double value)
     {
         X = value;
@@ -51,7 +72,7 @@ public:
         Z = value;
     }
 
-    //! Constructeur par valeur
+    //! Constructor with integer scalar for all components
     inline CVector3(int value)
     {
         X = (double) value;
@@ -59,7 +80,7 @@ public:
         Z = (double) value;
     }
 
-    //! Constructeur par valeur
+    //! Constructor with a 2D vector
     inline CVector3(const CVector2& value)
     {
         X = value.X;
@@ -67,13 +88,13 @@ public:
         Z = 0.0;
     }
 
-    //! Constructeur de copie
+    //! Copy constructor
     inline CVector3(const CVector3& Target)
     {
         *this = Target;
     }
 
-    //!
+    //! Returns \c true if at least one component is not zero
     inline bool valid() const { return !(X == 0.0 && Y == 0.0 && Z == 0.0); }
 
     //!

@@ -208,7 +208,7 @@ double CPhysicalComponent::totalMass_kg() const
 */
 CVector3 CPhysicalComponent::velocityVectorAngles() const
 {
-    return euleurAngles(m_vVelocity_ms);
+    return eulerAngles(m_vVelocity_ms);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -232,7 +232,7 @@ void CPhysicalComponent::addUncenteredLocalForce_kg(CVector3 vPosition, CVector3
 
         CVector3 vForceNormalized = vSavedForce_kg.normalized();
 
-        CAxis aPositionAxis(euleurAngles(vPosition));
+        CAxis aPositionAxis(eulerAngles(vPosition));
 
         double dXForce = aPositionAxis.Up.dot(vForceNormalized);
         double dYForce = aPositionAxis.Right.dot(vForceNormalized);
@@ -245,7 +245,7 @@ void CPhysicalComponent::addUncenteredLocalForce_kg(CVector3 vPosition, CVector3
         aForceAxis = aForceAxis.rotate(vForceOnAxis);
         aForceAxis = aForceAxis.transferFrom(aPositionAxis);
 
-        addLocalTorque_kg(aForceAxis.euleurAngles() * (vSavedForce_kg.magnitude() * dDistanceMultiplier));
+        addLocalTorque_kg(aForceAxis.eulerAngles() * (vSavedForce_kg.magnitude() * dDistanceMultiplier));
     }
 }
 
@@ -384,7 +384,7 @@ void CPhysicalComponent::update(double dDeltaTimeS)
                     aVelocityAxis = aVelocityAxis.transferFrom(aRotationAxis);
                     aVelocityAxis = aVelocityAxis.rotate(m_vAngularVelocity_rs * dDeltaTimeS);
                     aVelocityAxis = aVelocityAxis.transferTo(aRotationAxis);
-                    vNewRotation = aVelocityAxis.euleurAngles();
+                    vNewRotation = aVelocityAxis.eulerAngles();
 
                     // Translate the body
 
@@ -465,7 +465,7 @@ void CPhysicalComponent::update(double dDeltaTimeS)
                     anAxis = anAxis * m_pParent->getPreviousWorldTransform();
                     anAxis = anAxis * m_pParent->getWorldTransformInverse();
 
-                    setOriginRotation(anAxis.euleurAngles());
+                    setOriginRotation(anAxis.eulerAngles());
 
                     // Vector3 vNewAngles = anAxis.euleurAngles();
                     // setOriginRotation(interpolate(vNewAngles, m_vOriginRotation, m_dStickToNOLL * dDeltaTime));

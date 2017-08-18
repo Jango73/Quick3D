@@ -13,6 +13,29 @@
 #include "CRay3.h"
 #include "CQuaternion.h"
 
+/*-------------------------------------------------------------------------------------------------
+    Axis conventions
+
+    The conventions used throughout the vector/matrix classes in this library are those of the painter.
+
+    X axis is positive right (width)
+    Y axis is positive up (height)
+    Z axis is positive front (depth)
+
+    A positive rotation around the X axis (pitch) makes the Z axis go down
+    A positive rotation around the Y axis (yaw) makes the Z axis go right
+    A positive rotation around the Z axis (roll) makes the X axis go up
+
+    Y
+    ^    Z
+    |   A
+    |  /
+    | /
+    |/
+    --------> X
+
+-------------------------------------------------------------------------------------------------*/
+
 namespace Math
 {
 
@@ -21,8 +44,8 @@ struct CMatrix4
 
 public:
 
-    bool	m_bIsIdentity;
-    double	Data [4][4];
+    bool        m_bIsIdentity;
+    double      Data [4][4];
 
     //! Default constructor
     inline CMatrix4()
@@ -465,7 +488,7 @@ public:
         return Result;
     }
 
-    //! Transforme en chaine de caractères
+    //! Transforms this matrix into a string
     inline QString toString()
     {
         QString sReturnValue;
@@ -483,8 +506,8 @@ public:
     }
 };
 
-//! Récupération des angles euleur
-inline CVector3 euleurAngles(CVector3 value)
+//! Returns the euler angles of a vector (supposing it is a direction vector)
+inline CVector3 eulerAngles(CVector3 value)
 {
     CVector3 vReturnValue;
 
@@ -494,5 +517,4 @@ inline CVector3 euleurAngles(CVector3 value)
 
     return vReturnValue;
 }
-
 }

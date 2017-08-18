@@ -128,11 +128,11 @@ void CWing::update(double dDeltaTime)
         aRotationAxis = aRotationAxis.rotate(CVector3(m_dWingAngle_rad, 0.0, 0.0));
         aRotationAxis = aRotationAxis.rotate(pAircraft->getOriginRotation());
 
-        CAxis aVelocityAxis(euleurAngles(pAircraft->velocity_ms()));
+        CAxis aVelocityAxis(eulerAngles(pAircraft->velocity_ms()));
 
         aVelocityAxis = aVelocityAxis.transferFrom(aRotationAxis);
 
-        double dDotBodyAirflow = aVelocityAxis.euleurAngles().X / Math::Pi;
+        double dDotBodyAirflow = aVelocityAxis.eulerAngles().X / Math::Pi;
         double dDotBodyAirflowCorrected = m_iBodyAirflowDotLiftFactor.getValue(dDotBodyAirflow);
         double dDotBodyAirflowAileronCorrected = m_iBodyAirflowDotAileronLiftFactor.getValue(dDotBodyAirflow);
 

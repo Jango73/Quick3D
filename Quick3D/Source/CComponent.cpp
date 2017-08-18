@@ -529,7 +529,7 @@ void CComponent::setStatus(double dValue)
 
 CVector3 CComponent::toECEFRotation(CVector3 vRotation) const
 {
-    return CAxis(vRotation).transferTo(m_gGeoloc.getNOLLAxis()).euleurAngles();
+    return CAxis(vRotation).transferTo(m_gGeoloc.getNOLLAxis()).eulerAngles();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -878,7 +878,7 @@ CVector3 CComponent::getWorldRotation() const
 
     CAxis aAxis(vVec2 - vVec1, vVec4 - vVec1, vVec3 - vVec1);
 
-    return aAxis.euleurAngles();
+    return aAxis.eulerAngles();
 }
 
 //-------------------------------------------------------------------------------------------------

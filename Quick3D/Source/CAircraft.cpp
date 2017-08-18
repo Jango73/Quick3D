@@ -58,11 +58,11 @@ void CAircraft::update(double dDeltaTime)
     // Store flight data
 
 	CAxis aRotationAxis(getOriginRotation());
-	CAxis aVelocityAxis(euleurAngles(m_vVelocity_ms));
+	CAxis aVelocityAxis(eulerAngles(m_vVelocity_ms));
 
 	aVelocityAxis = aVelocityAxis.transferTo(aRotationAxis);
 
-	m_dAngleOfAttack_rad = aVelocityAxis.euleurAngles().X;
+	m_dAngleOfAttack_rad = aVelocityAxis.eulerAngles().X;
 
 	m_dTrueAirSpeed_ms = m_vVelocity_ms.magnitude();
 
@@ -72,7 +72,7 @@ void CAircraft::update(double dDeltaTime)
 
 	m_dTrueHeading_deg = Math::Angles::toDeg(getOriginRotation().Y);
 
-	m_dTrueTrack_deg = Math::Angles::toDeg(aVelocityAxis.euleurAngles().Y);
+	m_dTrueTrack_deg = Math::Angles::toDeg(aVelocityAxis.eulerAngles().Y);
 
 	m_dPitch_deg = Math::Angles::toDeg(getOriginRotation().X);
 

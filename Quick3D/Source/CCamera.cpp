@@ -4,9 +4,9 @@
 
 // qt-plus
 #include "CLogger.h"
+#include "CTimeSampler.h"
 
 // Application
-#include "CTimeSampler.h"
 #include "CCamera.h"
 #include "C3DScene.h"
 #include "CGLWidgetScene.h"

@@ -575,6 +575,9 @@ void C3DScene::addComponent(QSP<CComponent> pComponent)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Assigns the first CHeightField in the scene to all CPhysicalComponent that need it for physics.
+*/
 void C3DScene::autoResolveHeightFields()
 {
     CHeightField* pTerrain = nullptr;
@@ -674,6 +677,9 @@ RayTracingResult C3DScene::intersectRecurse(QSP<CComponent> pComponent, const Ma
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Adds a segment in the scene from \a vStart to \a vEnd for debugging.
+*/
 void C3DScene::addSegment(Math::CVector3 vStart, Math::CVector3 vEnd)
 {
     if (m_pSegments->vertices().count() > 400) return;

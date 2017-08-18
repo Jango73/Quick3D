@@ -2,8 +2,10 @@
 // Qt
 #include <QPainter>
 
-// Application
+// qt-plus
 #include "CTimeSampler.h"
+
+// Application
 #include "CImageUtilities.h"
 
 //-------------------------------------------------------------------------------------------------

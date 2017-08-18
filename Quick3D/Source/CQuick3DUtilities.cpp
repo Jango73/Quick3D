@@ -5,9 +5,9 @@
 
 // qt-plus
 #include "CLogger.h"
+#include "CTimeSampler.h"
 
 // Application
-#include "CTimeSampler.h"
 #include "CQuick3DUtilities.h"
 #include "CImageFilter_Matrix.h"
 

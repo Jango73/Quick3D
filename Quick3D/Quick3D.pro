@@ -140,8 +140,6 @@ SOURCES += \
     Source/CTerrestrialVehicle.cpp \
     Source/CTexture.cpp \
     Source/CTiledMaterial.cpp \
-    Source/CTimeSampler.cpp \
-    Source/CTracableMutex.cpp \
     Source/CTrajectorable.cpp \
     Source/CTrajectory.cpp \
     Source/CTreeGenerator.cpp \
@@ -311,8 +309,6 @@ HEADERS  += \
     Source/CTerrestrialVehicle.h \
     Source/CTexture.h \
     Source/CTiledMaterial.h \
-    Source/CTimeSampler.h \
-    Source/CTracableMutex.h \
     Source/CTrajectorable.h \
     Source/CTrajectory.h \
     Source/CTreeGenerator.h \

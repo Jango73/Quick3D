@@ -1,11 +1,8 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
-//-------------------------------------------------------------------------------------------------
-
 // Application
+#include "quick3d_global.h"
 #include "CQ3DConstants.h"
 #include "CComponent.h"
 #include "CComponentReference.h"
@@ -13,8 +10,6 @@
 //-------------------------------------------------------------------------------------------------
 
 class C3DScene;
-
-//-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CHydraulicComponent : public CComponent
 {

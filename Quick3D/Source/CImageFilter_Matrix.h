@@ -1,12 +1,11 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
 // Qt
 #include <QGenericMatrix>
 
 // Application
+#include "quick3d_global.h"
 #include "CImageFilter.h"
 
 //-------------------------------------------------------------------------------------------------

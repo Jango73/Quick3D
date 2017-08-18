@@ -1,10 +1,11 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
 // Qt
 #include <QImage>
+
+// Application
+#include "quick3d_global.h"
 
 //-------------------------------------------------------------------------------------------------
 

@@ -16,7 +16,7 @@
 #include "IProgressListener.h"
 
 //-------------------------------------------------------------------------------------------------
-// Déclarations avancées
+// Forward declarations
 
 class C3DScene;
 class CViewport;
@@ -59,15 +59,15 @@ public:
     QString                     m_sPathToSTRMData;
     QString                     m_sPathToBILData;
 
-    QVector<CGeoZone>&          m_vZones;               // Les zones de détection
-    QVector<double>&            m_vDepth;               // La matrice de profondeur
-    QVector<char>&              m_vDetection;           // La matrice de détection (zones)
-    QVector<char>&              m_vEdges;               // La matrice de contours (angles d'incidence)
-    QImage&                     m_imgDepthImage;        // L'image de profondeur
-    QImage&                     m_imgDetectionImage;    // L'image de détection (zones)
-    QImage&                     m_imgContourImage;      // L'image de contours (angles d'incidence)
+    QVector<CGeoZone>&          m_vZones;               // The detection zones
+    QVector<double>&            m_vDepth;               // The depth matrix
+    QVector<char>&              m_vDetection;           // The zone matrix
+    QVector<char>&              m_vEdges;               // The edge matrix (angles of incidence between camera and terrain)
+    QImage&                     m_imgDepthImage;        // The depth image
+    QImage&                     m_imgDetectionImage;    // The zone image
+    QImage&                     m_imgContourImage;      // The edge image
 
-    Math::CVector3              m_vAttitude;            // Vecteur permetant le ressampling
+    Math::CVector3              m_vAttitude;            // Used for resampling
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -80,13 +80,13 @@ public:
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne une nouvelle instance de cet objet
+    //! Returns a new instance of this class
     static CComponent* instanciator(C3DScene* pScene);
 
     //! Constructor using a scene
     CCamera(C3DScene* pScene);
 
-    //! Constructeur de copie
+    //! Copy constructor
     CCamera(const CCamera& target);
 
     //! Destructor
@@ -96,38 +96,38 @@ public:
     // Setters
     //-------------------------------------------------------------------------------------------------
 
-    //! Règle le champ de vision
+    //! Sets the field of view in degrees
     virtual void setFOV(double dValue) { m_dFOV = dValue; }
 
-    //! Régle le niveau de focalisation normalisé (0.0 -> 1.0)
+    //! Sets the normalized focus (0.0 -> 1.0)
     virtual void setFocus(double dValue) { m_dFocus = dValue; }
 
-    //! Régle le niveau de gain normalisé (0.0 -> 1.0)
+    //! Sets the normalized gain (0.0 -> 1.0)
     virtual void setGain(double dValue) { m_dGain = dValue; }
 
-    //! Régle la distance minimum de visibilité des objets (sert à la matrice de projection)
+    //! Sets the minimum visibility distance of objects (used by projection matrix)
     virtual void setMinDistance(double dValue) { m_dMinDistance = dValue; }
 
-    //! Régle la distance maximum de visibilité des objets (sert à la matrice de projection)
+    //! Sets the maximum visibility distance of objects (used by projection matrix)
     virtual void setMaxDistance(double dValue) { m_dMaxDistance = dValue; }
 
     //-------------------------------------------------------------------------------------------------
     // Getters
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne le champ de vision
+    //! Returns the field of view in degrees
     virtual double getFOV() const { return m_dFOV; }
 
-    //! Retourne le niveau de focalisation normalisé (0.0 -> 1.0)
+    //! Returns the normalized focus (0.0 -> 1.0)
     virtual double getFocus() const { return m_dFocus; }
 
-    //! Retourne le niveau de gain normalisé (0.0 -> 1.0)
+    //! Returns the normalized gain (0.0 -> 1.0)
     virtual double getGain() const { return m_dGain; }
 
-    //! Retourne la distance minimum de visibilité des objets (sert à la matrice de projection)
+    //! Returns the minimum visibility distance of objects (used by projection matrix)
     virtual double getMinDistance() const { return m_dMinDistance; }
 
-    //! Retourne la distance maximum de visibilité des objets (sert à la matrice de projection)
+    //! Returns the maximum visibility distance of objects (used by projection matrix)
     virtual double getMaxDistance() const { return m_dMaxDistance; }
 
     //-------------------------------------------------------------------------------------------------
@@ -137,24 +137,24 @@ public:
     //! Returns this object's class name
     virtual QString getClassName() const { return ClassName_CCamera; }
 
-    //! Retourne vrai si cet objet est une caméra
+    //! Returns \c true if this object is a camera
     virtual bool isCamera() const { return true; }
 
-    //! Loads this object's parameters d'après le noeud XML fourni
+    //! Loads this object's parameters using the provided XML node
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Control methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Opérateur d'assignation
+    //! Assign operator
     CCamera& operator = (const CCamera& target);
 
-    //! Génère un rendu de la scène (pScene) à travers le viewport (pViewport)
-    //! Le FOV peut être forcé à une grande valeur (bForceWideFOV) ou une petite (bForceSmallFOV)
+    //! Renders the scene in the provided viewport
+    //! The FOV may be overridden using bForceWideFOV or bForceSmallFOV
     virtual void render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV, bool bForceSmallFOV, bool bForceIR);
 
-    //! Génère une matrice de profondeur en utilisant la technique du ray-tracing
+    //! Generates a depth matrix using ray tracing technique
     virtual void renderDepth_RayTraced(
             C3DScene* pScene,
             double dMaxDistance,
@@ -162,7 +162,7 @@ public:
             IProgressListener* pProgressListener
             );
 
-    //! Génère une matrice de profondeur en utilisant la technique du cube-mapping
+    //! Generates a depth matrix using cube mapping technique
     virtual void renderDepth_CubeMapped(
             C3DScene* pScene,
             double dMaxDistance,
@@ -170,28 +170,28 @@ public:
             IProgressListener* pProgressListener
             );
 
-    //! Calcul le frustum (pyramide de visualisation) de la caméra
+    //! Computes the frustum (visualization pyramid) of the camera
     void computeFrustum(double dFOV, double dAspectRatio, double dMinDistance, double dMaxDistance);
 
-    //! Retourne vrai si le frustum contient partiellement la sphère définie par vPosition et dRadius
+    //! Returns \c true if the frustum partially contains the sphere defined by \a vPosition and \a dRadius
     bool contains(const Math::CVector3& vPosition, double dRadius) const;
 
-    //! Retourne vrai si le frustum contient partiellement la boîte englobante définie par bounds
+    //! Returns \c true if the frustum partially contains the box defined by \a bounds
     bool contains(const CBoundingBox& bounds) const;
 
-    //! Retourne une matrice de projection au format Qt
+    //! Returns a projection Qt matrix
     static QMatrix4x4 getQtProjectionMatrix(double dFOV, double dAspectRatio, double dMinDistance, double dMaxDistance);
 
-    //! Retourne une matrice de transformation au format Qt
+    //! Returns a model view Qt matrix
     static QMatrix4x4 getQtCameraMatrix(Math::CVector3 vPosition, Math::CVector3 vRotation);
 
-    //! Retourne une matrice de porojection utilisée par les méthodes internes
+    //! Returns a projection matrix used by non Quick3D methods
     static Math::CMatrix4 getInternalProjectionMatrix(double dFOV, double dAspectRatio, double dMinDistance, double dMaxDistance);
 
-    //! Retourne une matrice de transformation utilisée par les méthodes internes
+    //! Returns a model view matrix used by non Quick3D methods
     static Math::CMatrix4 getInternalCameraMatrix(Math::CVector3 vPosition, Math::CVector3 vRotation);
 
-    //! Retourne une catégorie de détection pour le point vPoint en utilisant les zones localPolygons
+    //! Returns a detection category for \a vPoint using polygons in \a vZones
     CGeoZone::EGeoZoneFlag categorizePointFromZones(const QVector<CGeoZone>& vZones, Math::CVector2 vPoint);
 
     //-------------------------------------------------------------------------------------------------

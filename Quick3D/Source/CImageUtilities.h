@@ -1,12 +1,11 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
 // Qt
 #include <QImage>
 
-// Fondations
+// Application
+#include "quick3d_global.h"
 #include "CVector2.h"
 
 //-------------------------------------------------------------------------------------------------

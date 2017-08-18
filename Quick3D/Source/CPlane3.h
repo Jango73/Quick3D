@@ -1,6 +1,5 @@
 
-#ifndef __PLANE3_H__
-#define __PLANE3_H__
+#pragma once
 
 #include "math.h"
 #include "CVector3.h"
@@ -22,32 +21,32 @@ namespace Math
 			dDistance = 0.0;
 		}
 
-		//! Constructeur par composants
+        //! Constructor with components
 		inline CPlane3 (double dNewDistance, CVector3 vNewNormal)
 		{
 			dDistance = dNewDistance;
 			vNormal = vNewNormal;
 		}
 
-		//! Constructeur de copie
+        //! Copy constructor
 		inline CPlane3 (const CPlane3& Target)
 		{
 			*this = Target;
 		}
 
-		//! Opérateur d'égalité
+        //! Equality operator
 		inline bool operator == (const CPlane3& V2) const
 		{
 			return (dDistance == V2.dDistance) && (vNormal == V2.vNormal);
 		}
 
-		//! Opérateur d'inégalité
+        //! Inequality operator
 		inline bool operator != (const CPlane3& V2) const
 		{
 			return !(*this == V2);
 		}
 
-		//! Opérateur d'assignation
+        //! Assign operator
 		inline CPlane3& operator = (const CPlane3& Target)
 		{
 			dDistance = Target.dDistance;
@@ -84,5 +83,3 @@ namespace Math
 		}
 	};
 }
-
-#endif // __PLANE3_H__

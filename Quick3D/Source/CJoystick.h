@@ -1,7 +1,7 @@
 
-#ifndef CJOYSTICK_H
-#define CJOYSTICK_H
+#pragma once
 
+// Application
 #include "quick3d_global.h"
 
 //-------------------------------------------------------------------------------------------------
@@ -49,5 +49,3 @@ protected:
 	QMap<int, bool>		m_mButtonStates;
 	QMap<int, double>	m_dAxisStates;
 };
-
-#endif	// CJOYSTICK_H

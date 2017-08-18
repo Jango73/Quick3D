@@ -11,7 +11,7 @@
 #include "CController.h"
 
 //-------------------------------------------------------------------------------------------------
-// Déclarations avancées
+// Forward declarations
 
 class C3DScene;
 
@@ -26,7 +26,7 @@ public:
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne l'instanciateur de cet objet
+    //! Returns a new instance of this class
     static CComponent* instanciator(C3DScene* pScene);
 
     //! Constructor using a scene

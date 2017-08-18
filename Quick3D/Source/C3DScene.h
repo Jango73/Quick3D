@@ -45,7 +45,7 @@ public:
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Constructeur
+    //! Constructor
     C3DScene(bool bForDisplay = true);
 
     //! Destructor
@@ -119,49 +119,49 @@ public:
     //!
     bool forDisplay() const { return m_bForDisplay; }
 
-    //!
+    //! Returns the scene origin in the ECEF frame (Earth-centered Earth-Fixed)
     Math::CVector3 worldOrigin() const { return m_vWorldOrigin; }
 
-    //!
+    //! Returns a reference to the map of viewports
     QMap<int, CViewport*>& viewports() { return m_pViewports; }
 
-    //!
+    //! Returns a const reference to the map of viewports
     const QMap<int, CViewport*>& viewports() const { return m_pViewports; }
 
-    //!
+    //! Returns the shader quality setting
     double shaderQuality() { return m_dShaderQuality; }
 
-    //!
+    //! Returns a pointer to OpenGL extensions
     CGLExtension* glExtension() { return m_pGLExtension; }
 
-    //!
+    //! Returns the resource manager
     CRessourcesManager* ressourcesManager() { return m_pRessourcesManager; }
 
-    //!
+    //! Returns a generator for buildings
     CBuildingGenerator* buildingGenerator() { return m_pBuildingGenerator; }
 
-    //!
+    //! Returns a generator for trees
     CTreeGenerator* treeGenerator() { return m_pTreeGenerator; }
 
-    //!
+    //! Returns a collection of shaders for the scene
     CShaderCollection* shaders() { return m_vShaders; }
 
-    //!
+    //! Returns the current controller of the scene
     CController* controller() { return m_pController; }
 
-    //!
+    //! Returns a vector of all lights.
     QVector<QSP<CLight> > lights();
 
-    //!
+    //! Returns a reference to the vector of components.
     QVector<QSP<CComponent> >& components() { return m_vComponents; }
 
-    //!
+    //! Returns a const reference to the vector of components.
     const QVector<QSP<CComponent> >& components() const { return m_vComponents; }
 
-    //!
+    //! Returns a vector of components whose tag matches \a sTag.
     QVector<QSP<CComponent> > componentsByTag(const QString& sTag);
 
-    //!
+    //! Returns a vector of lights whose tag matches \a sTag.
     QVector<QSP<CLight> > lightsByTag(const QString& sTag);
 
     //!
@@ -204,25 +204,25 @@ public:
     // Control methods
     //-------------------------------------------------------------------------------------------------
 
-    //!
+    //! Destroys all components and viewports
     void clear();
 
-    //! Détruit les composants (hors lumières)
+    //! Destroys all components
     void clearComponents();
 
-    //! Détruit les viewports
+    //! Destroys all viewports
     void clearViewports();
 
-    //! Initialise la scène
+    //! Sets up the scene
     virtual void init(QVector<QSP<CComponent> > vComponents);
 
-    //! Initialise les shaders
+    //! Sets up shaders
     virtual void initShaders();
 
-    //! Prépare l'environnement
+    //! Sets up the environment
     virtual void setupEnvironment(CRenderContext* pContext, QGLShaderProgram* pProgram, bool bBackgroundItem);
 
-    //! Prépare les lumières
+    //! Sets up the ligths
     virtual void setupLights(CRenderContext* pContext);
 
     //!
@@ -231,19 +231,19 @@ public:
     //!
     void autoResolveHeightFields();
 
-    //!
+    //! Updates the scene using elapsed time in \a dDeltaTimeS.
     void updateScene(double dDeltaTime);
 
-    //!
+    //! Paints all components, using \a pContext.
     void paintComponents(CRenderContext* pContext);
 
-    //!
+    //! Paints all components that cast shadows, using \a pContext.
     void paintShadowCastingComponents(CRenderContext* pContext);
 
-    //!
+    //! Adds \a pComponent to the scene
     void addComponent(QSP<CComponent> pComponent);
 
-    //!
+    //! Deletes components whose tag match \a sTag
     void deleteComponentsByTag(const QString& sTag);
 
     //! Calcul d'intersection avec un rayon
@@ -258,11 +258,10 @@ public:
     //!
     void addSegment(Math::CVector3 vStart, Math::CVector3 vEnd);
 
-    //! Dump du contenu dans un flux
+    //! Dumps contents in a stream
     virtual void dump(QTextStream& stream, int iIdent);
 
     //-------------------------------------------------------------------------------------------------
-    // Protected methods
     // Protected methods
     //-------------------------------------------------------------------------------------------------
 

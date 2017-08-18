@@ -1,9 +1,8 @@
 
 #pragma once
 
+// Application
 #include "quick3d_global.h"
-
-// Fondations
 #include "CVector3.h"
 #include "CGeoloc.h"
 #include "CAxis.h"
@@ -61,5 +60,5 @@ public:
 
 protected:
 
-    double			m_dRigidness;
+    double  m_dRigidness;
 };

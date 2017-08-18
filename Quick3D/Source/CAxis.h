@@ -1,6 +1,7 @@
 
 #pragma once
 
+// Application
 #include "CVector3.h"
 #include "CMatrix4.h"
 
@@ -24,7 +25,7 @@ public:
     {
     }
 
-    //! Constructeur avec composants
+    //! Constructor with front and up vectors
     CAxis (CVector3 NewFront, CVector3 NewUp)
         : Front(NewFront)
         , Up(NewUp)
@@ -32,7 +33,7 @@ public:
         Right = Up.cross(Front);
     }
 
-    //! Constructeur avec composants
+    //! Constructor with front, up and right vectors
     CAxis (CVector3 NewFront, CVector3 NewUp, CVector3 NewRight)
         : Front(NewFront)
         , Up(NewUp)
@@ -40,7 +41,7 @@ public:
     {
     }
 
-    //! Constructeur avec angles euleur
+    //! Constructor with euler angles
     CAxis (CVector3 vAngles)
         : Front(0.0, 0.0, 1.0)
         , Up(0.0, 1.0, 0.0)
@@ -55,13 +56,13 @@ public:
         Right = mRotationY * ((mRotationX * (mRotationZ * Right)));
     }
 
-    //! Constructeur de copie
+    //! Copy constructor
     CAxis (const CAxis& Target)
     {
         *this = Target;
     }
 
-    //! Opérateur de copie
+    //! Assign operator
     inline CAxis& operator = (const CAxis& Target)
     {
         Front = Target.Front;
@@ -71,7 +72,7 @@ public:
         return *this;
     }
 
-    //! Transfer d'un axe dans le repère d'un autre axe
+    //! Rotate the axis using euler angles
     inline CAxis rotate(CVector3 vAngles) const
     {
         CAxis aResult(*this);
@@ -87,7 +88,7 @@ public:
         return aResult;
     }
 
-    //! Transfert d'un axe dans le repère d'un autre axe
+    //! Transfers this axis to another axis frame
     inline CAxis transferTo(CAxis aTarget) const
     {
         CAxis aResult(*this);
@@ -111,7 +112,7 @@ public:
             */
     }
 
-    //! Transfert d'un axe depuis le repère d'un autre axe
+    //! Transfers this axis from another axis frame
     inline CAxis transferFrom(CAxis aTarget) const
     {
         CAxis aResult(*this);
@@ -129,7 +130,7 @@ public:
         return aResult;
     }
 
-    //! Multiplie un axe et une matrice
+    //! Multiplies this axis with a matrix
     inline CAxis operator * (const CMatrix4& mMatrix) const
     {
         CAxis aResult(*this);
@@ -143,7 +144,7 @@ public:
         return aResult;
     }
 
-    //! Récupération des angles euleur
+    //! returns the euler angles of this axis
     inline CVector3 euleurAngles() const
     {
         CVector3 vDiff1 = Front;

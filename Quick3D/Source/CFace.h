@@ -1,12 +1,10 @@
 
 #pragma once
 
-// Fondations
-#include "CVector3.h"
-#include "CRay3.h"
-
 // Application
 #include "quick3d_global.h"
+#include "CVector3.h"
+#include "CRay3.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -28,7 +26,7 @@ public:
         m_iNewVertex = 0;
     }
 
-    //! Constructeur avec deux indices de sommet
+    //! Constructor using two vertex indices
     CEdge(int iV1, int iV2)
     {
         m_aIndices[0] = iV1;
@@ -36,7 +34,7 @@ public:
         m_iNewVertex = 0;
     }
 
-    //! Constructeur avec deux indices de sommet et un indice de nouveau sommet
+    //! Constructor using two vertex indices and a new vertex index
     CEdge(int iV1, int iV2, int iN)
     {
         m_aIndices[0] = iV1;
@@ -48,7 +46,7 @@ public:
     // Control methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Opérateur de comparaison
+    //! Equality operator
     bool operator == (const CEdge& target) const
     {
         return	(m_aIndices[0] == target.m_aIndices[0] && m_aIndices[1] == target.m_aIndices[1]) ||
@@ -76,19 +74,19 @@ public:
     //! Default constructor
     CFace();
 
-    //! Constructeur avec parent
+    //! Constructor using a parent mesh geometry
     CFace(CMeshGeometry* pParent);
 
-    //! Constructeur de copie
+    //! Copy constructor
     CFace(CMeshGeometry* pParent, const CFace&);
 
-    //! Constructeur avec trois indices de sommet (triangle)
+    //! Constructor using three vertex indices (triangle)
     CFace(CMeshGeometry* pParent, int iV1, int iV2, int iV3);
 
-    //! Constructeur avec quatre indices de sommet (quad)
+    //! Constructor using four vertex indices (quad)
     CFace(CMeshGeometry* pParent, int iV1, int iV2, int iV3, int iV4);
 
-    //! Constructeur avec n indices de sommet (polygone)
+    //! Constructor using n vertex indices (polygon)
     CFace(CMeshGeometry* pParent, QVector<int> vIndices);
 
     //-------------------------------------------------------------------------------------------------

@@ -1,11 +1,11 @@
 
-#ifndef CQ3DLOADER_H
-#define CQ3DLOADER_H
+#pragma once
 
-#include "quick3d_global.h"
+// qt-plus
+#include "CSingleton.h"
 
 // Application
-#include "CSingleton.h"
+#include "quick3d_global.h"
 #include "CMesh.h"
 #include "CXMLNode.h"
 
@@ -28,5 +28,3 @@ protected:
 
     CQ3DLoader();
 };
-
-#endif // CQ3DLOADER_H

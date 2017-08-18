@@ -1,18 +1,14 @@
 
 #pragma once
 
+// Application
 #include "quick3d_global.h"
-
-//-------------------------------------------------------------------------------------------------
-
-// Fondations
 #include "CVector2.h"
 #include "CVector3.h"
 #include "CMaterial.h"
 #include "CCamera.h"
 
 //-------------------------------------------------------------------------------------------------
-// Déclarations avancées
 // Forward declarations
 
 class C3DScene;
@@ -27,16 +23,16 @@ public:
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne une nouvelle instance de cet objet
+    //! Returns a new instance of this class
     static CComponent* instanciator(C3DScene* pScene);
 
-    //!
+    //! Constructor using a scene
     CLight(C3DScene* pScene);
 
-    //!
+    //! Copy constructor
     CLight(const CLight&);
 
-    //!
+    //! Destructor
     virtual ~CLight();
 
     //-------------------------------------------------------------------------------------------------
@@ -78,7 +74,7 @@ public:
     //! Loads this object's parameters
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
 
-    //! Est-ce que l'objet est une lumière?
+    //! Returns \c true if this object is a light
     virtual bool isLight() const { return true; }
 
     //-------------------------------------------------------------------------------------------------

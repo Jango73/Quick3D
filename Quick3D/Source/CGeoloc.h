@@ -36,10 +36,10 @@ public:
     //! Default constructor
     CGeoloc ();
 
-    //! Constructeur par composants
+    //! Constructor with components
     CGeoloc (double NewLatitude, double NewLongitude, double NewAltitude, EGeolocDatum NewDatum = gld_WGS84);
 
-    //! Constructeur de copie
+    //! Copy constructor
     CGeoloc (const CGeoloc& gTarget);
 
     //! Constructeur par vecteur

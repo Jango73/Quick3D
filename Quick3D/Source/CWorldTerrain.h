@@ -6,6 +6,7 @@
 #include <QDateTime>
 
 // Application
+#include "quick3d_global.h"
 #include "CQ3DConstants.h"
 #include "CComponent.h"
 #include "CWorldChunk.h"
@@ -13,6 +14,7 @@
 #include "CGeometryGenerator.h"
 
 //-------------------------------------------------------------------------------------------------
+// Forward declarations
 
 class C3DScene;
 

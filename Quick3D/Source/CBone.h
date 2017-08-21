@@ -10,6 +10,7 @@
 #include "CComponent.h"
 
 //-------------------------------------------------------------------------------------------------
+// Forward declarations
 
 class C3DScene;
 class CArmature;

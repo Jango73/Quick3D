@@ -1,8 +1,6 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
 // Qt
 #include <QObject>
 #include <QImage>
@@ -10,6 +8,7 @@
 #include <QMutexLocker>
 
 // Application
+#include "quick3d_global.h"
 #include "CWorker.h"
 #include "CComponent.h"
 #include "CBoundedMeshInstances.h"
@@ -20,7 +19,7 @@
 #include "CGeometryGenerator.h"
 
 //-------------------------------------------------------------------------------------------------
-// Déclarations avancées
+// Forward declarations
 
 class C3DScene;
 class CWorldTerrain;

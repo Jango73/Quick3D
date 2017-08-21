@@ -144,7 +144,7 @@ void CQ3DLoader::loadComponent(
 
         foreach (QString sVertex, lVertices)
         {
-            NewFace.getIndices().append(sVertex.toInt());
+            NewFace.indices().append(sVertex.toInt());
         }
 
         int iMaterialIndex = xFace.attributes()[ParamName_Material].toInt();
@@ -174,7 +174,7 @@ void CQ3DLoader::loadComponent(
     // Modification des indices de matériau des polygones
     for (int iFaceIndex = 0; iFaceIndex < pMesh->faces().count(); iFaceIndex++)
     {
-        int iFaceMaterialIndex = pMesh->faces()[iFaceIndex].getMaterialIndex();
+        int iFaceMaterialIndex = pMesh->faces()[iFaceIndex].materialIndex();
         int iNewFaceMaterialIndex = mMaterialIndex[iFaceMaterialIndex];
         pMesh->faces()[iFaceIndex].setMaterialIndex(iNewFaceMaterialIndex);
     }

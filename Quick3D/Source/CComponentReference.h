@@ -50,7 +50,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    const QString& getName() const { return m_sName; }
+    const QString& name() const { return m_sName; }
 
     //!
     QSP<CComponent> component() { return m_pComponent; }

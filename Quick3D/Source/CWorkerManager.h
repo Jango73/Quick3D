@@ -1,16 +1,15 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
 // Qt
 #include <QThread>
 #include <QMutex>
 
-// Fondations
+// qt-plus
 #include "CSingleton.h"
 
 // Application
+#include "quick3d_global.h"
 #include "CWorker.h"
 
 //-------------------------------------------------------------------------------------------------

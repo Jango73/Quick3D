@@ -10,8 +10,11 @@
 #include "CPhysicalComponent.h"
 
 //-------------------------------------------------------------------------------------------------
+// Forward declarations
 
 class C3DScene;
+
+//-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CEngine : public CPhysicalComponent
 {

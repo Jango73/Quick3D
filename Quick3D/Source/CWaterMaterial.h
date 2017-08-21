@@ -1,20 +1,22 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
 // Qt
 #include <QVector2D>
 
-// Fondations
-#include "CGeoloc.h"
-
 // Application
+#include "quick3d_global.h"
 #include "CQ3DConstants.h"
+#include "CGeoloc.h"
 #include "CMaterial.h"
 #include "CHeightField.h"
 
+//-------------------------------------------------------------------------------------------------
+// Forward declarations
+
 class C3DScene;
+
+//-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CWaterMaterial : public CMaterial, public CHeightField
 {

@@ -7,8 +7,11 @@
 #include "CStandardController.h"
 
 //-------------------------------------------------------------------------------------------------
+// Forward declarations
 
 class C3DScene;
+
+//-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CForceController : public CStandardController
 {

@@ -4,7 +4,6 @@
 #include "quick3d_global.h"
 
 //-------------------------------------------------------------------------------------------------
-// Noms de classe des composants
 // Component class names
 
 #define ClassName_CComponent                "CComponent"
@@ -81,7 +80,6 @@
 #define ClassName_CHydraulicComponent       "CHydraulicComponent"
 
 //-------------------------------------------------------------------------------------------------
-// Paramètres communs
 // Common parameters
 
 #define ParamName_Acceleration				"Acceleration"
@@ -200,7 +198,6 @@
 #define ParamName_v							"v"
 
 //-------------------------------------------------------------------------------------------------
-// Noms de shaders
 // Shader names
 
 #define SP_Standard_Billboard               "Standard_Billboard"
@@ -208,7 +205,6 @@
 #define SP_Special_Lines                    "Special_Lines"
 
 //-------------------------------------------------------------------------------------------------
-// Evènements Q3D
 // Q3D events
 
 #define Q3D_Event							"Event"

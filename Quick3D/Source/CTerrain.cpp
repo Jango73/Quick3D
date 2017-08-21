@@ -509,9 +509,9 @@ void CTerrain::work()
             {
                 bool bIsOversea = false;
 
-                for (int iVertexIndex = 0; iVertexIndex < m_pMesh->faces()[iFaceIndex].getIndices().count(); iVertexIndex++)
+                for (int iVertexIndex = 0; iVertexIndex < m_pMesh->faces()[iFaceIndex].indices().count(); iVertexIndex++)
                 {
-                    if (m_pMesh->vertices()[m_pMesh->faces()[iFaceIndex].getIndices()[iVertexIndex]].altitude() >= 0.0)
+                    if (m_pMesh->vertices()[m_pMesh->faces()[iFaceIndex].indices()[iVertexIndex]].altitude() >= 0.0)
                     {
                         bIsOversea = true;
                     }
@@ -600,13 +600,13 @@ void CTerrain::buildVerticesToFaceMap()
     {
         for (int iIndex = 0; iIndex < m_pMesh->faces().count(); iIndex++)
         {
-            if (m_pMesh->faces()[iIndex].getIndices().count() == 4)
+            if (m_pMesh->faces()[iIndex].indices().count() == 4)
             {
                 QString sKey = QString("%1%2%3%4")
-                        .arg(m_pMesh->faces()[iIndex].getIndices()[0])
-                        .arg(m_pMesh->faces()[iIndex].getIndices()[1])
-                        .arg(m_pMesh->faces()[iIndex].getIndices()[2])
-                        .arg(m_pMesh->faces()[iIndex].getIndices()[3])
+                        .arg(m_pMesh->faces()[iIndex].indices()[0])
+                        .arg(m_pMesh->faces()[iIndex].indices()[1])
+                        .arg(m_pMesh->faces()[iIndex].indices()[2])
+                        .arg(m_pMesh->faces()[iIndex].indices()[3])
                         ;
 
                 m_mVerticesToFace[sKey] = iIndex;

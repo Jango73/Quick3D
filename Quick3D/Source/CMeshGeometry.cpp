@@ -217,7 +217,7 @@ void CMeshGeometry::checkAndUpdateGeometry()
                     // Récupération des faces associées à ce matériau
                     for (int iFaceIndex = 0; iFaceIndex < m_vFaces.count(); iFaceIndex++)
                     {
-                        if (m_vFaces[iFaceIndex].getMaterialIndex() == iMaterialIndex)
+                        if (m_vFaces[iFaceIndex].materialIndex() == iMaterialIndex)
                         {
                             vFaceIndices.append(iFaceIndex);
                         }
@@ -276,10 +276,10 @@ void CMeshGeometry::checkAndUpdateGeometry()
                                 {
                                     CFace* pFace = &(m_vFaces[vFaceIndices[iFaceIndex]]);
 
-                                    pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[0];
-                                    pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[1];
-                                    pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[2];
-                                    pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[3];
+                                    pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->indices()[0];
+                                    pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->indices()[1];
+                                    pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->indices()[2];
+                                    pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->indices()[3];
                                 }
                             }
                             else
@@ -288,13 +288,13 @@ void CMeshGeometry::checkAndUpdateGeometry()
                                 {
                                     CFace* pFace = &(m_vFaces[vFaceIndices[iFaceIndex]]);
 
-                                    if (pFace->getIndices().count() > 2)
+                                    if (pFace->indices().count() > 2)
                                     {
-                                        for (int iIndex = 2; iIndex < pFace->getIndices().count(); iIndex++)
+                                        for (int iIndex = 2; iIndex < pFace->indices().count(); iIndex++)
                                         {
-                                            pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[0];
-                                            pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[iIndex - 1];
-                                            pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->getIndices()[iIndex];
+                                            pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->indices()[0];
+                                            pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->indices()[iIndex - 1];
+                                            pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->indices()[iIndex];
                                         }
                                     }
                                 }
@@ -370,10 +370,10 @@ void CMeshGeometry::createPartition(CMeshPartition& mpCurrentPartition, int iLev
         for (int iFace = 0; iFace < m_vFaces.count(); iFace++)
         {
             // Parcours de tous les vertex du polygone en cours
-            for (int iVertex = 0; iVertex < m_vFaces[iFace].getIndices().count(); iVertex++)
+            for (int iVertex = 0; iVertex < m_vFaces[iFace].indices().count(); iVertex++)
             {
                 // Récupération de la position du vertex
-                CVector3 vPosition = m_vVertices[m_vFaces[iFace].getIndices()[iVertex]].position();
+                CVector3 vPosition = m_vVertices[m_vFaces[iFace].indices()[iVertex]].position();
 
                 // Est-ce que la partition en cours contient le vertex?
                 if (mpCurrentPartition.getBounds().contains(vPosition))
@@ -401,11 +401,11 @@ void CMeshGeometry::isolateVertices()
     // Parcours de tous les polygones
     for (int iFaceIndex = 0; iFaceIndex < m_vFaces.count(); iFaceIndex++)
     {
-        for (int iVertexInFaceIndex = 0; iVertexInFaceIndex < m_vFaces[iFaceIndex].getIndices().count(); iVertexInFaceIndex++)
+        for (int iVertexInFaceIndex = 0; iVertexInFaceIndex < m_vFaces[iFaceIndex].indices().count(); iVertexInFaceIndex++)
         {
-            int iVertexIndex = m_vFaces[iFaceIndex].getIndices()[iVertexInFaceIndex];
+            int iVertexIndex = m_vFaces[iFaceIndex].indices()[iVertexInFaceIndex];
 
-            m_vFaces[iFaceIndex].getIndices()[iVertexInFaceIndex] = m_vVertices.count();
+            m_vFaces[iFaceIndex].indices()[iVertexInFaceIndex] = m_vVertices.count();
 
             m_vVertices.append(CVertex(vVertices[iVertexIndex]));
         }
@@ -436,11 +436,11 @@ void CMeshGeometry::splitVerticesBySmoothingGroup()
     {
         for (int iFaceIndex = 0; iFaceIndex < m_vFaces.count(); iFaceIndex++)
         {
-            int iSmoothingGroup = m_vFaces[iFaceIndex].getSmoothingGroup();
+            int iSmoothingGroup = m_vFaces[iFaceIndex].smoothingGroup();
 
-            for (int iVertexInFaceIndex = 0; iVertexInFaceIndex < m_vFaces[iFaceIndex].getIndices().count(); iVertexInFaceIndex++)
+            for (int iVertexInFaceIndex = 0; iVertexInFaceIndex < m_vFaces[iFaceIndex].indices().count(); iVertexInFaceIndex++)
             {
-                int iVertexInMeshIndex = m_vFaces[iFaceIndex].getIndices()[iVertexInFaceIndex];
+                int iVertexInMeshIndex = m_vFaces[iFaceIndex].indices()[iVertexInFaceIndex];
 
                 if (m_vVertices[iVertexInMeshIndex].m_vSmoothingGroups.contains(iSmoothingGroup) == false)
                 {
@@ -483,16 +483,16 @@ void CMeshGeometry::splitVerticesBySmoothingGroup()
     {
         for (int iFaceIndex = 0; iFaceIndex < m_vFaces.count(); iFaceIndex++)
         {
-            int iSmoothingGroup = m_vFaces[iFaceIndex].getSmoothingGroup();
+            int iSmoothingGroup = m_vFaces[iFaceIndex].smoothingGroup();
 
-            for (int iVertexInFaceIndex = 0; iVertexInFaceIndex < m_vFaces[iFaceIndex].getIndices().count(); iVertexInFaceIndex++)
+            for (int iVertexInFaceIndex = 0; iVertexInFaceIndex < m_vFaces[iFaceIndex].indices().count(); iVertexInFaceIndex++)
             {
-                int iVertexInMeshIndex = m_vFaces[iFaceIndex].getIndices()[iVertexInFaceIndex];
+                int iVertexInMeshIndex = m_vFaces[iFaceIndex].indices()[iVertexInFaceIndex];
 
                 if (m_vVertices[iVertexInMeshIndex].m_vSmoothingGroups.contains(iSmoothingGroup))
                 {
                     int iGroupIndex = m_vVertices[iVertexInMeshIndex].m_vSmoothingGroups.indexOf(iSmoothingGroup);
-                    m_vFaces[iFaceIndex].getIndices()[iVertexInFaceIndex] = m_vVertices[iVertexInMeshIndex].m_vVertexIndicesForGroup[iGroupIndex];
+                    m_vFaces[iFaceIndex].indices()[iVertexInFaceIndex] = m_vVertices[iVertexInMeshIndex].m_vVertexIndicesForGroup[iGroupIndex];
                 }
             }
         }
@@ -520,15 +520,15 @@ void CMeshGeometry::flipNormals()
         QVector<int> vIndices;
 
         // Récupération des indices de vertex en sens inverse
-        for (int iVertexIndex = 0; iVertexIndex < m_vFaces[iFaceIndex].getIndices().count(); iVertexIndex++)
+        for (int iVertexIndex = 0; iVertexIndex < m_vFaces[iFaceIndex].indices().count(); iVertexIndex++)
         {
-            vIndices.prepend(m_vFaces[iFaceIndex].getIndices()[iVertexIndex]);
+            vIndices.prepend(m_vFaces[iFaceIndex].indices()[iVertexIndex]);
         }
 
         // Stockage des indices de vertex en sens inverse
-        for (int iVertexIndex = 0; iVertexIndex < m_vFaces[iFaceIndex].getIndices().count(); iVertexIndex++)
+        for (int iVertexIndex = 0; iVertexIndex < m_vFaces[iFaceIndex].indices().count(); iVertexIndex++)
         {
-            m_vFaces[iFaceIndex].getIndices()[iVertexIndex] = vIndices[iVertexIndex];
+            m_vFaces[iFaceIndex].indices()[iVertexIndex] = vIndices[iVertexIndex];
         }
     }
 
@@ -543,9 +543,9 @@ int CMeshGeometry::triangleCount()
 
     foreach (const CFace& face, m_vFaces)
     {
-        if (face.getIndices().count() > 2)
+        if (face.indices().count() > 2)
         {
-            iNumTriangles += face.getIndices().count() - 2;
+            iNumTriangles += face.indices().count() - 2;
         }
     }
 
@@ -562,9 +562,9 @@ int CMeshGeometry::triangleCountForFaces(const QVector<int>& vFaceIndices)
     {
         CFace* pFace = &(m_vFaces[vFaceIndices[iFaceIndex]]);
 
-        if (pFace->getIndices().count() > 2)
+        if (pFace->indices().count() > 2)
         {
-            iNumTriangles += pFace->getIndices().count() - 2;
+            iNumTriangles += pFace->indices().count() - 2;
         }
     }
 
@@ -595,10 +595,10 @@ void CMeshGeometry::computeNormals()
             m_vFaces[FaceIndex].computeNormal();
 
             // Traitement de chaque vertex du polygone
-            foreach (int VertexIndex, m_vFaces[FaceIndex].getIndices())
+            foreach (int VertexIndex, m_vFaces[FaceIndex].indices())
             {
-                m_vVertices[VertexIndex].normal() += m_vFaces[FaceIndex].getNormal();
-                m_vVertices[VertexIndex].tangent() += m_vFaces[FaceIndex].getTangent();
+                m_vVertices[VertexIndex].normal() += m_vFaces[FaceIndex].normal();
+                m_vVertices[VertexIndex].tangent() += m_vFaces[FaceIndex].tangent();
                 m_vVertices[VertexIndex].normalDivider() += 1.0;
             }
         }
@@ -943,9 +943,9 @@ void CMeshGeometry::createAdaptiveTriPatch(Math::CVector3 vCenter, int iNumItera
         for (int iFaceIndex = 0; iFaceIndex < m_vFaces.count(); iFaceIndex++)
         {
             // Get vertex indices
-            int iV1 = m_vFaces[iFaceIndex].getIndices()[0];
-            int iV2 = m_vFaces[iFaceIndex].getIndices()[1];
-            int iV3 = m_vFaces[iFaceIndex].getIndices()[2];
+            int iV1 = m_vFaces[iFaceIndex].indices()[0];
+            int iV2 = m_vFaces[iFaceIndex].indices()[1];
+            int iV3 = m_vFaces[iFaceIndex].indices()[2];
 
             // Get vertex positions
             CVector3 pV1 = m_vVertices[iV1].position();
@@ -984,9 +984,9 @@ void CMeshGeometry::createAdaptiveTriPatch(Math::CVector3 vCenter, int iNumItera
         for (int iFaceIndex = 0; iFaceIndex < m_vFaces.count(); iFaceIndex++)
         {
             // Get vertex indices
-            int iV1 = m_vFaces[iFaceIndex].getIndices()[0];
-            int iV2 = m_vFaces[iFaceIndex].getIndices()[1];
-            int iV3 = m_vFaces[iFaceIndex].getIndices()[2];
+            int iV1 = m_vFaces[iFaceIndex].indices()[0];
+            int iV2 = m_vFaces[iFaceIndex].indices()[1];
+            int iV3 = m_vFaces[iFaceIndex].indices()[2];
 
             // Get vertex positions
             CVector3 pV1 = m_vVertices[iV1].position();
@@ -1060,10 +1060,10 @@ void CMeshGeometry::createAdaptiveQuadPatch(Math::CVector3 vCenter, int iNumIter
         for (int iFaceIndex = 0; iFaceIndex < m_vFaces.count(); iFaceIndex++)
         {
             // Get vertex indices
-            int iVA = m_vFaces[iFaceIndex].getIndices()[0];
-            int iVB = m_vFaces[iFaceIndex].getIndices()[1];
-            int iVC = m_vFaces[iFaceIndex].getIndices()[2];
-            int iVD = m_vFaces[iFaceIndex].getIndices()[3];
+            int iVA = m_vFaces[iFaceIndex].indices()[0];
+            int iVB = m_vFaces[iFaceIndex].indices()[1];
+            int iVC = m_vFaces[iFaceIndex].indices()[2];
+            int iVD = m_vFaces[iFaceIndex].indices()[3];
 
             // Get vertex positions
             CVector3 pVA = m_vVertices[iVA].position();
@@ -1108,10 +1108,10 @@ void CMeshGeometry::createAdaptiveQuadPatch(Math::CVector3 vCenter, int iNumIter
         for (int iFaceIndex = 0; iFaceIndex < m_vFaces.count(); iFaceIndex++)
         {
             // Get vertex indices
-            int iVA = m_vFaces[iFaceIndex].getIndices()[0];
-            int iVB = m_vFaces[iFaceIndex].getIndices()[1];
-            int iVC = m_vFaces[iFaceIndex].getIndices()[2];
-            int iVD = m_vFaces[iFaceIndex].getIndices()[3];
+            int iVA = m_vFaces[iFaceIndex].indices()[0];
+            int iVB = m_vFaces[iFaceIndex].indices()[1];
+            int iVC = m_vFaces[iFaceIndex].indices()[2];
+            int iVD = m_vFaces[iFaceIndex].indices()[3];
 
             if (
                     vEdges.contains(CEdge(iVA, iVB)) && vEdges.contains(CEdge(iVB, iVC)) &&
@@ -1314,10 +1314,10 @@ void CMeshGeometry::subdivideQuads(int iNumIterations)
         for (int iFaceIndex = 0; iFaceIndex < m_vFaces.count(); iFaceIndex++)
         {
             // Get vertex indices
-            int iVA = m_vFaces[iFaceIndex].getIndices()[0];
-            int iVB = m_vFaces[iFaceIndex].getIndices()[1];
-            int iVC = m_vFaces[iFaceIndex].getIndices()[2];
-            int iVD = m_vFaces[iFaceIndex].getIndices()[3];
+            int iVA = m_vFaces[iFaceIndex].indices()[0];
+            int iVB = m_vFaces[iFaceIndex].indices()[1];
+            int iVC = m_vFaces[iFaceIndex].indices()[2];
+            int iVD = m_vFaces[iFaceIndex].indices()[3];
 
             // Get vertex positions
             CVector3 pVA = m_vVertices[iVA].position();
@@ -1359,10 +1359,10 @@ void CMeshGeometry::subdivideQuads(int iNumIterations)
         for (int iFaceIndex = 0; iFaceIndex < m_vFaces.count(); iFaceIndex++)
         {
             // Get vertex indices
-            int iVA = m_vFaces[iFaceIndex].getIndices()[0];
-            int iVB = m_vFaces[iFaceIndex].getIndices()[1];
-            int iVC = m_vFaces[iFaceIndex].getIndices()[2];
-            int iVD = m_vFaces[iFaceIndex].getIndices()[3];
+            int iVA = m_vFaces[iFaceIndex].indices()[0];
+            int iVB = m_vFaces[iFaceIndex].indices()[1];
+            int iVC = m_vFaces[iFaceIndex].indices()[2];
+            int iVD = m_vFaces[iFaceIndex].indices()[3];
 
             if (
                     vEdges.contains(CEdge(iVA, iVB)) && vEdges.contains(CEdge(iVB, iVC)) &&
@@ -1416,7 +1416,7 @@ void CMeshGeometry::merge(const CMeshGeometry &other)
 
     foreach (const CFace& face, other.m_vFaces)
     {
-        QVector<int> vNewIndices = face.getIndices();
+        QVector<int> vNewIndices = face.indices();
 
         for (int iIndex = 0; iIndex < vNewIndices.count(); iIndex++)
         {
@@ -1484,13 +1484,13 @@ RayTracingResult CMeshGeometry::intersect(CComponent* pContainer, CRay3 ray)
         {
             for (int iFaceIndex = 0; iFaceIndex < m_vFaces.count(); iFaceIndex++)
             {
-                if (m_vFaces[iFaceIndex].getIndices().count() > 2)
+                if (m_vFaces[iFaceIndex].indices().count() > 2)
                 {
-                    for (int iVertIndex = 2; iVertIndex < m_vFaces[iFaceIndex].getIndices().count(); iVertIndex++)
+                    for (int iVertIndex = 2; iVertIndex < m_vFaces[iFaceIndex].indices().count(); iVertIndex++)
                     {
-                        int i1 = m_vFaces[iFaceIndex].getIndices()[0];
-                        int i2 = m_vFaces[iFaceIndex].getIndices()[iVertIndex - 1];
-                        int i3 = m_vFaces[iFaceIndex].getIndices()[iVertIndex];
+                        int i1 = m_vFaces[iFaceIndex].indices()[0];
+                        int i2 = m_vFaces[iFaceIndex].indices()[iVertIndex - 1];
+                        int i3 = m_vFaces[iFaceIndex].indices()[iVertIndex];
 
                         CVector3 v1 = m_vVertices[i1].position();
                         CVector3 v2 = m_vVertices[i2].position();
@@ -1549,13 +1549,13 @@ RayTracingResult CMeshGeometry::intersectRecurse(CComponent* pContainer, CMeshPa
             {
                 int iFaceIndex = mpPartition.getFaceIndices()[iPartFaceIndex];
 
-                if (m_vFaces[iFaceIndex].getIndices().count() > 2)
+                if (m_vFaces[iFaceIndex].indices().count() > 2)
                 {
-                    for (int iVertIndex = 2; iVertIndex < m_vFaces[iFaceIndex].getIndices().count(); iVertIndex++)
+                    for (int iVertIndex = 2; iVertIndex < m_vFaces[iFaceIndex].indices().count(); iVertIndex++)
                     {
-                        int i1 = m_vFaces[iFaceIndex].getIndices()[0];
-                        int i2 = m_vFaces[iFaceIndex].getIndices()[iVertIndex - 1];
-                        int i3 = m_vFaces[iFaceIndex].getIndices()[iVertIndex];
+                        int i1 = m_vFaces[iFaceIndex].indices()[0];
+                        int i2 = m_vFaces[iFaceIndex].indices()[iVertIndex - 1];
+                        int i3 = m_vFaces[iFaceIndex].indices()[iVertIndex];
 
                         CVector3 v1 = m_vVertices[i1].position();
                         CVector3 v2 = m_vVertices[i2].position();

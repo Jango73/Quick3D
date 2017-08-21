@@ -27,6 +27,7 @@
 #endif
 
 //-------------------------------------------------------------------------------------------------
+// Forward declarations
 
 class C3DScene;
 class CRenderContext;

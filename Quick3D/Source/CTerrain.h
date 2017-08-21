@@ -1,15 +1,12 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
-//-------------------------------------------------------------------------------------------------
-
-// Fondations
+// qt-plus
 #include "CXMLNode.h"
 #include "CInterpolator.h"
 
 // Application
+#include "quick3d_global.h"
 #include "CQ3DConstants.h"
 #include "CWorker.h"
 #include "CComponent.h"
@@ -19,7 +16,7 @@
 #include "CPerlin.h"
 
 //-------------------------------------------------------------------------------------------------
-// Déclarations avancées
+// Forward declarations
 
 class C3DScene;
 

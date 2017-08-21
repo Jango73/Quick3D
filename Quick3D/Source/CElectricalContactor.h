@@ -7,8 +7,11 @@
 #include "CElectricalComponent.h"
 
 //-------------------------------------------------------------------------------------------------
+// Forward declarations
 
 class C3DScene;
+
+//-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CElectricalContactor : public CElectricalComponent
 {

@@ -1,6 +1,5 @@
 
-#ifndef CPREFERENCESMANAGER_H
-#define CPREFERENCESMANAGER_H
+#pragma once
 
 #include "quick3d_global.h"
 
@@ -9,7 +8,7 @@
 // Qt
 #include <QObject>
 
-// Application
+// qt-plus
 #include "CSingleton.h"
 #include "CXMLNode.h"
 
@@ -48,5 +47,3 @@ protected:
 
 	CXMLNode		xPreferences;
 };
-
-#endif // CPREFERENCESMANAGER_H

@@ -3,16 +3,21 @@
 
 // qt-plus
 #include "CLogger.h"
+#include "CAverager.h"
 
 // Application
 #include "quick3d_global.h"
-#include "CAverager.h"
 #include "CQ3DConstants.h"
 #include "CComponent.h"
 #include "CTrajectorable.h"
 #include "CMeshInstance.h"
 
+//-------------------------------------------------------------------------------------------------
+// Forward declarations
+
 class C3DScene;
+
+//-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CVehicle : public CTrajectorable
 {

@@ -153,7 +153,6 @@ SOURCES += \
     Source/CWater.cpp \
     Source/CWaterMaterial.cpp \
     Source/CWaypoint.cpp \
-    Source/CWebContext.cpp \
     Source/CWheel.cpp \
     Source/CWing.cpp \
     Source/CWorker.cpp \
@@ -220,7 +219,6 @@ HEADERS  += \
     Source/CAnimatorFrame.h \
     Source/CArmature.h \
     Source/CAtmosphere.h \
-    Source/CAverager.h \
     Source/CBasicAnimationStep.h \
     Source/CBasicAnimator.h \
     Source/CBasicAnimatorFrame.h \
@@ -322,7 +320,6 @@ HEADERS  += \
     Source/CWater.h \
     Source/CWaterMaterial.h \
     Source/CWaypoint.h \
-    Source/CWebContext.h \
     Source/CWheel.h \
     Source/CWing.h \
     Source/CWorker.h \

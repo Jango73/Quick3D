@@ -160,7 +160,7 @@ QSP<CMeshGeometry> COBJLoader::load(const QString& sBaseFile, CComponent *pConta
 
                         if (iPositionIndex > 0)
                         {
-                            NewFace.getIndices().append(iPositionIndex);
+                            NewFace.indices().append(iPositionIndex);
 
                             if (iTextureIndex > 0 && iTextureIndex < vTextureVertices.count())
                             {

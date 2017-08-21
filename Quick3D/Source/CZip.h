@@ -1,20 +1,18 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
-//-------------------------------------------------------------------------------------------------
-
 // Qt
 #include <QFile>
 #include <QFileInfo>
 
-// Fondations
-
+// std
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
+
+// Fondations
+#include "quick3d_global.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -45,7 +43,12 @@ public:
     //! Get file content
     QByteArray getZipFileContent(QString& sFile);
 
+    //-------------------------------------------------------------------------------------------------
+    // Properties
+    //-------------------------------------------------------------------------------------------------
+
 protected:
+
     QString m_sFileName;
 };
 

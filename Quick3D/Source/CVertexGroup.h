@@ -4,11 +4,11 @@
 // Qt
 #include <QMap>
 
-// Fondations
-#include "CVector3.h"
+// qt-plus
 #include "CXMLNode.h"
 
 // Application
+#include "CVector3.h"
 #include "CNamed.h"
 
 //-------------------------------------------------------------------------------------------------

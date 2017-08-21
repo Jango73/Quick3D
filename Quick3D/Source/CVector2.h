@@ -1,6 +1,5 @@
 
-#ifndef __VECTOR2_H__
-#define __VECTOR2_H__
+#pragma once
 
 // Std
 #include "math.h"
@@ -253,5 +252,3 @@ namespace Math
 		}
 	};
 }
-
-#endif // __VECTOR2_H__

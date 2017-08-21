@@ -23,7 +23,7 @@ public:
     CBoundedMeshInstances(C3DScene* pScene);
 
     //!
-    ~CBoundedMeshInstances();
+    virtual ~CBoundedMeshInstances();
 
     //-------------------------------------------------------------------------------------------------
     // Setters

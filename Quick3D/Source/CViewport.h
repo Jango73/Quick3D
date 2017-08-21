@@ -1,9 +1,7 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
-// QT
+// Qt
 #include <QObject>
 #include <QTcpSocket>
 #include <QTcpServer>
@@ -13,9 +11,13 @@
 #include "CMJPEGServer.h"
 
 // Application
+#include "quick3d_global.h"
 #include "CVector2.h"
 #include "CVector3.h"
 #include "CCamera.h"
+
+//-------------------------------------------------------------------------------------------------
+// Forward declarations
 
 class C3DScene;
 class CViewport;

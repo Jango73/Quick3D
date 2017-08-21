@@ -1,22 +1,20 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
 // Qt
 #include <QtOpenGL>
 #include <QObject>
 #include <QDateTime>
 
-// Fondations
-#include "CGeoloc.h"
-
 // Application
+#include "quick3d_global.h"
 #include "CQ3DConstants.h"
+#include "CGeoloc.h"
 #include "CMaterial.h"
 #include "CHTTPMapClient.h"
 
 //-------------------------------------------------------------------------------------------------
+// Forward declarations
 
 class C3DScene;
 

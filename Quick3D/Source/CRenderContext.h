@@ -18,6 +18,7 @@
 #define QSP QExplicitlySharedDataPointer
 
 //-------------------------------------------------------------------------------------------------
+// Forward declarations
 
 class C3DScene;
 class CComponent;

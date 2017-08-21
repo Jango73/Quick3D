@@ -1,15 +1,13 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
-//-------------------------------------------------------------------------------------------------
-
 // Application
+#include "quick3d_global.h"
 #include "CQ3DConstants.h"
 #include "CGeoloc.h"
 
 //-------------------------------------------------------------------------------------------------
+// Forward declarations
 
 class C3DScene;
 

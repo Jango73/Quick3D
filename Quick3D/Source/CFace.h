@@ -7,8 +7,11 @@
 #include "CRay3.h"
 
 //-------------------------------------------------------------------------------------------------
+// Forward declarations
 
 class CMeshGeometry;
+
+//-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CEdge
 {
@@ -104,25 +107,25 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Retourne la liste des indice de sommets
-    QVector<int>& getIndices() { return m_vIndices; }
+    QVector<int>& indices() { return m_vIndices; }
 
     //! Retourne la liste des indice de sommets
-    const QVector<int>& getIndices() const { return m_vIndices; }
+    const QVector<int>& indices() const { return m_vIndices; }
 
     //! Retourne le vecteur normal de la facette
-    Math::CVector3& getNormal() { return m_vNormal; }
+    Math::CVector3& normal() { return m_vNormal; }
 
     //! Retourne le vecteur normal de la facette
-    Math::CVector3 getNormal() const { return m_vNormal; }
+    Math::CVector3 normal() const { return m_vNormal; }
 
     //! Retourne le vecteur tangent de la facette
-    Math::CVector3 getTangent() const { return m_vTangent; }
+    Math::CVector3 tangent() const { return m_vTangent; }
 
     //!
-    int getSmoothingGroup() const { return m_iSmoothingGroup; }
+    int smoothingGroup() const { return m_iSmoothingGroup; }
 
     //!
-    int getMaterialIndex() const { return m_iMaterialIndex; }
+    int materialIndex() const { return m_iMaterialIndex; }
 
     //-------------------------------------------------------------------------------------------------
     // Control methods

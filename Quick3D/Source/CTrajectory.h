@@ -1,13 +1,12 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
 // Qt
 #include <QString>
 #include <QVector>
 
-// Fondations
+// Application
+#include "quick3d_global.h"
 #include "CVector3.h"
 #include "CGeoloc.h"
 

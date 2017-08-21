@@ -170,7 +170,7 @@ void CMesh::solveLinks(C3DScene* pScene)
                     {
                         foreach (CTexture* pTexture, pMaterial->diffuseTextures())
                         {
-                            if (pTexture->getName().contains(sTextureName))
+                            if (pTexture->name().contains(sTextureName))
                             {
                                 bFound = true;
 

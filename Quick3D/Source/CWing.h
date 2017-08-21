@@ -9,7 +9,12 @@
 #include "CQ3DConstants.h"
 #include "CPhysicalComponent.h"
 
+//-------------------------------------------------------------------------------------------------
+// Forward declarations
+
 class C3DScene;
+
+//-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CWing : public CPhysicalComponent
 {

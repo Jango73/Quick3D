@@ -1,15 +1,13 @@
 
 #pragma once
 
-#include "quick3d_global.h"
-
-//-------------------------------------------------------------------------------------------------
-
 // Application
+#include "quick3d_global.h"
 #include "CVector3.h"
 #include "CMeshGeometry.h"
 
 //-------------------------------------------------------------------------------------------------
+// Forward declarations
 
 class C3DScene;
 

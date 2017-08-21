@@ -8,8 +8,11 @@
 #include "CComponentReference.h"
 
 //-------------------------------------------------------------------------------------------------
+// Forward declarations
 
 class C3DScene;
+
+//-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CHydraulicComponent : public CComponent
 {

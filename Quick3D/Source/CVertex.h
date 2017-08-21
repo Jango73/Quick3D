@@ -1,9 +1,8 @@
 
 #pragma once
 
+// Application
 #include "quick3d_global.h"
-
-// Fondations
 #include "CVector2.h"
 #include "CVector3.h"
 

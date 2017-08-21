@@ -10,7 +10,12 @@
 #include "CQ3DConstants.h"
 #include "CController.h"
 
+//-------------------------------------------------------------------------------------------------
+// Forward declarations
+
 class C3DScene;
+
+//-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CCartoController : public CController
 {

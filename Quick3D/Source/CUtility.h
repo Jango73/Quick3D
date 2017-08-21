@@ -1,12 +1,13 @@
 
-#ifndef CUTILITY_H
-#define CUTILITY_H
+#pragma once
 
-#include "quick3d_global.h"
-
+// Qt
 #include <QMap>
 #include <QString>
 #include <QImage>
+
+// Application
+#include "quick3d_global.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -51,16 +52,14 @@ public:
     virtual ~CUtility();
 
     // Format method for QString
-    static QString					FormatString(const char *szFormat, va_list &arg_ptr) ;
-    static QString					FormatString(const char *szFormat, ...) ;
-    static void						FormatPath(QString &path);
-    static void						ensurePathExists(const QString& sName);
-    static bool						findProcessByName(const QString& sName);
-    static void						sleep(int iMilliSeconds);
-    static void						sleepButProcessEvent(int iMilliSeconds);
-    static QMap<QString, QString>	getMapFromCommaSeparatedKeyValues(const QString& sParameters);
-    static QByteArray				convertQImageToByteArray(const QImage& image, const char* szFormat, int compressionRate);
-    static QImage					convertByteArrayToQImage(const QByteArray& data, const char* szFormat);
+    static QString                  FormatString(const char *szFormat, va_list &arg_ptr) ;
+    static QString                  FormatString(const char *szFormat, ...) ;
+    static void                     FormatPath(QString &path);
+    static void                     ensurePathExists(const QString& sName);
+    static bool                     findProcessByName(const QString& sName);
+    static void                     sleep(int iMilliSeconds);
+    static void                     sleepButProcessEvent(int iMilliSeconds);
+    static QMap<QString, QString>   getMapFromCommaSeparatedKeyValues(const QString& sParameters);
+    static QByteArray               convertQImageToByteArray(const QImage& image, const char* szFormat, int compressionRate);
+    static QImage                   convertByteArrayToQImage(const QByteArray& data, const char* szFormat);
 };
-
-#endif // CUTILITY_H

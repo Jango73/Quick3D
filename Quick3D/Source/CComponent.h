@@ -67,6 +67,7 @@
 #define GL_UNSIGNED_INT_8_8_8_8         0x8035
 
 //-------------------------------------------------------------------------------------------------
+// Forward declarations
 
 class C3DScene;
 class CController;

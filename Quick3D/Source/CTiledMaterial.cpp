@@ -37,7 +37,7 @@ void CTiledMaterial::onTileReady(QString sTileName)
 
         m_mTiles[sTileName].m_pTexture = new CTexture(m_pScene, sTileName, m_tClient.getTile(sTileName), QSize(256, 256), m_vDiffuseTextures.count());
 
-        LOG_DEBUG(QString("CTiledMaterial::onTileReady() : created texture %1").arg(m_mTiles[sTileName].m_pTexture->getGLTexture()));
+        LOG_DEBUG(QString("CTiledMaterial::onTileReady() : created texture %1").arg(m_mTiles[sTileName].m_pTexture->glTexture()));
     }
 }
 

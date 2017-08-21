@@ -6,14 +6,18 @@
 #include <QtOpenGL>
 #include <QThread>
 
+// qt-plus
+#include "CXMLNode.h"
+
 // Application
+#include "quick3d_global.h"
+#include "CQ3DConstants.h"
 #include "CVector3.h"
 #include "CMatrix4.h"
 #include "CRay3.h"
-#include "CXMLNode.h"
-#include "CQ3DConstants.h"
 
 //-------------------------------------------------------------------------------------------------
+// Forward declarations
 
 class C3DScene;
 class CComponent;
@@ -75,13 +79,13 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    QString getName() const { return m_sName; }
+    QString name() const { return m_sName; }
 
     //!
-    GLuint getGLTexture() const { return m_uiGLTexture; }
+    GLuint glTexture() const { return m_uiGLTexture; }
 
     //!
-    QImage& getImage() { return m_imgTexture; }
+    QImage& image() { return m_imgTexture; }
 
     //!
     bool isDynamic() const { return m_bIsDynamic; }
@@ -108,7 +112,7 @@ public slots:
     void onUpdateFinished();
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes protégés
+    // Protected methods
     //-------------------------------------------------------------------------------------------------
 
 protected:

@@ -660,19 +660,24 @@ RayTracingResult C3DScene::intersectComponentHierarchy(QSP<CComponent> pComponen
 
 RayTracingResult C3DScene::intersectRecurse(QSP<CComponent> pComponent, const Math::CRay3& aRay) const
 {
-    RayTracingResult dReturnResult = pComponent->intersect(aRay);
-
-    foreach (QSP<CComponent> pChild, pComponent->childComponents())
+    if (pComponent->isRaytracable())
     {
-        RayTracingResult dChildResult = intersectRecurse(pChild, aRay);
+        RayTracingResult dReturnResult = pComponent->intersect(aRay);
 
-        if (dChildResult.m_dDistance < dReturnResult.m_dDistance)
+        foreach (QSP<CComponent> pChild, pComponent->childComponents())
         {
-            dReturnResult = dChildResult;
+            RayTracingResult dChildResult = intersectRecurse(pChild, aRay);
+
+            if (dChildResult.m_dDistance < dReturnResult.m_dDistance)
+            {
+                dReturnResult = dChildResult;
+            }
         }
+
+        return dReturnResult;
     }
 
-    return dReturnResult;
+    return RayTracingResult(Q3D_INFINITY);
 }
 
 //-------------------------------------------------------------------------------------------------

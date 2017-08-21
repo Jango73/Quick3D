@@ -52,6 +52,7 @@ SOURCES += \
     Source/C3DScene.cpp \
     Source/CAircraft.cpp \
     Source/CAircraftController.cpp \
+    Source/CQuadDroneController.cpp \
     Source/CAnimator.cpp \
     Source/CAnimatorFrame.cpp \
     Source/CArmature.cpp \
@@ -215,6 +216,7 @@ HEADERS  += \
     Source/C3DScene.h \
     Source/CAircraft.h \
     Source/CAircraftController.h \
+    Source/CQuadDroneController.h \
     Source/CAnimator.h \
     Source/CAnimatorFrame.h \
     Source/CArmature.h \

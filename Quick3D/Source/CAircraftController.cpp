@@ -44,8 +44,8 @@ void CAircraftController::loadParameters(const QString& sBaseFile, CXMLNode xNod
     m_rRightWingTarget.setName(xNode.attributes()["RightWingTarget"]);
     m_rElevatorTarget.setName(xNode.attributes()["ElevatorTarget"]);
     m_rRudderTarget.setName(xNode.attributes()["RudderTarget"]);
-    m_rEngine1Target.setName(xNode.attributes()["Engine1Target"]);
-    m_rEngine2Target.setName(xNode.attributes()["Engine2Target"]);
+    m_rEngine1Target.setName(xNode.attributes()[ParamName_Engine1Target]);
+    m_rEngine2Target.setName(xNode.attributes()[ParamName_Engine2Target]);
 }
 
 //-------------------------------------------------------------------------------------------------

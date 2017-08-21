@@ -20,6 +20,7 @@
 #include "CCartoController.h"
 #include "CTankController.h"
 #include "CAircraftController.h"
+#include "CQuadDroneController.h"
 #include "CBasicAnimator.h"
 #include "CSkyBox.h"
 #include "CWorldTerrain.h"
@@ -81,6 +82,7 @@ void CComponentFactory::registerCoreComponents()
     registerComponent(ClassName_CCartoController, CCartoController::instanciator);
     registerComponent(ClassName_CTankController, CTankController::instanciator);
     registerComponent(ClassName_CAircraftController, CAircraftController::instanciator);
+    registerComponent(ClassName_CQuadDroneController, CQuadDroneController::instanciator);
     registerComponent(ClassName_CBasicAnimator, CBasicAnimator::instanciator);
     registerComponent(ClassName_CSkyBox, CSkyBox::instanciator);
     registerComponent(ClassName_CWorldTerrain, CWorldTerrain::instanciator);

@@ -50,6 +50,7 @@
 #define ClassName_CCartoController          "CCartoController"
 #define ClassName_CTankController           "CTankController"
 #define ClassName_CAircraftController       "CAircraftController"
+#define ClassName_CQuadDroneController      "CQuadDroneController"
 
 #define ClassName_CAnimator                 "CAnimator"
 #define ClassName_CBasicAnimator            "CBasicAnimator"
@@ -111,6 +112,10 @@
 #define ParamName_DynTex					"DynTex"
 #define ParamName_DynamicTexture			"DynamicTexture"
 #define ParamName_DNA                       "DNA"
+#define ParamName_Engine1Target             "Engine1Target"
+#define ParamName_Engine2Target             "Engine2Target"
+#define ParamName_Engine3Target             "Engine3Target"
+#define ParamName_Engine4Target             "Engine4Target"
 #define ParamName_Face						"Face"
 #define ParamName_Faces						"Faces"
 #define ParamName_Factor					"Factor"

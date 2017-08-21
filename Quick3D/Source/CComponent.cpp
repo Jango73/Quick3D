@@ -210,7 +210,7 @@ void CComponent::solveLinks(C3DScene* pScene)
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Clears the links in this component.
+    Clears the links in this component and its children.
 */
 void CComponent::clearLinks(C3DScene* pScene)
 {
@@ -345,15 +345,15 @@ bool CComponent::receivesShadows() const
 */
 void CComponent::setGeoloc(CGeoloc gGeoloc)
 {
-    // Les coordonnées sont recalées entre -180.0 et +180.0 degrés
+    // Coordinates are clipped between -180.0 and +180.0 degrees
     gGeoloc.Latitude = Math::Angles::clipAngleDegreePIMinusPI(gGeoloc.Latitude);
     gGeoloc.Longitude = Math::Angles::clipAngleDegreePIMinusPI(gGeoloc.Longitude);
 
-    // La latitude est limitée entre -89.9 et +89.9 degrés
+    // Latitude is clipped between -89.9 and +89.9 degrees
     gGeoloc.Latitude = Math::Angles::clipDouble(gGeoloc.Latitude, -89.9, 89.9);
     gGeoloc.Altitude = Math::Angles::clipDouble(gGeoloc.Altitude, -20000.0, 12000000.0);
 
-    // Est-ce que l'objet est un objet racine ou est-il indépendant d'un point de vue transformation?
+    // Is the object a root object or is it independent transformation wise?
     if (isRootObject() || m_bInheritTransform == false)
     {
         if (gGeoloc.valid())
@@ -408,17 +408,17 @@ void CComponent::setOriginPosition(CVector3 vPosition)
 */
 void CComponent::setOriginRotation(CVector3 Rotation)
 {
-    // Assignation de la rotation d'origine
+    // Assign the original rotation
     m_vOriginRotation = Rotation * m_vRotationFactor;
 
-    // Recalage des angles entre -PI et +PI
+    // Clip angles between -PI and PI
     m_vOriginRotation.X = Math::Angles::clipAngleRadianPIMinusPI(m_vOriginRotation.X);
     m_vOriginRotation.Y = Math::Angles::clipAngleRadianPIMinusPI(m_vOriginRotation.Y);
     m_vOriginRotation.Z = Math::Angles::clipAngleRadianPIMinusPI(m_vOriginRotation.Z);
 
     if (isRootObject() || m_bInheritTransform == false)
     {
-        // Calcul de la rotation dans le repère géocentrique
+        // Compute rotation in the ECEF frame
         m_vECEFRotation = toECEFRotation(m_vOriginRotation);
     }
     else
@@ -456,10 +456,10 @@ void CComponent::setPosition(CVector3 Position)
 */
 void CComponent::setRotation(CVector3 Rotation)
 {
-    // Assignation de la rotation
+    // Assign rotation
     m_vRotation = Rotation * m_vRotationFactor;
 
-    // Recalage des angles entre -PI et +PI
+    // Clip angles between -PI and PI
     m_vRotation.X = Math::Angles::clipAngleRadianPIMinusPI(m_vRotation.X);
     m_vRotation.Y = Math::Angles::clipAngleRadianPIMinusPI(m_vRotation.Y);
     m_vRotation.Z = Math::Angles::clipAngleRadianPIMinusPI(m_vRotation.Z);
@@ -480,7 +480,7 @@ void CComponent::setRotation(CVector3 Rotation)
 */
 void CComponent::setScale(CVector3 Scale)
 {
-    // Assignation de l'échelle
+    // Assign the scale
     m_vScale = Scale;
 }
 
@@ -492,7 +492,7 @@ void CComponent::setScale(CVector3 Scale)
 */
 void CComponent::setWorldTransform(const Math::CMatrix4& value)
 {
-    // Assignation de la matrice de transformation et de son inverse
+    // Assign the transform matrix and its inverse
 
     m_mWorldTransform = value;
     m_mWorldTransformInverse = m_mWorldTransform.inverse();
@@ -576,14 +576,14 @@ void CComponent::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
     CXMLNode tRotationMinimumNode = xComponent.getNodeByTagName(ParamName_RotationMinimum);
     CXMLNode tRotationMaximumNode = xComponent.getNodeByTagName(ParamName_RotationMaximum);
 
-    // Nom du composant
+    // Component name
 
     if (xComponent.attributes()[ParamName_Name].isEmpty() == false)
     {
         m_sName = xComponent.attributes()[ParamName_Name];
     }
 
-    // Position d'origine
+    // Original position
 
     if (tPositionNode.isEmpty() == false)
     {
@@ -594,7 +594,7 @@ void CComponent::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
                               ));
     }
 
-    // Geolocalisation
+    // Geo-location
 
     if (tGeolocNode.isEmpty() == false)
     {
@@ -605,7 +605,7 @@ void CComponent::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
                       ));
     }
 
-    // Rotation d'origine
+    // Original rotation
 
     if (tRotationNode.isEmpty() == false)
     {
@@ -616,7 +616,7 @@ void CComponent::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
                               ));
     }
 
-    // Facteurs de rotation (permet de verrouiller un ou plusieurs axes)
+    // Rotation factors (allows locking one or more axes)
 
     if (tRotationFactorNode.isEmpty() == false)
     {
@@ -627,7 +627,7 @@ void CComponent::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
                     );
     }
 
-    // Rotation minimum
+    // Minimum rotation
 
     if (tRotationMinimumNode.isEmpty() == false)
     {
@@ -638,7 +638,7 @@ void CComponent::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
                     );
     }
 
-    // Rotation maximum
+    // Maximum rotation
 
     if (tRotationMaximumNode.isEmpty() == false)
     {
@@ -649,7 +649,7 @@ void CComponent::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
                     );
     }
 
-    // Echelle
+    // Scale
 
     if (tScaleNode.isEmpty() == false)
     {
@@ -679,7 +679,7 @@ void CComponent::addItems(C3DScene* pScene)
 
 void CComponent::updateContext(CRenderContext* pContext)
 {
-    // Appel de la méthode updateContext de chaque enfant
+    // Call the updateContext method for each child component
     foreach (QSP<CComponent> pChild, m_vChildren)
     {
         pChild->updateContext(pContext);
@@ -690,7 +690,7 @@ void CComponent::updateContext(CRenderContext* pContext)
 
 void CComponent::updateItems(C3DScene* pScene)
 {
-    // Appel de la méthode updateItems de chaque enfant
+    // Call the updateItems method for each child component
     foreach (QSP<CComponent> pChild, m_vChildren)
     {
         pChild->updateItems(pScene);
@@ -704,7 +704,7 @@ void CComponent::updateItems(C3DScene* pScene)
 */
 void CComponent::paint(CRenderContext* pContext)
 {
-    // Sans géométrie, on ne dessine rien
+    // Without geometry, nothing gets drawn
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -714,7 +714,7 @@ void CComponent::paint(CRenderContext* pContext)
 */
 void CComponent::postPaint(CRenderContext* pContext)
 {
-    // Appel de la méthode paint de chaque enfant
+    // Call the paint and postPaint method for each child component
     foreach (QSP<CComponent> pChild, m_vChildren)
     {
         pChild->paint(pContext);
@@ -729,7 +729,7 @@ void CComponent::postPaint(CRenderContext* pContext)
 */
 CBoundingBox CComponent::bounds()
 {
-    // Sans géométrie, retourner une boite vide
+    // Without geometry, return an empty box
 
     return CBoundingBox();
 }
@@ -741,7 +741,7 @@ CBoundingBox CComponent::bounds()
 */
 CBoundingBox CComponent::worldBounds()
 {
-    // Sans géométrie, retourner une boite vide
+    // Without geometry, return an empty box
 
     return CBoundingBox();
 }
@@ -753,7 +753,7 @@ CBoundingBox CComponent::worldBounds()
 */
 RayTracingResult CComponent::intersect(Math::CRay3 ray)
 {
-    // Sans géométrie, retourner l'infini
+    // Without geometry, return infinity
 
     return RayTracingResult(Q3D_INFINITY);
 }
@@ -765,7 +765,7 @@ RayTracingResult CComponent::intersect(Math::CRay3 ray)
 */
 void CComponent::flipNormals()
 {
-    // Appel de la méthode flipNormals de chaque enfant
+    // Call the flipNormals method for each child component
     foreach (QSP<CComponent> pChild, m_vChildren)
     {
         pChild->flipNormals();
@@ -779,7 +779,7 @@ void CComponent::flipNormals()
 */
 void CComponent::transformVertices(const Math::CMatrix4& matrix)
 {
-    // Appel de la méthode transformVertices de chaque enfant
+    // Call the transformVertices method for each child component
     foreach (QSP<CComponent> pChild, m_vChildren)
     {
         pChild->transformVertices(matrix);
@@ -802,7 +802,7 @@ void CComponent::update(double dDeltaTimeS)
 */
 void CComponent::postUpdate(double dDeltaTimeS)
 {
-    // Calcul de la matrice de transformation
+    // Compute the transform matrix
     computeWorldTransform();
 
     foreach (QSP<CComponent> pChild, m_vChildren)
@@ -964,19 +964,19 @@ void CComponent::computeWorldTransform()
     CMatrix4 mOriginPosition;
     CMatrix4 mPosition;
 
-    // Création matrices de rotation d'origine
+    // Create the original rotation matrix
     mOriginRotation = CMatrix4::makeRotation(m_vECEFRotation);
 
-    // Création matrices de rotation d'animation
+    // Create the animated rotation matrix
     mRotation = CMatrix4::makeRotation(m_vRotation);
 
-    // Création matrice de position d'origine
+    // Create the original position matrix
     mOriginPosition = CMatrix4::makeTranslation(m_vOriginPosition);
 
-    // Création matrice de position d'animation
+    // Create the animated position matrix
     mPosition = CMatrix4::makeTranslation(m_vPosition);
 
-    // Application des matrices de transformation à m_mWorldTransform
+    // Apply the transform matrices to m_mWorldTransform
     m_mWorldTransform.makeIdentity();
 
     m_mWorldTransform = m_mWorldTransform * mRotation;
@@ -996,7 +996,7 @@ void CComponent::computeWorldTransform()
         m_mWorldTransform = m_mWorldTransform * m_pParent->m_mWorldTransform;
     }
 
-    // Calcul de l'inverse de la matrice de transformation
+    // Compute the inverse of the transfom matrix
     m_mWorldTransformInverse = m_mWorldTransform.inverse();
 }
 

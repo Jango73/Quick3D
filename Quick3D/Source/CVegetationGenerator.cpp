@@ -153,7 +153,7 @@ void CVegetationGenerator::generate(QSP<CWorldChunk> pChunk)
         double dSpread = pVegetation->m_dSpread * ((double) pChunk->getTerrain()->level() + 1.0);
         double dAltitude_Trees = 10.0;
 
-        CGeoloc gStart(pChunk->getGeoloc().Latitude - pChunk->getSize().Latitude * 0.5, pChunk->getGeoloc().Longitude - pChunk->getSize().Longitude * 0.5, 0.0);
+        CGeoloc gStart(pChunk->geoloc().Latitude - pChunk->getSize().Latitude * 0.5, pChunk->geoloc().Longitude - pChunk->getSize().Longitude * 0.5, 0.0);
 
         double dLatStart = fmod(gStart.Latitude, dSpread);
         double dLonStart = fmod(gStart.Longitude, dSpread);
@@ -230,7 +230,7 @@ void CVegetationGenerator::placeTree(QSP<CWorldChunk> pChunk, CGeoloc gPosition,
         if (pMeshInstance != nullptr)
         {
             pMeshInstance->setGeoloc(gPosition);
-            pMeshInstance->setOriginRotation(CVector3(0.0, ((double) rand() / 32768.0) * Math::Pi * 2.0, 0.0));
+            pMeshInstance->setRotation(CVector3(0.0, ((double) rand() / 32768.0) * Math::Pi * 2.0, 0.0));
             pMeshInstance->computeWorldTransform();
 
             foreach (CBoundedMeshInstances* pBounded, pChunk->meshes())
@@ -268,7 +268,7 @@ void CVegetationGenerator::placeBush(QSP<CWorldChunk> pChunk, CGeoloc gPosition,
             }
 
             CVector3 vGeocentricPosition = gPosition.toVector3();
-            CVector3 vPosition = vGeocentricPosition - pChunk->getWorldPosition();
+            CVector3 vPosition = vGeocentricPosition - pChunk->worldPosition();
 
             CVertex newVertex(vPosition);
             newVertex.setNormal(vGeocentricPosition.normalized());

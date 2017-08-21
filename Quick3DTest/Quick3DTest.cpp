@@ -187,12 +187,12 @@ void Quick3DTest::fillCameraCombo(CComponent* pComponent)
 {
     if (pComponent->isCamera())
     {
-        QString sQualifiedName = pComponent->getQualifiedName();
+        QString sQualifiedName = pComponent->qualifiedName();
 
         ui.m_cbViews1->addItem(sQualifiedName);
     }
 
-    foreach (QSP<CComponent> pChild, pComponent->getChildren())
+    foreach (QSP<CComponent> pChild, pComponent->childComponents())
     {
         fillCameraCombo(pChild.data());
     }
@@ -204,12 +204,12 @@ void Quick3DTest::fillControlableCombo(CComponent* pComponent)
 {
     if (pComponent->isRootObject() || pComponent->isCamera())
     {
-        QString sQualifiedName = pComponent->getQualifiedName();
+        QString sQualifiedName = pComponent->qualifiedName();
 
         ui.m_cbControllable->addItem(sQualifiedName);
     }
 
-    foreach (QSP<CComponent> pChild, pComponent->getChildren())
+    foreach (QSP<CComponent> pChild, pComponent->childComponents())
     {
         fillControlableCombo(pChild.data());
     }
@@ -264,11 +264,11 @@ void Quick3DTest::onTimer()
 
         if (m_pScene->controller() != nullptr && m_pScene->controller()->getPositionTarget())
         {
-            QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, m_pScene->controller()->getPositionTarget()->getRoot());
+            QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, m_pScene->controller()->getPositionTarget()->root());
 
             if (pPhysical != nullptr)
             {
-                ViewGeoloc = pPhysical->getGeoloc();
+                ViewGeoloc = pPhysical->geoloc();
                 ControledVelocity = pPhysical->velocity_ms();
                 ControledTorque = pPhysical->angularVelocity_rs();
                 dSpeedMS = ControledVelocity.magnitude();
@@ -277,11 +277,11 @@ void Quick3DTest::onTimer()
 
         if (m_pScene->controller() != nullptr && m_pScene->controller()->getRotationTarget())
         {
-            QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, m_pScene->controller()->getPositionTarget()->getRoot());
+            QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, m_pScene->controller()->getPositionTarget()->root());
 
             if (pPhysical != nullptr)
             {
-                ViewRotation = pPhysical->getOriginRotation();
+                ViewRotation = pPhysical->rotation();
             }
         }
 
@@ -474,7 +474,7 @@ void Quick3DTest::onGenerateMatrixClicked()
         CPanoramicMatrixParams tParams(vZones, vDepth, vDetection, vEdges, imgDepthImage, imgDetectionImage, imgContourImage);
 
         tParams.m_sResolution				= QSize(600, 200);				// Resolution
-        tParams.m_gCameraPosition			= pCamera->getGeoloc();			// Camera position
+        tParams.m_gCameraPosition			= pCamera->geoloc();			// Camera position
         tParams.m_dCameraTrueHeadingDegrees	= 0.0;							// True heading
         tParams.m_vStartPanTiltDegrees		= CVector2(-60.0, -180.0);		// Start tilt and pan
         tParams.m_vEndPanTiltDegrees		= CVector2(60.0, 180.0);			// End tilt and pan
@@ -645,9 +645,9 @@ void Quick3DTest::onControllableIndexChanged(const QString& sName)
         {
             QSP<CComponent> pFound = pComponent->findComponent(sName);
 
-            if (pFound && pFound->getController() != nullptr)
+            if (pFound && pFound->controller() != nullptr)
             {
-                m_pScene->setController(pFound->getController());
+                m_pScene->setController(pFound->controller());
                 break;
             }
         }

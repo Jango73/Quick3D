@@ -47,8 +47,8 @@ void CSkyBox::paint(CRenderContext* pContext)
 {
     double dScale = pContext->camera()->getMaxDistance() * 0.75;
 
-    setOriginScale(CVector3(dScale, dScale, dScale));
-    setWorldTransform(pContext->camera()->getWorldTransform());
+    setScale(CVector3(dScale, dScale, dScale));
+    setWorldTransform(pContext->camera()->worldTransform());
     // setOriginPosition(pContext->camera()->getWorldPosition());
     // computeWorldTransform();
 

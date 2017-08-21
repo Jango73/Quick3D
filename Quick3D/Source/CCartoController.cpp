@@ -96,14 +96,14 @@ void CCartoController::mouseMoveEvent(QMouseEvent* event)
     {
         if (m_rPositionTarget.component())
         {
-            double dHeading = m_rRotationTarget.component()->getOriginRotation().Y;
-            double dMoveFactor = m_rPositionTarget.component()->getGeoloc().Altitude * 0.00000005;
+            double dHeading = m_rRotationTarget.component()->rotation().Y;
+            double dMoveFactor = m_rPositionTarget.component()->geoloc().Altitude * 0.00000005;
 
             CVector3 vMovement(-dDeltaY * dMoveFactor, 0.0, dDeltaX * dMoveFactor);
 
             vMovement = CMatrix4().makeRotation(CVector3(0.0, dHeading, 0.0)) * vMovement;
 
-            CGeoloc gPosition = m_rPositionTarget.component()->getGeoloc();
+            CGeoloc gPosition = m_rPositionTarget.component()->geoloc();
 
             gPosition.Latitude += vMovement.Z;
             gPosition.Longitude += vMovement.X;
@@ -118,8 +118,8 @@ void CCartoController::mouseMoveEvent(QMouseEvent* event)
             CVector3 vRotationX = CVector3(dDeltaX * 0.005, 0.0, 0.0);
             CVector3 vRotationY = CVector3(0.0, dDeltaY * 0.005, 0.0);
 
-            m_rRotationTarget.component()->setOriginRotation(m_rRotationTarget.component()->getOriginRotation() + vRotationX);
-            m_rRotationTarget.component()->setOriginRotation(m_rRotationTarget.component()->getOriginRotation() + vRotationY);
+            m_rRotationTarget.component()->setRotation(m_rRotationTarget.component()->rotation() + vRotationX);
+            m_rRotationTarget.component()->setRotation(m_rRotationTarget.component()->rotation() + vRotationY);
         }
     }
 
@@ -134,9 +134,9 @@ void CCartoController::wheelEvent(QWheelEvent *event)
 
     if (m_rPositionTarget.component())
     {
-        double dMoveFactor = m_rPositionTarget.component()->getGeoloc().Altitude * 0.005;
+        double dMoveFactor = m_rPositionTarget.component()->geoloc().Altitude * 0.005;
         if (dMoveFactor < 1.0) dMoveFactor = 1.0;
-        CGeoloc gPosition = m_rPositionTarget.component()->getGeoloc();
+        CGeoloc gPosition = m_rPositionTarget.component()->geoloc();
         gPosition.Altitude += dDeltaY * dMoveFactor;
         if (gPosition.Altitude < 20.0) gPosition.Altitude = 20.0;
         m_rPositionTarget.component()->setGeoloc(gPosition);

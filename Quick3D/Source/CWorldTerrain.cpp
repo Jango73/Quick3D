@@ -286,7 +286,7 @@ void CWorldTerrain::buildRoot(CRenderContext* pContext)
     if (!m_pRoot)
     {
         double startLat = 0.0;
-        double startLon = pContext->camera()->getGeoloc().Longitude;
+        double startLon = pContext->camera()->geoloc().Longitude;
         startLon = startLon - fmod(startLon, 90.0);
         startLon = Angles::clipAngleDegreePIMinusPI(startLon);
 
@@ -309,7 +309,7 @@ bool CWorldTerrain::enoughDetail(QSP<CWorldChunk> pChunk, CRenderContext* pConte
     // if (iLevel > m_iLevels - (m_iLevels / 5)) return false;
 
     return (
-                pChunk->worldBounds().containsSpherical(pContext->camera()->getGeoloc()) == false ||
+                pChunk->worldBounds().containsSpherical(pContext->camera()->geoloc()) == false ||
                 iLevel == 0
                 )
             && iLevel < m_iLevels;
@@ -328,7 +328,7 @@ void CWorldTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pConte
     CGeoloc gOriginalChunkPosition = pChunk->getOriginalGeoloc();
     CGeoloc gOriginalChunkSize = pChunk->getOriginalSize();
 
-    CGeoloc gChunkPosition = pChunk->getGeoloc();
+    CGeoloc gChunkPosition = pChunk->geoloc();
     CGeoloc gChunkSize = pChunk->getSize();
 
     // On décide si ce niveau de détail est suffisant
@@ -399,7 +399,7 @@ void CWorldTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pConte
     else
     {
         // Création des sous-chunks si besoin
-        if (pChunk->getChildren().count() == 0)
+        if (pChunk->childComponents().count() == 0)
         {
             LOG_DEBUG(QString("Creating sub-quads for tile at lat %1, lon %2, level %3")
                       .arg(gChunkPosition.Latitude)
@@ -438,10 +438,10 @@ void CWorldTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pConte
             pChild4->CComponent::setParent(QSP<CComponent>(pChunk));
 
             // Append the chlidren to the given chunk
-            pChunk->getChildren().append(pChild1);
-            pChunk->getChildren().append(pChild2);
-            pChunk->getChildren().append(pChild3);
-            pChunk->getChildren().append(pChild4);
+            pChunk->childComponents().append(pChild1);
+            pChunk->childComponents().append(pChild2);
+            pChunk->childComponents().append(pChild3);
+            pChunk->childComponents().append(pChild4);
 
             // Distribute children equally in the given chunk's extents
             pChild1->setGeoloc(CGeoloc(gStart.Latitude + gOriginalChunkSize.Latitude * 0.25, gStart.Longitude + gOriginalChunkSize.Longitude * 0.25, 0.0));
@@ -469,7 +469,7 @@ void CWorldTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pConte
         }
 
         // Recurse in child chunks
-        foreach (QSP<CComponent> pChildComponent, pChunk->getChildren())
+        foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
         {
             QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 
@@ -482,7 +482,7 @@ void CWorldTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pConte
 
 void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRenderContext* pContext, QSP<CWorldChunk> pChunk, int iLevel, bool bForcePaint)
 {
-    CGeoloc gChunkPosition = pChunk->getGeoloc();
+    CGeoloc gChunkPosition = pChunk->geoloc();
 
     // On décide si ce niveau de détail est suffisant
     // Decide whether this level of detail is enough
@@ -490,7 +490,7 @@ void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRen
 
     bool bChildrenDrawable = true;
 
-    foreach (QSP<CComponent> pChildComponent, pChunk->getChildren())
+    foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
     {
         QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 
@@ -508,7 +508,7 @@ void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRen
             pChunk->setDistance(
                         (
                             gChunkPosition.toVector3() -
-                            pContext->camera()->getGeoloc().toVector3()
+                            pContext->camera()->geoloc().toVector3()
                             )
                         .magnitude()
                         );
@@ -523,13 +523,13 @@ void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRen
             }
 
             // Get rid of empty nodes
-            for (int iIndex = 0; iIndex < pChunk->getChildren().count(); iIndex++)
+            for (int iIndex = 0; iIndex < pChunk->childComponents().count(); iIndex++)
             {
-                QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChunk->getChildren()[iIndex]);
+                QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChunk->childComponents()[iIndex]);
 
                 if (pChild && pChild->isEmpty())
                 {
-                    pChunk->getChildren().remove(iIndex);
+                    pChunk->childComponents().remove(iIndex);
                     iIndex--;
                 }
             }
@@ -537,7 +537,7 @@ void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRen
         else if (bChildrenDrawable)
         {
             // Paint children
-            foreach (QSP<CComponent> pChildComponent, pChunk->getChildren())
+            foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
             {
                 QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 
@@ -550,7 +550,7 @@ void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRen
         if (bChildrenDrawable)
         {
             // Paint children
-            foreach (QSP<CComponent> pChildComponent, pChunk->getChildren())
+            foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
             {
                 QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 
@@ -562,7 +562,7 @@ void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRen
             pChunk->setDistance(
                         (
                             gChunkPosition.toVector3() -
-                            pContext->camera()->getGeoloc().toVector3()
+                            pContext->camera()->geoloc().toVector3()
                             )
                         .magnitude()
                         );
@@ -601,7 +601,7 @@ void CWorldTerrain::collectGarbageRecurse(QSP<CWorldChunk> pChunk)
         }
     }
 
-    foreach (QSP<CComponent> pChildComponent, pChunk->getChildren())
+    foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
     {
         QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 
@@ -628,8 +628,8 @@ double CWorldTerrain::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 
 double CWorldTerrain::getHeightAtRecurse(const CGeoloc& gPosition, QSP<CWorldChunk> pChunk, double* pRigidness)
 {
-    double dDiffLatitude = Math::Angles::angleDifferenceDegree(gPosition.Latitude, pChunk->getGeoloc().Latitude);
-    double dDiffLongitude = Math::Angles::angleDifferenceDegree(gPosition.Longitude, pChunk->getGeoloc().Longitude);
+    double dDiffLatitude = Math::Angles::angleDifferenceDegree(gPosition.Latitude, pChunk->geoloc().Latitude);
+    double dDiffLongitude = Math::Angles::angleDifferenceDegree(gPosition.Longitude, pChunk->geoloc().Longitude);
 
     if (pRigidness != nullptr) *pRigidness = 0.0;
 
@@ -638,7 +638,7 @@ double CWorldTerrain::getHeightAtRecurse(const CGeoloc& gPosition, QSP<CWorldChu
             fabs(dDiffLongitude) < pChunk->getSize().Longitude * 0.5
             )
     {
-        foreach (QSP<CComponent> pChildComponent, pChunk->getChildren())
+        foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
         {
             QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 
@@ -723,7 +723,7 @@ RayTracingResult CWorldTerrain::intersectRecurse(QSP<CWorldChunk> pChunk, const 
 {
     RayTracingResult dResult(Q3D_INFINITY);
 
-    foreach (QSP<CComponent> pChildComponent, pChunk->getChildren())
+    foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
     {
         QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 

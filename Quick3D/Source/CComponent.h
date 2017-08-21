@@ -38,33 +38,33 @@
 //-------------------------------------------------------------------------------------------------
 
 /* DataType */
-#define GL_BYTE                           0x1400
-#define GL_UNSIGNED_BYTE                  0x1401
-#define GL_SHORT                          0x1402
-#define GL_UNSIGNED_SHORT                 0x1403
-#define GL_INT                            0x1404
-#define GL_UNSIGNED_INT                   0x1405
-#define GL_FLOAT                          0x1406
-#define GL_2_BYTES                        0x1407
-#define GL_3_BYTES                        0x1408
-#define GL_4_BYTES                        0x1409
-#define GL_DOUBLE                         0x140A
+#define GL_BYTE                         0x1400
+#define GL_UNSIGNED_BYTE                0x1401
+#define GL_SHORT                        0x1402
+#define GL_UNSIGNED_SHORT               0x1403
+#define GL_INT                          0x1404
+#define GL_UNSIGNED_INT                 0x1405
+#define GL_FLOAT                        0x1406
+#define GL_2_BYTES                      0x1407
+#define GL_3_BYTES                      0x1408
+#define GL_4_BYTES                      0x1409
+#define GL_DOUBLE                       0x140A
 
 /* PixelFormat */
-#define GL_COLOR_INDEX					0x1900
-#define GL_STENCIL_INDEX				0x1901
-#define GL_DEPTH_COMPONENT				0x1902
-#define GL_RED							0x1903
-#define GL_GREEN						0x1904
-#define GL_BLUE							0x1905
-#define GL_ALPHA						0x1906
-#define GL_RGB							0x1907
-#define GL_RGBA							0x1908
-#define GL_LUMINANCE					0x1909
-#define GL_LUMINANCE_ALPHA				0x190A
-#define GL_TEXTURE_RECTANGLE_ARB		0x84F5
-#define GL_CLAMP_TO_BORDER				0x812D
-#define GL_UNSIGNED_INT_8_8_8_8			0x8035
+#define GL_COLOR_INDEX                  0x1900
+#define GL_STENCIL_INDEX                0x1901
+#define GL_DEPTH_COMPONENT              0x1902
+#define GL_RED                          0x1903
+#define GL_GREEN                        0x1904
+#define GL_BLUE                         0x1905
+#define GL_ALPHA                        0x1906
+#define GL_RGB                          0x1907
+#define GL_RGBA                         0x1908
+#define GL_LUMINANCE                    0x1909
+#define GL_LUMINANCE_ALPHA              0x190A
+#define GL_TEXTURE_RECTANGLE_ARB        0x84F5
+#define GL_CLAMP_TO_BORDER              0x812D
+#define GL_UNSIGNED_INT_8_8_8_8         0x8035
 
 //-------------------------------------------------------------------------------------------------
 
@@ -81,7 +81,7 @@ public:
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne une nouvelle instance de cet objet
+    //! Returns a new instance of this object
     static CComponent* instanciator(C3DScene* pScene);
 
     //! Constructor using a scene
@@ -94,10 +94,10 @@ public:
     // Setters
     //-------------------------------------------------------------------------------------------------
 
-    //! Définit le tag de l'objet
+    //! Sets the user defined tag
     void setTag(const QString& sValue);
 
-    //!
+    //! Sets the object's controller
     void setController(CController* pController);
 
     //! Définit si l'objet est visible à la caméra
@@ -122,22 +122,22 @@ public:
     virtual void setGeoloc(CGeoloc gGeoloc);
 
     //! Définit la position d'origine
-    void setOriginPosition(Math::CVector3 Position);
+    void setPosition(Math::CVector3 vPosition);
 
     //! Définit la rotation d'origine
-    void setOriginRotation(Math::CVector3 Rotation);
+    void setRotation(Math::CVector3 vRotation);
 
     //! Définit l'échelle d'origine
-    void setOriginScale(Math::CVector3 Scale);
+    void setScale(Math::CVector3 vScale);
 
     //! Définit la position animée
-    void setPosition(Math::CVector3 Position);
+    void setAnimPosition(Math::CVector3 vPosition);
 
     //! Définit la rotation animée
-    void setRotation(Math::CVector3 Rotation);
+    void setAnimRotation(Math::CVector3 vRotation);
 
     //! Définit l'échelle animée
-    void setScale(Math::CVector3 Scale);
+    void setAnimScale(Math::CVector3 vScale);
 
     //! Définit si l'objet hérite des transformations de son parent
     void setInheritTransform(bool bValue);
@@ -152,16 +152,19 @@ public:
     // Getters
     //-------------------------------------------------------------------------------------------------
 
-    //!
-    QString getTag() const { return m_sTag; }
+    //! Returns this object's class name
+    virtual QString getClassName() const { return ClassName_CComponent; }
 
-    //!
-    QString getQualifiedName();
+    //! Returns the user defined tag
+    QString tag() const { return m_sTag; }
 
-    //!
-    CController* getController();
+    //! Returns the object's qualified name
+    QString qualifiedName();
 
-    //! Est-ce que l'objet est visible (doit être rendu dans la scène)?
+    //! Returns the object's controller
+    CController* controller();
+
+    //! Is the object visible to the camera?
     bool isVisible() const;
 
     //! Est-ce que l'objet projette des ombres?
@@ -176,16 +179,13 @@ public:
     //! Est-ce que l'objet est sélectionné?
     bool isSelected() const { return m_bSelected; }
 
-    //! Retourne le nom de cette classe
-    virtual QString getClassName() const { return ClassName_CComponent; }
+    //! Returns the scene to which this object belongs
+    C3DScene* scene() const { return m_pScene; }
 
-    //! Retourne la scène à laquelle l'objet est attaché
-    C3DScene* getScene() const { return m_pScene; }
-
-    //! Est-ce que l'objet est une caméra?
+    //! Is the object a camera?
     virtual bool isCamera() const { return false; }
 
-    //! Est-ce que l'objet est une lumière?
+    //! Is the object a light?
     virtual bool isLight() const { return false; }
 
     //! Est-ce que l'objet est racine (n'a pas de parent)?
@@ -194,62 +194,62 @@ public:
     //! Est-ce que l'objet peut avoir une trajectoire?
     virtual bool isTrajectorable() const { return false; }
 
-    //! Retourne le parent
-    virtual QSP<CComponent> getParent() const { return m_pParent; }
+    //! Returns this object's parent
+    virtual QSP<CComponent> parentComponent() const { return m_pParent; }
 
     //! Retourne les enfants
-    QVector<QSP<CComponent> >& getChildren() { return m_vChildren; }
+    QVector<QSP<CComponent> >& childComponents() { return m_vChildren; }
 
-    //! Retourne l'objet racine
-    QSP<CComponent> getRoot();
+    //! Returns the object's root object
+    QSP<CComponent> root();
 
-    //! Retourne la géolocalisation
-    virtual CGeoloc getGeoloc() const;
+    //! Returns the object's geo-location
+    virtual CGeoloc geoloc() const;
 
-    //! Retourne la rotation dans le repère ECEF (Earth-centered earth-fixed)
-    virtual Math::CVector3 getECEFRotation() const { return m_vECEFRotation; }
+    //! Returns the rotation in the ECEF frame (Earth-centered earth-fixed)
+    virtual Math::CVector3 ECEFRotation() const;
 
-    //! Retourne la position cartésienne d'origine
-    virtual Math::CVector3 getOriginPosition() const;
+    //! Returns the position
+    virtual Math::CVector3 position() const;
 
-    //! Retourne la rotation d'origine
-    virtual Math::CVector3 getOriginRotation() const;
+    //! Returns the rotation
+    virtual Math::CVector3 rotation() const;
 
-    //! Retourne la facteur d'échelle d'origine
-    virtual Math::CVector3 getOriginScale() const { return m_vOriginScale; }
+    //! Returns the scale
+    virtual Math::CVector3 scale() const;
 
-    //! Retourne la position cartésienne animée
-    virtual Math::CVector3 getPosition() const { return m_vPosition; }
+    //! Returns the animated position
+    virtual Math::CVector3 animPosition() const { return m_vAnimPosition; }
 
-    //! Retourne la rotation animée
-    virtual Math::CVector3 getRotation() const { return m_vRotation; }
+    //! Returns the animated rotation
+    virtual Math::CVector3 animRotation() const { return m_vAnimRotation; }
 
-    //! Retourne la facteur d'échelle
-    virtual Math::CVector3 getScale() const { return m_vScale; }
+    //! Returns the animated scale
+    virtual Math::CVector3 animScale() const { return m_vAnimScale; }
 
     //! Retourne la matrice de transformation monde
-    Math::CMatrix4 getWorldTransform() const;
+    Math::CMatrix4 worldTransform() const;
 
     //! Retourne l'inverse de la matrice de transformation monde
-    Math::CMatrix4 getWorldTransformInverse() const;
+    Math::CMatrix4 worldTransformInverse() const;
 
     //!
-    Math::CMatrix4 getPreviousWorldTransform() const;
+    Math::CMatrix4 previousWorldTransform() const;
 
     //! Retourne la position monde
-    Math::CVector3 getWorldPosition() const;
+    Math::CVector3 worldPosition() const;
 
     //! Retourne la rotation monde
-    Math::CVector3 getWorldRotation() const;
+    Math::CVector3 worldRotation() const;
 
     //! Retourne la direction monde (vers où l'objet pointe)
-    Math::CVector3 getWorldDirection() const;
+    Math::CVector3 worldDirection() const;
 
     //! Retourne le facteur d'échelle monde
-    Math::CVector3 getWorldScale() const;
+    Math::CVector3 worldScale() const;
 
     //!
-    double getStatus() const;
+    double status() const;
 
     //! Retourne le nombre d'instances de cette classe dans l'application
     static int getNumComponents() { return m_iNumComponents; }
@@ -346,44 +346,44 @@ public:
 
 private:
 
-    CGeoloc                     m_gGeoloc;						// Géolocalisation de l'objet
-    Math::CVector3              m_vECEFRotation;				// Rotation de l'objet dans le repère ECEF (Earth-centered earth-fixed)
-    Math::CVector3              m_vOriginPosition;				// Position de l'objet dans le repère NOLL (North-oriented local-level)
-    Math::CVector3              m_vOriginRotation;				// Rotation de l'objet (euleur) dans le repère NOLL
-    Math::CVector3              m_vOriginScale;					// Echelle de l'objet dans le repère NOLL
-    Math::CVector3              m_vPosition;					// Position animée de l'objet dans son repère local
-    Math::CVector3              m_vRotation;					// Rotation animée de l'objet (euleur) dans son repère local
-    Math::CVector3              m_vScale;						// Echelle animée de l'objet dans son repère local
-    Math::CVector3              m_vRotationFactor;				// Verrouillages de rotation
-    Math::CVector3              m_vRotationMinimum;				// Limites minimum de rotation
-    Math::CVector3              m_vRotationMaximum;				// Limites maximum de rotation
+    CGeoloc                     m_gGeoloc;                      // Object's geo-location
+    Math::CVector3              m_vECEFRotation;                // Object's rotation in the ECEF frame (Earth-centered earth-fixed)
+    Math::CVector3              m_vPosition;                    // Object's position in the NOLL frame (North-oriented local-level)
+    Math::CVector3              m_vRotation;                    // Object's rotation (euler) in the NOLL frame
+    Math::CVector3              m_vScale;                       // Object's scale in the NOLL frame
+    Math::CVector3              m_vAnimPosition;                // Object's animated position in the local frame
+    Math::CVector3              m_vAnimRotation;                // Object's animated rotation (euler) in the local frame
+    Math::CVector3              m_vAnimScale;                   // Object's animated scale in the local frame
+    Math::CVector3              m_vRotationFactor;              // Rotation factors (allows axis locking)
+    Math::CVector3              m_vRotationMinimum;             // Minimum rotation
+    Math::CVector3              m_vRotationMaximum;             // Maximum rotation
 
 protected:
 
-    QString                     m_sTag;
-    C3DScene*                   m_pScene;						// La scène à laquelle l'objet appartient
+    QString                     m_sTag;                         // User defined tag
+    C3DScene*                   m_pScene;                       // The scene to which the object belongs
     CController*                m_pController;
-    Math::CMatrix4              m_mWorldTransform;				// Transformation "monde" de l'objet
-    Math::CMatrix4              m_mWorldTransformInverse;		// Transformation "monde" inverse de l'objet
+    Math::CMatrix4              m_mWorldTransform;              // "World" transform of the object
+    Math::CMatrix4              m_mWorldTransformInverse;       // "World" inverse transform of the object
     Math::CMatrix4              m_mPreviousWorldTransform;
     CGeoloc                     m_gSavedGeoloc;
-    Math::CVector3              m_vSavedOriginPosition;
-    Math::CVector3              m_vSavedOriginRotation;
-    Math::CVector3              m_vSavedOriginScale;
-    QVector<CHeightField*>      m_pFields;						// Les champs de hauteurs dont dépend cet objet
-    bool                        m_bVisible;						// Est visible?
-    bool                        m_bCastShadows;					// Génère des ombres portées
-    bool                        m_bReceiveShadows;				// Recoit des ombres portées
-    bool                        m_bRaytracable;					// Ce composant doit-il être traité en ray-tracing?
-    bool                        m_bInheritTransform;			// L'objet hérite des transformations de son parent si vrai
-    bool                        m_bSelected;					// Est-ce que l'objet est sélectionné
+    Math::CVector3              m_vSavedPosition;
+    Math::CVector3              m_vSavedRotation;
+    Math::CVector3              m_vSavedScale;
+    QVector<CHeightField*>      m_pFields;                      // The height fields of the object
+    bool                        m_bVisible;                     // Is the object visible?
+    bool                        m_bCastShadows;                 // Does the object cast shadows?
+    bool                        m_bReceiveShadows;              // Does the object receive shadows?
+    bool                        m_bRaytracable;                 // Should the object be considered in ray-tracing methods?
+    bool                        m_bInheritTransform;            // Should the object inherit its parent's transform?
+    bool                        m_bSelected;                    // Is the object selected?
 
-    double                      m_dStatus;						// Etat de l'objet (0.0 = HS, 1.0 = Fonctionnel)
+    double                      m_dStatus;                      // Status of the object (0.0 = Out of service, 1.0 = Functional)
 
     // Shared data
 
-    QSP<CComponent>             m_pParent;						// Parent de l'objet
-    QVector<QSP<CComponent> >   m_vChildren;					// Liste d'objets enfants
+    QSP<CComponent>             m_pParent;                      // Object's parent
+    QVector<QSP<CComponent> >   m_vChildren;                    // Object's children
 
     static int                  m_iNumComponents;
 };

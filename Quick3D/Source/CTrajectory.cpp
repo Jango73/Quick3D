@@ -73,7 +73,7 @@ void CTrajectory::processObject(CTrajectorable* pObject, double dDeltaTime)
     if (m_vPoints.count() > 0)
     {
         CGeoloc gTarget = m_vPoints[m_iCurrentPoint];
-        CGeoloc gPosition = pObject->getGeoloc();
+        CGeoloc gPosition = pObject->geoloc();
 
         CGeoloc gTargetGround = CGeoloc(gTarget.Latitude, gTarget.Longitude, 0.0);
         CGeoloc gPositionGround = CGeoloc(gPosition.Latitude, gPosition.Longitude, 0.0);
@@ -94,7 +94,7 @@ void CTrajectory::processObject(CTrajectorable* pObject, double dDeltaTime)
         double dSpeedMS = pObject->getSpeedMS();
         double dTurnSpeedDS = pObject->getTurnSpeedDS();
 
-        CVector3 vRotation = pObject->getOriginRotation();
+        CVector3 vRotation = pObject->rotation();
         double dCurrentAngleY = vRotation.Y;
         double dTargetAngleY = vDirection.eulerYAngle();
         double dDiffAngleY = Math::Angles::angleDifferenceRadian(dTargetAngleY, dCurrentAngleY) * 2.0;
@@ -104,8 +104,8 @@ void CTrajectory::processObject(CTrajectorable* pObject, double dDeltaTime)
 
         vRotation.Y += (dDiffAngleY * Angles::toRad(dTurnSpeedDS)) * dDeltaTime;
 
-        CAxis aLocalAxis(pObject->getECEFRotation());
-        pObject->setOriginPosition(pObject->getOriginPosition() + aLocalAxis.Front * (dSpeedMS * dDeltaTime));
-        pObject->setOriginRotation(vRotation);
+        CAxis aLocalAxis(pObject->ECEFRotation());
+        pObject->setPosition(pObject->position() + aLocalAxis.Front * (dSpeedMS * dDeltaTime));
+        pObject->setRotation(vRotation);
     }
 }

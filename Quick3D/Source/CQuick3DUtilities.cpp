@@ -113,7 +113,7 @@ void CQuick3DUtilities::computeSphericalDetectionMatrices_RayTraced(CPanoramicMa
     // Création de la caméra
     QSP<CCamera> pCamera(new CCamera(pScene));
     pCamera->setGeoloc(CGeoloc(tParams.m_gCameraPosition.Latitude, tParams.m_gCameraPosition.Longitude, dAltitude + tParams.m_gCameraPosition.Altitude));
-    pCamera->setOriginRotation(CVector3(0.0, Math::Angles::toRad(tParams.m_dCameraTrueHeadingDegrees), 0.0));
+    pCamera->setRotation(CVector3(0.0, Math::Angles::toRad(tParams.m_dCameraTrueHeadingDegrees), 0.0));
 
     // Ajout terrain et caméra à la scène, seront détruits automatiquement
     QVector<QSP<CComponent> > vComponents;

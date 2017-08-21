@@ -115,7 +115,7 @@ CBoundingBox CMeshGeometry::getWorldBounds(CComponent* pContainer)
     CBoundingBox bounds = getBounds();
 
     // Récupération de la position "monde"
-    CVector3 vWorldPosition = pContainer->getWorldPosition();
+    CVector3 vWorldPosition = pContainer->worldPosition();
 
     // Retour de la boite englobante
     return CBoundingBox(vWorldPosition + bounds.minimum(), vWorldPosition + bounds.maximum());
@@ -1472,7 +1472,7 @@ RayTracingResult CMeshGeometry::intersect(CComponent* pContainer, CRay3 ray)
     RayTracingResult dReturnResult(Q3D_INFINITY, pContainer);
 
     // Transformation du rayon dans le repère local
-    CRay3 rLocalray = pContainer->getWorldTransformInverse() * ray;
+    CRay3 rLocalray = pContainer->worldTransformInverse() * ray;
 
     if (m_bBounds.intersect(rLocalray).m_dDistance < Q3D_INFINITY)
     {
@@ -1635,9 +1635,9 @@ void CMeshGeometry::paint(CRenderContext* pContext, CComponent* pContainer)
                     if (pContainer != nullptr)
                     {
                         // Set transform matrix
-                        CVector3 WorldPosition = pContainer->getWorldPosition() - pContext->scene()->worldOrigin();
-                        CVector3 WorldRotation = pContainer->getWorldRotation();
-                        CVector3 WorldScale = pContainer->getWorldScale();
+                        CVector3 WorldPosition = pContainer->worldPosition() - pContext->scene()->worldOrigin();
+                        CVector3 WorldRotation = pContainer->worldRotation();
+                        CVector3 WorldScale = pContainer->worldScale();
 
                         mModelAbsolute.translate(WorldPosition.X, WorldPosition.Y, WorldPosition.Z);
                         mModelAbsolute.rotate(Math::Angles::toDeg(WorldRotation.Y), QVector3D(0, 1, 0));

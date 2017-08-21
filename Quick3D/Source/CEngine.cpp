@@ -80,15 +80,15 @@ void CEngine::update(double dDeltaTime)
 {
     CPhysicalComponent::update(dDeltaTime);
 
-    QSP<CComponent> pRoot = getRoot();
+    QSP<CComponent> pRoot = root();
     QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, pRoot);
 
     if (pPhysical != nullptr)
     {
-        double dAirFactor = CAtmosphere::getInstance()->airDragFactor(pPhysical->getGeoloc().Altitude);
+        double dAirFactor = CAtmosphere::getInstance()->airDragFactor(pPhysical->geoloc().Altitude);
         dAirFactor = Math::Angles::clipDouble((dAirFactor * 2.0) * 40.0, 0.0, 40.0);
         double dCurrentThrust_kg = currentThrust_kg() * dAirFactor;
 
-        pPhysical->addUncenteredLocalForce_kg(getOriginPosition(), CVector3(0.0, 0.0, dCurrentThrust_kg));
+        pPhysical->addUncenteredLocalForce_kg(position(), CVector3(0.0, 0.0, dCurrentThrust_kg));
     }
 }

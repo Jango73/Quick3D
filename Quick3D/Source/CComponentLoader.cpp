@@ -88,9 +88,9 @@ QVector<QSP<CComponent> > CComponentLoader::load(const QString& sBaseFile, C3DSc
             }
         }
 
-        if (pControlledFound && pControlledFound->getController() != nullptr)
+        if (pControlledFound && pControlledFound->controller() != nullptr)
         {
-            pScene->setController(pControlledFound->getController());
+            pScene->setController(pControlledFound->controller());
         }
     }
 

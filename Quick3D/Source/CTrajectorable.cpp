@@ -45,5 +45,5 @@ void CTrajectorable::resetTrajectory()
     m_tTrajectory.reset();
 
     setGeoloc(m_tTrajectory.getOriginPosition());
-    setOriginRotation(m_tTrajectory.getOriginRotation());
+    setRotation(m_tTrajectory.getOriginRotation());
 }

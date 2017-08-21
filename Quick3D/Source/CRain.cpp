@@ -67,7 +67,7 @@ void CRain::update(double dDeltaTime)
 
 void CRain::paint(CRenderContext* pContext)
 {
-    setOriginPosition(CVector3(pContext->camera()->getWorldPosition().X, 0.0, pContext->camera()->getWorldPosition().Z));
+    setPosition(CVector3(pContext->camera()->worldPosition().X, 0.0, pContext->camera()->worldPosition().Z));
 
     CParticleSystem::paint(pContext);
 }

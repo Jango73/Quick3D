@@ -27,7 +27,7 @@ QSP<CMeshGeometry> CQ3DLoader::load(const QString& sBaseFile, CComponent* pConta
 
     QVector<QSP<CMaterial> > vMaterials;
 
-    QSP<CMeshGeometry> pMesh = QSP<CMeshGeometry>(new CMeshGeometry(pContainer->getScene()));
+    QSP<CMeshGeometry> pMesh = QSP<CMeshGeometry>(new CMeshGeometry(pContainer->scene()));
 
     loadComponent(sBaseFile, pContainer, pMesh, xNode, vMaterials);
 
@@ -72,7 +72,7 @@ void CQ3DLoader::loadComponent(
     // Position d'origine
     if (xPositionNode.isEmpty() == false)
     {
-        pContainer->setOriginPosition(CVector3(
+        pContainer->setPosition(CVector3(
                                      xPositionNode.attributes()[ParamName_x].toDouble(),
                                      xPositionNode.attributes()[ParamName_y].toDouble(),
                                      xPositionNode.attributes()[ParamName_z].toDouble()
@@ -82,7 +82,7 @@ void CQ3DLoader::loadComponent(
     // Rotation d'origine
     if (xRotationNode.isEmpty() == false)
     {
-        pContainer->setOriginRotation(CVector3(
+        pContainer->setRotation(CVector3(
                                      xRotationNode.attributes()[ParamName_x].toDouble(),
                                      xRotationNode.attributes()[ParamName_y].toDouble(),
                                      xRotationNode.attributes()[ParamName_z].toDouble()
@@ -94,7 +94,7 @@ void CQ3DLoader::loadComponent(
 
     foreach (CXMLNode xMaterial, vxMaterials)
     {
-        CMaterial* pNewMaterial = new CMaterial(pContainer->getScene());
+        CMaterial* pNewMaterial = new CMaterial(pContainer->scene());
 
         pNewMaterial->loadParameters(sBaseFile, xMaterial);
 
@@ -184,7 +184,7 @@ void CQ3DLoader::loadComponent(
 
     foreach (CXMLNode xChild, vComponents)
     {
-        CMesh* pChildMesh = new CMesh(pContainer->getScene());
+        CMesh* pChildMesh = new CMesh(pContainer->scene());
 
         loadComponent(sBaseFile, pChildMesh, pChildMesh->geometry(), xChild, vMaterials, pContainer);
     }
@@ -200,8 +200,8 @@ void CQ3DLoader::addBounds(CComponent* pContainer, CBoundingBox& bBox, CMatrix4 
 
     if (pContainer->isRootObject() == false)
     {
-        vPosition = pContainer->getOriginPosition();
-        vRotation = pContainer->getOriginRotation();
+        vPosition = pContainer->position();
+        vRotation = pContainer->rotation();
     }
 
     mLocalTransform = mLocalTransform * CMatrix4::makeRotation(vRotation);
@@ -211,7 +211,7 @@ void CQ3DLoader::addBounds(CComponent* pContainer, CBoundingBox& bBox, CMatrix4 
 
     bBox = bBox & pContainer->bounds().transformed(mTransform);
 
-    foreach (QSP<CComponent> pChild, pContainer->getChildren())
+    foreach (QSP<CComponent> pChild, pContainer->childComponents())
     {
         QSP<CMesh> pChildMesh = QSP_CAST(CMesh, pChild);
 

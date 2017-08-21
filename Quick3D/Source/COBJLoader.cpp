@@ -42,7 +42,7 @@ QSP<CMeshGeometry> COBJLoader::load(const QString& sBaseFile, CComponent *pConta
 {
     QTextStream sInput(&sText, QIODevice::ReadOnly);
 
-    QSP<CMeshGeometry> pMesh = QSP<CMeshGeometry>(new CMeshGeometry(pContainer->getScene()));
+    QSP<CMeshGeometry> pMesh = QSP<CMeshGeometry>(new CMeshGeometry(pContainer->scene()));
 
     pMesh->faces().clear();
     pMesh->vertices().clear();
@@ -73,9 +73,9 @@ QSP<CMeshGeometry> COBJLoader::load(const QString& sBaseFile, CComponent *pConta
 
                     loadMaterials(
                                 sBaseFile,
-                                pContainer->getScene(),
+                                pContainer->scene(),
                                 pMesh.data(),
-                                pContainer->getScene()->ressourcesManager()->getObjByFilePathName(sMaterialFileName)
+                                pContainer->scene()->ressourcesManager()->getObjByFilePathName(sMaterialFileName)
                                 );
                 }
                 else if (sFirstWord == "o" && lWords.count() > 1)

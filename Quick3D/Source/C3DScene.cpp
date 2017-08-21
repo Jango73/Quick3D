@@ -183,7 +183,7 @@ void C3DScene::init(QVector<QSP<CComponent> > vComponents)
 
     foreach (QSP<CLight> pLight, vLights)
     {
-        if (pLight->getTag() == "SUN")
+        if (pLight->tag() == "SUN")
         {
             bFoundSun = true;
             break;
@@ -389,7 +389,7 @@ void C3DScene::getLightsRecurse(QVector<QSP<CLight> >& vLights, QSP<CComponent> 
         }
     }
 
-    foreach (QSP<CComponent> pChild, pComponent->getChildren())
+    foreach (QSP<CComponent> pChild, pComponent->childComponents())
     {
         getLightsRecurse(vLights, pChild);
     }
@@ -406,7 +406,7 @@ QVector<QSP<CComponent> > C3DScene::componentsByTag(const QString& sTag)
 
     foreach(QSP<CComponent> pComponent, m_vComponents)
     {
-        if (pComponent->getTag() == sTag)
+        if (pComponent->tag() == sTag)
         {
             vReturnValue.append(pComponent);
         }
@@ -436,7 +436,7 @@ QVector<QSP<CLight> > C3DScene::lightsByTag(const QString& sTag)
 
 void C3DScene::getLightsByTagRecurse(QVector<QSP<CLight> >& vLights, const QString& sTag, QSP<CComponent> pComponent)
 {
-    if (pComponent->isLight() && pComponent->getTag() == sTag)
+    if (pComponent->isLight() && pComponent->tag() == sTag)
     {
         QSP<CLight> pLight = QSP_CAST(CLight, pComponent);
 
@@ -446,7 +446,7 @@ void C3DScene::getLightsByTagRecurse(QVector<QSP<CLight> >& vLights, const QStri
         }
     }
 
-    foreach (QSP<CComponent> pChild, pComponent->getChildren())
+    foreach (QSP<CComponent> pChild, pComponent->childComponents())
     {
         getLightsByTagRecurse(vLights, sTag, pChild);
     }
@@ -614,7 +614,7 @@ void C3DScene::deleteComponentsByTag(const QString& sTag)
 {
     for (int iIndex = 0; iIndex < m_vComponents.count(); iIndex++)
     {
-        if (m_vComponents[iIndex]->getTag() == sTag)
+        if (m_vComponents[iIndex]->tag() == sTag)
         {
             m_vComponents[iIndex]->clearLinks(this);
             m_vComponents.remove(iIndex);
@@ -662,7 +662,7 @@ RayTracingResult C3DScene::intersectRecurse(QSP<CComponent> pComponent, const Ma
 {
     RayTracingResult dReturnResult = pComponent->intersect(aRay);
 
-    foreach (QSP<CComponent> pChild, pComponent->getChildren())
+    foreach (QSP<CComponent> pChild, pComponent->childComponents())
     {
         RayTracingResult dChildResult = intersectRecurse(pChild, aRay);
 

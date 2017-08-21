@@ -358,7 +358,7 @@ void CAircraftController::q3dEvent(CQ3DEvent* event)
         {
             if (pRotationTarget != nullptr)
             {
-                pRotationTarget->setOriginRotation(CVector3((Math::Pi / 20.0) * 1.0, (Math::Pi / 4.0) * 0.0, 0.0));
+                pRotationTarget->setRotation(CVector3((Math::Pi / 20.0) * 1.0, (Math::Pi / 4.0) * 0.0, 0.0));
             }
         }
     }
@@ -368,7 +368,7 @@ void CAircraftController::q3dEvent(CQ3DEvent* event)
         {
             if (pRotationTarget != nullptr)
             {
-                pRotationTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 1.0, 0.0));
+                pRotationTarget->setRotation(CVector3(0.0, (Math::Pi / 4.0) * 1.0, 0.0));
             }
         }
     }
@@ -378,7 +378,7 @@ void CAircraftController::q3dEvent(CQ3DEvent* event)
         {
             if (pRotationTarget != nullptr)
             {
-                pRotationTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 2.0, 0.0));
+                pRotationTarget->setRotation(CVector3(0.0, (Math::Pi / 4.0) * 2.0, 0.0));
             }
         }
     }
@@ -388,7 +388,7 @@ void CAircraftController::q3dEvent(CQ3DEvent* event)
         {
             if (pRotationTarget != nullptr)
             {
-                pRotationTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 3.0, 0.0));
+                pRotationTarget->setRotation(CVector3(0.0, (Math::Pi / 4.0) * 3.0, 0.0));
             }
         }
     }
@@ -398,7 +398,7 @@ void CAircraftController::q3dEvent(CQ3DEvent* event)
         {
             if (pRotationTarget != nullptr)
             {
-                pRotationTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 4.0, 0.0));
+                pRotationTarget->setRotation(CVector3(0.0, (Math::Pi / 4.0) * 4.0, 0.0));
             }
         }
     }
@@ -408,7 +408,7 @@ void CAircraftController::q3dEvent(CQ3DEvent* event)
         {
             if (pRotationTarget != nullptr)
             {
-                pRotationTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 5.0, 0.0));
+                pRotationTarget->setRotation(CVector3(0.0, (Math::Pi / 4.0) * 5.0, 0.0));
             }
         }
     }
@@ -418,7 +418,7 @@ void CAircraftController::q3dEvent(CQ3DEvent* event)
         {
             if (pRotationTarget != nullptr)
             {
-                pRotationTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 6.0, 0.0));
+                pRotationTarget->setRotation(CVector3(0.0, (Math::Pi / 4.0) * 6.0, 0.0));
             }
         }
     }
@@ -428,7 +428,7 @@ void CAircraftController::q3dEvent(CQ3DEvent* event)
         {
             if (pRotationTarget != nullptr)
             {
-                pRotationTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 7.0, 0.0));
+                pRotationTarget->setRotation(CVector3(0.0, (Math::Pi / 4.0) * 7.0, 0.0));
             }
         }
     }
@@ -438,7 +438,7 @@ void CAircraftController::q3dEvent(CQ3DEvent* event)
         {
             if (pRotationTarget != nullptr)
             {
-                pRotationTarget->setOriginRotation(CVector3((Math::Pi / 4.0) * 1.0, (Math::Pi / 4.0) * 1.0, 0.0));
+                pRotationTarget->setRotation(CVector3((Math::Pi / 4.0) * 1.0, (Math::Pi / 4.0) * 1.0, 0.0));
             }
         }
     }

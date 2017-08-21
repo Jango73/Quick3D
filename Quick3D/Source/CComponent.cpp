@@ -60,12 +60,12 @@ CComponent::CComponent(C3DScene* pScene)
     : m_pScene(pScene)
     , m_pController(nullptr)
     , m_pParent(nullptr)
-    , m_vOriginPosition(0.0, 0.0, 0.0)
-    , m_vOriginRotation(0.0, 0.0, 0.0)
-    , m_vOriginScale(1.0, 1.0, 1.0)
     , m_vPosition(0.0, 0.0, 0.0)
     , m_vRotation(0.0, 0.0, 0.0)
     , m_vScale(1.0, 1.0, 1.0)
+    , m_vAnimPosition(0.0, 0.0, 0.0)
+    , m_vAnimRotation(0.0, 0.0, 0.0)
+    , m_vAnimScale(1.0, 1.0, 1.0)
     , m_vRotationFactor(1.0, 1.0, 1.0)
     , m_vRotationMinimum(-1000.0, -1000.0, -1000.0)
     , m_vRotationMaximum( 1000.0,  1000.0,  1000.0)
@@ -238,7 +238,7 @@ QSP<CComponent> CComponent::findComponent(QString sName, QSP<CComponent> pCaller
 
         if (lNames[0].isEmpty() && pCaller)
         {
-            lNames[0] = pCaller->getRoot()->name();
+            lNames[0] = pCaller->root()->name();
         }
 
         if (lNames[0] == m_sName)
@@ -282,7 +282,7 @@ QSP<CComponent> CComponent::findComponent(QString sName, QSP<CComponent> pCaller
 /*!
     Returns the path name of this component.
 */
-QString CComponent::getQualifiedName()
+QString CComponent::qualifiedName()
 {
     QString sReturnValue = m_sName;
 
@@ -302,7 +302,7 @@ QString CComponent::getQualifiedName()
 /*!
     Returns the controller of this component.
 */
-CController* CComponent::getController()
+CController* CComponent::controller()
 {
     return m_pController;
 }
@@ -358,18 +358,18 @@ void CComponent::setGeoloc(CGeoloc gGeoloc)
     {
         if (gGeoloc.valid())
         {
-            m_vOriginPosition = CVector3(0.0, 0.0, 0.0);
+            m_vPosition = CVector3(0.0, 0.0, 0.0);
             m_gGeoloc = gGeoloc;
         }
     }
 
     if (isRootObject() && m_bInheritTransform)
     {
-        m_vECEFRotation = toECEFRotation(m_vOriginRotation);
+        m_vECEFRotation = toECEFRotation(m_vRotation);
     }
     else
     {
-        m_vECEFRotation = m_vOriginRotation;
+        m_vECEFRotation = m_vRotation;
     }
 }
 
@@ -378,25 +378,25 @@ void CComponent::setGeoloc(CGeoloc gGeoloc)
 /*!
     Sets the geocentric location of this component, if it is a root object. Else, sets the local cartesian location.
 */
-void CComponent::setOriginPosition(CVector3 vPosition)
+void CComponent::setPosition(CVector3 vPosition)
 {
     if (isRootObject() || m_bInheritTransform == false)
     {
-        m_vOriginPosition = CVector3(0.0, 0.0, 0.0);
+        m_vPosition = CVector3(0.0, 0.0, 0.0);
         m_gGeoloc = CGeoloc(vPosition);
     }
     else
     {
-        m_vOriginPosition = vPosition;
+        m_vPosition = vPosition;
     }
 
     if (isRootObject() && m_bInheritTransform)
     {
-        m_vECEFRotation = toECEFRotation(m_vOriginRotation);
+        m_vECEFRotation = toECEFRotation(m_vRotation);
     }
     else
     {
-        m_vECEFRotation = m_vOriginRotation;
+        m_vECEFRotation = m_vRotation;
     }
 }
 
@@ -406,24 +406,24 @@ void CComponent::setOriginPosition(CVector3 vPosition)
     Sets the ECEF euler rotation of this component to \a Rotation, if it is a root object. Else, sets the local euler rotation. \br\br
     \a Rotation is specified in radians.
 */
-void CComponent::setOriginRotation(CVector3 Rotation)
+void CComponent::setRotation(CVector3 vRotation)
 {
     // Assign the original rotation
-    m_vOriginRotation = Rotation * m_vRotationFactor;
+    m_vRotation = vRotation * m_vRotationFactor;
 
     // Clip angles between -PI and PI
-    m_vOriginRotation.X = Math::Angles::clipAngleRadianPIMinusPI(m_vOriginRotation.X);
-    m_vOriginRotation.Y = Math::Angles::clipAngleRadianPIMinusPI(m_vOriginRotation.Y);
-    m_vOriginRotation.Z = Math::Angles::clipAngleRadianPIMinusPI(m_vOriginRotation.Z);
+    m_vRotation.X = Math::Angles::clipAngleRadianPIMinusPI(m_vRotation.X);
+    m_vRotation.Y = Math::Angles::clipAngleRadianPIMinusPI(m_vRotation.Y);
+    m_vRotation.Z = Math::Angles::clipAngleRadianPIMinusPI(m_vRotation.Z);
 
     if (isRootObject() || m_bInheritTransform == false)
     {
         // Compute rotation in the ECEF frame
-        m_vECEFRotation = toECEFRotation(m_vOriginRotation);
+        m_vECEFRotation = toECEFRotation(m_vRotation);
     }
     else
     {
-        m_vECEFRotation = m_vOriginRotation;
+        m_vECEFRotation = m_vRotation;
     }
 }
 
@@ -432,9 +432,9 @@ void CComponent::setOriginRotation(CVector3 Rotation)
 /*!
     Sets the local scale of the component to \a Scale.
 */
-void CComponent::setOriginScale(CVector3 Scale)
+void CComponent::setScale(CVector3 vScale)
 {
-    m_vOriginScale = Scale;
+    m_vScale = vScale;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -442,10 +442,10 @@ void CComponent::setOriginScale(CVector3 Scale)
 /*!
     Sets the animated (offset) location of this component to \a Position.
 */
-void CComponent::setPosition(CVector3 Position)
+void CComponent::setAnimPosition(CVector3 vPosition)
 {
     // Assignation de la position
-    m_vPosition = Position;
+    m_vAnimPosition = vPosition;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -454,23 +454,23 @@ void CComponent::setPosition(CVector3 Position)
     Sets the animated (offset) euler rotation of this component. \br\br
     \a Rotation is specified in radians.
 */
-void CComponent::setRotation(CVector3 Rotation)
+void CComponent::setAnimRotation(CVector3 vRotation)
 {
     // Assign rotation
-    m_vRotation = Rotation * m_vRotationFactor;
+    m_vAnimRotation = vRotation * m_vRotationFactor;
 
     // Clip angles between -PI and PI
-    m_vRotation.X = Math::Angles::clipAngleRadianPIMinusPI(m_vRotation.X);
-    m_vRotation.Y = Math::Angles::clipAngleRadianPIMinusPI(m_vRotation.Y);
-    m_vRotation.Z = Math::Angles::clipAngleRadianPIMinusPI(m_vRotation.Z);
+    m_vAnimRotation.X = Math::Angles::clipAngleRadianPIMinusPI(m_vAnimRotation.X);
+    m_vAnimRotation.Y = Math::Angles::clipAngleRadianPIMinusPI(m_vAnimRotation.Y);
+    m_vAnimRotation.Z = Math::Angles::clipAngleRadianPIMinusPI(m_vAnimRotation.Z);
 
-    if (m_vRotation.X < m_vRotationMinimum.X) m_vRotation.X = m_vRotationMinimum.X;
-    if (m_vRotation.Y < m_vRotationMinimum.Y) m_vRotation.Y = m_vRotationMinimum.Y;
-    if (m_vRotation.Z < m_vRotationMinimum.Z) m_vRotation.Z = m_vRotationMinimum.Z;
+    if (m_vAnimRotation.X < m_vRotationMinimum.X) m_vAnimRotation.X = m_vRotationMinimum.X;
+    if (m_vAnimRotation.Y < m_vRotationMinimum.Y) m_vAnimRotation.Y = m_vRotationMinimum.Y;
+    if (m_vAnimRotation.Z < m_vRotationMinimum.Z) m_vAnimRotation.Z = m_vRotationMinimum.Z;
 
-    if (m_vRotation.X > m_vRotationMaximum.X) m_vRotation.X = m_vRotationMaximum.X;
-    if (m_vRotation.Y > m_vRotationMaximum.Y) m_vRotation.Y = m_vRotationMaximum.Y;
-    if (m_vRotation.Z > m_vRotationMaximum.Z) m_vRotation.Z = m_vRotationMaximum.Z;
+    if (m_vAnimRotation.X > m_vRotationMaximum.X) m_vAnimRotation.X = m_vRotationMaximum.X;
+    if (m_vAnimRotation.Y > m_vRotationMaximum.Y) m_vAnimRotation.Y = m_vRotationMaximum.Y;
+    if (m_vAnimRotation.Z > m_vRotationMaximum.Z) m_vAnimRotation.Z = m_vRotationMaximum.Z;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -478,10 +478,10 @@ void CComponent::setRotation(CVector3 Rotation)
 /*!
     Sets the animated (offset) scale of this component to \a Scale.
 */
-void CComponent::setScale(CVector3 Scale)
+void CComponent::setAnimScale(CVector3 vScale)
 {
     // Assign the scale
-    m_vScale = Scale;
+    m_vAnimScale = vScale;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -539,22 +539,22 @@ CVector3 CComponent::toECEFRotation(CVector3 vRotation) const
 */
 CComponent& CComponent::operator = (const CComponent& target)
 {
-    m_pScene						= target.m_pScene;
-    m_sName							= target.m_sName;
-    m_sParentName					= target.m_sParentName;
-    m_pParent						= target.m_pParent;
-    m_gGeoloc						= target.m_gGeoloc;
-    m_vECEFRotation					= target.m_vECEFRotation;
-    m_vOriginPosition				= target.m_vOriginPosition;
-    m_vOriginRotation				= target.m_vOriginRotation;
-    m_vOriginScale					= target.m_vOriginScale;
-    m_vPosition						= target.m_vPosition;
-    m_vRotation						= target.m_vRotation;
-    m_vScale						= target.m_vScale;
-    m_mWorldTransform				= target.m_mWorldTransform;
-    m_mWorldTransformInverse		= target.m_mWorldTransformInverse;
-    m_bVisible						= target.m_bVisible;
-    m_bInheritTransform				= target.m_bInheritTransform;
+    m_pScene                    = target.m_pScene;
+    m_sName                     = target.m_sName;
+    m_sParentName               = target.m_sParentName;
+    m_pParent                   = target.m_pParent;
+    m_gGeoloc                   = target.m_gGeoloc;
+    m_vECEFRotation             = target.m_vECEFRotation;
+    m_vPosition                 = target.m_vPosition;
+    m_vRotation                 = target.m_vRotation;
+    m_vScale                    = target.m_vScale;
+    m_vAnimPosition             = target.m_vAnimPosition;
+    m_vAnimRotation             = target.m_vAnimRotation;
+    m_vAnimScale                = target.m_vAnimScale;
+    m_mWorldTransform           = target.m_mWorldTransform;
+    m_mWorldTransformInverse    = target.m_mWorldTransformInverse;
+    m_bVisible                  = target.m_bVisible;
+    m_bInheritTransform         = target.m_bInheritTransform;
 
     return *this;
 }
@@ -587,7 +587,7 @@ void CComponent::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 
     if (tPositionNode.isEmpty() == false)
     {
-        setOriginPosition(CVector3(
+        setPosition(CVector3(
                               tPositionNode.attributes()[ParamName_x].toDouble(),
                               tPositionNode.attributes()[ParamName_y].toDouble(),
                               tPositionNode.attributes()[ParamName_z].toDouble()
@@ -609,7 +609,7 @@ void CComponent::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 
     if (tRotationNode.isEmpty() == false)
     {
-        setOriginRotation(CVector3(
+        setRotation(CVector3(
                               Angles::toRad(tRotationNode.attributes()[ParamName_x].toDouble()),
                               Angles::toRad(tRotationNode.attributes()[ParamName_y].toDouble()),
                               Angles::toRad(tRotationNode.attributes()[ParamName_z].toDouble())
@@ -661,7 +661,7 @@ void CComponent::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 
         if (vScale.X != 0.0 && vScale.Y != 0.0 && vScale.Z != 0.0)
         {
-            setOriginScale(vScale);
+            setScale(vScale);
         }
     }
 }
@@ -827,7 +827,7 @@ void CComponent::updateTexture(CTexture* pTexture, double dDeltaTime)
 /*!
     Returns the world transform matrix of the component.
 */
-CMatrix4 CComponent::getWorldTransform() const
+CMatrix4 CComponent::worldTransform() const
 {
     return m_mWorldTransform;
 }
@@ -837,14 +837,14 @@ CMatrix4 CComponent::getWorldTransform() const
 /*!
     Returns the inverse of the world transform matrix of the component.
 */
-CMatrix4 CComponent::getWorldTransformInverse() const
+CMatrix4 CComponent::worldTransformInverse() const
 {
     return m_mWorldTransformInverse;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-Math::CMatrix4 CComponent::getPreviousWorldTransform() const
+Math::CMatrix4 CComponent::previousWorldTransform() const
 {
     return m_mPreviousWorldTransform;
 }
@@ -854,7 +854,7 @@ Math::CMatrix4 CComponent::getPreviousWorldTransform() const
 /*!
     Returns the geocentric location of the component.
 */
-CVector3 CComponent::getWorldPosition() const
+CVector3 CComponent::worldPosition() const
 {
     return m_mWorldTransform * CVector3(0.0, 0.0, 0.0);
 }
@@ -864,7 +864,7 @@ CVector3 CComponent::getWorldPosition() const
 /*!
     Returns the ECEF (Earth-Centered Earth-Fixed) euler rotation of the component.
 */
-CVector3 CComponent::getWorldRotation() const
+CVector3 CComponent::worldRotation() const
 {
     CVector3 vVec1(0.0, 0.0, 0.0);
     CVector3 vVec2(0.0, 0.0, 1.0);
@@ -886,7 +886,7 @@ CVector3 CComponent::getWorldRotation() const
 /*!
     Returns a vector that points to what is considered 'forward' of the component (+Z).
 */
-CVector3 CComponent::getWorldDirection() const
+CVector3 CComponent::worldDirection() const
 {
     CVector3 vVec1(0.0, 0.0, 0.0);
     CVector3 vVec2(0.0, 0.0, 1.0);
@@ -899,9 +899,9 @@ CVector3 CComponent::getWorldDirection() const
 /*!
     Returns the world scale of the component.
 */
-CVector3 CComponent::getWorldScale() const
+CVector3 CComponent::worldScale() const
 {
-    return m_vOriginScale * m_vScale;
+    return m_vScale * m_vAnimScale;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -910,7 +910,7 @@ CVector3 CComponent::getWorldScale() const
     Returns the working status of the component. \br\br
     The status property can be used to emulate hardware that can is malfunctioning, thus producing breakdowns.
 */
-double CComponent::getStatus() const
+double CComponent::status() const
 {
     return m_dStatus;
 }
@@ -923,9 +923,9 @@ double CComponent::getStatus() const
 void CComponent::saveTransform()
 {
     m_gSavedGeoloc			= m_gGeoloc;
-    m_vSavedOriginPosition	= m_vOriginPosition;
-    m_vSavedOriginRotation	= m_vOriginRotation;
-    m_vSavedOriginScale		= m_vOriginScale;
+    m_vSavedPosition	= m_vPosition;
+    m_vSavedRotation	= m_vRotation;
+    m_vSavedScale		= m_vScale;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -936,17 +936,17 @@ void CComponent::saveTransform()
 void CComponent::loadTransform()
 {
     m_gGeoloc			= m_gSavedGeoloc;
-    m_vOriginPosition	= m_vSavedOriginPosition;
-    m_vOriginRotation	= m_vSavedOriginRotation;
-    m_vOriginScale		= m_vSavedOriginScale;
+    m_vPosition	= m_vSavedPosition;
+    m_vRotation	= m_vSavedRotation;
+    m_vScale		= m_vSavedScale;
 
     if (isRootObject() && m_bInheritTransform)
     {
-        m_vECEFRotation = toECEFRotation(m_vOriginRotation);
+        m_vECEFRotation = toECEFRotation(m_vRotation);
     }
     else
     {
-        m_vECEFRotation = m_vOriginRotation;
+        m_vECEFRotation = m_vRotation;
     }
 
     computeWorldTransform();
@@ -968,13 +968,13 @@ void CComponent::computeWorldTransform()
     mOriginRotation = CMatrix4::makeRotation(m_vECEFRotation);
 
     // Create the animated rotation matrix
-    mRotation = CMatrix4::makeRotation(m_vRotation);
+    mRotation = CMatrix4::makeRotation(m_vAnimRotation);
 
     // Create the original position matrix
-    mOriginPosition = CMatrix4::makeTranslation(m_vOriginPosition);
+    mOriginPosition = CMatrix4::makeTranslation(m_vPosition);
 
     // Create the animated position matrix
-    mPosition = CMatrix4::makeTranslation(m_vPosition);
+    mPosition = CMatrix4::makeTranslation(m_vAnimPosition);
 
     // Apply the transform matrices to m_mWorldTransform
     m_mWorldTransform.makeIdentity();
@@ -1005,7 +1005,7 @@ void CComponent::computeWorldTransform()
 /*!
     Returns the root object of this component, meaning the start of the chain.
 */
-QSP<CComponent> CComponent::getRoot()
+QSP<CComponent> CComponent::root()
 {
     QSP<CComponent> pReturnValue = QSP<CComponent>(this);
 
@@ -1019,7 +1019,7 @@ QSP<CComponent> CComponent::getRoot()
 
 //-------------------------------------------------------------------------------------------------
 
-CGeoloc CComponent::getGeoloc() const
+CGeoloc CComponent::geoloc() const
 {
     if (isRootObject() || m_bInheritTransform == false)
     {
@@ -1027,13 +1027,26 @@ CGeoloc CComponent::getGeoloc() const
     }
     else
     {
-        return CGeoloc(getWorldPosition());
+        return CGeoloc(worldPosition());
     }
 }
 
 //-------------------------------------------------------------------------------------------------
 
-CVector3 CComponent::getOriginPosition() const
+/*!
+    Returns the rotation in the ECEF frame (Earth-centered earth-fixed).
+*/
+Math::CVector3 CComponent::ECEFRotation() const
+{
+    return m_vECEFRotation;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Returns the position.
+*/
+CVector3 CComponent::position() const
 {
     if (isRootObject() || m_bInheritTransform == false)
     {
@@ -1041,22 +1054,35 @@ CVector3 CComponent::getOriginPosition() const
     }
     else
     {
-        return m_vOriginPosition;
+        return m_vPosition;
     }
 }
 
 //-------------------------------------------------------------------------------------------------
 
-Math::CVector3 CComponent::getOriginRotation() const
+/*!
+    Returns the rotation.
+*/
+Math::CVector3 CComponent::rotation() const
 {
-    return m_vOriginRotation;
+    return m_vRotation;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Returns the scale.
+*/
+Math::CVector3 CComponent::scale() const
+{
+    return m_vScale;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void CComponent::lookAt(CComponent* pTarget)
 {
-    CVector3 vPosition = pTarget->getGeoloc().toVector3(getGeoloc());
+    CVector3 vPosition = pTarget->geoloc().toVector3(geoloc());
 
     double dY = vPosition.eulerYAngle();
 
@@ -1066,7 +1092,7 @@ void CComponent::lookAt(CComponent* pTarget)
 
     double dX = vPosition.eulerXAngle();
 
-    setOriginRotation(CVector3(dX, dY, 0.0));
+    setRotation(CVector3(dX, dY, 0.0));
 
     computeWorldTransform();
 }
@@ -1090,12 +1116,12 @@ void CComponent::dump(QTextStream& stream, int iIdent)
     dumpIdent(stream, iIdent, QString("Parent name : %1").arg(m_sParentName));
     dumpIdent(stream, iIdent, QString("Geoloc : %1").arg(m_gGeoloc.toString()));
     dumpIdent(stream, iIdent, QString("ECEF rotation : %1").arg(m_vECEFRotation.toString()));
-    dumpIdent(stream, iIdent, QString("Origin position : %1").arg(m_vOriginPosition.toString()));
-    dumpIdent(stream, iIdent, QString("Origin rotation : %1").arg(m_vOriginRotation.toString()));
-    dumpIdent(stream, iIdent, QString("Origin scale : %1").arg(m_vOriginScale.toString()));
-    dumpIdent(stream, iIdent, QString("Animated position : %1").arg(m_vPosition.toString()));
-    dumpIdent(stream, iIdent, QString("Animated rotation : %1").arg(m_vRotation.toString()));
-    dumpIdent(stream, iIdent, QString("Animated scale : %1").arg(m_vScale.toString()));
+    dumpIdent(stream, iIdent, QString("Origin position : %1").arg(m_vPosition.toString()));
+    dumpIdent(stream, iIdent, QString("Origin rotation : %1").arg(m_vRotation.toString()));
+    dumpIdent(stream, iIdent, QString("Origin scale : %1").arg(m_vScale.toString()));
+    dumpIdent(stream, iIdent, QString("Animated position : %1").arg(m_vAnimPosition.toString()));
+    dumpIdent(stream, iIdent, QString("Animated rotation : %1").arg(m_vAnimRotation.toString()));
+    dumpIdent(stream, iIdent, QString("Animated scale : %1").arg(m_vAnimScale.toString()));
     dumpIdent(stream, iIdent, QString("World transform : %1").arg(m_mWorldTransform.toString()));
     dumpIdent(stream, iIdent, QString("Children :"));
 

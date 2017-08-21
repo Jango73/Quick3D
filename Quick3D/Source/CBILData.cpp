@@ -105,6 +105,7 @@ CBILData::CBILData(
 //-------------------------------------------------------------------------------------------------
 
 CBILData::CBILData(const CBILData& target)
+    : CExpendable(20)
 {
     *this = target;
 }

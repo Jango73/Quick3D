@@ -47,7 +47,7 @@ void CForceController::update(double dDeltaTime)
 
         if (pPhysicalPositionTarget != nullptr)
         {
-            double dMoveFactor = pPhysicalPositionTarget->getGeoloc().Altitude / 500.0;
+            double dMoveFactor = pPhysicalPositionTarget->geoloc().Altitude / 500.0;
             if (dMoveFactor < 1.0) dMoveFactor = 1.0;
 
             dMoveSpeed = dMoveSpeed * dMoveFactor;
@@ -100,13 +100,13 @@ void CForceController::update(double dDeltaTime)
             {
                 CVector3 vRotation = CVector3(Math::Angles::toRad(TURN_SPEED) * dDeltaTime, 0.0, 0.0);
 
-                pPhysicalRotationTarget->setOriginRotation(m_rRotationTarget.component()->getOriginRotation() + vRotation);
+                pPhysicalRotationTarget->setRotation(m_rRotationTarget.component()->rotation() + vRotation);
             }
             else if (m_bLookDown)
             {
                 CVector3 vRotation = CVector3(Math::Angles::toRad(-TURN_SPEED) * dDeltaTime, 0.0, 0.0);
 
-                pPhysicalRotationTarget->setOriginRotation(m_rRotationTarget.component()->getOriginRotation() + vRotation);
+                pPhysicalRotationTarget->setRotation(m_rRotationTarget.component()->rotation() + vRotation);
             }
 
             if (m_pJoystick != nullptr && m_pJoystick->connected())
@@ -125,7 +125,7 @@ void CForceController::update(double dDeltaTime)
                     {
                         CVector3 vRotation = CVector3(0.0, Math::Angles::toRad(TURN_SPEED) * dDeltaTime, 0.0);
 
-                        pPhysicalRotationTarget->setOriginRotation(m_rRotationTarget.component()->getOriginRotation() + vRotation);
+                        pPhysicalRotationTarget->setRotation(m_rRotationTarget.component()->rotation() + vRotation);
                     }
                 }
                 else if (m_bTurnLeft)
@@ -138,7 +138,7 @@ void CForceController::update(double dDeltaTime)
                     {
                         CVector3 vRotation = CVector3(0.0, Math::Angles::toRad(-TURN_SPEED) * dDeltaTime, 0.0);
 
-                        pPhysicalRotationTarget->setOriginRotation(m_rRotationTarget.component()->getOriginRotation() + vRotation);
+                        pPhysicalRotationTarget->setRotation(m_rRotationTarget.component()->rotation() + vRotation);
                     }
                 }
             }
@@ -205,7 +205,7 @@ void CForceController::q3dEvent(CQ3DEvent* event)
         {
             if (pLookTarget != nullptr)
             {
-                pLookTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 0.0, 0.0));
+                pLookTarget->setRotation(CVector3(0.0, (Math::Pi / 4.0) * 0.0, 0.0));
             }
         }
     }
@@ -215,7 +215,7 @@ void CForceController::q3dEvent(CQ3DEvent* event)
         {
             if (pLookTarget != nullptr)
             {
-                pLookTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 1.0, 0.0));
+                pLookTarget->setRotation(CVector3(0.0, (Math::Pi / 4.0) * 1.0, 0.0));
             }
         }
     }
@@ -225,7 +225,7 @@ void CForceController::q3dEvent(CQ3DEvent* event)
         {
             if (pLookTarget != nullptr)
             {
-                pLookTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 2.0, 0.0));
+                pLookTarget->setRotation(CVector3(0.0, (Math::Pi / 4.0) * 2.0, 0.0));
             }
         }
     }
@@ -235,7 +235,7 @@ void CForceController::q3dEvent(CQ3DEvent* event)
         {
             if (pLookTarget != nullptr)
             {
-                pLookTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 3.0, 0.0));
+                pLookTarget->setRotation(CVector3(0.0, (Math::Pi / 4.0) * 3.0, 0.0));
             }
         }
     }
@@ -245,7 +245,7 @@ void CForceController::q3dEvent(CQ3DEvent* event)
         {
             if (pLookTarget != nullptr)
             {
-                pLookTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 4.0, 0.0));
+                pLookTarget->setRotation(CVector3(0.0, (Math::Pi / 4.0) * 4.0, 0.0));
             }
         }
     }
@@ -255,7 +255,7 @@ void CForceController::q3dEvent(CQ3DEvent* event)
         {
             if (pLookTarget != nullptr)
             {
-                pLookTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 5.0, 0.0));
+                pLookTarget->setRotation(CVector3(0.0, (Math::Pi / 4.0) * 5.0, 0.0));
             }
         }
     }
@@ -265,7 +265,7 @@ void CForceController::q3dEvent(CQ3DEvent* event)
         {
             if (pLookTarget != nullptr)
             {
-                pLookTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 6.0, 0.0));
+                pLookTarget->setRotation(CVector3(0.0, (Math::Pi / 4.0) * 6.0, 0.0));
             }
         }
     }
@@ -275,7 +275,7 @@ void CForceController::q3dEvent(CQ3DEvent* event)
         {
             if (pLookTarget != nullptr)
             {
-                pLookTarget->setOriginRotation(CVector3(0.0, (Math::Pi / 4.0) * 7.0, 0.0));
+                pLookTarget->setRotation(CVector3(0.0, (Math::Pi / 4.0) * 7.0, 0.0));
             }
         }
     }
@@ -285,7 +285,7 @@ void CForceController::q3dEvent(CQ3DEvent* event)
         {
             if (pLookTarget != nullptr)
             {
-                pLookTarget->setOriginRotation(CVector3((Math::Pi / 4.0) * 1.0, (Math::Pi / 4.0) * 1.0, 0.0));
+                pLookTarget->setRotation(CVector3((Math::Pi / 4.0) * 1.0, (Math::Pi / 4.0) * 1.0, 0.0));
             }
         }
     }

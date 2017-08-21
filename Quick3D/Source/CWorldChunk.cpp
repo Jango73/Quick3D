@@ -105,14 +105,14 @@ void CWorldChunk::setSize(CGeoloc value)
 void CWorldChunk::build()
 {
     CGeoloc gStart(
-                getGeoloc().Latitude - m_gSize.Latitude * 0.5,
-                getGeoloc().Longitude - m_gSize.Longitude * 0.5,
+                geoloc().Latitude - m_gSize.Latitude * 0.5,
+                geoloc().Longitude - m_gSize.Longitude * 0.5,
                 0.0
                 );
 
     CGeoloc gEnd(
-                getGeoloc().Latitude + m_gSize.Latitude * 0.5,
-                getGeoloc().Longitude + m_gSize.Longitude * 0.5,
+                geoloc().Latitude + m_gSize.Latitude * 0.5,
+                geoloc().Longitude + m_gSize.Longitude * 0.5,
                 0.0
                 );
 
@@ -130,7 +130,7 @@ void CWorldChunk::build()
 
     computeWorldTransform();
 
-    m_bWorldBounds = createBoundsForTerrain(getGeoloc(), m_gSize);
+    m_bWorldBounds = createBoundsForTerrain(geoloc(), m_gSize);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -356,7 +356,7 @@ CBoundingBox CWorldChunk::createBoundsForTerrain(CGeoloc gPosition, CGeoloc gSiz
 
 void CWorldChunk::clearTerrain()
 {
-    CGeoloc gChunkPosition = getGeoloc();
+    CGeoloc gChunkPosition = geoloc();
 
     if (m_pTerrain != nullptr)
     {
@@ -391,7 +391,7 @@ void CWorldChunk::work()
     {
         // Create bounded containers
         {
-            CGeoloc gStart(getGeoloc().Latitude - m_gSize.Latitude * 0.5, getGeoloc().Longitude - m_gSize.Longitude * 0.5, 0.0);
+            CGeoloc gStart(geoloc().Latitude - m_gSize.Latitude * 0.5, geoloc().Longitude - m_gSize.Longitude * 0.5, 0.0);
 
             double dSpanZ = m_gSize.Latitude / (double) NUM_CONTAINERS;
             double dSpanX = m_gSize.Longitude / (double) NUM_CONTAINERS;

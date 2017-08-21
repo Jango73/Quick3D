@@ -79,7 +79,7 @@ void CGLWidgetScene::paintGL()
 
         if (m_pViewports.count() > 0 && m_pViewports[0]->getCamera())
         {
-            m_vWorldOrigin = m_pViewports[0]->getCamera()->getWorldPosition();
+            m_vWorldOrigin = m_pViewports[0]->getCamera()->worldPosition();
 
             m_vWorldOrigin.X = m_vWorldOrigin.X - fmod(m_vWorldOrigin.X, 1000.0);
             m_vWorldOrigin.Y = m_vWorldOrigin.Y - fmod(m_vWorldOrigin.Y, 1000.0);
@@ -228,10 +228,10 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
 
         // Camera
 
-        CVector3 vCamTruePos = pContext->camera()->getWorldPosition();
-        CVector3 vCamPos = pContext->camera()->getWorldPosition() - m_vWorldOrigin;
-        CVector3 vCamRot = pContext->camera()->getWorldRotation();
-        CVector3 vWorldUp = pContext->camera()->getWorldPosition().normalized();
+        CVector3 vCamTruePos = pContext->camera()->worldPosition();
+        CVector3 vCamPos = pContext->camera()->worldPosition() - m_vWorldOrigin;
+        CVector3 vCamRot = pContext->camera()->worldRotation();
+        CVector3 vWorldUp = pContext->camera()->worldPosition().normalized();
 
         QMatrix4x4 mCameraMatrix;
         mCameraMatrix.setToIdentity();
@@ -250,7 +250,7 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
         pProgram->setUniformValue("u_camera_up", QVector3D(vUp.x(), vUp.y(), vUp.z()));
         pProgram->setUniformValue("u_world_origin", QVector3D(m_vWorldOrigin.X, m_vWorldOrigin.Y, m_vWorldOrigin.Z));
         pProgram->setUniformValue("u_world_up", QVector3D(vWorldUp.X, vWorldUp.Y, vWorldUp.Z));
-        pProgram->setUniformValue("u_camera_altitude", (GLfloat) pContext->camera()->getGeoloc().Altitude);
+        pProgram->setUniformValue("u_camera_altitude", (GLfloat) pContext->camera()->geoloc().Altitude);
         pProgram->setUniformValue("u_atmosphere_altitude", (GLfloat) ATMOSPHERE_ALTITUDE);
 
         // Lights
@@ -295,17 +295,17 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
         CVector3 vSunPosition = gSunPosition.toVector3();
 
         // Compute sun intensity
-        m_dSunIntensity = vSunPosition.normalized().dot(pContext->camera()->getWorldPosition().normalized());
+        m_dSunIntensity = vSunPosition.normalized().dot(pContext->camera()->worldPosition().normalized());
         m_dSunIntensity = (m_dSunIntensity + 1.0) * 0.5;
 
-        if (pContext->camera()->getGeoloc().Altitude < 0.0)
+        if (pContext->camera()->geoloc().Altitude < 0.0)
         {
-            double dSeaFactor = 1.0 - (fabs(pContext->camera()->getGeoloc().Altitude) / 1000.0);
+            double dSeaFactor = 1.0 - (fabs(pContext->camera()->geoloc().Altitude) / 1000.0);
             if (dSeaFactor < 0.1) dSeaFactor = 0.1;
             m_dSunIntensity *= dSeaFactor;
         }
 
-        double dAtmosphereFactor = (ATMOSPHERE_ALTITUDE - pContext->camera()->getGeoloc().Altitude) / ATMOSPHERE_ALTITUDE;
+        double dAtmosphereFactor = (ATMOSPHERE_ALTITUDE - pContext->camera()->geoloc().Altitude) / ATMOSPHERE_ALTITUDE;
         if (dAtmosphereFactor < 0.0) dAtmosphereFactor = 0.0;
         if (dAtmosphereFactor > 1.0) dAtmosphereFactor = 1.0;
 
@@ -313,7 +313,7 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
         m_tFog.distance() = (1.0 - m_tFog.level()) * pContext->camera()->getMaxDistance();
 
         // Underwater fog
-        if (pContext->camera()->getGeoloc().Altitude < 0.0)
+        if (pContext->camera()->geoloc().Altitude < 0.0)
         {
             m_tFog.distance() = 1000.0;
         }
@@ -325,9 +325,9 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
 
         if (vSuns.count() > 0)
         {
-            vSuns[0]->setOriginPosition(vSunPosition);
+            vSuns[0]->setPosition(vSunPosition);
 
-            if (pContext->camera()->getGeoloc().Altitude >= 0.0)
+            if (pContext->camera()->geoloc().Altitude >= 0.0)
             {
                 vSuns[0]->material()->diffuse() = m_iSunColor.getValue(m_dSunIntensity);
             }
@@ -358,13 +358,13 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
 
             if (vColor.X != 0.0 || vColor.Y != 0.0 || vColor.Z != 0.0)
             {
-                CVector3 vLightPosition = vLights[iLightIndex]->getWorldPosition();
+                CVector3 vLightPosition = vLights[iLightIndex]->worldPosition();
                 CVector3 vWorldPosition = vLightPosition - m_vWorldOrigin;
-                CVector3 vWorldDirection = vLights[iLightIndex]->getWorldDirection();
+                CVector3 vWorldDirection = vLights[iLightIndex]->worldDirection();
 
-                double dLightDistance = (vLightPosition - pContext->camera()->getWorldPosition()).magnitude();
+                double dLightDistance = (vLightPosition - pContext->camera()->worldPosition()).magnitude();
 
-                if (vLights[iLightIndex]->getTag() == "SUN" || dLightDistance < 2000.0)
+                if (vLights[iLightIndex]->tag() == "SUN" || dLightDistance < 2000.0)
                 {
                     QVector4D vRelativePosition(vWorldPosition.X, vWorldPosition.Y, vWorldPosition.Z, 1.0);
                     vRelativePosition = pContext->cameraMatrix() * vRelativePosition;
@@ -377,12 +377,12 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
                     }
                     CVector3 vScreenPosition(vProjectedPosition.x(), vProjectedPosition.y(), vProjectedPosition.z());
 
-                    if (vLights[iLightIndex]->getTag() == "SUN")
+                    if (vLights[iLightIndex]->tag() == "SUN")
                     {
                         vWorldDirection = CVector3();
                     }
 
-                    u_light_is_sun[iOpenGLLightIndex]               = (GLint) (vLights[iLightIndex]->getTag() == "SUN");
+                    u_light_is_sun[iOpenGLLightIndex]               = (GLint) (vLights[iLightIndex]->tag() == "SUN");
                     u_light_position[iOpenGLLightIndex]             = QVector3D(vWorldPosition.X, vWorldPosition.Y, vWorldPosition.Z);
                     u_light_screen_position[iOpenGLLightIndex]      = QVector3D(vScreenPosition.X, vScreenPosition.Y, vScreenPosition.Z);
                     u_light_direction[iOpenGLLightIndex]            = QVector3D(vWorldDirection.X, vWorldDirection.Y, vWorldDirection.Z);
@@ -427,8 +427,8 @@ void CGLWidgetScene::computeLightsOcclusion(CRenderContext* pContext)
     foreach (QSP<CLight> pLight, vLights)
     {
         CRay3 aRay;
-        aRay.vOrigin = pLight->getWorldPosition();
-        aRay.vNormal = (pContext->camera()->getWorldPosition() - aRay.vOrigin).normalized();
+        aRay.vOrigin = pLight->worldPosition();
+        aRay.vNormal = (pContext->camera()->worldPosition() - aRay.vOrigin).normalized();
 
         RayTracingResult aResult = pContext->scene()->intersect(aRay);
 

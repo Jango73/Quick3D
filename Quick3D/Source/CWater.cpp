@@ -41,12 +41,12 @@ void CWater::update(double dDeltaTime)
 
 void CWater::paint(CRenderContext* pContext)
 {
-    CGeoloc gPosition = pContext->camera()->getGeoloc();
+    CGeoloc gPosition = pContext->camera()->geoloc();
 
     if (gPosition.Altitude > 2000.0) return;
 
     setGeoloc(CGeoloc(gPosition.Latitude, gPosition.Longitude, 0.0));
-    setOriginRotation(CVector3(0.0, pContext->camera()->getOriginRotation().Y, 0.0));
+    setRotation(CVector3(0.0, pContext->camera()->rotation().Y, 0.0));
 
     computeWorldTransform();
 

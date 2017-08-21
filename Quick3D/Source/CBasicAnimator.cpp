@@ -188,14 +188,12 @@ void CBasicAnimator::update(double dDeltaTime)
     {
         if (m_rPositionTarget.component() && m_pTranslationFrame != nullptr)
         {
-            // m_pPositionTarget->setPosition(m_pTranslationFrame->compute(dDeltaTime, m_pPositionTarget->getPosition()));
-            m_rPositionTarget.component()->setOriginPosition(m_pTranslationFrame->compute(dDeltaTime, m_rPositionTarget.component()->getOriginPosition()));
+            m_rPositionTarget.component()->setPosition(m_pTranslationFrame->compute(dDeltaTime, m_rPositionTarget.component()->position()));
         }
 
         if (m_rRotationTarget.component() && m_pRotationFrame != nullptr)
         {
-            // m_pRotationTarget->setRotation(m_pRotationFrame->compute(dDeltaTime, m_pRotationTarget->getRotation()));
-            m_rRotationTarget.component()->setOriginRotation(m_pRotationFrame->compute(dDeltaTime, m_rRotationTarget.component()->getOriginRotation()));
+            m_rRotationTarget.component()->setRotation(m_pRotationFrame->compute(dDeltaTime, m_rRotationTarget.component()->rotation()));
         }
     }
 }

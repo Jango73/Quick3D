@@ -132,12 +132,12 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
 
             pLight->saveTransform();
 
-            CVector3 vDirection = (pLight->getWorldPosition() - this->getWorldPosition()).normalized();
-            pLight->setOriginPosition(this->getWorldPosition() + vDirection * 1000.0);
+            CVector3 vDirection = (pLight->worldPosition() - this->worldPosition()).normalized();
+            pLight->setPosition(this->worldPosition() + vDirection * 1000.0);
             pLight->lookAt(this);
 
-            CVector3 vCamPos = pLight->getWorldPosition();
-            CVector3 vCamRot = pLight->getWorldRotation();
+            CVector3 vCamPos = pLight->worldPosition();
+            CVector3 vCamRot = pLight->worldRotation();
 
             mShadowMatrix = CCamera::getQtCameraMatrix(vCamPos - pScene->worldOrigin(), vCamRot);
             mShadowProjectionMatrix = CCamera::getQtProjectionMatrix(pLight->getFOV(), 1.0, pLight->getMinDistance(), pLight->getMaxDistance());
@@ -212,12 +212,12 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
 
             pLight->saveTransform();
 
-            CVector3 vDirection = (pLight->getWorldPosition() - this->getWorldPosition()).normalized();
-            pLight->setOriginPosition(this->getWorldPosition() + vDirection * 1000.0);
+            CVector3 vDirection = (pLight->worldPosition() - this->worldPosition()).normalized();
+            pLight->setPosition(this->worldPosition() + vDirection * 1000.0);
             pLight->lookAt(this);
 
-            CVector3 vLitePos = pLight->getWorldPosition();
-            CVector3 vLiteRot = pLight->getWorldRotation();
+            CVector3 vLitePos = pLight->worldPosition();
+            CVector3 vLiteRot = pLight->worldRotation();
 
             double dMinDistance = 1.0;
             double dMaxDistance = 2000.0;
@@ -233,11 +233,11 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     if (bForceWideFOV) dFOV = DEFAULT_FOV;
     if (bForceSmallFOV) dFOV = SMALL_FOV;
 
-    double dMinDistance = getGeoloc().Altitude / 8.0;
-    if (getGeoloc().Altitude < 20000.0) dMinDistance = 0.1;
+    double dMinDistance = geoloc().Altitude / 8.0;
+    if (geoloc().Altitude < 20000.0) dMinDistance = 0.1;
     if (dMinDistance < 0.1) dMinDistance = 0.1;
 
-    double dMaxDistance = getGeoloc().Altitude * 12.0;
+    double dMaxDistance = geoloc().Altitude * 12.0;
     if (dMaxDistance < 100000.0) dMaxDistance = 100000.0;
 
     m_dMinDistance = dMinDistance;
@@ -246,8 +246,8 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     // For tests
     // dMaxDistance = 3000000.0 * 10.0;
 
-    CVector3 vCamPos = getWorldPosition();
-    CVector3 vCamRot = getWorldRotation();
+    CVector3 vCamPos = worldPosition();
+    CVector3 vCamRot = worldRotation();
 
     double dVerticalFOV = dFOV * ((double) iHeight / (double) iWidth);
 
@@ -344,9 +344,9 @@ void CCamera::renderDepth_RayTraced
         IProgressListener* pProgressListener
         )
 {
-    pScene->setWorldOrigin(getWorldPosition());
+    pScene->setWorldOrigin(worldPosition());
 
-    CGeoloc gReference = getGeoloc();
+    CGeoloc gReference = geoloc();
 
     // Create polygons in local 3D space and viewed from top (X et Z)
     for (QVector<CGeoZone>::iterator gZone = tParams.m_vZones.begin(); gZone != tParams.m_vZones.end(); gZone++)
@@ -388,7 +388,7 @@ void CCamera::renderDepth_RayTraced
             rCameraRay = CMatrix4().makeRotation(CVector3(0.0, dCurrentPan, 0.0)) * rCameraRay;
 
             // Apply camera transform to ray
-            rCameraRay = getWorldTransform() * rCameraRay;
+            rCameraRay = worldTransform() * rCameraRay;
 
             // Initialize tracing distance
             RayTracingResult dResult(Q3D_INFINITY);
@@ -473,7 +473,7 @@ void CCamera::renderDepth_CubeMapped
     {
         START_SAMPLE("CCamera::renderDepth_CubeMapped:prepare");
 
-        CGeoloc gReference = getGeoloc();
+        CGeoloc gReference = geoloc();
 
         // Création des polygones de zone dans le repère 3D local vu de dessus (X et Z)
         for (QVector<CGeoZone>::iterator gZone = tParams.m_vZones.begin(); gZone != tParams.m_vZones.end(); gZone++)
@@ -530,7 +530,7 @@ void CCamera::renderDepth_CubeMapped
         QRect rOldGeometry = pGLWidgetScene->geometry();
         CViewport* pOldViewport = pGLWidgetScene->viewports()[0];
         CViewport* pNewViewport = new CViewport(pGLWidgetScene);
-        CVector3 vCameraInitialRotation = getOriginRotation();
+        CVector3 vCameraInitialRotation = rotation();
         CVector3 vCameraAttitude = tParams.m_vAttitude.degreesToRadians() * -1.0;
         CVector3 vCameraHeading(0.0, Math::Angles::toRad(tParams.m_dCameraTrueHeadingDegrees), 0.0);
         double dOldFOV = m_dFOV;
@@ -584,7 +584,7 @@ void CCamera::renderDepth_CubeMapped
                 anAxis = anAxis.rotate(vCameraHeading);
 
                 // Application des angles de l'axe à la caméra
-                setOriginRotation(anAxis.eulerAngles());
+                setRotation(anAxis.eulerAngles());
 
                 // Rendu OpenGL
                 pGLWidgetScene->paintGL();
@@ -709,7 +709,7 @@ void CCamera::renderDepth_CubeMapped
         pGLWidgetScene->setShaderQuality(0.5);
 
         // Restauration des paramètres de la caméra
-        setOriginRotation(vCameraInitialRotation);
+        setRotation(vCameraInitialRotation);
         m_dFOV = dOldFOV;
 
         // Destruction du viewport temporaire

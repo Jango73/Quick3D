@@ -91,16 +91,16 @@ void CVehicle::update(double dDeltaTime)
         {
             CVector3 vRotation;
 
-            vRotation = getOriginRotation();
+            vRotation = rotation();
 
             CBoundingBox box = bounds();
 
             CMatrix4 mOrientation = CMatrix4().makeRotation(vRotation);
 
-            CGeoloc gBackLeft = CGeoloc(getGeoloc(), mOrientation * CVector3(box.minimum().X * 0.8, 0.0, box.minimum().Z * 0.8));
-            CGeoloc gBackRight = CGeoloc(getGeoloc(), mOrientation * CVector3(box.maximum().X * 0.8, 0.0, box.minimum().Z * 0.8));
-            CGeoloc gFrontLeft = CGeoloc(getGeoloc(), mOrientation * CVector3(box.minimum().X * 0.8, 0.0, box.maximum().Z * 0.8));
-            CGeoloc gFrontRight = CGeoloc(getGeoloc(), mOrientation * CVector3(box.maximum().X * 0.8, 0.0, box.maximum().Z * 0.8));
+            CGeoloc gBackLeft = CGeoloc(geoloc(), mOrientation * CVector3(box.minimum().X * 0.8, 0.0, box.minimum().Z * 0.8));
+            CGeoloc gBackRight = CGeoloc(geoloc(), mOrientation * CVector3(box.maximum().X * 0.8, 0.0, box.minimum().Z * 0.8));
+            CGeoloc gFrontLeft = CGeoloc(geoloc(), mOrientation * CVector3(box.minimum().X * 0.8, 0.0, box.maximum().Z * 0.8));
+            CGeoloc gFrontRight = CGeoloc(geoloc(), mOrientation * CVector3(box.maximum().X * 0.8, 0.0, box.maximum().Z * 0.8));
 
             double r1 = 0.0;
             double r2 = 0.0;
@@ -118,7 +118,7 @@ void CVehicle::update(double dDeltaTime)
 
             if (hBackLeft != Q3D_INFINITY && hBackRight != Q3D_INFINITY && hFrontLeft != Q3D_INFINITY && hFrontRight != Q3D_INFINITY)
             {
-                if (fabs(getGeoloc().Altitude - hAverage) < 5.0)
+                if (fabs(geoloc().Altitude - hAverage) < 5.0)
                 {
                     double hdBackLeft = gBackLeft.Altitude - hBackLeft;
                     double hdBackRight = gBackRight.Altitude - hBackRight;

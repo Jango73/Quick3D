@@ -259,7 +259,7 @@ void CPhysicalComponent::addLocalForce_kg(CVector3 vForce_kg)
 {
     if (m_bPhysicsActive == true)
     {
-        CVector3 vRotation = getOriginRotation();
+        CVector3 vRotation = rotation();
 
         vForce_kg = CMatrix4().makeRotation(CVector3(0.0, 0.0, vRotation.Z)) * vForce_kg;
         vForce_kg = CMatrix4().makeRotation(CVector3(vRotation.X, 0.0, 0.0)) * vForce_kg;
@@ -326,14 +326,14 @@ void CPhysicalComponent::update(double dDeltaTimeS)
         {
             if (dDeltaTimeS > 0.0)
             {
-                CVector3 vNewPosition = getOriginPosition();
-                CVector3 vNewRotation = getOriginRotation();
+                CVector3 vNewPosition = position();
+                CVector3 vNewRotation = rotation();
 
                 if (m_bPhysicsActive == true)
                 {
                     double dTotalMass_kg = totalMass_kg();
                     // double dAirForceFactor = CAtmosphere::getInstance()->getAirForceFactor(getGeoloc().Altitude);
-                    double dAirDragFactor = CAtmosphere::getInstance()->airDragFactor(getGeoloc().Altitude);
+                    double dAirDragFactor = CAtmosphere::getInstance()->airDragFactor(geoloc().Altitude);
 
                     // Add gravity force
 
@@ -375,7 +375,7 @@ void CPhysicalComponent::update(double dDeltaTimeS)
 
                     // Get the NOLL reference (North-Oriented Local Level)
 
-                    CAxis aLocalAxis(getGeoloc().getNOLLAxis());
+                    CAxis aLocalAxis(geoloc().getNOLLAxis());
 
                     // Rotate the body around its local axis
 
@@ -448,7 +448,7 @@ void CPhysicalComponent::update(double dDeltaTimeS)
                     setGeoloc(gNewGeoloc);
                 }
 
-                setOriginRotation(vNewRotation);
+                setRotation(vNewRotation);
             }
         }
     }
@@ -458,14 +458,14 @@ void CPhysicalComponent::update(double dDeltaTimeS)
         {
             if (m_pParent != nullptr)
             {
-                if (m_pParent->getPreviousWorldTransform().isIdentity() == false)
+                if (m_pParent->previousWorldTransform().isIdentity() == false)
                 {
-                    CAxis anAxis(getOriginRotation());
+                    CAxis anAxis(rotation());
 
-                    anAxis = anAxis * m_pParent->getPreviousWorldTransform();
-                    anAxis = anAxis * m_pParent->getWorldTransformInverse();
+                    anAxis = anAxis * m_pParent->previousWorldTransform();
+                    anAxis = anAxis * m_pParent->worldTransformInverse();
 
-                    setOriginRotation(anAxis.eulerAngles());
+                    setRotation(anAxis.eulerAngles());
 
                     // Vector3 vNewAngles = anAxis.euleurAngles();
                     // setOriginRotation(interpolate(vNewAngles, m_vOriginRotation, m_dStickToNOLL * dDeltaTime));
@@ -536,7 +536,7 @@ void CPhysicalComponent::postUpdate(double dDeltaTimeS)
 {
     CComponent::postUpdate(dDeltaTimeS);
 
-    setPreviousWorldTransform(getWorldTransform());
+    setPreviousWorldTransform(worldTransform());
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -588,7 +588,7 @@ void CPhysicalComponent::computeCollisionsForComponent(QSP<CPhysicalComponent> p
                 if (pOtherPhysical->getClassName() != ClassName_CWorldTerrain)
                 {
                     // Calcul de distance avec l'autre objet
-                    CVector3 vPosition = pComponent->getGeoloc().toVector3(pOtherPhysical->getGeoloc());
+                    CVector3 vPosition = pComponent->geoloc().toVector3(pOtherPhysical->geoloc());
                     double dRadiusSum = pComponent->worldBounds().radius() + pOtherPhysical->worldBounds().radius();
 
                     // Est-ce que les deux sphères se recoupent?

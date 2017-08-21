@@ -59,37 +59,37 @@ void CStandardController::update(double dDeltaTime)
 
     if (pPositionTarget != nullptr)
     {
-        double dMoveFactor = pPositionTarget->getGeoloc().Altitude / 500.0;
+        double dMoveFactor = pPositionTarget->geoloc().Altitude / 500.0;
         if (dMoveFactor < 1.0) dMoveFactor = 1.0;
 
         dMoveSpeed = dMoveSpeed * dMoveFactor;
 
         if (m_bGoForward)
         {
-            CAxis aLocalAxis(pPositionTarget->getECEFRotation());
-            pPositionTarget->setOriginPosition(pPositionTarget->getOriginPosition() + aLocalAxis.Front * (dMoveSpeed * dDeltaTime));
+            CAxis aLocalAxis(pPositionTarget->ECEFRotation());
+            pPositionTarget->setPosition(pPositionTarget->position() + aLocalAxis.Front * (dMoveSpeed * dDeltaTime));
         }
         else if (m_bGoBackward)
         {
-            CAxis aLocalAxis(pPositionTarget->getECEFRotation());
-            pPositionTarget->setOriginPosition(pPositionTarget->getOriginPosition() + aLocalAxis.Front * (-dMoveSpeed * dDeltaTime));
+            CAxis aLocalAxis(pPositionTarget->ECEFRotation());
+            pPositionTarget->setPosition(pPositionTarget->position() + aLocalAxis.Front * (-dMoveSpeed * dDeltaTime));
         }
 
         if (m_bGoUp)
         {
-            CAxis aLocalAxis(pPositionTarget->getECEFRotation());
-            pPositionTarget->setOriginPosition(pPositionTarget->getOriginPosition() + aLocalAxis.Up * (dMoveSpeed * dDeltaTime));
+            CAxis aLocalAxis(pPositionTarget->ECEFRotation());
+            pPositionTarget->setPosition(pPositionTarget->position() + aLocalAxis.Up * (dMoveSpeed * dDeltaTime));
         }
         else if (m_bGoDown)
         {
-            CAxis aLocalAxis(pPositionTarget->getECEFRotation());
-            pPositionTarget->setOriginPosition(pPositionTarget->getOriginPosition() + aLocalAxis.Up * (-dMoveSpeed * dDeltaTime));
+            CAxis aLocalAxis(pPositionTarget->ECEFRotation());
+            pPositionTarget->setPosition(pPositionTarget->position() + aLocalAxis.Up * (-dMoveSpeed * dDeltaTime));
         }
 
         if (m_bStrafeRight)
         {
-            CAxis aLocalAxis(pPositionTarget->getECEFRotation());
-            pPositionTarget->setOriginPosition(pPositionTarget->getOriginPosition() + aLocalAxis.Right * (dMoveSpeed * dDeltaTime));
+            CAxis aLocalAxis(pPositionTarget->ECEFRotation());
+            pPositionTarget->setPosition(pPositionTarget->position() + aLocalAxis.Right * (dMoveSpeed * dDeltaTime));
 
             /*
             // Following is used when rotation is absolute
@@ -101,15 +101,15 @@ void CStandardController::update(double dDeltaTime)
         }
         else if (m_bStrafeLeft)
         {
-            CAxis aLocalAxis(pPositionTarget->getECEFRotation());
-            pPositionTarget->setOriginPosition(pPositionTarget->getOriginPosition() + aLocalAxis.Right * (-dMoveSpeed * dDeltaTime));
+            CAxis aLocalAxis(pPositionTarget->ECEFRotation());
+            pPositionTarget->setPosition(pPositionTarget->position() + aLocalAxis.Right * (-dMoveSpeed * dDeltaTime));
         }
 
 #define MAX_ALT 50000000.0
 
         if (m_bAltitudeFastUp)
         {
-            CGeoloc gPosition = pPositionTarget->getGeoloc();
+            CGeoloc gPosition = pPositionTarget->geoloc();
             double dFactor = (1.0 - (gPosition.Altitude / MAX_ALT)) * 500000.0;
             if (dFactor < 100.0) dFactor = 100.0;
             gPosition.Altitude += dFactor * dDeltaTime;
@@ -118,7 +118,7 @@ void CStandardController::update(double dDeltaTime)
         }
         else if (m_bAltitudeFastDown)
         {
-            CGeoloc gPosition = pPositionTarget->getGeoloc();
+            CGeoloc gPosition = pPositionTarget->geoloc();
             double dFactor = (1.0 - (gPosition.Altitude / MAX_ALT)) * 500000.0;
             if (dFactor < 100.0) dFactor = 100.0;
             gPosition.Altitude -= dFactor * dDeltaTime;
@@ -150,7 +150,7 @@ void CStandardController::update(double dDeltaTime)
             }
             */
 
-            pRotationTarget->setOriginRotation(pRotationTarget->getOriginRotation() + vRotation);
+            pRotationTarget->setRotation(pRotationTarget->rotation() + vRotation);
         }
         else if (m_bTurnLeft)
         {
@@ -173,7 +173,7 @@ void CStandardController::update(double dDeltaTime)
             }
             */
 
-            pRotationTarget->setOriginRotation(pRotationTarget->getOriginRotation() + vRotation);
+            pRotationTarget->setRotation(pRotationTarget->rotation() + vRotation);
         }
     }
 
@@ -186,7 +186,7 @@ void CStandardController::update(double dDeltaTime)
             // Following is used when rotation is absolute
             // m_pRotationTarget->setOriginRotation(Axis(vRotation).transferTo(Axis(m_pRotationTarget->getOriginRotation())).euleurAngles());
 
-            pRotationTarget->setOriginRotation(pRotationTarget->getOriginRotation() + vRotation);
+            pRotationTarget->setRotation(pRotationTarget->rotation() + vRotation);
         }
         else if (m_bLookDown)
         {
@@ -195,7 +195,7 @@ void CStandardController::update(double dDeltaTime)
             // Following is used when rotation is absolute
             // m_pRotationTarget->setOriginRotation(Axis(vRotation).transferTo(Axis(m_pRotationTarget->getOriginRotation())).euleurAngles());
 
-            pRotationTarget->setOriginRotation(pRotationTarget->getOriginRotation() + vRotation);
+            pRotationTarget->setRotation(pRotationTarget->rotation() + vRotation);
         }
     }
 }
@@ -319,8 +319,8 @@ void CStandardController::mouseMoveEvent(QMouseEvent* event)
         {
             if (pPositionTarget != nullptr)
             {
-                double dMoveFactor = pPositionTarget->getGeoloc().Altitude * 0.00000005;
-                CGeoloc gPosition = pPositionTarget->getGeoloc();
+                double dMoveFactor = pPositionTarget->geoloc().Altitude * 0.00000005;
+                CGeoloc gPosition = pPositionTarget->geoloc();
                 gPosition.Latitude += dDeltaX * dMoveFactor;
                 gPosition.Longitude -= dDeltaY * dMoveFactor;
                 pPositionTarget->setGeoloc(gPosition);
@@ -330,14 +330,14 @@ void CStandardController::mouseMoveEvent(QMouseEvent* event)
         {
             if (pRotationTarget != nullptr)
             {
-                pRotationTarget->setOriginRotation(CVector3(Math::Pi * 0.5, 0.0, 0.0));
+                pRotationTarget->setRotation(CVector3(Math::Pi * 0.5, 0.0, 0.0));
             }
 
             if (pPositionTarget != nullptr)
             {
-                double dMoveFactor = pPositionTarget->getGeoloc().Altitude * 0.005;
+                double dMoveFactor = pPositionTarget->geoloc().Altitude * 0.005;
                 if (dMoveFactor < 1.0) dMoveFactor = 1.0;
-                CGeoloc gPosition = pPositionTarget->getGeoloc();
+                CGeoloc gPosition = pPositionTarget->geoloc();
                 gPosition.Altitude += dDeltaX * dMoveFactor;
                 pPositionTarget->setGeoloc(gPosition);
             }
@@ -349,8 +349,8 @@ void CStandardController::mouseMoveEvent(QMouseEvent* event)
                 CVector3 vRotationX = CVector3(dDeltaX * 0.005, 0.0, 0.0);
                 CVector3 vRotationY = CVector3(0.0, dDeltaY * 0.005, 0.0);
 
-                pLookTarget->setOriginRotation(pLookTarget->getOriginRotation() + vRotationX);
-                pLookTarget->setOriginRotation(pLookTarget->getOriginRotation() + vRotationY);
+                pLookTarget->setRotation(pLookTarget->rotation() + vRotationX);
+                pLookTarget->setRotation(pLookTarget->rotation() + vRotationY);
 
                 /*
                 // Following is used when rotation is absolute

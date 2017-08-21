@@ -241,7 +241,7 @@ void CController::mousePressEvent(QMouseEvent* event)
 
     if (m_pParent != nullptr) // && event->button() == Qt::RightButton)
     {
-        C3DScene* pScene = m_pParent->getScene();
+        C3DScene* pScene = m_pParent->scene();
 
         if (pScene != nullptr)
         {
@@ -270,9 +270,9 @@ void CController::mousePressEvent(QMouseEvent* event)
                             CVector2 vAngles2 = CVector2::pointToAngles(pViewport->getSize(), pCamera->getFOV(), normalizedPoint);
                             CVector3 vAngles3(vAngles2.Y, vAngles2.X, 0.0);
 
-                            m_rLastRay.vOrigin = pCamera->getWorldTransform() * CVector3();
+                            m_rLastRay.vOrigin = pCamera->worldTransform() * CVector3();
                             m_rLastRay.vNormal = CMatrix4::makeRotation(vAngles3) * CVector3(0.0, 0.0, 1.0);
-                            m_rLastRay.vNormal = (pCamera->getWorldTransform() * m_rLastRay.vNormal) - m_rLastRay.vOrigin;
+                            m_rLastRay.vNormal = (pCamera->worldTransform() * m_rLastRay.vNormal) - m_rLastRay.vOrigin;
 
                             RayTracingResult aResult = pScene->intersectComponentHierarchy(m_pParent, m_rLastRay);
 

@@ -57,7 +57,7 @@ void CAircraft::update(double dDeltaTime)
 
     // Store flight data
 
-	CAxis aRotationAxis(getOriginRotation());
+	CAxis aRotationAxis(rotation());
 	CAxis aVelocityAxis(eulerAngles(m_vVelocity_ms));
 
 	aVelocityAxis = aVelocityAxis.transferTo(aRotationAxis);
@@ -70,17 +70,17 @@ void CAircraft::update(double dDeltaTime)
 
 	m_dGroundSpeed_ms = CVector2(m_vVelocity_ms.X, m_vVelocity_ms.Z).magnitude();
 
-	m_dTrueHeading_deg = Math::Angles::toDeg(getOriginRotation().Y);
+	m_dTrueHeading_deg = Math::Angles::toDeg(rotation().Y);
 
 	m_dTrueTrack_deg = Math::Angles::toDeg(aVelocityAxis.eulerAngles().Y);
 
-	m_dPitch_deg = Math::Angles::toDeg(getOriginRotation().X);
+	m_dPitch_deg = Math::Angles::toDeg(rotation().X);
 
-	m_dRoll_deg = Math::Angles::toDeg(getOriginRotation().Z);
+	m_dRoll_deg = Math::Angles::toDeg(rotation().Z);
 
 	m_dVerticalSpeed_ms = m_vVelocity_ms.Y;
 
-	m_dAltitude_m = getGeoloc().Altitude;
+	m_dAltitude_m = geoloc().Altitude;
 
 	m_dMach = m_dTrueAirSpeed_ms / dSpeedOfSound_ms;
 

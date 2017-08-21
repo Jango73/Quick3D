@@ -227,11 +227,11 @@ double CTerrain::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
         return 0.0;
     }
 
-    double dLatitudeDiff = Math::Angles::angleDifferenceDegree(gPosition.Latitude, getGeoloc().Latitude);
-    double dLongitudeDiff = Math::Angles::angleDifferenceDegree(gPosition.Longitude, getGeoloc().Longitude);
+    double dLatitudeDiff = Math::Angles::angleDifferenceDegree(gPosition.Latitude, geoloc().Latitude);
+    double dLongitudeDiff = Math::Angles::angleDifferenceDegree(gPosition.Longitude, geoloc().Longitude);
 
     CGeoloc gLocalGeoloc(dLatitudeDiff, dLongitudeDiff, 0.0);
-    CVector3 vCenter = getGeoloc().toVector3();
+    CVector3 vCenter = geoloc().toVector3();
     CVector3 vLocal = gPosition.toVector3() - vCenter;
     CVector3 vUp = vCenter.normalized();
 
@@ -330,7 +330,7 @@ void CTerrain::work()
 
     buildVerticesToFaceMap();
 
-    CVector3 vFinalCenter = getGeoloc().toVector3();
+    CVector3 vFinalCenter = geoloc().toVector3();
 
     // Get the mesh's material
     CMaterial* pMaterial = nullptr;

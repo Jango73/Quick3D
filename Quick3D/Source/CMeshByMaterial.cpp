@@ -82,9 +82,9 @@ void CMeshByMaterial::paint(CRenderContext* pContext)
                 if (pContainer != nullptr)
                 {
                     // Set transform matrix
-                    CVector3 WorldPosition = pContainer->getWorldPosition() - pContext->scene()->worldOrigin();
-                    CVector3 WorldRotation = pContainer->getWorldRotation();
-                    CVector3 WorldScale = pContainer->getWorldScale();
+                    CVector3 WorldPosition = pContainer->worldPosition() - pContext->scene()->worldOrigin();
+                    CVector3 WorldRotation = pContainer->worldRotation();
+                    CVector3 WorldScale = pContainer->worldScale();
 
                     mModelAbsolute.translate(WorldPosition.X, WorldPosition.Y, WorldPosition.Z);
                     mModelAbsolute.rotate(Math::Angles::toDeg(WorldRotation.Y), QVector3D(0, 1, 0));

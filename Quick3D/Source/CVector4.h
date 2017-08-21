@@ -28,6 +28,13 @@
     |/
     --------> X
 
+    Rotation orders
+
+    The axis with the most weight is the Y axis because it represents the yaw or heading (most important information in world positiong).
+    The axis with the least weight is the Z axis.
+
+    So when rotating, the order of angle application must be : Z, X, Y
+
 -------------------------------------------------------------------------------------------------*/
 
 namespace Math

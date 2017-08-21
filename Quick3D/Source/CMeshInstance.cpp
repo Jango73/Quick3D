@@ -10,7 +10,7 @@ using namespace Math;
 //-------------------------------------------------------------------------------------------------
 
 CMeshInstance::CMeshInstance(QSP<CMesh> pMesh)
-    : CComponent(pMesh->getScene())
+    : CComponent(pMesh->scene())
 {
     m_vMeshes.append(pMesh);
 }
@@ -18,7 +18,7 @@ CMeshInstance::CMeshInstance(QSP<CMesh> pMesh)
 //-------------------------------------------------------------------------------------------------
 
 CMeshInstance::CMeshInstance(const QVector<QSP<CMesh> >& vMeshes)
-    : CComponent(vMeshes[0]->getScene())
+    : CComponent(vMeshes[0]->scene())
 {
     foreach (QSP<CMesh> pMesh, vMeshes)
     {
@@ -65,7 +65,7 @@ CBoundingBox CMeshInstance::worldBounds()
     if (m_vMeshes.count() > 0)
     {
         CBoundingBox bBounds(m_vMeshes[0]->bounds());
-        CVector3 vWorldPosition = getWorldPosition();
+        CVector3 vWorldPosition = worldPosition();
         return CBoundingBox(vWorldPosition + bBounds.minimum(), vWorldPosition + bBounds.maximum());
     }
 

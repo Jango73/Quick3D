@@ -81,13 +81,13 @@ void CTankController::update(double dDeltaTime)
         if (m_bTurretRight)
         {
             CVector3 vRotation = CVector3(0.0, dRotationSpeed * dDeltaTime, 0.0);
-            m_pTurretYawTarget->setOriginRotation(m_pTurretYawTarget->getOriginRotation() + vRotation);
+            m_pTurretYawTarget->setRotation(m_pTurretYawTarget->rotation() + vRotation);
         }
         else
             if (m_bTurretLeft)
             {
                 CVector3 vRotation = CVector3(0.0, -dRotationSpeed * dDeltaTime, 0.0);
-                m_pTurretYawTarget->setOriginRotation(m_pTurretYawTarget->getOriginRotation() + vRotation);
+                m_pTurretYawTarget->setRotation(m_pTurretYawTarget->rotation() + vRotation);
             }
     }
 
@@ -98,13 +98,13 @@ void CTankController::update(double dDeltaTime)
         if (m_bTurretUp)
         {
             CVector3 vRotation = CVector3(dRotationSpeed * dDeltaTime, 0.0, 0.0);
-            m_pTurretPitchTarget->setOriginRotation(m_pTurretPitchTarget->getOriginRotation() + vRotation);
+            m_pTurretPitchTarget->setRotation(m_pTurretPitchTarget->rotation() + vRotation);
         }
         else
             if (m_bTurretDown)
             {
                 CVector3 vRotation = CVector3(-dRotationSpeed * dDeltaTime, 0.0, 0.0);
-                m_pTurretPitchTarget->setOriginRotation(m_pTurretPitchTarget->getOriginRotation() + vRotation);
+                m_pTurretPitchTarget->setRotation(m_pTurretPitchTarget->rotation() + vRotation);
             }
     }
 }

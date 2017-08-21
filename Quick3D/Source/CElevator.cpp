@@ -39,7 +39,7 @@ CElevator::~CElevator()
 
 void CElevator::update(double dDeltaTime)
 {
-    QSP<CComponent> pRoot = getRoot();
+    QSP<CComponent> pRoot = root();
     QSP<CAircraft> pAircraft = QSP_CAST(CAircraft, pRoot);
 
     if (pAircraft != nullptr)
@@ -49,7 +49,7 @@ void CElevator::update(double dDeltaTime)
         CAxis aRotationAxis;
 
         aRotationAxis = aRotationAxis.rotate(CVector3(m_dWingAngle_rad, 0.0, 0.0));
-        aRotationAxis = aRotationAxis.rotate(pAircraft->getOriginRotation());
+        aRotationAxis = aRotationAxis.rotate(pAircraft->rotation());
 
         CAxis aVelocityAxis(eulerAngles(pAircraft->velocity_ms()));
 
@@ -58,7 +58,7 @@ void CElevator::update(double dDeltaTime)
         double dDotBodyAirflow = aVelocityAxis.eulerAngles().X / Math::Pi;
         double dDotBodyAirflowAileronCorrected = m_iBodyAirflowDotAileronLiftFactor.getValue(dDotBodyAirflow);
 
-        double dAirDragFactor = CAtmosphere::getInstance()->airDragFactor(pAircraft->getGeoloc().Altitude);
+        double dAirDragFactor = CAtmosphere::getInstance()->airDragFactor(pAircraft->geoloc().Altitude);
         double dVelocity = pAircraft->velocity_ms().magnitude();
         double dTotalMass_kg = pAircraft->totalMass_kg();
         double dMassMultiplier = sqrt(dTotalMass_kg);
@@ -72,7 +72,7 @@ void CElevator::update(double dDeltaTime)
         dAileronLift *= dDotBodyAirflowAileronCorrected;
 
         CVector3 vAileronForce = CVector3(0.0, 1.0, 0.0) * dAileronLift;
-        CVector3 vAileronPosition = getOriginPosition() + m_vAileronPosition;
+        CVector3 vAileronPosition = position() + m_vAileronPosition;
 
         pAircraft->addUncenteredLocalForce_kg(vAileronPosition, vAileronForce);
 

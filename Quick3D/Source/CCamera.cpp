@@ -237,7 +237,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     if (geoloc().Altitude < 20000.0) dMinDistance = 0.1;
     if (dMinDistance < 0.1) dMinDistance = 0.1;
 
-    double dMaxDistance = geoloc().Altitude * 12.0;
+    double dMaxDistance = geoloc().Altitude * 40.0;
     if (dMaxDistance < 100000.0) dMaxDistance = 100000.0;
 
     m_dMinDistance = dMinDistance;

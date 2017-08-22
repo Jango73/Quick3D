@@ -92,6 +92,10 @@ protected:
     bool                            m_bNoseDown;
     bool                            m_bRudderLeft;
     bool                            m_bRudderRight;
+    bool                            m_bEngine1ThrustUp;
+    bool                            m_bEngine2ThrustUp;
+    bool                            m_bEngine1ThrustDown;
+    bool                            m_bEngine2ThrustDown;
 
     CComponentReference<CWing>      m_rLeftWingTarget;
     CComponentReference<CWing>      m_rRightWingTarget;
@@ -99,4 +103,6 @@ protected:
     CComponentReference<CRudder>    m_rRudderTarget;
     CComponentReference<CEngine>    m_rEngine1Target;
     CComponentReference<CEngine>    m_rEngine2Target;
+    CComponentReference<CEngine>    m_rEngine3Target;
+    CComponentReference<CEngine>    m_rEngine4Target;
 };

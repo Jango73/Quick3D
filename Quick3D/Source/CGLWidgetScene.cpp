@@ -36,7 +36,7 @@ CGLWidgetScene::CGLWidgetScene(bool bForDisplay)
         m_vShaders = new CShaderCollection();
 
         CMaterial* pMaterial = new CMaterial(this);
-        pMaterial->diffuse() = Vector4(1.0, 0.0, 0.0, 1.0);
+        pMaterial->diffuse() = CVector4(1.0, 0.0, 0.0, 1.0);
         pMaterial->setLines(true);
         m_pSegments->setMaterial(QSP<CMaterial>(pMaterial));
         m_pSegments->setGLType(GL_LINES);
@@ -333,7 +333,7 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
             }
             else
             {
-                vSuns[0]->material()->diffuse() = Vector4(0.00, 0.25, 0.50, 1.00);
+                vSuns[0]->material()->diffuse() = CVector4(0.00, 0.25, 0.50, 1.00);
             }
         }
 
@@ -342,7 +342,7 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
 
         if (vSuns.count() > 0)
         {
-            Vector4 vColor = vSuns[0]->material()->diffuse();
+            CVector4 vColor = vSuns[0]->material()->diffuse();
             vSunColor = QVector3D(vColor.X, vColor.Y, vColor.Z);
         }
         else
@@ -354,7 +354,7 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
 
         for (int iLightIndex = 0; iLightIndex < vLights.count() && iOpenGLLightIndex < MAX_GL_LIGHTS; iLightIndex++)
         {
-            Vector4 vColor = vLights[iLightIndex]->material()->diffuse();
+            CVector4 vColor = vLights[iLightIndex]->material()->diffuse();
 
             if (vColor.X != 0.0 || vColor.Y != 0.0 || vColor.Z != 0.0)
             {

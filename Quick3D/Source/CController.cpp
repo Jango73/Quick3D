@@ -106,7 +106,8 @@ void CController::update(double dDeltaTime)
         m_pJoystick->update(dDeltaTime);
     }
 
-    m_pScene->addSegment(m_rLastRay.vOrigin, m_rLastRay.vOrigin + m_rLastRay.vNormal);
+    // For debug
+    // m_pScene->addSegment(m_rLastRay.vOrigin, m_rLastRay.vOrigin + m_rLastRay.vNormal);
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -6,12 +6,14 @@
 #include <QImage>
 #include <QTime>
 
+// qt-plus
+#include "CInterpolator.h"
+
 // Application
 #include "quick3d_global.h"
 #include "C3DSceneStatistics.h"
 #include "CVector3.h"
 #include "CMatrix4.h"
-#include "CInterpolator.h"
 #include "CDumpable.h"
 #include "CGLExtension.h"
 #include "CRessourcesManager.h"
@@ -295,7 +297,7 @@ protected:
     Math::CVector3                          m_vWorldOrigin;
     QTime                                   m_tTimeOfDay;
     CFog                                    m_tFog;
-    CInterpolator<Math::Vector4>            m_iSunColor;
+    CInterpolator<Math::CVector4>           m_iSunColor;
     bool                                    m_bForDisplay;
     bool                                    m_bFrustumCheck;
     bool                                    m_bEditMode;

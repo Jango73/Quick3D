@@ -92,16 +92,16 @@ public:
     virtual QString getClassName() const { return ClassName_CMaterial; }
 
     //! Returns a reference to the ambient color
-    Math::Vector4& ambient() { return m_cAmbient; }
+    Math::CVector4& ambient() { return m_cAmbient; }
 
     //! Returns a reference to the diffuse color
-    Math::Vector4& diffuse() { return m_cDiffuse; }
+    Math::CVector4& diffuse() { return m_cDiffuse; }
 
     //! Returns a reference to the specular color
-    Math::Vector4& specular() { return m_cSpecular; }
+    Math::CVector4& specular() { return m_cSpecular; }
 
     //! Returns a reference to the subdermal color
-    Math::Vector4& subdermal() { return m_cSubdermal; }
+    Math::CVector4& subdermal() { return m_cSubdermal; }
 
     //! Returns the reflection factor
     double reflection() const { return m_dReflection; }
@@ -176,11 +176,11 @@ public:
     virtual CGeoloc transformGeoloc(const CGeoloc& gPosition);
 
     //!
-    static Math::Vector4 black()	{ return Math::Vector4(0.0, 0.0, 0.0, 1.0); }
-    static Math::Vector4 white()	{ return Math::Vector4(1.0, 1.0, 1.0, 1.0); }
-    static Math::Vector4 red()		{ return Math::Vector4(1.0, 0.0, 0.0, 1.0); }
+    static Math::CVector4 black()	{ return Math::CVector4(0.0, 0.0, 0.0, 1.0); }
+    static Math::CVector4 white()	{ return Math::CVector4(1.0, 1.0, 1.0, 1.0); }
+    static Math::CVector4 red()		{ return Math::CVector4(1.0, 0.0, 0.0, 1.0); }
 
-    static Math::Vector4 white_x5()	{ return Math::Vector4(5.0, 5.0, 5.0, 1.0); }
+    static Math::CVector4 white_x5()	{ return Math::CVector4(5.0, 5.0, 5.0, 1.0); }
 
     //-------------------------------------------------------------------------------------------------
     // Properties
@@ -189,10 +189,10 @@ public:
 protected:
 
     C3DScene*               m_pScene;
-    Math::Vector4           m_cAmbient;
-    Math::Vector4           m_cDiffuse;
-    Math::Vector4           m_cSpecular;
-    Math::Vector4           m_cSubdermal;
+    Math::CVector4           m_cAmbient;
+    Math::CVector4           m_cDiffuse;
+    Math::CVector4           m_cSpecular;
+    Math::CVector4           m_cSubdermal;
     double                  m_dSelfIllumination;
     double                  m_dShininess;
     double                  m_dReflection;

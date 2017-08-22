@@ -38,15 +38,15 @@ QVector<QSP<CComponent> > CComponentLoader::load(const QString& sBaseFile, C3DSc
 
     foreach (CXMLNode xNode, tDoc.nodes())
     {
-        if (xNode.tag() == "Camera1")
+        if (xNode.tag() == ParamName_Camera1)
         {
             sCamera1 = xNode.attributes()[ParamName_Name];
         }
-        else if (xNode.tag() == "Camera2")
+        else if (xNode.tag() == ParamName_Camera2)
         {
             sCamera2 = xNode.attributes()[ParamName_Name];
         }
-        else if (xNode.tag() == "ControlledComponent")
+        else if (xNode.tag() == ParamName_ControlledComponent)
         {
             sControlled = xNode.attributes()[ParamName_Name];
         }

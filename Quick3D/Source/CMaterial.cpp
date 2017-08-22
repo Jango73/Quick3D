@@ -37,10 +37,10 @@ CMaterial::CMaterial(C3DScene* pScene, QString sName)
     , m_bBillBoard(false)
     , m_bLines(false)
 {
-    m_cAmbient = Vector4(0.03, 0.03, 0.03, 1.0);
-    m_cDiffuse = Vector4(1.0, 1.0, 1.0, 1.0);
-    m_cSpecular = Vector4(1.0, 1.0, 1.0, 1.0);
-    m_cSubdermal = Vector4(1.0, 1.0, 1.0, 1.0);
+    m_cAmbient = CVector4(0.03, 0.03, 0.03, 1.0);
+    m_cDiffuse = CVector4(1.0, 1.0, 1.0, 1.0);
+    m_cSpecular = CVector4(1.0, 1.0, 1.0, 1.0);
+    m_cSubdermal = CVector4(1.0, 1.0, 1.0, 1.0);
 }
 
 //-------------------------------------------------------------------------------------------------

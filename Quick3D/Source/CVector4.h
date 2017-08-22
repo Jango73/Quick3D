@@ -39,7 +39,7 @@
 
 namespace Math
 {
-struct Vector4
+struct CVector4
 {
 
 public:
@@ -50,7 +50,7 @@ public:
     double W;
 
     //! Default constructor
-    inline Vector4 ()
+    inline CVector4 ()
     {
         X = 0.0;
         Y = 0.0;
@@ -59,16 +59,34 @@ public:
     }
 
     //! Constructor with components
-    inline Vector4 (double NewX, double NewY, double NewZ, double NewW)
+    inline CVector4 (double newX, double newY, double newZ, double newW)
     {
-        X = NewX;
-        Y = NewY;
-        Z = NewZ;
-        W = NewW;
+        X = newX;
+        Y = newY;
+        Z = newZ;
+        W = newW;
+    }
+
+    //! Constructor with double scalar for all components
+    inline CVector4(double value)
+    {
+        X = value;
+        Y = value;
+        Z = value;
+        W = value;
+    }
+
+    //! Constructor with double scalar for all components
+    inline CVector4(int value)
+    {
+        X = (double) value;
+        Y = (double) value;
+        Z = (double) value;
+        W = (double) value;
     }
 
     //! Copy constructor
-    inline Vector4 (const Vector4& Target)
+    inline CVector4 (const CVector4& Target)
     {
         *this = Target;
     }
@@ -84,9 +102,9 @@ public:
     {
         if (value >= 0.0)
         {
-            if (*this != Vector4(0.0, 0.0, 0.0, 0.0))
+            if (*this != CVector4(0.0, 0.0, 0.0, 0.0))
             {
-                Vector4 Res = (*this) * (value / magnitude());
+                CVector4 Res = (*this) * (value / magnitude());
 
                 X = Res.X;
                 Y = Res.Y;
@@ -103,13 +121,13 @@ public:
     }
 
     //! Normalise le vecteur = longueur de 1.0
-    inline Vector4 normalized() const
+    inline CVector4 normalized() const
     {
         if (magnitude() != 0.0)
         {
             double inverse = 1.0 / magnitude();
 
-            return Vector4
+            return CVector4
                     (
                         X * inverse,
                         Y * inverse,
@@ -118,7 +136,7 @@ public:
                         );
         }
 
-        return Vector4();
+        return CVector4();
     }
 
     //! Renvoie la somme des composants
@@ -128,9 +146,9 @@ public:
     }
 
     //! Calcule la racine carrée des composants
-    inline Vector4 sqrtComponents() const
+    inline CVector4 sqrtComponents() const
     {
-        return Vector4
+        return CVector4
                 (
                     sqrt(X),
                     sqrt(Y),
@@ -140,9 +158,9 @@ public:
     }
 
     //! Calcule le carré des composants
-    inline Vector4 sqrComponents () const
+    inline CVector4 sqrComponents () const
     {
-        return Vector4
+        return CVector4
                 (
                     X * X,
                     Y * Y,
@@ -152,9 +170,9 @@ public:
     }
 
     //! Calcule la somme des carrés des composants
-    inline static double sumComponentSqrs (const Vector4& v1)
+    inline static double sumComponentSqrs (const CVector4& v1)
     {
-        Vector4 v2 = v1.sqrComponents();
+        CVector4 v2 = v1.sqrComponents();
 
         return v2.sumComponents();
     }
@@ -166,19 +184,19 @@ public:
     }
 
     //! Opérateur d'égalité
-    inline bool operator == (const Vector4& V2) const
+    inline bool operator == (const CVector4& V2) const
     {
         return (X == V2.X) && (Y == V2.Y) && (Z == V2.Z) && (W == V2.W);
     }
 
     //! Opérateur d'inégalité
-    inline bool operator != (const Vector4& V2) const
+    inline bool operator != (const CVector4& V2) const
     {
         return !(*this == V2);
     }
 
-    //! Opérateur d'assignation
-    inline Vector4& operator = (const Vector4& Target)
+    //! Assign operator
+    inline CVector4& operator = (const CVector4& Target)
     {
         X = Target.X;
         Y = Target.Y;
@@ -188,26 +206,32 @@ public:
         return *this;
     }
 
-    //! Opérateur d'addition
-    inline Vector4 operator + (const Vector4& V2) const
+    //! Returns sum of this vector and \a V2
+    inline CVector4 operator + (const CVector4& V2) const
     {
-        return Vector4(X + V2.X, Y + V2.Y, Z + V2.Z, W + V2.W);
+        return CVector4(X + V2.X, Y + V2.Y, Z + V2.Z, W + V2.W);
     }
 
-    //! Opérateur de soustraction
-    inline Vector4 operator - (const Vector4& V2) const
+    //! Returns subtraction of this vector and \a V2
+    inline CVector4 operator - (const CVector4& V2) const
     {
-        return Vector4(X - V2.X, Y - V2.Y, Z - V2.Z, W - V2.W);
+        return CVector4(X - V2.X, Y - V2.Y, Z - V2.Z, W - V2.W);
     }
 
-    //! Opérateur de multiplication
-    inline Vector4 operator * (const Vector4& V2) const
+    //! Returns multiplication of this vector and \a V2
+    inline CVector4 operator * (const CVector4& V2) const
     {
-        return Vector4(X * V2.X, Y * V2.Y, Z * V2.Z, W * V2.W);
+        return CVector4(X * V2.X, Y * V2.Y, Z * V2.Z, W * V2.W);
     }
 
-    //! Opérateur d'addition
-    Vector4 &operator += (const Vector4 &V2)
+    //! Returns division of this vector and \a V2
+    inline CVector4 operator / (const CVector4& V2) const
+    {
+        return CVector4(X / V2.X, Y / V2.Y, Z / V2.Z, W / V2.W);
+    }
+
+    //! Returns sum of this vector and \a V2
+    inline CVector4& operator += (const CVector4& V2)
     {
         X += V2.X;
         Y += V2.Y;
@@ -216,8 +240,8 @@ public:
         return *this;
     }
 
-    //! Opérateur de soustraction
-    Vector4 &operator -= (const Vector4 &V2)
+    //! Returns subtraction of this vector and \a V2
+    inline CVector4& operator -= (const CVector4& V2)
     {
         X -= V2.X;
         Y -= V2.Y;
@@ -226,44 +250,56 @@ public:
         return *this;
     }
 
-    //! Opérateur de multiplication avec un double
-    inline Vector4 operator * (double s2) const
+    //! Returns multiplication of this vector and \a V2
+    inline CVector4& operator *= (const CVector4& V2)
     {
-        return Vector4
+        X *= V2.X;
+        Y *= V2.Y;
+        Z *= V2.Z;
+        W *= V2.W;
+        return *this;
+    }
+
+    //! Returns multiplication of this vector and \a value
+    inline CVector4 operator * (double value) const
+    {
+        return CVector4
                 (
-                    X * s2,
-                    Y * s2,
-                    Z * s2,
-                    W * s2
+                    X * value,
+                    Y * value,
+                    Z * value,
+                    W * value
                     );
     }
 
-    //! Opérateur de division avec un double
-    inline Vector4 operator / (double s2) const
+    //! Returns division of this vector and \a value
+    inline CVector4 operator / (double value) const
     {
-        return Vector4
+        return CVector4
                 (
-                    X / s2,
-                    Y / s2,
-                    Z / s2,
-                    W / s2
+                    X / value,
+                    Y / value,
+                    Z / value,
+                    W / value
                     );
     }
 
-    inline double &operator[](unsigned int index)
+    //! Returns component \a index of this vector
+    inline double& operator[] (unsigned int index)
     {
         return (&X)[index];
     }
 
-    inline const double &operator[](unsigned int index) const
+    //! Returns component \a index of this vector
+    inline const double& operator[] (unsigned int index) const
     {
         return (&X)[index];
     }
 
     //! Cross product
-    inline Vector4 cross(Vector4& v2) const
+    inline CVector4 cross(CVector4& v2) const
     {
-        return Vector4
+        return CVector4
                 (
                     Y * v2.Z - Z * v2.Y,
                     Z * v2.X - X * v2.Z,
@@ -273,7 +309,7 @@ public:
     }
 
     //! Dot product
-    inline double dot(const Vector4& v2) const
+    inline double dot(const CVector4& v2) const
     {
         return
                 (

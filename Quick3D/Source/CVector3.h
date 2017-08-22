@@ -64,11 +64,11 @@ public:
     }
 
     //! Constructor with components
-    inline CVector3(double NewX, double NewY, double NewZ)
+    inline CVector3(double newX, double newY, double newZ)
     {
-        X = NewX;
-        Y = NewY;
-        Z = NewZ;
+        X = newX;
+        Y = newY;
+        Z = newZ;
     }
 
     //! Constructor with double scalar for all components
@@ -201,31 +201,31 @@ public:
         return sumComponentSqrs(*this);
     }
 
-    //! Opérateur d'égalité
+    //! Returns \c true if this vector equals \a V2
     inline bool operator == (const CVector3& V2) const
     {
         return (X == V2.X) && (Y == V2.Y) && (Z == V2.Z);
     }
 
-    //! Opérateur d'inégalité
+    //! Returns \c true if this vector does not equal \a V2
     inline bool operator != (const CVector3& V2) const
     {
         return !(*this == V2);
     }
 
-    //! Opérateur d'infériorité
+    //! Returns \c true if this vector is less than \a V2
     inline bool operator < (const CVector3& V2) const
     {
         return (X < V2.X) || (Y < V2.Y) || (Z < V2.Z);
     }
 
-    //! Opérateur d'infériorité
+    //! Returns \c true if this vector is greater than \a V2
     inline bool operator > (const CVector3& V2) const
     {
         return (X > V2.X) || (Y > V2.Y) || (Z > V2.Z);
     }
 
-    //! Opérateur de copie
+    //! Assign operator
     inline CVector3& operator = (const CVector3& Target)
     {
         X = Target.X;
@@ -235,31 +235,31 @@ public:
         return *this;
     }
 
-    //! Opérateur d'addition
+    //! Returns sum of this vector and \a V2
     inline CVector3 operator + (const CVector3& V2) const
     {
         return CVector3(X + V2.X, Y + V2.Y, Z + V2.Z);
     }
 
-    //! Opérateur de soustraction
+    //! Returns subtraction of this vector and \a V2
     inline CVector3 operator - (const CVector3& V2) const
     {
         return CVector3(X - V2.X, Y - V2.Y, Z - V2.Z);
     }
 
-    //! Opérateur de multiplication
+    //! Returns multiplication of this vector and \a V2
     inline CVector3 operator * (const CVector3& V2) const
     {
         return CVector3(X * V2.X, Y * V2.Y, Z * V2.Z);
     }
 
-    //! Opérateur de division
+    //! Returns division of this vector and \a V2
     inline CVector3 operator / (const CVector3& V2) const
     {
         return CVector3(X / V2.X, Y / V2.Y, Z / V2.Z);
     }
 
-    //! Opérateur d'addition
+    //! Returns sum of this vector and \a V2
     CVector3& operator += (const CVector3& V2)
     {
         X += V2.X;
@@ -268,7 +268,7 @@ public:
         return *this;
     }
 
-    //! Opérateur de soustraction
+    //! Returns subtraction of this vector and \a V2
     CVector3& operator -= (const CVector3& V2)
     {
         X -= V2.X;
@@ -277,7 +277,7 @@ public:
         return *this;
     }
 
-    //! Opérateur de multiplication
+    //! Returns multiplication of this vector and \a V2
     CVector3& operator *= (const CVector3& V2)
     {
         X *= V2.X;

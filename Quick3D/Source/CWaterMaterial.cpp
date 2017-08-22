@@ -8,8 +8,8 @@ using namespace Math;
 CWaterMaterial::CWaterMaterial(C3DScene* pScene)
     : CMaterial(pScene)
 {
-    m_cDiffuse = Vector4(0.05, 0.20, 0.10, 1.0);
-    m_cSpecular = Vector4(0.8, 0.8, 0.8, 1.0);
+    m_cDiffuse = CVector4(0.05, 0.20, 0.10, 1.0);
+    m_cSpecular = CVector4(0.8, 0.8, 0.8, 1.0);
     m_dShininess = 10.0;
     m_dReflection = 0.8;
     m_dReflectionSteepness = 4.0;

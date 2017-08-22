@@ -7,9 +7,12 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 
+// qt-plus
+#include "CInterpolator.h"
+
 // Application
 #include "CQ3DConstants.h"
-#include "CStandardController.h"
+#include "CAircraftController.h"
 #include "CComponentReference.h"
 #include "CWing.h"
 #include "CElevator.h"
@@ -22,7 +25,7 @@ class C3DScene;
 
 //-------------------------------------------------------------------------------------------------
 
-class QUICK3D_EXPORT CQuadDroneController : public CStandardController
+class QUICK3D_EXPORT CQuadDroneController : public CAircraftController
 {
 
 public:
@@ -59,26 +62,8 @@ public:
     //! Returns this object's class name
     virtual QString getClassName() const { return ClassName_CQuadDroneController; }
 
-    //! Loads this object's parameters
-    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
-
-    //! Solves the links of this object
-    virtual void solveLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
-
-    //! Deletes this object's links
-    virtual void clearLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
-
     //!
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
-
-    //!
-    virtual void keyPressEvent(QKeyEvent* event);
-
-    //!
-    virtual void keyReleaseEvent(QKeyEvent *event);
-
-    //!
-    virtual void q3dEvent(CQ3DEvent* event);
 
     //-------------------------------------------------------------------------------------------------
     // Properties
@@ -86,15 +71,7 @@ public:
 
 protected:
 
-    bool                            m_bAileronLeft;
-    bool                            m_bAileronRight;
-    bool                            m_bNoseUp;
-    bool                            m_bNoseDown;
-    bool                            m_bRudderLeft;
-    bool                            m_bRudderRight;
-
-    CComponentReference<CEngine>    m_rEngine1Target;
-    CComponentReference<CEngine>    m_rEngine2Target;
-    CComponentReference<CEngine>    m_rEngine3Target;
-    CComponentReference<CEngine>    m_rEngine4Target;
+    CInterpolator<Math::CVector4>   m_iThrustModifiers_Forward;
+    CInterpolator<Math::CVector4>   m_iThrustModifiers_Lateral;
+    CInterpolator<Math::CVector4>   m_iThrustModifiers_Yaw;
 };

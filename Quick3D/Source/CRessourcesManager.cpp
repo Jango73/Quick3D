@@ -33,7 +33,7 @@ CRessourcesManager::CRessourcesManager(C3DScene* pScene)
     m_pSkyboxMaterial->setUseSky(true);
 
     m_pTreeMaterial = QSP<CMaterial>(new CMaterial(pScene));
-    m_pTreeMaterial->diffuse() = Vector4(0.5, 0.3, 0.1, 1.0);
+    m_pTreeMaterial->diffuse() = CVector4(0.5, 0.3, 0.1, 1.0);
     m_pTreeMaterial->addDiffuseTexture(QString(""),"Textures/Tree01.jpg");
     m_pTreeMaterial->setIRFactor(0.2);
 }

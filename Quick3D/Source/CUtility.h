@@ -41,25 +41,31 @@ typedef long int32;
 
 class QUICK3D_EXPORT CUtility
 {
-protected:
-
-    //!
-    CUtility();
-
 public:
 
-    //!
-    virtual ~CUtility();
+    //! Format method for QString
+    static QString FormatString(const char *szFormat, va_list &arg_ptr) ;
+    static QString FormatString(const char *szFormat, ...) ;
+    static void FormatPath(QString &path);
 
-    // Format method for QString
-    static QString                  FormatString(const char *szFormat, va_list &arg_ptr) ;
-    static QString                  FormatString(const char *szFormat, ...) ;
-    static void                     FormatPath(QString &path);
-    static void                     ensurePathExists(const QString& sName);
-    static bool                     findProcessByName(const QString& sName);
-    static void                     sleep(int iMilliSeconds);
-    static void                     sleepButProcessEvent(int iMilliSeconds);
-    static QMap<QString, QString>   getMapFromCommaSeparatedKeyValues(const QString& sParameters);
-    static QByteArray               convertQImageToByteArray(const QImage& image, const char* szFormat, int compressionRate);
-    static QImage                   convertByteArrayToQImage(const QByteArray& data, const char* szFormat);
+    //! Creates the path in \a sName if it does not exist
+    static void ensurePathExists(const QString& sName);
+
+    //! Returns \c true if the process named \a sName exists
+    static bool findProcessByName(const QString& sName);
+
+    //! Main thread sleeps for \a iMilliSeconds
+    static void sleep(int iMilliSeconds);
+
+    //! Main thread sleeps for \a iMilliSeconds but processes events
+    static void drowse(int iMilliSeconds);
+
+    //! Returns a map of strings the key=value list in \a sParameters (like: "a=0; b=155; c=foo")
+    static QMap<QString, QString> getMapFromCommaSeparatedKeyValues(const QString& sParameters);
+
+    //! Converts \a image to a byte array
+    static QByteArray convertQImageToByteArray(const QImage& image, const char* szFormat, int compressionRate);
+
+    //! Converts \a data to a QImage
+    static QImage convertByteArrayToQImage(const QByteArray& data, const char* szFormat);
 };

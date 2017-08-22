@@ -19,18 +19,6 @@
 
 //-------------------------------------------------------------------------------------------------
 
-CUtility::CUtility()
-{
-}
-
-//-------------------------------------------------------------------------------------------------
-
-CUtility::~CUtility()
-{
-}
-
-//-------------------------------------------------------------------------------------------------
-
 QString CUtility::FormatString(const char *szFormat, va_list &arg_ptr) 
 { 
     QString strRet;
@@ -167,7 +155,7 @@ void CUtility::sleep(int iMilliSeconds)
 
 //-------------------------------------------------------------------------------------------------
 
-void CUtility::sleepButProcessEvent(int iMilliSeconds)
+void CUtility::drowse(int iMilliSeconds)
 {
     QDateTime tStartTime = QDateTime::currentDateTime();
 

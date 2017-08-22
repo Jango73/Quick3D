@@ -127,6 +127,7 @@ float pixelDistanceY = 0.01;
 #define MAX_STEPS       64
 #define TM_MIN          0.05
 #define pi              3.1415926535
+#define PI              pi
 
 //-------------------------------------------------------------------------------------------------
 // Math functions
@@ -220,34 +221,51 @@ vec3 rotateVectorFast(vec4 quat, vec3 position)
     return position + 2.0 * cross(cross(position, quat.xyz) + quat.w * position, quat.xyz);
 }
 
-float rand(vec2 co) {
+float rand(vec2 co)
+{
     return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453);
 }
 
 vec2 mapDirectionVectorToEqui(vec3 position)
 {
-    vec2 result;
+    vec2 result = vec2(0.0, 0.0);
 
-    result.x = (atan2(position.z, position.x) / _2PI) + 0.25;
-    result.y = acos(position.y) / PI;
+//    result.x = (atan2(position.z, position.x) / _2PI) + 0.25;
+//    result.y = acos(position.y) / PI;
 
-    result.x = mod(1.0 - result.x, 1.0);
-    result.y = mod(1.0 - result.y, 1.0);
+//    result.x = mod(1.0 - result.x, 1.0);
+//    result.y = mod(1.0 - result.y, 1.0);
 
     return result;
 }
 
-float flatDisc(vec3 discPosition, float discRadius, vec3 position)
+float flatDisc(vec3 discPosition, float discRadius, vec3 pixelPosition)
 {
-    float dist = distance(discPosition - position);
+    float dist = distance(discPosition - pixelPosition);
     return dist > discRadius ? 0.0 : 1.0;
 }
 
-float disc(vec3 discPosition, float discRadius, vec3 position)
+float disc(vec3 discPosition, float discRadius, vec3 pixelPosition)
 {
-    float dist = distance(discPosition.xy - position.xy);
+    float dist = distance(vec3(discPosition.xy, 0.0) - vec3(pixelPosition.xy, 0.0));
     return dist > discRadius ? 0.0 : (discRadius - dist) / discRadius;
 }
+
+//-------------------------------------------------------------------------------------------------
+// Color functions
+
+float colorLuminosity(vec4 color)
+{
+    return dot(color.rgb, vec3(0.299, 0.587, 0.114));
+}
+
+vec4 contrastSaturationBrightness(vec4 color, float contrast, float saturation, float brightness)
+{
+    vec3 newColor = mix(vec3(0.5), mix(vec3(dot(vec3(0.2125, 0.7154, 0.0721), color.rgb * brightness)), color.rgb * brightness, saturation), contrast);
+
+    return vec4(newColor.rgb, color.a);
+}
+
 //-------------------------------------------------------------------------------------------------
 // BRDF functions
 
@@ -293,14 +311,6 @@ float smithG_GGX_aniso(float NdotV, float VdotX, float VdotY, float ax, float ay
 vec3 mon2lin(vec3 x)
 {
     return vec3(pow(x[0], 2.2), pow(x[1], 2.2), pow(x[2], 2.2));
-}
-
-//-------------------------------------------------------------------------------------------------
-// Return pesudo random real number
-
-float rand(vec2 co)
-{
-    return fract(sin(dot(co.xy, vec2(12.9898,78.233))) * 43758.5453);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -501,18 +511,18 @@ vec4 uberShader(
 //-----------------------------------------------
 // Compute bump normal
 
-float sampleBumMap(vec2 position)
+float sampleBumMap(vec2 pixelPosition)
 {
-    return texture2D(u_texture_bump, position);
+    return colorLuminosity(texture2D(u_texture_bump, pixelPosition));
 }
 
-void bumpAsNormalMap(vec3 surfaceNormal)
+vec3 bumpAsNormalMap(vec3 surfaceNormal, vec3 pixelPosition)
 {
-    float me = position.z;
-    float n = sampleBumMap(position.xy + vec2(0.0, -pixelDistanceY)) * 20.0;
-    float s = sampleBumMap(position.xy + vec2(0.0,  pixelDistanceY)) * 20.0;
-    float e = sampleBumMap(position.xy + vec2( pixelDistanceX, 0.0)) * 20.0;
-    float w = sampleBumMap(position.xy + vec2(-pixelDistanceX, 0.0)) * 20.0;
+    float me = pixelPosition.z;
+    float n = sampleBumMap(pixelPosition.xy + vec2(0.0, -pixelDistanceY)) * 20.0;
+    float s = sampleBumMap(pixelPosition.xy + vec2(0.0,  pixelDistanceY)) * 20.0;
+    float e = sampleBumMap(pixelPosition.xy + vec2( pixelDistanceX, 0.0)) * 20.0;
+    float w = sampleBumMap(pixelPosition.xy + vec2(-pixelDistanceX, 0.0)) * 20.0;
 
     if (n > 0.0 && s > 0.0 && e > 0.0 && w > 0.0)
     {
@@ -689,19 +699,19 @@ float flareType2(float input)
     return clamp(cubicPulse(0.5, 0.5, input), 0.0, 1.0);
 }
 
-vec4 lightFlares()
+vec4 lightFlares(vec3 lightPosition, vec3 pixelPosition, vec4 lightColor, float lightFlareIntensity)
 {
     float final = 0.0;
 
     if (lightPosition.x >= 0.0 && lightPosition.x <= 1.0 && lightPosition.y >= 0.0 && lightPosition.y <= 1.0)
     {
-        final += clamp(flareType1(disc(flareDisc(vec3(lightPosition.xy, 0.0), 0.2), 0.06, position)), 0.0, 1.0);
-        final += clamp(flareType1(disc(flareDisc(vec3(lightPosition.xy, 0.0), 0.3), 0.03, position)), 0.0, 1.0);
-        final += clamp(flareType2(disc(flareDisc(vec3(lightPosition.xy, 0.0), 0.4), 0.03, position)), 0.0, 1.0);
-        final += clamp(flareType2(disc(flareDisc(vec3(lightPosition.xy, 0.0), 0.7), 0.10, position)), 0.0, 1.0);
+        final += clamp(flareType1(disc(flareDisc(vec3(lightPosition.xy, 0.0), 0.2), 0.06, pixelPosition)), 0.0, 1.0);
+        final += clamp(flareType1(disc(flareDisc(vec3(lightPosition.xy, 0.0), 0.3), 0.03, pixelPosition)), 0.0, 1.0);
+        final += clamp(flareType2(disc(flareDisc(vec3(lightPosition.xy, 0.0), 0.4), 0.03, pixelPosition)), 0.0, 1.0);
+        final += clamp(flareType2(disc(flareDisc(vec3(lightPosition.xy, 0.0), 0.7), 0.10, pixelPosition)), 0.0, 1.0);
     }
 
-    final *= lightIntensity * lightFlareIntensity * 0.5;
+    final *= lightFlareIntensity * 0.5;
 
     return vec4(lightColor.rgb, final);
 }

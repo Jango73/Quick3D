@@ -141,7 +141,7 @@ double CPerlin::turbulence(CVector3 pos)
     {
         pos = (CVector3(pos.Y, pos.Z, pos.X) + CVector3(pos.Z, pos.Y, pos.X) * CVector3(1.0, -1.0, 1.0)) / sqrt(2.0);
         f = f * 2.0 + noise(pos);
-        pos = pos * 1.5;
+        pos *= 1.5;
     }
 
     f /= pow(2.0, (double) octaves);

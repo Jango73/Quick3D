@@ -189,10 +189,10 @@ public:
 protected:
 
     C3DScene*               m_pScene;
-    Math::CVector4           m_cAmbient;
-    Math::CVector4           m_cDiffuse;
-    Math::CVector4           m_cSpecular;
-    Math::CVector4           m_cSubdermal;
+    Math::CVector4          m_cAmbient;
+    Math::CVector4          m_cDiffuse;
+    Math::CVector4          m_cSpecular;
+    Math::CVector4          m_cSubdermal;
     double                  m_dSelfIllumination;
     double                  m_dShininess;
     double                  m_dReflection;

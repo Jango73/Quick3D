@@ -29,6 +29,7 @@ uniform vec3			u_camera_true_position;
 uniform vec3			u_camera_position;
 uniform vec3			u_camera_direction;
 uniform vec3			u_camera_up;
+uniform vec3			u_world_origin;
 uniform vec3			u_world_up;
 uniform float			u_camera_altitude;
 uniform float			u_atmosphere_altitude;
@@ -135,7 +136,8 @@ float perlin(in vec3 p)
 {
     vec3 i = floor(p);
     vec3 f = fract(p);
-    f *= f * (3.0 - 2.0 * f);
+    // f *= f * (3.0 - 2.0 * f);
+    f = f * (f * (vec3(3.0, 3.0, 3.0) - f * 2.0));
 
     float n = mix(
                 mix(mix(perlin_hash(i + vec3(0.0, 0.0, 0.0)), perlin_hash(i + vec3(1.0, 0.0, 0.0)), f.x),
@@ -151,7 +153,7 @@ float perlin(in vec3 p)
 
 float perlin_0_1(in vec3 p)
 {
-    return (perlin(p) + 1.0) / 2.0;
+    return (perlin(p) + 1.0) * 0.5;
 }
 
 //-------------------------------------------------------------------------------------------------

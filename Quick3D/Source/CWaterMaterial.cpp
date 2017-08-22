@@ -75,8 +75,8 @@ double CWaterMaterial::WaveHeight(CGeoloc gPosition)
     double value_1 = pPerlin->turbulence((position_1 * 0.005) + CVector3(m_dTime, m_dTime, m_dTime) * 0.1) * dAmplitude * 4.0;
     double value_2 = pPerlin->turbulence((position_2 * 0.005) - CVector3(m_dTime, m_dTime, m_dTime) * 0.1) * dAmplitude * 4.0;
 
-    // double value_3 = pPerlin->getTurbulence((position_1 * 0.050) + Vector3(m_dTime, m_dTime, m_dTime) * 0.5) * dAmplitude * 0.8;
-    // double value_4 = pPerlin->getTurbulence((position_2 * 0.050) - Vector3(m_dTime, m_dTime, m_dTime) * 0.5) * dAmplitude * 0.8;
+    // double value_3 = pPerlin->turbulence((position_1 * 0.050) + CVector3(m_dTime, m_dTime, m_dTime) * 0.5) * dAmplitude * 0.8;
+    // double value_4 = pPerlin->turbulence((position_2 * 0.050) - CVector3(m_dTime, m_dTime, m_dTime) * 0.5) * dAmplitude * 0.8;
 
     // double alpha_factor = Math::Angles::clipDouble(((a_altitude * -1.0) / 40.0), 0.0, 1.0);
     // double alpha_factor = 1.0;

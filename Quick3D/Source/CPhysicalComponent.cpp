@@ -332,7 +332,7 @@ void CPhysicalComponent::update(double dDeltaTimeS)
                 if (m_bPhysicsActive == true)
                 {
                     double dTotalMass_kg = totalMass_kg();
-                    // double dAirForceFactor = CAtmosphere::getInstance()->getAirForceFactor(getGeoloc().Altitude);
+                    // double dAirForceFactor = CAtmosphere::getInstance()->getAirForceFactor(geoloc().Altitude);
                     double dAirDragFactor = CAtmosphere::getInstance()->airDragFactor(geoloc().Altitude);
 
                     // Add gravity force
@@ -468,7 +468,7 @@ void CPhysicalComponent::update(double dDeltaTimeS)
                     setRotation(anAxis.eulerAngles());
 
                     // Vector3 vNewAngles = anAxis.euleurAngles();
-                    // setOriginRotation(interpolate(vNewAngles, m_vOriginRotation, m_dStickToNOLL * dDeltaTime));
+                    // setRotation(interpolate(vNewAngles, m_vRotation, m_dStickToNOLL * dDeltaTime));
                 }
             }
         }
@@ -483,8 +483,8 @@ void CPhysicalComponent::update(double dDeltaTimeS)
                     CAxis anAxis;
                     CMatrix4 aMatrix;
 
-                    aMatrix = aMatrix * CMatrix4::MakeRotation(getOriginRotation());
-                    aMatrix = aMatrix * CMatrix4::MakeRotation(getRotation());
+                    aMatrix = aMatrix * CMatrix4::MakeRotation(rotation());
+                    aMatrix = aMatrix * CMatrix4::MakeRotation(animRotation());
 
                     anAxis = anAxis * aMatrix;
                     anAxis = anAxis * m_pParent->getPreviousWorldTransform();
@@ -514,7 +514,7 @@ void CPhysicalComponent::update(double dDeltaTimeS)
     // Show axis
 
     /*
-    CAxis axis = getGeoloc().getNOLLAxis();
+    CAxis axis = geoloc().getNOLLAxis();
     CVector3 vStart = getWorldPosition();
     CVector3 vEnd = vStart + axis.Front * 2.0;
     m_pScene->addSegment(vStart, vEnd);

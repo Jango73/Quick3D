@@ -93,10 +93,10 @@ void CStandardController::update(double dDeltaTime)
 
             /*
             // Following is used when rotation is absolute
-            Axis aOriginAxis(m_pRotationTarget->getOriginRotation());
-            Axis aNorthAxis = m_pRotationTarget->getGeoloc().getNOLLAxis();
+            Axis aOriginAxis(m_pRotationTarget->rotation());
+            Axis aNorthAxis = m_pRotationTarget->geoloc().getNOLLAxis();
             aOriginAxis = aOriginAxis.transferFrom(aNorthAxis);
-            m_pPositionTarget->setOriginPosition(m_pPositionTarget->getOriginPosition() + aOriginAxis.Right * (dMoveSpeed * dDeltaTime));
+            m_pPositionTarget->setPosition(m_pPositionTarget->getPosition() + aOriginAxis.Right * (dMoveSpeed * dDeltaTime));
             */
         }
         else if (m_bStrafeLeft)
@@ -137,16 +137,16 @@ void CStandardController::update(double dDeltaTime)
             // Following is used when rotation is absolute
             if (m_pRotationTarget->isRootObject())
             {
-                Axis aOriginAxis = Axis(m_pRotationTarget->getOriginRotation());
-                Axis aNorthAxis = m_pRotationTarget->getGeoloc().getNOLLAxis();
+                Axis aOriginAxis = Axis(m_pRotationTarget->rotation());
+                Axis aNorthAxis = m_pRotationTarget->geoloc().getNOLLAxis();
                 aOriginAxis = aOriginAxis.transferFrom(aNorthAxis);
                 aOriginAxis = aOriginAxis.rotate(vRotation);
                 aOriginAxis = aOriginAxis.transferTo(aNorthAxis);
-                m_pRotationTarget->setOriginRotation(aOriginAxis.euleurAngles());
+                m_pRotationTarget->setRotation(aOriginAxis.euleurAngles());
             }
             else
             {
-                m_pRotationTarget->setOriginRotation(m_pRotationTarget->getOriginRotation() + vRotation);
+                m_pRotationTarget->setRotation(m_pRotationTarget->rotation() + vRotation);
             }
             */
 
@@ -160,16 +160,16 @@ void CStandardController::update(double dDeltaTime)
             // Following is used when rotation is absolute
             if (m_pRotationTarget->isRootObject())
             {
-                Axis aOriginAxis = Axis(m_pRotationTarget->getOriginRotation());
-                Axis aNorthAxis = m_pRotationTarget->getGeoloc().getNOLLAxis();
+                Axis aOriginAxis = Axis(m_pRotationTarget->rotation());
+                Axis aNorthAxis = m_pRotationTarget->geoloc().getNOLLAxis();
                 aOriginAxis = aOriginAxis.transferFrom(aNorthAxis);
                 aOriginAxis = aOriginAxis.rotate(vRotation);
                 aOriginAxis = aOriginAxis.transferTo(aNorthAxis);
-                m_pRotationTarget->setOriginRotation(aOriginAxis.euleurAngles());
+                m_pRotationTarget->setRotation(aOriginAxis.euleurAngles());
             }
             else
             {
-                m_pRotationTarget->setOriginRotation(m_pRotationTarget->getOriginRotation() + vRotation);
+                m_pRotationTarget->setRotation(m_pRotationTarget->rotation() + vRotation);
             }
             */
 
@@ -184,7 +184,7 @@ void CStandardController::update(double dDeltaTime)
             CVector3 vRotation = CVector3(Math::Angles::toRad(TURN_SPEED) * dDeltaTime, 0.0, 0.0);
 
             // Following is used when rotation is absolute
-            // m_pRotationTarget->setOriginRotation(Axis(vRotation).transferTo(Axis(m_pRotationTarget->getOriginRotation())).euleurAngles());
+            // m_pRotationTarget->setRotation(Axis(vRotation).transferTo(Axis(m_pRotationTarget->rotation())).eulerAngles());
 
             pRotationTarget->setRotation(pRotationTarget->rotation() + vRotation);
         }
@@ -193,7 +193,7 @@ void CStandardController::update(double dDeltaTime)
             CVector3 vRotation = CVector3(Math::Angles::toRad(-TURN_SPEED) * dDeltaTime, 0.0, 0.0);
 
             // Following is used when rotation is absolute
-            // m_pRotationTarget->setOriginRotation(Axis(vRotation).transferTo(Axis(m_pRotationTarget->getOriginRotation())).euleurAngles());
+            // m_pRotationTarget->setRotation(Axis(vRotation).transferTo(Axis(m_pRotationTarget->rotation())).eulerAngles());
 
             pRotationTarget->setRotation(pRotationTarget->rotation() + vRotation);
         }
@@ -354,20 +354,20 @@ void CStandardController::mouseMoveEvent(QMouseEvent* event)
 
                 /*
                 // Following is used when rotation is absolute
-                m_pRotationTarget->setOriginRotation(Axis(vRotationX).transferTo(Axis(m_pRotationTarget->getOriginRotation())).euleurAngles());
+                m_pRotationTarget->setRotation(Axis(vRotationX).transferTo(Axis(m_pRotationTarget->rotation())).eulerAngles());
 
                 if (m_pRotationTarget->isRootObject())
                 {
-                    Axis aOriginAxis(m_pRotationTarget->getOriginRotation());
-                    Axis aNorthAxis = m_pRotationTarget->getGeoloc().getNOLLAxis();
+                    Axis aOriginAxis(m_pRotationTarget->rotation());
+                    Axis aNorthAxis = m_pRotationTarget->geoloc().getNOLLAxis();
                     aOriginAxis = aOriginAxis.transferFrom(aNorthAxis);
                     aOriginAxis = aOriginAxis.rotate(vRotationY);
                     aOriginAxis = aOriginAxis.transferTo(aNorthAxis);
-                    m_pRotationTarget->setOriginRotation(aOriginAxis.euleurAngles());
+                    m_pRotationTarget->setRotation(aOriginAxis.eulerAngles());
                 }
                 else
                 {
-                    m_pRotationTarget->setOriginRotation(m_pRotationTarget->getOriginRotation() + vRotationY);
+                    m_pRotationTarget->setRotation(m_pRotationTarget->rotation() + vRotationY);
                 }
                 */
             }

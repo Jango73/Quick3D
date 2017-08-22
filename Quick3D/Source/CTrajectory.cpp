@@ -26,30 +26,30 @@ CTrajectory::~CTrajectory()
 
 //-------------------------------------------------------------------------------------------------
 
-void CTrajectory::setOriginPosition(CGeoloc Position)
+void CTrajectory::setPosition(CGeoloc Position)
 {
-    m_gOriginPosition = Position;
+    m_gPosition = Position;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void CTrajectory::setOriginRotation(CVector3 Rotation)
+void CTrajectory::setRotation(CVector3 Rotation)
 {
-    m_vOriginRotation = Rotation;
+    m_vRotation = Rotation;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-CGeoloc CTrajectory::getOriginPosition()
+CGeoloc CTrajectory::position()
 {
-    return m_gOriginPosition;
+    return m_gPosition;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-CVector3 CTrajectory::getOriginRotation()
+CVector3 CTrajectory::rotation()
 {
-    return m_vOriginRotation;
+    return m_vRotation;
 }
 
 //-------------------------------------------------------------------------------------------------

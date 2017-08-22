@@ -67,10 +67,10 @@ public:
     EWaypointType getType() const { return m_eType; }
 
     //!
-    CGeoloc getGeoloc() const { return m_gGeoloc; }
+    CGeoloc geoloc() const { return m_gGeoloc; }
 
     //!
-    CGeoloc getEndGeoloc() const { return m_gEndGeoloc; }
+    CGeoloc endGeoloc() const { return m_gEndGeoloc; }
 
     //!
     double getFrequency() const { return m_dFrequency; }

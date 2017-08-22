@@ -262,8 +262,8 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     // For tests
     /*
     QMatrix4x4 mCameraMatrix = CCamera::getQtMatrix(Geoloc(
-        m_pCamera->getGeoloc().Latitude,
-        m_pCamera->getGeoloc().Longitude,
+        m_pCamera->geoloc().Latitude,
+        m_pCamera->geoloc().Longitude,
         3000000.0
         ).toVector3() - vCamPos, Vector3(0.0, 0.0, 0.0));
         */

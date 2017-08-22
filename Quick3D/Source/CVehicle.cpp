@@ -75,8 +75,8 @@ void CVehicle::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
                 Math::Angles::toRad(tRotationNode.attributes()[ParamName_z].toDouble())
                 );
 
-    m_tTrajectory.setOriginPosition(gPosition);
-    m_tTrajectory.setOriginRotation(vRotation);
+    m_tTrajectory.setPosition(gPosition);
+    m_tTrajectory.setRotation(vRotation);
 }
 
 //-------------------------------------------------------------------------------------------------

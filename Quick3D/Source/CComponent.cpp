@@ -959,36 +959,36 @@ void CComponent::loadTransform()
 */
 void CComponent::computeWorldTransform()
 {
-    CMatrix4 mOriginRotation;
     CMatrix4 mRotation;
-    CMatrix4 mOriginPosition;
+    CMatrix4 mAnimRotation;
     CMatrix4 mPosition;
+    CMatrix4 mAnimPosition;
 
     // Create the original rotation matrix
-    mOriginRotation = CMatrix4::makeRotation(m_vECEFRotation);
+    mRotation = CMatrix4::makeRotation(m_vECEFRotation);
 
     // Create the animated rotation matrix
-    mRotation = CMatrix4::makeRotation(m_vAnimRotation);
+    mAnimRotation = CMatrix4::makeRotation(m_vAnimRotation);
 
     // Create the original position matrix
-    mOriginPosition = CMatrix4::makeTranslation(m_vPosition);
+    mPosition = CMatrix4::makeTranslation(m_vPosition);
 
     // Create the animated position matrix
-    mPosition = CMatrix4::makeTranslation(m_vAnimPosition);
+    mAnimPosition = CMatrix4::makeTranslation(m_vAnimPosition);
 
     // Apply the transform matrices to m_mWorldTransform
     m_mWorldTransform.makeIdentity();
 
+    m_mWorldTransform = m_mWorldTransform * mAnimRotation;
     m_mWorldTransform = m_mWorldTransform * mRotation;
-    m_mWorldTransform = m_mWorldTransform * mOriginRotation;
+    m_mWorldTransform = m_mWorldTransform * mAnimPosition;
     m_mWorldTransform = m_mWorldTransform * mPosition;
-    m_mWorldTransform = m_mWorldTransform * mOriginPosition;
 
     if (isRootObject() || m_bInheritTransform == false)
     {
         CVector3 vPosition = m_gGeoloc.toVector3();
-        mPosition = CMatrix4::makeTranslation(vPosition);
-        m_mWorldTransform = m_mWorldTransform * mPosition;
+        mAnimPosition = CMatrix4::makeTranslation(vPosition);
+        m_mWorldTransform = m_mWorldTransform * mAnimPosition;
     }
 
     if (m_pParent && m_bInheritTransform)

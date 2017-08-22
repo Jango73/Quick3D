@@ -49,7 +49,7 @@ void CSkyBox::paint(CRenderContext* pContext)
 
     setScale(CVector3(dScale, dScale, dScale));
     setWorldTransform(pContext->camera()->worldTransform());
-    // setOriginPosition(pContext->camera()->getWorldPosition());
+    // setPosition(pContext->camera()->getWorldPosition());
     // computeWorldTransform();
 
     CMesh::paint(pContext);

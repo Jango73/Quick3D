@@ -34,20 +34,20 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    void setOriginPosition(CGeoloc Position);
+    void setPosition(CGeoloc Position);
 
     //!
-    void setOriginRotation(Math::CVector3 Rotation);
+    void setRotation(Math::CVector3 Rotation);
 
     //-------------------------------------------------------------------------------------------------
     // Getters
     //-------------------------------------------------------------------------------------------------
 
     //!
-    CGeoloc getOriginPosition();
+    CGeoloc position();
 
     //!
-    Math::CVector3 getOriginRotation();
+    Math::CVector3 rotation();
 
     //-------------------------------------------------------------------------------------------------
     // Control methods
@@ -68,8 +68,8 @@ public:
 
 protected:
 
-    CGeoloc             m_gOriginPosition;
-    Math::CVector3      m_vOriginRotation;
+    CGeoloc             m_gPosition;
+    Math::CVector3      m_vRotation;
     QVector<CGeoloc>    m_vPoints;
     int                 m_iCurrentPoint;
     bool                m_bAutoOrientation;

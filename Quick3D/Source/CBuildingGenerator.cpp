@@ -54,8 +54,8 @@ CMeshInstance* CBuildingGenerator::getBuilding(EBuildingType eType, CGeoloc gPos
             Vector3 vNewPosition(vPosition.X, vPosition.Y - dBasemintHeight + (dHeight / 2.0), vPosition.Z);
             Vector3 vNewScale(dWidth, dHeight + dBasemintHeight, dWidth);
 
-            pMeshInstance->setOriginPosition(vNewPosition);
-            pMeshInstance->setOriginScale(vNewScale);
+            pMeshInstance->setPosition(vNewPosition);
+            pMeshInstance->setScale(vNewScale);
         }
         break;
 
@@ -68,8 +68,8 @@ CMeshInstance* CBuildingGenerator::getBuilding(EBuildingType eType, CGeoloc gPos
             Vector3 vNewPosition(vPosition.X, vPosition.Y - dBasemintHeight + (dHeight / 2.0), vPosition.Z);
             Vector3 vNewScale(dWidth, dHeight + dBasemintHeight, dWidth);
 
-            pMeshInstance->setOriginPosition(vNewPosition);
-            pMeshInstance->setOriginScale(vNewScale);
+            pMeshInstance->setPosition(vNewPosition);
+            pMeshInstance->setScale(vNewScale);
         }
         break;
 
@@ -82,8 +82,8 @@ CMeshInstance* CBuildingGenerator::getBuilding(EBuildingType eType, CGeoloc gPos
             Vector3 vNewPosition(vPosition.X, vPosition.Y - dBasemintHeight + (dHeight / 2.0), vPosition.Z);
             Vector3 vNewScale(dWidth, dHeight + dBasemintHeight, dWidth);
 
-            pMeshInstance->setOriginPosition(vNewPosition);
-            pMeshInstance->setOriginScale(vNewScale);
+            pMeshInstance->setPosition(vNewPosition);
+            pMeshInstance->setScale(vNewScale);
         }
         break;
     }

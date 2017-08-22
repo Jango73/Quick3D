@@ -224,8 +224,6 @@ void CAircraftController::keyPressEvent(QKeyEvent* event)
 
     QSP<CWing> pLeftWing = QSP_CAST(CWing, m_rLeftWingTarget.component());
     QSP<CWing> pRightWing = QSP_CAST(CWing, m_rRightWingTarget.component());
-    QSP<CEngine> pEngine1 = QSP_CAST(CEngine, m_rEngine1Target.component());
-    QSP<CEngine> pEngine2 = QSP_CAST(CEngine, m_rEngine2Target.component());
 
     switch (event->key())
     {

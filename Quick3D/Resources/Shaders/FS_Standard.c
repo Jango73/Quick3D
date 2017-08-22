@@ -58,34 +58,37 @@ uniform sampler2D       u_texture_diffuse_6;
 uniform sampler2D       u_texture_diffuse_7;
 uniform sampler2D       u_shadow_texture;
 
-uniform vec4			u_material_ambient;
-uniform vec4			u_material_diffuse;
-uniform vec4			u_material_specular;
-uniform vec4			u_material_subdermal;
-uniform float			u_material_self_illum;
-uniform float			u_material_shininess;
-uniform float			u_material_reflection;
-uniform float			u_material_reflection_steepness;
-uniform float			u_material_sss_factor;
-uniform float			u_material_sss_radius;
+uniform int             u_texture_bump_enable;
+uniform sampler2D       u_texture_bump;
 
-uniform int				u_depth_computing;
-uniform int				u_shadow_enable;
+uniform vec4            u_material_ambient;
+uniform vec4            u_material_diffuse;
+uniform vec4            u_material_specular;
+uniform vec4            u_material_subdermal;
+uniform float           u_material_self_illum;
+uniform float           u_material_shininess;
+uniform float           u_material_reflection;
+uniform float           u_material_reflection_steepness;
+uniform float           u_material_sss_factor;
+uniform float           u_material_sss_radius;
 
-uniform int				u_sky_enable;
+uniform int             u_depth_computing;
+uniform int             u_shadow_enable;
 
-uniform int				u_wave_enable;
-uniform float			u_wave_amplitude;
+uniform int             u_sky_enable;
 
-uniform int				u_fog_enable;
-uniform float			u_fog_distance;
-uniform vec3			u_fog_color;
-uniform vec3			u_sun_color;
+uniform int             u_wave_enable;
+uniform float           u_wave_amplitude;
 
-uniform int				u_IR_enable;
-uniform float			u_IR_factor;
+uniform int             u_fog_enable;
+uniform float           u_fog_distance;
+uniform vec3            u_fog_color;
+uniform vec3            u_sun_color;
 
-uniform int				u_inverse_polarity_enable;
+uniform int             u_IR_enable;
+uniform float           u_IR_factor;
+
+uniform int             u_inverse_polarity_enable;
 
 // Interpolated values
 
@@ -108,26 +111,188 @@ varying float			vo_difftex_weight_7;
 
 // Globals
 
-float	gAtmosphereFactor;
-float	gSeaAltitudeFactor_1;
-float	gSeaAltitudeFactor_2;
-float	gStepSize;
-float	gStepFactor;
+float gAtmosphereFactor;
+float gSeaAltitudeFactor_1;
+float gSeaAltitudeFactor_2;
+float gStepSize;
+float gStepFactor;
+
+float pixelDistanceX = 0.01;
+float pixelDistanceY = 0.01;
 
 // Constants
 
-#define ROOTTHREE		1.73205081
-#define uTMK			20.0
-#define MAX_STEPS		64
-#define TM_MIN			0.05
-#define pi				3.1415926535
+#define ROOTTHREE       1.73205081
+#define uTMK            20.0
+#define MAX_STEPS       64
+#define TM_MIN          0.05
+#define pi              3.1415926535
 
 //-------------------------------------------------------------------------------------------------
-// Return distance of 3D vector
+// Math functions
+
+float sqr(float x)
+{
+    return x * x;
+}
 
 float distance(vec3 pos)
 {
     return abs(sqrt(pos.x * pos.x + pos.y * pos.y + pos.z * pos.z));
+}
+
+// Brings all values below a threshold smoothly to that threshold
+float almostIdentity( float x, float m, float n )
+{
+    if (x > m) return x;
+
+    float a = 2.0 * n - m;
+    float b = 2.0 * m - 3.0 * n;
+    float t = x / m;
+
+    return (a * t + b) * t * t + n;
+}
+
+// Impulse
+float impulse(float k, float x)
+{
+    float h = k * x;
+    return h * exp(1.0 - h);
+}
+
+// Cubic pulse
+float cubicPulse(float c, float w, float x)
+{
+    x = abs(x - c);
+    if (x > w) return 0.0;
+    x /= w;
+    return 1.0 - x * x * (3.0 - 2.0 * x);
+}
+
+// Exponential step
+float expStep(float x, float k, float n)
+{
+    return exp(-k * pow(x, n));
+}
+
+// Parabola
+float parabola(float x, float k)
+{
+    return pow(4.0 * x * (1.0 - x), k);
+}
+
+vec4 quaternionFromAxisAndAngle(float x, float y, float z, float angle)
+{
+    vec4 result = vec4(0.0, 0.0, 0.0, 0.0);
+    //x, y, and z form a normalized vector which is now the axis of rotation.
+    result.w  = cos(angle / 2.0);
+    result.x = x * sin(angle / 2.0);
+    result.y = y * sin(angle / 2.0);
+    result.z = z * sin(angle / 2.0);
+    return result;
+}
+
+vec4 multQuat(vec4 q1, vec4 q2)
+{
+    return vec4(
+                q1.w * q2.x + q1.x * q2.w + q1.z * q2.y - q1.y * q2.z,
+                q1.w * q2.y + q1.y * q2.w + q1.x * q2.z - q1.z * q2.x,
+                q1.w * q2.z + q1.z * q2.w + q1.y * q2.x - q1.x * q2.y,
+                q1.w * q2.w - q1.x * q2.x - q1.y * q2.y - q1.z * q2.z
+                );
+}
+
+mat4 rotationMatrix(vec3 axis, float angle)
+{
+    axis = normalize(axis);
+    float s = sin(angle);
+    float c = cos(angle);
+    float oc = 1.0 - c;
+
+    return mat4(oc * axis.x * axis.x + c,           oc * axis.x * axis.y - axis.z * s,  oc * axis.z * axis.x + axis.y * s,  0.0,
+                oc * axis.x * axis.y + axis.z * s,  oc * axis.y * axis.y + c,           oc * axis.y * axis.z - axis.x * s,  0.0,
+                oc * axis.z * axis.x - axis.y * s,  oc * axis.y * axis.z + axis.x * s,  oc * axis.z * axis.z + c,           0.0,
+                0.0,                                0.0,                                0.0,                                1.0);
+}
+
+vec3 rotateVectorFast(vec4 quat, vec3 position)
+{
+    return position + 2.0 * cross(cross(position, quat.xyz) + quat.w * position, quat.xyz);
+}
+
+float rand(vec2 co) {
+    return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453);
+}
+
+vec2 mapDirectionVectorToEqui(vec3 position)
+{
+    vec2 result;
+
+    result.x = (atan2(position.z, position.x) / _2PI) + 0.25;
+    result.y = acos(position.y) / PI;
+
+    result.x = mod(1.0 - result.x, 1.0);
+    result.y = mod(1.0 - result.y, 1.0);
+
+    return result;
+}
+
+float flatDisc(vec3 discPosition, float discRadius, vec3 position)
+{
+    float dist = distance(discPosition - position);
+    return dist > discRadius ? 0.0 : 1.0;
+}
+
+float disc(vec3 discPosition, float discRadius, vec3 position)
+{
+    float dist = distance(discPosition.xy - position.xy);
+    return dist > discRadius ? 0.0 : (discRadius - dist) / discRadius;
+}
+//-------------------------------------------------------------------------------------------------
+// BRDF functions
+
+float SchlickFresnel(float u)
+{
+    float m = clamp(1-u, 0, 1);
+    float m2 = m * m;
+    return m2 * m2 * m; // pow(m,5)
+}
+
+float GTR1(float NdotH, float a)
+{
+    if (a >= 1) return 1/PI;
+    float a2 = a*a;
+    float t = 1 + (a2-1)*NdotH*NdotH;
+    return (a2-1) / (PI*log(a2)*t);
+}
+
+float GTR2(float NdotH, float a)
+{
+    float a2 = a*a;
+    float t = 1 + (a2-1)*NdotH*NdotH;
+    return a2 / (PI * t * t);
+}
+
+float GTR2_aniso(float NdotH, float HdotX, float HdotY, float ax, float ay)
+{
+    return 1 / (PI * ax*ay * sqr( sqr(HdotX/ax) + sqr(HdotY/ay) + NdotH*NdotH ));
+}
+
+float smithG_GGX(float NdotV, float alphaG)
+{
+    float a = alphaG*alphaG;
+    float b = NdotV*NdotV;
+    return 1 / (NdotV + sqrt(a + b - a*b));
+}
+
+float smithG_GGX_aniso(float NdotV, float VdotX, float VdotY, float ax, float ay)
+{
+    return 1 / (NdotV + sqrt( sqr(VdotX*ax) + sqr(VdotY*ay) + sqr(NdotV) ));
+}
+
+vec3 mon2lin(vec3 x)
+{
+    return vec3(pow(x[0], 2.2), pow(x[1], 2.2), pow(x[2], 2.2));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -273,9 +438,110 @@ float staticTurbulence(vec3 ipos)
 }
 
 //-------------------------------------------------------------------------------------------------
-// Sky and clouds
+// BRDFs
 
-vec3 cloud_normal = vec3(0.0, 1.0, 0.0);
+float orenNayarDiffuse(vec3 lightDirection, vec3 viewDirection, vec3 surfaceNormal, float roughness, float albedo)
+{
+    viewDirection = -viewDirection;
+
+    float LdotV = dot(lightDirection, viewDirection);
+    float NdotL = dot(lightDirection, surfaceNormal);
+    float NdotV = dot(surfaceNormal, viewDirection);
+
+    float s = LdotV - NdotL * NdotV;
+    float t = mix(1.0, max(NdotL, NdotV), step(0.0, s));
+
+    float sigma2 = roughness * roughness;
+    float A = 1.0 + sigma2 * (albedo / (sigma2 + 0.13) + 0.5 / (sigma2 + 0.33));
+    float B = 0.45 * sigma2 / (sigma2 + 0.09);
+
+    return albedo * max(0.0, NdotL) * (A + B * s / t) / PI;
+}
+
+float ggxGlossy(vec3 lightDirection, vec3 viewDirection, vec3 surfaceNormal, float roughness)
+{
+    viewDirection = -viewDirection;
+    lightDirection = -lightDirection;
+
+    vec3 H       = normalize(viewDirection + lightDirection);
+    float a      = roughness * roughness;
+    float a2     = a * a;
+    float NdotH  = max(dot(surfaceNormal, H), 0.0);
+    float NdotH2 = NdotH*NdotH;
+
+    float nom   = a2;
+    float denom = (NdotH2 * (a2 - 1.0) + 1.0);
+    denom = PI * denom * denom;
+
+    return nom / denom;
+}
+
+vec4 uberShader(
+        vec3 lightDirection,
+        vec3 viewDirection,
+        vec3 surfaceNormal,
+        vec4 diffuseColor,
+        vec4 glossyColor,
+        float glossiness,
+        float metalness,
+        float IOR
+        )
+{
+    float roughness = 1.0 - glossiness;
+    float diffuseAmount = orenNayarDiffuse(lightDirection, viewDirection, surfaceNormal, roughness, 1.0);
+    float glossyAmount = ggxGlossy(lightDirection, viewDirection, surfaceNormal, roughness);
+
+    vec4 dielectricColor = diffuseColor * diffuseAmount;
+    vec4 metallicColor = glossyColor * glossyAmount;
+    vec4 finalColor = mix(dielectricColor, metallicColor, metalness);
+
+    return finalColor;
+}
+
+//-----------------------------------------------
+// Compute bump normal
+
+float sampleBumMap(vec2 position)
+{
+    return texture2D(u_texture_bump, position);
+}
+
+void bumpAsNormalMap(vec3 surfaceNormal)
+{
+    float me = position.z;
+    float n = sampleBumMap(position.xy + vec2(0.0, -pixelDistanceY)) * 20.0;
+    float s = sampleBumMap(position.xy + vec2(0.0,  pixelDistanceY)) * 20.0;
+    float e = sampleBumMap(position.xy + vec2( pixelDistanceX, 0.0)) * 20.0;
+    float w = sampleBumMap(position.xy + vec2(-pixelDistanceX, 0.0)) * 20.0;
+
+    if (n > 0.0 && s > 0.0 && e > 0.0 && w > 0.0)
+    {
+        // find perpendicular vector to normal
+        vec3 temp = surfaceNormal;
+        if (surfaceNormal.x == 1) temp.y += 0.5; else temp.x += 0.5;
+
+        // form a basis with normal being one of the axes
+        vec3 perp1 = normalize(cross(surfaceNormal, temp));
+        vec3 perp2 = normalize(cross(surfaceNormal, perp1));
+
+        // use the basis to move the normal in its own space by the offset
+        vec3 normalOffset = -1.0 * (((n - me) - (s - me)) * perp1 + ((e - me) - (w - me)) * perp2);
+        surfaceNormal = normalize(surfaceNormal - normalOffset);
+
+        // find perpendicular vector to normal
+        // temp = surfaceNormal;
+        // if (surfaceNormal.x == 1) temp.y += 0.5; else temp.x += 0.5;
+        // surfaceNormalTangent = normalize(cross(surfaceNormal, temp));
+        // surfaceNormalBitangent = normalize(cross(surfaceNormal, surfaceNormalTangent));
+    }
+
+    return surfaceNormal;
+}
+
+//-------------------------------------------------------------------------------------------------
+// Clouds
+
+vec3 cloudNormal = vec3(0.0, 1.0, 0.0);
 
 #define CLOUD_OCTAVES 4
 
@@ -317,7 +583,7 @@ float getCloudDensityAt(vec3 origin, vec3 position)
     float c = (a + b) * density_factor * alt_factor;
 
     vec3 normal_position = vec3(0.0, (perlin(position * 0.01) - 0.5) * 2.0, 0.0);
-    cloud_normal = normalize(vec3(0.0, 1.0, 0.0) + (origin - normal_position));
+    cloudNormal = normalize(vec3(0.0, 1.0, 0.0) + (origin - normal_position));
 
     return c;
 }
@@ -326,35 +592,37 @@ float getCloudDensityAt(vec3 origin, vec3 position)
 
 vec4 getCloudsAt(vec3 origin, vec3 direction)
 {
-    float max_trace_distance = 2000.0;
-    float step_size = max_trace_distance / float(CLOUD_STEPS);
-    float total_density = 0.0;
-    float fog_intensity = clamp(((u_fog_color.r + u_fog_color.g + u_fog_color.b) / 3.0) * 1.5, 0.0, 1.0);
+    float maxTraceDistance = 2000.0;
+    float stepSize = maxTraceDistance / float(CLOUD_STEPS);
+    float totalDensity = 0.0;
+    float fogIntensity = clamp(((u_fog_color.r + u_fog_color.g + u_fog_color.b) / 3.0) * 1.5, 0.0, 1.0);
 
-    vec3 step_distance = direction * step_size;
-    vec3 color_light = vec3(0.9, 0.9, 0.9) * fog_intensity;
-    vec3 color_dark = vec3(0.5, 0.5, 0.6) * fog_intensity;
+    vec3 stepDistance = direction * stepSize;
+    vec3 colorLight = vec3(0.9, 0.9, 0.9) * fogIntensity;
+    vec3 colorDark = vec3(0.5, 0.5, 0.6) * fogIntensity;
     vec3 position = origin;
 
-    float accumulated_color = 1.0;
+    float accumulatedColor = 1.0;
 
     for (int i = 0; i < CLOUD_STEPS; i++)
     {
         float local_density = getCloudDensityAt(origin, position);
 
-        total_density += local_density;
-        accumulated_color += (cloud_normal.y * local_density);
+        totalDensity += local_density;
+        accumulatedColor += (cloudNormal.y * local_density);
 
-        position += step_distance;
+        position += stepDistance;
     }
 
     vec4 color;
 
-    color.a = clamp(total_density, 0.0, 1.0);
-    color.rgb = mix(color_dark, color_light, clamp(accumulated_color, 0.0, 1.5));
+    color.a = clamp(totalDensity, 0.0, 1.0);
+    color.rgb = mix(colorDark, colorLight, clamp(accumulatedColor, 0.0, 1.5));
 
     return color * gAtmosphereFactor;
 }
+
+//-------------------------------------------------------------------------------------------------
 
 vec3 stars(vec3 direction)
 {
@@ -362,6 +630,9 @@ vec3 stars(vec3 direction)
     float a = pow(n, 80.0);
     return vec3(a);
 }
+
+//-------------------------------------------------------------------------------------------------
+// Rays and flares
 
 vec3 lightRays(vec3 origin, vec3 direction, vec2 xy)
 {
@@ -400,6 +671,43 @@ vec3 lightRays(vec3 origin, vec3 direction, vec2 xy)
 
     return color;
 }
+
+vec3 flareDisc(vec3 light, float where)
+{
+    vec3 center = vec3(0.5, 0.5, 0.0);
+    vec3 ray = light - center;
+    return center - ray * where;
+}
+
+float flareType1(float input)
+{
+    return clamp(impulse(8.0, input), 0.0, 1.0);
+}
+
+float flareType2(float input)
+{
+    return clamp(cubicPulse(0.5, 0.5, input), 0.0, 1.0);
+}
+
+vec4 lightFlares()
+{
+    float final = 0.0;
+
+    if (lightPosition.x >= 0.0 && lightPosition.x <= 1.0 && lightPosition.y >= 0.0 && lightPosition.y <= 1.0)
+    {
+        final += clamp(flareType1(disc(flareDisc(vec3(lightPosition.xy, 0.0), 0.2), 0.06, position)), 0.0, 1.0);
+        final += clamp(flareType1(disc(flareDisc(vec3(lightPosition.xy, 0.0), 0.3), 0.03, position)), 0.0, 1.0);
+        final += clamp(flareType2(disc(flareDisc(vec3(lightPosition.xy, 0.0), 0.4), 0.03, position)), 0.0, 1.0);
+        final += clamp(flareType2(disc(flareDisc(vec3(lightPosition.xy, 0.0), 0.7), 0.10, position)), 0.0, 1.0);
+    }
+
+    final *= lightIntensity * lightFlareIntensity * 0.5;
+
+    return vec4(lightColor.rgb, final);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Sky
 
 vec3 getSkyAt(vec3 origin, vec3 direction, vec2 xy)
 {
@@ -448,15 +756,15 @@ float oceanDistanceFieldDetail(vec3 pos, float scale, float timeScale, float amp
 
 vec3 oceanNormal(vec3 inputPosition, float scale, float timeScale, float amplitude)
 {
-    vec3 pos = inputPosition;
-    vec3 norm;
-    vec2 d = vec2(length(pos) * 0.01, 0.0);
+    vec3 position = inputPosition;
+    vec3 normal;
+    vec2 d = vec2(length(position) * 0.01, 0.0);
 
-    norm.x = oceanDistanceFieldDetail(pos + d.xyy, scale, timeScale, amplitude) - oceanDistanceFieldDetail(pos - d.xyy, scale, timeScale, amplitude);
-    norm.y = oceanDistanceFieldDetail(pos + d.yxy, scale, timeScale, amplitude) - oceanDistanceFieldDetail(pos - d.yxy, scale, timeScale, amplitude);
-    norm.z = oceanDistanceFieldDetail(pos + d.yyx, scale, timeScale, amplitude) - oceanDistanceFieldDetail(pos - d.yyx, scale, timeScale, amplitude);
+    normal.x = oceanDistanceFieldDetail(position + d.xyy, scale, timeScale, amplitude) - oceanDistanceFieldDetail(position - d.xyy, scale, timeScale, amplitude);
+    normal.y = oceanDistanceFieldDetail(position + d.yxy, scale, timeScale, amplitude) - oceanDistanceFieldDetail(position - d.yxy, scale, timeScale, amplitude);
+    normal.z = oceanDistanceFieldDetail(position + d.yyx, scale, timeScale, amplitude) - oceanDistanceFieldDetail(position - d.yyx, scale, timeScale, amplitude);
 
-    return normalize(norm);
+    return normalize(normal);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -563,7 +871,7 @@ vec4 volumetricLights(vec3 pos)
 //-------------------------------------------------------------------------------------------------
 // Lights
 
-vec3 doLighting(vec3 position, vec3 normal, vec3 eye, vec2 xy)
+vec3 doLighting_Old(vec3 worldPosition, vec3 surfaceNormal, vec3 viewDirection, vec2 normScreenCoords)
 {
     vec3 color = vec3(0.0, 0.0, 0.0);
 
@@ -576,27 +884,27 @@ vec3 doLighting(vec3 position, vec3 normal, vec3 eye, vec2 xy)
 
     for (int index = 0; index < u_num_lights; index++)
     {
-        vec3 diff = u_light_position[index] - position;
-        float dist = distance(diff);
+        vec3 rawLightRay = u_light_position[index] - worldPosition;
+        float lightRayLength = distance(rawLightRay);
 
-        if (u_light_distance[index] == 0.0 || dist < u_light_distance[index])
+        if (u_light_distance[index] == 0.0 || lightRayLength < u_light_distance[index])
         {
             // Light ray
-            vec3 ray = normalize(diff);
+            vec3 lightRay = normalize(rawLightRay);
 
             // Compute distance attenuation
             float attenuation = 1.0;
 
             if (u_light_distance[index] > 0.0)
             {
-                attenuation = clamp(1.0 - (dist / u_light_distance[index]), 0.0, 1.0);
+                attenuation = clamp(1.0 - (lightRayLength / u_light_distance[index]), 0.0, 1.0);
             }
 
             // Compute spot attenuation
             if (u_light_direction[index] != vec3(0.0, 0.0, 0.0) && u_light_spot_angle[index] != 0.0)
             {
                 float spotCutoff = cos(u_light_spot_angle[index]);
-                float dotDirectionRay = dot(-u_light_direction[index], ray);
+                float dotDirectionRay = dot(-u_light_direction[index], lightRay);
 
                 if (dotDirectionRay < spotCutoff)
                 {
@@ -608,15 +916,15 @@ vec3 doLighting(vec3 position, vec3 normal, vec3 eye, vec2 xy)
             if (attenuation > 0.0)
             {
                 // Light angle
-                float dot_normal_ray = max(dot(normal, ray), 0.0);
+                float dotNormalLightRay = max(dot(surfaceNormal, lightRay), 0.0);
 
                 // Reflected ray
-                vec3 reflected = normalize(reflect(ray, normal));
+                vec3 reflected = normalize(reflect(lightRay, surfaceNormal));
 
-                float dot_reflected_eye = dot(reflected, eye);
+                float dot_reflected_eye = dot(reflected, viewDirection);
 
                 // Diffuse light
-                vec3 diffuse = u_material_diffuse.xyz * (u_light_color[index] * dot_normal_ray);
+                vec3 diffuse = u_material_diffuse.xyz * (u_light_color[index] * dotNormalLightRay);
 
                 // Specular light
                 vec3 specular;
@@ -634,21 +942,19 @@ vec3 doLighting(vec3 position, vec3 normal, vec3 eye, vec2 xy)
                 // Reflected light
                 vec3 reflection;
 
-                /*
                 if (u_shaderQuality >= 0.75 && u_material_reflection > 0.0)
                 {
-                    reflection = getSkyAt(position, reflect(eye, normal), xy) * u_material_reflection;
+                    reflection = getSkyAt(worldPosition, reflect(viewDirection, surfaceNormal), normScreenCoords) * u_material_reflection;
 
                     if (u_material_reflection_steepness > 0.0)
                     {
-                        float dot_normal_eye = dot(normal, eye);
+                        float dot_normal_eye = dot(surfaceNormal, viewDirection);
                         float one_minus_dot_normal_eye = 1.0 - abs(dot_normal_eye);
 
                         reflection = reflection * clamp(pow(one_minus_dot_normal_eye, u_material_reflection_steepness), 0.0, 1.0);
                     }
                 }
                 else
-                */
                 {
                     reflection = vec3(0.0, 0.0, 0.0);
                 }
@@ -656,7 +962,7 @@ vec3 doLighting(vec3 position, vec3 normal, vec3 eye, vec2 xy)
                 // Subsurface scattering
                 if (u_material_sss_factor > 0.0)
                 {
-                    subdermal = (u_material_subdermal.xyz * (u_light_color[index] * dot_normal_ray)) * u_material_sss_factor;
+                    subdermal = (u_material_subdermal.xyz * (u_light_color[index] * dotNormalLightRay)) * u_material_sss_factor;
                 }
                 else
                 {
@@ -673,32 +979,96 @@ vec3 doLighting(vec3 position, vec3 normal, vec3 eye, vec2 xy)
     return u_global_ambient + u_material_ambient.xyz + u_material_diffuse.xyz * selfIllumination + color;
 }
 
+vec3 doLighting(vec3 worldPosition, vec3 surfaceNormal, vec3 viewDirection, vec2 normScreenCoords)
+{
+    vec3 finalColor = vec3(0.0, 0.0, 0.0);
+
+    float selfIllumination = u_material_self_illum;
+
+    if (bool(u_IR_enable))
+    {
+        if (selfIllumination < u_IR_factor) selfIllumination = u_IR_factor;
+    }
+
+    for (int index = 0; index < u_num_lights; index++)
+    {
+        vec3 rawLightRay = u_light_position[index] - worldPosition;
+        float lightRayLength = distance(rawLightRay);
+
+        if (u_light_distance[index] == 0.0 || lightRayLength < u_light_distance[index])
+        {
+            // Light ray
+            vec3 lightRay = normalize(rawLightRay);
+
+            // Compute distance attenuation
+            float attenuation = 1.0;
+
+            if (u_light_distance[index] > 0.0)
+            {
+                attenuation = clamp(1.0 - (lightRayLength / u_light_distance[index]), 0.0, 1.0);
+            }
+
+            // Compute spot attenuation
+            if (u_light_direction[index] != vec3(0.0, 0.0, 0.0) && u_light_spot_angle[index] != 0.0)
+            {
+                float spotCutoff = cos(u_light_spot_angle[index]);
+                float dotDirectionRay = dot(-u_light_direction[index], lightRay);
+
+                if (dotDirectionRay < spotCutoff)
+                {
+                    attenuation = 0.0;
+                }
+            }
+
+            // Continue if attenuation is not 0
+            if (attenuation > 0.0)
+            {
+                vec4 diffuseColor = uberShader(
+                            lightRay,
+                            viewDirection,
+                            surfaceNormal,
+                            u_material_diffuse,
+                            u_material_specular,
+                            0.5,
+                            0.0,
+                            1.4
+                            );
+
+                finalColor = finalColor + (diffuseColor.rgb * attenuation);
+            }
+        }
+    }
+
+    // Return material ambient plus light color
+    return u_global_ambient + u_material_ambient.xyz + u_material_diffuse.xyz * selfIllumination + finalColor;
+}
+
 //-------------------------------------------------------------------------------------------------
 // Fog
 
 vec4 computeLinearFog(vec4 color)
 {
     // Compute fog distance, increase if rendering sky
-    float fog_distance = u_fog_distance;
-    if (bool(u_sky_enable)) fog_distance *= 4.0;
+    float fogDistance = u_fog_distance;
+    if (bool(u_sky_enable)) fogDistance *= 4.0;
 
     // Compute fog factor based on distance and atmosphere
-    float fog_factor = clamp(((fog_distance - vo_distance) / fog_distance), 0.0, 1.0);
-    fog_factor = (1.0 - fog_factor) * gAtmosphereFactor;
+    float fogFactor = clamp(((fogDistance - vo_distance) / fogDistance), 0.0, 1.0);
+    fogFactor = (1.0 - fogFactor) * gAtmosphereFactor;
 
     // Compute attenuated sun color
     float average = (0.2125 * u_sun_color.r) + (0.7154 * u_sun_color.g) + (0.0721 * u_sun_color.b);
-    vec3 sun_intensity = vec3(average, average, average);
-    vec3 sun_light = mix(u_sun_color, sun_intensity, 0.5);
+    vec3 sunIntensity = vec3(average, average, average);
+    vec3 sunLight = mix(u_sun_color, sunIntensity, 0.5);
     // vec3 sun_light = average;
 
     // Compute color, mix between fog color and sun color
-    vec3 fog_color = mix(u_fog_color, sun_light * 0.75, fog_factor);
+    vec3 fogColor = mix(u_fog_color, sunLight * 0.75, fogFactor);
 
     // Attenuate if IR
-    if (bool(u_IR_enable)) fog_color *= 0.6;
+    if (bool(u_IR_enable)) fogColor *= 0.6;
 
-    return vec4(color.xyz * (1.0 - fog_factor) + fog_color * fog_factor, color.a);
+    return vec4(color.xyz * (1.0 - fogFactor) + fogColor * fogFactor, color.a);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -769,25 +1139,25 @@ vec3 getNormal()
 
 vec4 getTexture()
 {
-    vec4 texture_color = vec4(0.0, 0.0, 0.0, 1.0);
+    vec4 textureColor = vec4(0.0, 0.0, 0.0, 1.0);
 
     if (bool(u_texture_diffuse_enable) && u_shaderQuality >= 0.20)
     {
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_0, vo_texcoord.xy), vo_difftex_weight_0);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_1, vo_texcoord.xy), vo_difftex_weight_1);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_2, vo_texcoord.xy), vo_difftex_weight_2);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_3, vo_texcoord.xy), vo_difftex_weight_3);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_4, vo_texcoord.xy), vo_difftex_weight_4);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_5, vo_texcoord.xy), vo_difftex_weight_5);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_6, vo_texcoord.xy), vo_difftex_weight_6);
-        texture_color = mix(texture_color, texture2D(u_texture_diffuse_7, vo_texcoord.xy), vo_difftex_weight_7);
+        textureColor = mix(textureColor, texture2D(u_texture_diffuse_0, vo_texcoord.xy), vo_difftex_weight_0);
+        textureColor = mix(textureColor, texture2D(u_texture_diffuse_1, vo_texcoord.xy), vo_difftex_weight_1);
+        textureColor = mix(textureColor, texture2D(u_texture_diffuse_2, vo_texcoord.xy), vo_difftex_weight_2);
+        textureColor = mix(textureColor, texture2D(u_texture_diffuse_3, vo_texcoord.xy), vo_difftex_weight_3);
+        textureColor = mix(textureColor, texture2D(u_texture_diffuse_4, vo_texcoord.xy), vo_difftex_weight_4);
+        textureColor = mix(textureColor, texture2D(u_texture_diffuse_5, vo_texcoord.xy), vo_difftex_weight_5);
+        textureColor = mix(textureColor, texture2D(u_texture_diffuse_6, vo_texcoord.xy), vo_difftex_weight_6);
+        textureColor = mix(textureColor, texture2D(u_texture_diffuse_7, vo_texcoord.xy), vo_difftex_weight_7);
     }
     else
     {
         return vec4(1.0, 1.0, 1.0, 1.0);
     }
 
-    return texture_color;
+    return textureColor;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -813,9 +1183,9 @@ vec3 getShadow()
                 sc.z > 0.0 && sc.z < 1.0
                 )
         {
-            float shadow_depth = texture2D(u_shadow_texture, sc.xy).r;
+            float shadowDepth = texture2D(u_shadow_texture, sc.xy).r;
 
-            if (shadow_depth < sc.z - 0.001)
+            if (shadowDepth < sc.z - 0.001)
             {
                 color = vec3(0.25, 0.25, 0.25);
             }
@@ -831,9 +1201,9 @@ vec3 getShadow()
 vec3 postEffects(vec3 rgb, vec2 xy)
 {
     // Contrast / saturation / brightness
-#define CONTRAST 1.3
-#define SATURATION 1.0
-#define BRIGHTNESS 0.8
+    #define CONTRAST 1.3
+    #define SATURATION 1.0
+    #define BRIGHTNESS 0.8
 
     rgb = mix(vec3(0.5), mix(vec3(dot(vec3(0.2125, 0.7154, 0.0721), rgb * BRIGHTNESS)), rgb * BRIGHTNESS, SATURATION), CONTRAST);
 
@@ -851,23 +1221,23 @@ void main()
 {
     if (bool(u_depth_computing))
     {
-        float pixel_distance = 1.0;
-        float pixel_incidence = 0.0;
+        float pixelDistance = 1.0;
+        float pixelIncidence = 0.0;
 
         if (vo_distance > 0.0 && vo_distance < 10000.0)
         {
             // The normalized distance
-            pixel_distance = vo_distance / 10000.0;
+            pixelDistance = vo_distance / 10000.0;
 
             // The eye-to-vertex vector
-            vec3 eye_to_vertex = normalize(vo_position - u_camera_position);
+            vec3 eyeToVertex = normalize(vo_position - u_camera_position);
 
-            // Angle d'incidence entre vecteur de vidée et vecteur normal du vertex
-            pixel_incidence = clamp(dot(vo_normal * -1.0, eye_to_vertex), 0.0, 1.0);
+            // Angle of incidence between view vector and vertex' normal vector
+            pixelIncidence = clamp(dot(vo_normal * -1.0, eyeToVertex), 0.0, 1.0);
         }
 
         // Red = distance, green = incidence, blue = 0
-        gl_FragColor = vec4(pixel_distance, pixel_incidence, 0.0, 1.0);
+        gl_FragColor = vec4(pixelDistance, pixelIncidence, 0.0, 1.0);
     }
     else
     {
@@ -903,13 +1273,13 @@ void main()
                 vec3 normal = getNormal();
 
                 // Eye-to-vertex vector
-                vec3 eye_to_vertex = normalize(vo_position - u_camera_position);
+                vec3 eyeToVertex = normalize(vo_position - u_camera_position);
 
                 // Screen coordinates
                 vec2 xy = gl_FragCoord.xy / u_resolution.xy;
 
                 // Input color
-                vec4 color = vec4(doLighting(vo_position, normal, eye_to_vertex, xy), 1.0);
+                vec4 color = vec4(doLighting(vo_position, normal, eyeToVertex, xy), 1.0);
 
                 // Apply texture
                 color *= getTexture();
@@ -920,7 +1290,7 @@ void main()
                 // Apply sky if asked
                 if (bool(u_sky_enable))
                 {
-                    color = vec4(getSkyAt(u_camera_position, eye_to_vertex, xy), color.a);
+                    color = vec4(getSkyAt(u_camera_position, eyeToVertex, xy), color.a);
                 }
 
                 // Apply water if asked
@@ -931,16 +1301,16 @@ void main()
                     }
                     else if (u_shaderQuality < 0.75)
                     {
-                        float large_amplitude = 2.5;
-                        float small_amplitude = large_amplitude * 2.0;
+                        float largeAmplitude = 2.5;
+                        float smallAmplitude = largeAmplitude * 2.0;
 
-                        float v1 = movingTurbulence(vo_texcoord * 0.05, 0.1) * large_amplitude;
-                        float v2 = movingTurbulence(vo_texcoord * 3.0, 0.5) * large_amplitude;
+                        float v1 = movingTurbulence(vo_texcoord * 0.05, 0.1) * largeAmplitude;
+                        float v2 = movingTurbulence(vo_texcoord * 3.0, 0.5) * largeAmplitude;
                         float v3 = 0.0;
 
                         if (vo_distance < 500.0)
                         {
-                            v3 = movingTurbulence(vo_texcoord * 20.0, 0.7) * small_amplitude;
+                            v3 = movingTurbulence(vo_texcoord * 20.0, 0.7) * smallAmplitude;
                         }
 
                         float turb = clamp((v1 + v2 + v3) * 0.5, 1.0, 100.0);
@@ -984,7 +1354,7 @@ void main()
                 }
 
                 // Light rays
-                color += vec4(lightRays(u_camera_position, eye_to_vertex, xy), 0.0);
+                color += vec4(lightRays(u_camera_position, eyeToVertex, xy), 0.0);
 
                 // Apply effects
                 color = vec4(postEffects(color.rgb, xy), color.a);

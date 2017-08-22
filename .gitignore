@@ -37,8 +37,8 @@ Makefile*
 
 # Project specific
 Quick3D/help
-Quick3DTest/debug/Logs
-Quick3DTest/debug/Tiles
+Quick3DTest/bin/Logs
+Quick3DTest/bin/Tiles
 *.log
 *.exe
 *.blend1

@@ -339,6 +339,11 @@ QGLShaderProgram* CMaterial::activate(CRenderContext* pContext)
                 pProgram->setUniformValue("u_texture_diffuse_enable", (GLint) 0);
             }
 
+            // Bump map setup
+
+            pProgram->setUniformValue("u_texture_bump_enable", (GLint) 0);
+            pProgram->setUniformValue("u_texture_bump", (GLint) 1);
+
             // Environment setup
             pContext->scene()->setupEnvironment(pContext, pProgram, m_bUseSky);
         }

@@ -471,7 +471,6 @@ float orenNayarDiffuse(vec3 lightDirection, vec3 viewDirection, vec3 surfaceNorm
 float ggxGlossy(vec3 lightDirection, vec3 viewDirection, vec3 surfaceNormal, float roughness)
 {
     viewDirection = -viewDirection;
-    lightDirection = -lightDirection;
 
     vec3 H       = normalize(viewDirection + lightDirection);
     float a      = roughness * roughness;
@@ -484,28 +483,6 @@ float ggxGlossy(vec3 lightDirection, vec3 viewDirection, vec3 surfaceNormal, flo
     denom = PI * denom * denom;
 
     return nom / denom;
-}
-
-vec4 uberShader(
-        vec3 lightDirection,
-        vec3 viewDirection,
-        vec3 surfaceNormal,
-        vec4 diffuseColor,
-        vec4 glossyColor,
-        float glossiness,
-        float metalness,
-        float IOR
-        )
-{
-    float roughness = 1.0 - glossiness;
-    float diffuseAmount = orenNayarDiffuse(lightDirection, viewDirection, surfaceNormal, roughness, 1.0);
-    float glossyAmount = ggxGlossy(lightDirection, viewDirection, surfaceNormal, roughness);
-
-    vec4 dielectricColor = diffuseColor * diffuseAmount;
-    vec4 metallicColor = glossyColor * glossyAmount;
-    vec4 finalColor = mix(dielectricColor, metallicColor, metalness);
-
-    return finalColor;
 }
 
 //-----------------------------------------------
@@ -989,6 +966,28 @@ vec3 doLighting_Old(vec3 worldPosition, vec3 surfaceNormal, vec3 viewDirection, 
     return u_global_ambient + u_material_ambient.xyz + u_material_diffuse.xyz * selfIllumination + color;
 }
 
+vec4 uberShader(
+        vec3 lightDirection,
+        vec3 viewDirection,
+        vec3 surfaceNormal,
+        vec4 diffuseColor,
+        vec4 glossyColor,
+        float glossiness,
+        float metalness,
+        float IOR
+        )
+{
+    float roughness = clamp(1.0 - glossiness, 0.1, 1.0);
+    float diffuseAmount = orenNayarDiffuse(lightDirection, viewDirection, surfaceNormal, roughness, 1.0);
+    float glossyAmount = ggxGlossy(lightDirection, viewDirection, surfaceNormal, roughness);
+
+    vec4 dielectricColor = diffuseColor * diffuseAmount;
+    vec4 metallicColor = glossyColor * glossyAmount;
+    vec4 finalColor = mix(dielectricColor, metallicColor, metalness);
+
+    return finalColor;
+}
+
 vec3 doLighting(vec3 worldPosition, vec3 surfaceNormal, vec3 viewDirection, vec2 normScreenCoords)
 {
     vec3 finalColor = vec3(0.0, 0.0, 0.0);
@@ -1039,7 +1038,7 @@ vec3 doLighting(vec3 worldPosition, vec3 surfaceNormal, vec3 viewDirection, vec2
                             surfaceNormal,
                             u_material_diffuse,
                             u_material_specular,
-                            0.5,
+                            0.0,
                             0.0,
                             1.4
                             );

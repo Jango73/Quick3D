@@ -2,6 +2,7 @@
 <Scene>
     <Camera1 Name="Man1.Head" />
     <Camera2 Name="VBCI.Pilot" />
+    <Camera2 Name="Drone01.Pilot" />
     <ControlledComponent Name="Man1" />
     <!--
     <Camera1 Name="Plascoa01Pilot"/>
@@ -498,9 +499,59 @@
             </Component>
             <Controller Class="CStandardController" />
         </Component>
+        <Component Name="Drone01" Class="CAircraft">
+            <Geoloc Latitude="19.237731" Longitude="10.896700" Altitude="0.0" />
+            <Rotation x="0.0" y="0.0" z="0.0" />
+            <Mesh Name="SmoothingTest.obj" />
+            <IR Factor="0.8" />
+            <Physics PhysicsActive="1" MassKG="1.0" Drag="0.01" AngularDrag="1.0" />
+            <Controller
+                Class="CQuadDroneController"
+                PositionTarget=".Pilot"
+                RotationTarget=".Pilot"
+                Engine1Target=".Engine1"
+                Engine2Target=".Engine2"
+                Engine3Target=".Engine3"
+                Engine4Target=".Engine4"
+            />
+            <Component Name="Pilot" Class="CCamera">
+                <Physics CollisionsActive="0" />
+                <Position x="0.0" y="4.0" z="-4.0" />
+                <Rotation x="0.0" y="0.0" z="0.0" />
+                <Physics StickToNOLL="0.5" />
+            </Component>
+            <Component Name="Engine1" Class="CEngine">
+                <Physics CollisionsActive="0" />
+                <Position x="-0.3" y="0.0" z="0.3" />
+                <Rotation x="-90.0" y="0.0" z="0.0" />
+                <Physics MassKG="0.25" />
+                <Thrust MaxThrustKG="5.0" />
+            </Component>
+            <Component Name="Engine2" Class="CEngine">
+                <Physics CollisionsActive="0" />
+                <Position x="0.3" y="0.0" z="0.3" />
+                <Rotation x="-90.0" y="0.0" z="0.0" />
+                <Physics MassKG="0.25" />
+                <Thrust MaxThrustKG="5.0" />
+            </Component>
+            <Component Name="Engine3" Class="CEngine">
+                <Physics CollisionsActive="0" />
+                <Position x="-0.3" y="0.0" z="-0.3" />
+                <Rotation x="-90.0" y="0.0" z="0.0" />
+                <Physics MassKG="0.25" />
+                <Thrust MaxThrustKG="5.0" />
+            </Component>
+            <Component Name="Engine4" Class="CEngine">
+                <Physics CollisionsActive="0" />
+                <Position x="0.3" y="0.0" z="-0.3" />
+                <Rotation x="-90.0" y="0.0" z="0.0" />
+                <Physics MassKG="0.25" />
+                <Thrust MaxThrustKG="5.0" />
+            </Component>
+        </Component>
         <Component Name="Man2" Class="CMan">
-            <!-- <Geoloc Latitude="19.2379" Longitude="10.896700" Altitude="0.0"/> -->
-            <Geoloc Latitude="31.898053" Longitude="-10.668458" Altitude="0.0" />
+            <Geoloc Latitude="19.2379" Longitude="10.896700" Altitude="0.0"/>
+            <!-- <Geoloc Latitude="31.898053" Longitude="-10.668458" Altitude="0.0" /> -->
             <Rotation x="0.0" y="114.0" z="0.0" />
             <Mesh Name="SmoothingTest.obj" />
             <Physics PhysicsActive="1" MassKG="80" Drag="0.01" Friction="2.0" />

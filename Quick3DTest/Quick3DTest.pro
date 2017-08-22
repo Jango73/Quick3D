@@ -31,9 +31,9 @@ CONFIG(debug, debug|release) {
 
 # Libraries
 CONFIG(debug, debug|release) {
-    LIBS += -L$$OUT_PWD/../Quick3D/bin -lQuick3Dd
+    LIBS += -L$$PWD/../Quick3D/bin -lQuick3Dd
 } else {
-    LIBS += -L$$OUT_PWD/../Quick3D/bin -lQuick3D
+    LIBS += -L$$PWD/../Quick3D/bin -lQuick3D
 }
 
 CONFIG(debug, debug|release) {
@@ -59,8 +59,6 @@ SOURCES += \
 
 HEADERS  += \
     Quick3DTest.h
-
-DISTFILES +=
 
 RESOURCES += \
     Quick3DTest.qrc

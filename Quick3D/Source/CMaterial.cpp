@@ -25,6 +25,7 @@ CMaterial::CMaterial(C3DScene* pScene, QString sName)
     , m_pScene(pScene)
     , m_dSelfIllumination(0.0)
     , m_dShininess(0.0)
+    , m_dMetalness(0.0)
     , m_dReflection(0.0)
     , m_dReflectionSteepness(0.0)
     , m_dSSSFactor(0.0)
@@ -116,11 +117,11 @@ void CMaterial::loadParameters(const QString& sBaseFile, CXMLNode xMaterial)
 
     if (xSpecular.isEmpty() == false)
     {
-        double dIntensity = xSpecular.attributes()[ParamName_Intensity].toDouble();
-        m_cSpecular.X = xSpecular.attributes()[ParamName_r].toDouble() * dIntensity;
-        m_cSpecular.Y = xSpecular.attributes()[ParamName_g].toDouble() * dIntensity;
-        m_cSpecular.Z = xSpecular.attributes()[ParamName_b].toDouble() * dIntensity;
+        m_cSpecular.X = xSpecular.attributes()[ParamName_r].toDouble();
+        m_cSpecular.Y = xSpecular.attributes()[ParamName_g].toDouble();
+        m_cSpecular.Z = xSpecular.attributes()[ParamName_b].toDouble();
         m_dShininess = xSpecular.attributes()[ParamName_Hardness].toDouble();
+        m_dMetalness = xSpecular.attributes()[ParamName_Intensity].toDouble();
     }
 }
 
@@ -311,6 +312,7 @@ QGLShaderProgram* CMaterial::activate(CRenderContext* pContext)
             pProgram->setUniformValue("u_material_subdermal", QVector4D(m_cSubdermal.X, m_cSubdermal.Y, m_cSubdermal.Z, m_cSubdermal.W));
             pProgram->setUniformValue("u_material_self_illum", (GLfloat) m_dSelfIllumination);
             pProgram->setUniformValue("u_material_shininess", (GLfloat) m_dShininess);
+            pProgram->setUniformValue("u_material_metalness", (GLfloat) m_dMetalness);
             pProgram->setUniformValue("u_material_reflection", (GLfloat) m_dReflection);
             pProgram->setUniformValue("u_material_reflection_steepness", (GLfloat) m_dReflectionSteepness);
             pProgram->setUniformValue("u_material_sss_factor", (GLfloat) m_dSSSFactor);

@@ -612,6 +612,7 @@
                 <General FOV="20.0" Distance="100.0" CastShadows="0" />
                 <Color r="2.0" g="2.0" b="1.5" />
             </Component>
+            <!--
             <Component Class="CBasicAnimator" PositionTarget=".Turret" RotationTarget=".Turret" Playing="1">
                 <General Type="Servo" AccelerationFactor="100.0" dVelocityFactor="10.0" />
                 <Rotation>
@@ -642,6 +643,7 @@
                     </Step>
                 </Rotation>
             </Component>
+            -->
         </Component>
         <Component Name="Visitor2" Class="CTerrestrialVehicle">
             <Geoloc Latitude="19.2380" Longitude="10.8960" Altitude="0.0" />

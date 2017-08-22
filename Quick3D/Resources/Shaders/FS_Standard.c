@@ -67,6 +67,7 @@ uniform vec4            u_material_specular;
 uniform vec4            u_material_subdermal;
 uniform float           u_material_self_illum;
 uniform float           u_material_shininess;
+uniform float           u_material_metalness;
 uniform float           u_material_reflection;
 uniform float           u_material_reflection_steepness;
 uniform float           u_material_sss_factor;
@@ -452,8 +453,6 @@ float staticTurbulence(vec3 ipos)
 
 float orenNayarDiffuse(vec3 lightDirection, vec3 viewDirection, vec3 surfaceNormal, float roughness, float albedo)
 {
-    viewDirection = -viewDirection;
-
     float LdotV = dot(lightDirection, viewDirection);
     float NdotL = dot(lightDirection, surfaceNormal);
     float NdotV = dot(surfaceNormal, viewDirection);
@@ -981,11 +980,11 @@ vec4 uberShader(
     float diffuseAmount = orenNayarDiffuse(lightDirection, viewDirection, surfaceNormal, roughness, 1.0);
     float glossyAmount = ggxGlossy(lightDirection, viewDirection, surfaceNormal, roughness);
 
-    vec4 dielectricColor = diffuseColor * diffuseAmount;
-    vec4 metallicColor = glossyColor * glossyAmount;
-    vec4 finalColor = mix(dielectricColor, metallicColor, metalness);
+    vec3 dielectricColor = diffuseColor.rgb * diffuseAmount;
+    vec3 metallicColor = glossyColor.rgb * glossyAmount;
+    vec3 finalColor = mix(dielectricColor, metallicColor, metalness);
 
-    return finalColor;
+    return vec4(finalColor.rgb, 1.0);
 }
 
 vec3 doLighting(vec3 worldPosition, vec3 surfaceNormal, vec3 viewDirection, vec2 normScreenCoords)
@@ -1038,8 +1037,8 @@ vec3 doLighting(vec3 worldPosition, vec3 surfaceNormal, vec3 viewDirection, vec2
                             surfaceNormal,
                             u_material_diffuse,
                             u_material_specular,
-                            0.0,
-                            0.0,
+                            u_material_shininess,
+                            u_material_metalness,
                             1.4
                             );
 

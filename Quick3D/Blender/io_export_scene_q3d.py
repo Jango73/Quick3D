@@ -107,7 +107,7 @@ def writeMaterial(file, mat, filepath):
         g = '{0:.4f}'.format(mat.specular_color[1]),
         b = '{0:.4f}'.format(mat.specular_color[2]),
         Intensity = mat.specular_intensity,
-        Hardness = mat.specular_hardness
+        Hardness = mat.specular_hardness / 512
         )
 
     closeNode(file, 'Material')

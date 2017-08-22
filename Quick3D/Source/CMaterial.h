@@ -57,6 +57,9 @@ public:
     //! Sets shininess factor
     void setShininess(double value) { m_dShininess = value; }
 
+    //! Sets metalness factor
+    void setMetalness(double value) { m_dMetalness = value; }
+
     //! Sets reflection factor
     void setReflection(double value) { m_dReflection = value; }
 
@@ -195,6 +198,7 @@ protected:
     Math::CVector4          m_cSubdermal;
     double                  m_dSelfIllumination;
     double                  m_dShininess;
+    double                  m_dMetalness;
     double                  m_dReflection;
     double                  m_dReflectionSteepness;
     double                  m_dSSSFactor;

@@ -54,10 +54,10 @@ public:
     //! Destructor
     virtual ~CGeoloc ();
 
-    //! Opérateur de copie
+    //! Assign operator
     CGeoloc& operator = (const CGeoloc& gTarget);
 
-    //! Opérateur d'égalité
+    //! Equality operator
     bool operator == (const CGeoloc& gTarget);
 
     //! Transforme la géolocalisation dans le repère NOLL de gReference
@@ -65,6 +65,12 @@ public:
 
     //! Transforme la géolocalisation en coordonnée géocentrique ECEF (Earth-centered Earth-Fixed)
     Math::CVector3 toVector3() const;
+
+    //! Returns true heading in degrees of this geoloc to \a other
+    double headingTo(const CGeoloc& other);
+
+    //! Returns distance in meters of this geoloc to \a other
+    double distanceTo(const CGeoloc& other);
 
     //! Retourne le repère NOLL de cette géolocalisation (North-Oriented Local-level)
     //! La composante front pointe vers le nord géographique

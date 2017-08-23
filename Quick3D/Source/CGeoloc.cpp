@@ -1,4 +1,7 @@
 
+// Qt
+#include <QGeoCoordinate>
+
 // Foundations
 #include "geotrans.h"
 #include "geocent.h"
@@ -198,6 +201,26 @@ CVector3 CGeoloc::toVector3(const CGeoloc& gReference) const
     }
 
     return CVector3();
+}
+
+//---------------------------------------------------------------------------------------------
+
+double CGeoloc::headingTo(const CGeoloc& other)
+{
+    QGeoCoordinate coord1(Latitude, Longitude, Altitude);
+    QGeoCoordinate coord2(other.Latitude, other.Longitude, other.Altitude);
+
+    return coord1.azimuthTo(coord2);
+}
+
+//---------------------------------------------------------------------------------------------
+
+double CGeoloc::distanceTo(const CGeoloc& other)
+{
+    QGeoCoordinate coord1(Latitude, Longitude, Altitude);
+    QGeoCoordinate coord2(other.Latitude, other.Longitude, other.Altitude);
+
+    return coord1.distanceTo(coord2);
 }
 
 //---------------------------------------------------------------------------------------------

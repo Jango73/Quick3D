@@ -23,7 +23,9 @@ enum EWaypointType
     wtAirport,
     wtRunway,
     wtBottomOfClimb,
-    wtTopOfDescent
+    wtTopOfClimb,
+    wtTopOfDescent,
+    wtBottomOfDescent
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -40,7 +42,7 @@ public:
     CWaypoint();
 
     //!
-    CWaypoint(EWaypointType eType, QString sName, CGeoloc gGeoloc, double dFrequency, bool bGenerated = false);
+    CWaypoint(EWaypointType eType, QString sName, CGeoloc gGeoloc, double dFrequency_MHz, bool bGenerated = false);
 
     //!
     virtual ~CWaypoint();
@@ -48,6 +50,24 @@ public:
     //-------------------------------------------------------------------------------------------------
     // Setters
     //-------------------------------------------------------------------------------------------------
+
+    //!
+    void setMinimumAltitude_m(double dValue);
+
+    //!
+    void setMaximumAltitude_m(double dValue);
+
+    //!
+    void setSelectedAltitude_m(double dValue);
+
+    //!
+    void setComputedAltitude_m(double dValue);
+
+    //!
+    void setComputedSpeed_ms(double dValue);
+
+    //!
+    void setGenerated(bool bValue);
 
     //-------------------------------------------------------------------------------------------------
     // Getters
@@ -61,10 +81,10 @@ public:
     virtual QString getClassName() const { return ClassName_CWaypoint; }
 
     //!
-    QString getName() const { return m_sName; }
+    QString name() const { return m_sName; }
 
     //!
-    EWaypointType getType() const { return m_eType; }
+    EWaypointType type() const { return m_eType; }
 
     //!
     CGeoloc geoloc() const { return m_gGeoloc; }
@@ -73,7 +93,16 @@ public:
     CGeoloc endGeoloc() const { return m_gEndGeoloc; }
 
     //!
-    double getFrequency() const { return m_dFrequency; }
+    double frequency_MHz() const { return m_dFrequency_MHz; }
+
+    //!
+    double minimumAltitude_m() const { return m_dMinimumAltitude_m; }
+
+    //!
+    double maximumAltitude_m() const { return m_dMaximumAltitude_m; }
+
+    //!
+    double selectedAltitude_m() const { return m_dSelectedAltitude_m; }
 
     //!
     bool isGenerated() const { return m_bGenerated; }
@@ -88,10 +117,20 @@ public:
 
 protected:
 
+    // General data
     EWaypointType   m_eType;
     QString         m_sName;
     CGeoloc         m_gGeoloc;
     CGeoloc         m_gEndGeoloc;
-    double          m_dFrequency;
+    double          m_dFrequency_MHz;
+
+    // Constraints
+    double          m_dMinimumAltitude_m;
+    double          m_dMaximumAltitude_m;
+
+    // Selected and computed data
+    double          m_dSelectedAltitude_m;
+    double          m_dComputedAltitude_m;
+    double          m_dComputedSpeed_ms;
     bool            m_bGenerated;
 };

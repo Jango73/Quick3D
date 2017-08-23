@@ -77,6 +77,7 @@
 #define ClassName_CElectricalBus            "CElectricalBus"
 #define ClassName_CElectricalConsumer       "CElectricalConsumer"
 #define ClassName_CElectricalContactor      "CElectricalContactor"
+#define ClassName_CEngineGenerator          "CEngineGenerator"
 
 #define ClassName_CHydraulicComponent       "CHydraulicComponent"
 
@@ -119,6 +120,7 @@
 #define ParamName_Engine2Target             "Engine2Target"
 #define ParamName_Engine3Target             "Engine3Target"
 #define ParamName_Engine4Target             "Engine4Target"
+#define ParamName_EngineInput               "EngineInput"
 #define ParamName_Face                      "Face"
 #define ParamName_Faces                     "Faces"
 #define ParamName_Factor                    "Factor"

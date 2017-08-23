@@ -80,6 +80,7 @@ SOURCES += \
     Source/CElectricalComponent.cpp \
     Source/CElectricalConsumer.cpp \
     Source/CElectricalContactor.cpp \
+    Source/CEngineGenerator.cpp \
     Source/CElevator.cpp \
     Source/CEngine.cpp \
     Source/CExpendable.cpp \
@@ -211,7 +212,7 @@ SOURCES += \
     ../COTS/SFML-1.6/src/SFML/System/Win32/ThreadLocalImpl.cpp \
     Source/CWorldTerrain.cpp
 
-HEADERS  += \
+HEADERS += \
     Source/Angles.h \
     Source/C3DScene.h \
     Source/CAircraft.h \
@@ -245,6 +246,7 @@ HEADERS  += \
     Source/CElectricalComponent.h \
     Source/CElectricalConsumer.h \
     Source/CElectricalContactor.h \
+    Source/CEngineGenerator.h \
     Source/CElevator.h \
     Source/CEngine.h \
     Source/CExpendable.h \

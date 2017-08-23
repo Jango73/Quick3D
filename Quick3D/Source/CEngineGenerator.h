@@ -1,87 +1,66 @@
 
 #pragma once
 
-// Std
-#ifdef linux
-#include <stdio.h>
-#endif
-
-// Qt
-#include <QObject>
-#include <QTimer>
-#include <QMutex>
-#include <QMutexLocker>
-
-// qt-plus
-#include "CSingleton.h"
-
 // Application
 #include "quick3d_global.h"
+#include "CComponentReference.h"
+#include "CElectricalComponent.h"
+#include "CEngine.h"
+
+//-------------------------------------------------------------------------------------------------
+// Forward declarations
+
+class C3DScene;
 
 //-------------------------------------------------------------------------------------------------
 
-#define LOG_VALUE(a,b)	CConsoleBoard::getInstance()->setNameValue(a, b)
-
-//-------------------------------------------------------------------------------------------------
-
-class QUICK3D_EXPORT CConsoleBoard : public QObject, public CSingleton<CConsoleBoard>
+class QUICK3D_EXPORT CEngineGenerator : public CElectricalComponent
 {
-    Q_OBJECT
-
-    friend class CSingleton<CConsoleBoard>;
-
-protected:
+public:
 
     //-------------------------------------------------------------------------------------------------
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    CConsoleBoard();
+    //!
+    static CComponent* instanciator(C3DScene* pScene);
 
-    //! Destructor
-    virtual ~CConsoleBoard();
+    //!
+    CEngineGenerator(C3DScene* pScene);
 
-public:
+    //!
+    virtual ~CEngineGenerator();
+
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
     //-------------------------------------------------------------------------------------------------
     // Getters
     //-------------------------------------------------------------------------------------------------
 
     //-------------------------------------------------------------------------------------------------
+    // Inherited methods
+    //-------------------------------------------------------------------------------------------------
+
+    //! Returns this object's class name
+    virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CEngineGenerator; }
+
+    //! Loads this object's parameters
+    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
+
+    //! Solves the links of this object
+    virtual void solveLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
+
+    //! Deletes this object's links
+    virtual void clearLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
+
+    //!
+    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
+
+    //-------------------------------------------------------------------------------------------------
     // Control methods
     //-------------------------------------------------------------------------------------------------
-
-    //!
-    void start();
-
-    //!
-    void stop();
-
-    //!
-    void refresh();
-
-    //!
-    void clearScreen();
-
-    //!
-    void printAt(int iPosX, int iPosY, QString sText);
-
-    //!
-    void setNameValue(const QString& sName, const QString& sValue);
-
-    //-------------------------------------------------------------------------------------------------
-    // Protected methods
-    //-------------------------------------------------------------------------------------------------
-
-protected:
-
-    //-------------------------------------------------------------------------------------------------
-    // Slots
-    //-------------------------------------------------------------------------------------------------
-
-protected slots:
-
-    void onTimeout();
 
     //-------------------------------------------------------------------------------------------------
     // Properties
@@ -89,8 +68,6 @@ protected slots:
 
 protected:
 
-    bool                        m_bActive;
-    QTimer                      m_tTimer;
-    QMutex                      m_tMutex;
-    QMap<QString, QString>      m_mValues;
+    CComponentReference<CEngine>    m_rEngineTarget;
+    CElectricalLoad                 m_tCurrent;
 };

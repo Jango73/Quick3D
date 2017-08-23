@@ -62,6 +62,13 @@ double CEngine::currentFuelCons_ls() const
 
 //-------------------------------------------------------------------------------------------------
 
+bool CEngine::alternatorActive() const
+{
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CEngine::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
     CPhysicalComponent::loadParameters(sBaseFile, xComponent);

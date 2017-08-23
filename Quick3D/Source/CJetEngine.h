@@ -43,10 +43,13 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Returns thrust in kilograms
-    virtual double currentThrust_kg() const;
+    virtual double currentThrust_kg() const Q_DECL_OVERRIDE;
 
     //! Returns fuel consumption in liters per second
-    virtual double currentFuelCons_ls() const;
+    virtual double currentFuelCons_ls() const Q_DECL_OVERRIDE;
+
+    //! Returns \c true if alternator is active
+    virtual bool alternatorActive() const Q_DECL_OVERRIDE;
 
     //! Returns normalized N1
     virtual double n1_norm() const;
@@ -74,6 +77,6 @@ public:
 
 protected:
 
-    CServoPosition              m_dN1;
-    double                      m_dN2_norm;
+    CServoPosition  m_dN1_servo;
+    double          m_dN2_norm;
 };

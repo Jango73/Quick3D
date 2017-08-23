@@ -72,12 +72,12 @@ public:
 
 protected:
 
-    double		m_dPosition;
-    double		m_dTargetPosition;
-    double		m_dMaximumAcceleration;
-    double		m_dMaximumVelocity;
-    double		m_dAccelerationFactor;
-    double		m_dVelocityFactor;
-    double		m_dAcceleration;
-    double		m_dVelocity;
+    double      m_dPosition;
+    double      m_dTargetPosition;
+    double      m_dMaximumAcceleration;
+    double      m_dMaximumVelocity;
+    double      m_dAccelerationFactor;
+    double      m_dVelocityFactor;
+    double      m_dAcceleration;
+    double      m_dVelocity;
 };

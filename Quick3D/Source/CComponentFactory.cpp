@@ -46,6 +46,7 @@
 #include "CElectricalBus.h"
 #include "CElectricalContactor.h"
 #include "CElectricalConsumer.h"
+#include "CEngineGenerator.h"
 
 #include "CHydraulicComponent.h"
 
@@ -109,6 +110,7 @@ void CComponentFactory::registerCoreComponents()
     registerComponent(ClassName_CElectricalBus, CElectricalBus::instanciator);
     registerComponent(ClassName_CElectricalContactor, CElectricalContactor::instanciator);
     registerComponent(ClassName_CElectricalConsumer, CElectricalConsumer::instanciator);
+    registerComponent(ClassName_CEngineGenerator, CEngineGenerator::instanciator);
 
     registerComponent(ClassName_CHydraulicComponent, CHydraulicComponent::instanciator);
 

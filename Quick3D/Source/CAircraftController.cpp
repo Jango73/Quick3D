@@ -227,77 +227,73 @@ void CAircraftController::keyPressEvent(QKeyEvent* event)
 
     switch (event->key())
     {
-    case Qt::Key_D:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_AileronRight, CQ3DEvent::Press));
-        break;
-    case Qt::Key_Q:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_AileronLeft, CQ3DEvent::Press));
-        break;
-    case Qt::Key_S:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_NoseUp, CQ3DEvent::Press));
-        break;
-    case Qt::Key_Z:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_NoseDown, CQ3DEvent::Press));
-        break;
-    case Qt::Key_C:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_RudderRight, CQ3DEvent::Press));
-        break;
-    case Qt::Key_W:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_RudderLeft, CQ3DEvent::Press));
-        break;
-    case Qt::Key_PageUp:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_Engine1ThrustUp, CQ3DEvent::Press));
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_Engine2ThrustUp, CQ3DEvent::Press));
-        break;
-    case Qt::Key_PageDown:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_Engine1ThrustDown, CQ3DEvent::Press));
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_Engine2ThrustDown, CQ3DEvent::Press));
-        break;
-    case Qt::Key_8:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_LookFront, CQ3DEvent::Press));
-        break;
-    case Qt::Key_9:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_LookFrontRight, CQ3DEvent::Press));
-        break;
-    case Qt::Key_6:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_LookRight, CQ3DEvent::Press));
-        break;
-    case Qt::Key_3:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_LookBackRight, CQ3DEvent::Press));
-        break;
-    case Qt::Key_2:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_LookBack, CQ3DEvent::Press));
-        break;
-    case Qt::Key_1:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_LookBackLeft, CQ3DEvent::Press));
-        break;
-    case Qt::Key_4:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_LookLeft, CQ3DEvent::Press));
-        break;
-    case Qt::Key_7:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_LookFrontLeft, CQ3DEvent::Press));
-        break;
-    case Qt::Key_5:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_LookFrontDown, CQ3DEvent::Press));
-        break;
-    case Qt::Key_M:
-    {
-        if (pLeftWing && pRightWing)
-        {
-            pLeftWing->setFlapsPosition_norm(pLeftWing->flapsPosition_norm() + 0.2);
-            pRightWing->setFlapsPosition_norm(pRightWing->flapsPosition_norm() + 0.2);
-        }
-    }
-        break;
-    case Qt::Key_P:
-    {
-        if (pLeftWing && pRightWing)
-        {
-            pLeftWing->setFlapsPosition_norm(pLeftWing->flapsPosition_norm() - 0.2);
-            pRightWing->setFlapsPosition_norm(pRightWing->flapsPosition_norm() - 0.2);
-        }
-    }
-        break;
+        case Qt::Key_D:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_AileronRight, CQ3DEvent::Press));
+            break;
+        case Qt::Key_Q:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_AileronLeft, CQ3DEvent::Press));
+            break;
+        case Qt::Key_S:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_NoseUp, CQ3DEvent::Press));
+            break;
+        case Qt::Key_Z:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_NoseDown, CQ3DEvent::Press));
+            break;
+        case Qt::Key_C:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_RudderRight, CQ3DEvent::Press));
+            break;
+        case Qt::Key_W:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_RudderLeft, CQ3DEvent::Press));
+            break;
+        case Qt::Key_PageUp:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_Engine1ThrustUp, CQ3DEvent::Press));
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_Engine2ThrustUp, CQ3DEvent::Press));
+            break;
+        case Qt::Key_PageDown:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_Engine1ThrustDown, CQ3DEvent::Press));
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_Engine2ThrustDown, CQ3DEvent::Press));
+            break;
+        case Qt::Key_8:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_LookFront, CQ3DEvent::Press));
+            break;
+        case Qt::Key_9:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_LookFrontRight, CQ3DEvent::Press));
+            break;
+        case Qt::Key_6:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_LookRight, CQ3DEvent::Press));
+            break;
+        case Qt::Key_3:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_LookBackRight, CQ3DEvent::Press));
+            break;
+        case Qt::Key_2:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_LookBack, CQ3DEvent::Press));
+            break;
+        case Qt::Key_1:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_LookBackLeft, CQ3DEvent::Press));
+            break;
+        case Qt::Key_4:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_LookLeft, CQ3DEvent::Press));
+            break;
+        case Qt::Key_7:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_LookFrontLeft, CQ3DEvent::Press));
+            break;
+        case Qt::Key_5:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_LookFrontDown, CQ3DEvent::Press));
+            break;
+        case Qt::Key_Dollar:
+            if (pLeftWing && pRightWing)
+            {
+                pLeftWing->setFlapsPosition_norm(pLeftWing->flapsPosition_norm() + 0.2);
+                pRightWing->setFlapsPosition_norm(pRightWing->flapsPosition_norm() + 0.2);
+            }
+            break;
+        case Qt::Key_Asterisk:
+            if (pLeftWing && pRightWing)
+            {
+                pLeftWing->setFlapsPosition_norm(pLeftWing->flapsPosition_norm() - 0.2);
+                pRightWing->setFlapsPosition_norm(pRightWing->flapsPosition_norm() - 0.2);
+            }
+            break;
     }
 }
 
@@ -309,32 +305,32 @@ void CAircraftController::keyReleaseEvent(QKeyEvent *event)
 
     switch (event->key())
     {
-    case Qt::Key_D:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_AileronRight, CQ3DEvent::Release));
-        break;
-    case Qt::Key_Q:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_AileronLeft, CQ3DEvent::Release));
-        break;
-    case Qt::Key_S:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_NoseUp, CQ3DEvent::Release));
-        break;
-    case Qt::Key_Z:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_NoseDown, CQ3DEvent::Release));
-        break;
-    case Qt::Key_C:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_RudderRight, CQ3DEvent::Release));
-        break;
-    case Qt::Key_W:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_RudderLeft, CQ3DEvent::Release));
-        break;
-    case Qt::Key_PageUp:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_Engine1ThrustUp, CQ3DEvent::Release));
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_Engine2ThrustUp, CQ3DEvent::Release));
-        break;
-    case Qt::Key_PageDown:
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_Engine1ThrustDown, CQ3DEvent::Release));
-        generateQ3DEvent(CQ3DEvent(Q3DEvent_Engine2ThrustDown, CQ3DEvent::Release));
-        break;
+        case Qt::Key_D:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_AileronRight, CQ3DEvent::Release));
+            break;
+        case Qt::Key_Q:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_AileronLeft, CQ3DEvent::Release));
+            break;
+        case Qt::Key_S:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_NoseUp, CQ3DEvent::Release));
+            break;
+        case Qt::Key_Z:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_NoseDown, CQ3DEvent::Release));
+            break;
+        case Qt::Key_C:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_RudderRight, CQ3DEvent::Release));
+            break;
+        case Qt::Key_W:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_RudderLeft, CQ3DEvent::Release));
+            break;
+        case Qt::Key_PageUp:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_Engine1ThrustUp, CQ3DEvent::Release));
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_Engine2ThrustUp, CQ3DEvent::Release));
+            break;
+        case Qt::Key_PageDown:
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_Engine1ThrustDown, CQ3DEvent::Release));
+            generateQ3DEvent(CQ3DEvent(Q3DEvent_Engine2ThrustDown, CQ3DEvent::Release));
+            break;
     }
 }
 

@@ -105,6 +105,12 @@ public:
     double selectedAltitude_m() const { return m_dSelectedAltitude_m; }
 
     //!
+    double computedAltitude_m() const { return m_dComputedAltitude_m; }
+
+    //!
+    double computedSpeed_ms() const { return m_dComputedSpeed_ms; }
+
+    //!
     bool isGenerated() const { return m_bGenerated; }
 
     //-------------------------------------------------------------------------------------------------

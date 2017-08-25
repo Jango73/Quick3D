@@ -30,10 +30,11 @@
 
     Rotation orders
 
-    The axis with the most weight is the Y axis because it represents the yaw or heading (most important information in world positiong).
+    The axis with the most weight is the Y axis because it represents the yaw or heading (most important angular information in world positioning).
     The axis with the least weight is the Z axis.
 
-    So when rotating, the order of angle application must be : Z, X, Y
+    So when applying a rotation from local to world frames, the order of angle application must be : Z, X, Y.
+    And from world to local, it will be : -Y, -X, -Z.
 
 -------------------------------------------------------------------------------------------------*/
 

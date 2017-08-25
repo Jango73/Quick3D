@@ -289,7 +289,7 @@ public:
     //! Appel de la méthode paint des enfants
     virtual void postPaint(CRenderContext* pContext);
 
-    //! Méthode de mise à jour avec temps delta depuis la dernière itération
+    //! Updates this object using the elapsed time since last update
     virtual void update(double dDeltaTime);
 
     //! Appel de la méthode update des enfants
@@ -304,7 +304,7 @@ public:
     //! Retourne la boite englobante "monde"
     virtual CBoundingBox worldBounds();
 
-    //! Calcul d'intersection avec un rayon
+    //! Ray intersection
     virtual Math::RayTracingResult intersect(Math::CRay3 ray);
 
     //! Inverse les vecteurs normaux des polygones
@@ -316,7 +316,7 @@ public:
     //! Transforme les sommets
     void transformVertices(const Math::CMatrix4& matrix);
 
-    //! Dump du contenu dans un flux
+    //! Dumps contents to a stream
     virtual void dump(QTextStream& stream, int iIdent);
 
     //! Calcule la matrice de transformation en coordonnées "monde"

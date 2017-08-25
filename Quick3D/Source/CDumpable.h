@@ -20,7 +20,7 @@ public:
     //! Destructor
     virtual ~CDumpable();
 
-    //! Dump du contenu dans un flux
+    //! Dumps contents to a stream
     virtual void dump(QTextStream& stream, int iIdent);
 
     //! Ouvre un block dans le fichier de sortie

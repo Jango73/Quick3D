@@ -181,7 +181,7 @@ public:
     // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Dump du contenu dans un flux
+    //! Dumps contents to a stream
     virtual void dump(QTextStream& stream, int iIdent);
 
     //-------------------------------------------------------------------------------------------------
@@ -218,22 +218,22 @@ public:
     //!
     void createPartition(CMeshPartition& mpCurrentPartition, int iLevel);
 
-    //! Crée un vertex unique pour chaque polygone
+    //! Creates unique vertices for each polygon
     void isolateVertices();
 
     //!
     void splitVerticesBySmoothingGroup();
 
-    //! Calcule les vecteurs normaux
+    //! Computes normal vectors for vertices and faces
     void computeNormals();
 
     //!
     void createBox(Math::CVector3 vMinimum, Math::CVector3 vMaximum);
 
-    //! Crée une sphère
+    //! Creates a sphere
     void createSphere(int iNumSegments);
 
-    //! Crée une portion de sphère
+    //! Creates a portion of sphere
     void createSpherePart(
             int iPanSegments,
             int iTiltSegments,
@@ -246,34 +246,34 @@ public:
     //!
     void createCone(int iNumSegments, int iNumHeightSegments, double dHeight, double dBaseRadius, double dApexRadius);
 
-    //! Crée un patch de triangles subdivisés en fonction de la distance
+    //! Creates a triangle patch and subdivides it iIterations times
     void createAdaptiveTriPatch(Math::CVector3 vCenter, int iIterations);
 
-    //! Crée un patch de quads subdivisés en fonction de la distance
+    //! Creates a quad patch and subdivides it iIterations times
     void createAdaptiveQuadPatch(Math::CVector3 vCenter, int iNumIterations);
 
-    //! Crée un patch de quads
+    //! Creates a quad patch
     void createQuadPatch(int iNumVerts, int iNumSkirtVerts = 0, bool bDoubleSided = false);
 
-    //! Crée un patch circulaire de quads
+    //! Creates a circular quad patch
     void createCircularQuadPatch(Math::CVector3 vCenter, int iNumVerts);
 
-    //!
+    //! Creates a quad patch and deforms it using vFFDFrom and vFFDTo
     void createSurfaceFromFFD(const QVector<Math::CVector3>& vFFDFrom, const QVector<Math::CVector3>& vFFDTo, int iNumVerts);
 
-    //! Subdivise les polygones (supposés tous quads)
+    //! Subdivises polygons (assumed to be all quads)
     void subdivideQuads(int iNumIterations);
 
-    //! Fusionne un mesh dans ce mesh
+    //! Merges this mesh with another
     void merge(const CMeshGeometry& other);
 
-    //! Déplace les coordonnées de texture
+    //! Translates all UV coords by vTranslate
     void translateUVs(Math::CVector2 vTranslate);
 
-    //! Met à l'échelle les coordonnées de texture
+    //! Scales all UV coords by vScale
     void scaleUVs(Math::CVector2 vScale);
 
-    //! Calcul d'intersection avec un rayon
+    //! Ray intersection
     virtual Math::RayTracingResult intersect(CComponent* pContainer, Math::CRay3 ray);
 
     //-------------------------------------------------------------------------------------------------
@@ -293,23 +293,23 @@ protected:
 
     // Owned data
 
-    QMutex                          m_mMutex;                   // Mutex de protection des données entre threads
+    QMutex                          m_mMutex;                   // Data protection for multithreading
     C3DScene*                       m_pScene;
     QString                         m_sURL;
-    CBoundingBox                    m_bBounds;                  // Boite englobante du maillage
-    QVector<CVertex>                m_vVertices;                // Sommets du maillage
-    QVector<CFace>                  m_vFaces;                   // Polygones du maillage
-    QVector<CVertexGroup>           m_vVertexGroups;            // Groupes de sommets pour skinning
+    CBoundingBox                    m_bBounds;                  // Mesh bounds
+    QVector<CVertex>                m_vVertices;                // Vertices of the mesh
+    QVector<CFace>                  m_vFaces;                   // Polygons of the mesh
+    QVector<CVertexGroup>           m_vVertexGroups;            // Skinning and deforming vertex groupd
     QVector<CGLMeshData*>           m_vGLMeshData;
-    QMap<QString, QString>          m_mDynTexUpdaters;
-    CMeshPartition                  m_mpPartitions;             // Partitions pour accélerer le ray-tracing
-    double                          m_dMaxDistance;             // Distance maximale à laquelle ce maillage est visible
+    QMap<QString, QString>          m_mDynTexUpdaters;          // Components that update dynamic textures
+    CMeshPartition                  m_mpPartitions;             // Ray-tracing acceleration partitions
+    double                          m_dMaxDistance;             // Maximum distance at which this mesh is visible
     int                             m_iGLType;
-    bool                            m_bUseSpacePartitionning;   // Si vrai, le partionnement des polygones est utilisé via m_mpPartitions
+    bool                            m_bUseSpacePartitionning;   // If true, polygons are partitioned
     bool                            m_bAutomaticBounds;
-    bool                            m_bGeometryDirty;
+    bool                            m_bGeometryDirty;           // If true, normals and partitions mush be computed
 
     // Shared data
 
-    QVector<QSP<CMaterial> >        m_vMaterials;               // MAterials of the mesh
+    QVector<QSP<CMaterial> >        m_vMaterials;               // Materials of the mesh
 };

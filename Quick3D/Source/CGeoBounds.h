@@ -44,7 +44,7 @@ public:
     // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Calcul d'intersection avec un rayon
+    //! Ray intersection
     virtual Math::RayTracingResult intersect(Math::CRay3 ray);
 
     //-------------------------------------------------------------------------------------------------

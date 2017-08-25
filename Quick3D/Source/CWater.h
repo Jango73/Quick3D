@@ -38,7 +38,7 @@ public:
     //! Returns this object's class name
     virtual QString getClassName() const { return ClassName_CWater; }
 
-    //! Méthode de mise à jour avec temps delta depuis la dernière itération
+    //! Updates this object using the elapsed time since last update
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //! Dans cette méthode, l'objet doit faire son rendu

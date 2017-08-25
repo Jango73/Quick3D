@@ -248,13 +248,13 @@ public:
     //! Deletes components whose tag match \a sTag
     void deleteComponentsByTag(const QString& sTag);
 
-    //! Calcul d'intersection avec un rayon
+    //! Ray intersection
     virtual Math::RayTracingResult intersect(Math::CRay3 aRay) const;
 
-    //! Calcul d'intersection avec un rayon
+    //! Ray intersection
     virtual Math::RayTracingResult intersectComponentHierarchy(QSP<CComponent> pComponent, Math::CRay3 aRay) const;
 
-    //! Calcul d'intersection avec un rayon
+    //! Ray intersection
     Math::RayTracingResult intersectRecurse(QSP<CComponent> pComponent, const Math::CRay3& aRay) const;
 
     //!

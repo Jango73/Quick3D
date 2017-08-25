@@ -118,13 +118,13 @@ public:
     //!
     virtual void flatten(const CGeoloc& gPosition, double dRadius);
 
-    //! Calcul d'intersection avec un rayon
+    //! Ray intersection
     virtual Math::RayTracingResult intersect(Math::CRay3 ray) Q_DECL_OVERRIDE;
 
     //!
     virtual void work();
 
-    //! Dump du contenu dans un flux
+    //! Dumps contents to a stream
     virtual void dump(QTextStream& stream, int iIdent);
 
     //-------------------------------------------------------------------------------------------------

@@ -124,13 +124,13 @@ public:
     //! Loads this object's parameters
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
 
-    //! Méthode de mise à jour avec temps delta depuis la dernière itération
+    //! Updates this object using the elapsed time since last update
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //! Appel de la méthode update des enfants
     virtual void postUpdate(double dDeltaTimeS) Q_DECL_OVERRIDE;
 
-    //! Dump du contenu dans un flux
+    //! Dumps contents to a stream
     virtual void dump(QTextStream& stream, int iIdent);
 
     //! Ajoute un champ de hauteurs pour cet objet

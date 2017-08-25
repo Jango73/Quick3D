@@ -114,7 +114,7 @@ void Quick3DTest::loadScene(QString sFileName)
 
     m_pScene->clear();
 
-    m_pScene->viewports()[0] = new CViewport(m_pScene, true);
+    m_pScene->viewports()[0] = new CViewport(m_pScene, false);
     m_pScene->viewports()[0]->setEnabled(true);
 
     //-----------------------------------------------

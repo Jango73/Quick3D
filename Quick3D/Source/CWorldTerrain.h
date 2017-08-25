@@ -114,10 +114,10 @@ public:
     //!
     virtual void paint(CRenderContext* pContext) Q_DECL_OVERRIDE;
 
-    //! Méthode de mise à jour avec temps delta depuis la dernière itération
+    //! Updates this object using the elapsed time since last update
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
-    //! Méthode de mise à jour avec temps delta depuis la dernière itération
+    //! Updates this object using the elapsed time since last update
     virtual void postUpdate(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //!
@@ -126,10 +126,10 @@ public:
     //!
     virtual void flatten(const CGeoloc& gPosition, double dRadius);
 
-    //! Calcul d'intersection avec un rayon
+    //! Ray intersection
     virtual Math::RayTracingResult intersect(Math::CRay3 ray) Q_DECL_OVERRIDE;
 
-    //! Dump du contenu dans un flux
+    //! Dumps contents to a stream
     virtual void dump(QTextStream& stream, int iIdent);
 
     //-------------------------------------------------------------------------------------------------
@@ -159,7 +159,7 @@ protected:
     //!
     void collectGarbageRecurse(QSP<CWorldChunk> pChunk);
 
-    //! Calcul d'intersection avec un rayon
+    //! Ray intersection
     Math::RayTracingResult intersectRecurse(QSP<CWorldChunk> pChunk, const Math::CRay3& ray) const;
 
     //-------------------------------------------------------------------------------------------------

@@ -56,20 +56,20 @@ public:
     //!
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
 
-    //! Méthode de mise à jour avec temps delta depuis la dernière itération
+    //! Updates this object using the elapsed time since last update
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //!
     virtual void paint(CRenderContext* pContext) Q_DECL_OVERRIDE;
 
-    //! Calcul d'intersection avec un rayon
+    //! Ray intersection
     virtual Math::RayTracingResult intersect(Math::CRay3 ray) Q_DECL_OVERRIDE;
 
-    //! Dump du contenu dans un flux
+    //! Dumps contents to a stream
     virtual void dump(QTextStream& stream, int iIdent);
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes protégés
+    // Protected methods
     //-------------------------------------------------------------------------------------------------
 
 protected:

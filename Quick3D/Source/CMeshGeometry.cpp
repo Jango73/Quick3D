@@ -12,11 +12,6 @@
 using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
-// Constantes
-
-#define MAX_PARTITION_LEVEL     1
-
-//-------------------------------------------------------------------------------------------------
 
 CMeshGeometry::CMeshGeometry(C3DScene* pScene, double dMaxDistance, bool bUseSpacePartitionning)
     : m_pScene(pScene)
@@ -304,15 +299,10 @@ void CMeshGeometry::checkAndUpdateGeometry()
                 }
             }
 
-            // Partitionnement spatial
+            // Spatial partitioning
             if (m_bUseSpacePartitionning)
             {
-                // Effacement des partitions
-                m_mpPartitions.clear();
-                m_mpPartitions = CMeshPartition(m_bBounds);
-
-                // Création des partitions
-                createPartition(m_mpPartitions, 0);
+                createPartitions(m_bBounds);
             }
         }
 
@@ -322,67 +312,23 @@ void CMeshGeometry::checkAndUpdateGeometry()
 
 //-------------------------------------------------------------------------------------------------
 
-void CMeshGeometry::createPartition(CMeshPartition& mpCurrentPartition, int iLevel)
+void CMeshGeometry::addDataForPartition(CBoundPartition<int>& partition)
 {
-    if (iLevel < MAX_PARTITION_LEVEL)
+    // Iterate through polygons
+    for (int iFace = 0; iFace < m_vFaces.count(); iFace++)
     {
-        // Définition de la taille totale des partitions enfants
-        double dSizeX = mpCurrentPartition.getBounds().maximum().X - mpCurrentPartition.getBounds().minimum().X;
-        double dSizeY = mpCurrentPartition.getBounds().maximum().Y - mpCurrentPartition.getBounds().minimum().Y;
-        double dSizeZ = mpCurrentPartition.getBounds().maximum().Z - mpCurrentPartition.getBounds().minimum().Z;
-
-        double dNormalizedSizeX = dSizeX / 2.0;
-        double dNormalizedSizeY = dSizeY / 2.0;
-        double dNormalizedSizeZ = dSizeZ / 2.0;
-
-        // Parcours de toutes les partitions
-        for (int iZ = 0; iZ < 2; iZ++)
+        // Iterate through current polygon vertices
+        for (int iVertex = 0; iVertex < m_vFaces[iFace].indices().count(); iVertex++)
         {
-            for (int iY = 0; iY < 2; iY++)
+            // Get current vertex position
+            CVector3 vPosition = m_vVertices[m_vFaces[iFace].indices()[iVertex]].position();
+
+            // Do the partition bounds contain the vertex?
+            if (partition.bounds().contains(vPosition))
             {
-                for (int iX = 0; iX < 2; iX++)
-                {
-                    // Définition de la boite englobante de la partition enfant
-                    CVector3 vMinimum;
-                    CVector3 vMaximum;
-
-                    vMinimum.X = m_bBounds.minimum().X + ((double) (iX + 0) * dNormalizedSizeX);
-                    vMinimum.Y = m_bBounds.minimum().Y + ((double) (iY + 0) * dNormalizedSizeY);
-                    vMinimum.Z = m_bBounds.minimum().Z + ((double) (iZ + 0) * dNormalizedSizeZ);
-
-                    vMaximum.X = m_bBounds.minimum().X + ((double) (iX + 1) * dNormalizedSizeX);
-                    vMaximum.Y = m_bBounds.minimum().Y + ((double) (iY + 1) * dNormalizedSizeY);
-                    vMaximum.Z = m_bBounds.minimum().Z + ((double) (iZ + 1) * dNormalizedSizeZ);
-
-                    // Ajout de la partition enfant
-                    CMeshPartition mpChild = CMeshPartition(CBoundingBox(vMinimum, vMaximum));
-
-                    createPartition(mpChild, iLevel + 1);
-
-                    mpCurrentPartition.addChild(mpChild);
-                }
-            }
-        }
-    }
-    else
-    {
-        // Parcours de tous les polygones
-        for (int iFace = 0; iFace < m_vFaces.count(); iFace++)
-        {
-            // Parcours de tous les vertex du polygone en cours
-            for (int iVertex = 0; iVertex < m_vFaces[iFace].indices().count(); iVertex++)
-            {
-                // Récupération de la position du vertex
-                CVector3 vPosition = m_vVertices[m_vFaces[iFace].indices()[iVertex]].position();
-
-                // Est-ce que la partition en cours contient le vertex?
-                if (mpCurrentPartition.getBounds().contains(vPosition))
-                {
-                    // Oui, ajout de l'index du polygone à la partition en cours et arrêt
-                    // de la boucle de vertex
-                    mpCurrentPartition.getFaceIndices().append(iFace);
-                    break;
-                }
+                // Yes, add the face to the partition and stop vertex iteration
+                partition.append(iFace);
+                break;
             }
         }
     }
@@ -416,11 +362,11 @@ void CMeshGeometry::isolateVertices()
 
 //-------------------------------------------------------------------------------------------------
 
-// Séparation des polygones en fonction des groupes de lissage
-// Algorithme (c) 2015 Jonathan Guyomard
+// Polygon spltting using smoothing groups
+// Algorithm (c) 2015 Jonathan Guyomard
 void CMeshGeometry::splitVerticesBySmoothingGroup()
 {
-    // Remise à zéro des données propres aux tri par smoothing group
+    // Reset smoothing group sorting data
     {
         for (int iVertexIndex = 0; iVertexIndex < m_vVertices.count(); iVertexIndex++)
         {
@@ -514,18 +460,18 @@ void CMeshGeometry::splitVerticesBySmoothingGroup()
 
 void CMeshGeometry::flipNormals()
 {
-    // Parcours de tous les polygones
+    // Iterate through each polygon
     for (int iFaceIndex = 0; iFaceIndex < m_vFaces.count(); iFaceIndex++)
     {
         QVector<int> vIndices;
 
-        // Récupération des indices de vertex en sens inverse
+        // Get vertex indices in reverse order
         for (int iVertexIndex = 0; iVertexIndex < m_vFaces[iFaceIndex].indices().count(); iVertexIndex++)
         {
             vIndices.prepend(m_vFaces[iFaceIndex].indices()[iVertexIndex]);
         }
 
-        // Stockage des indices de vertex en sens inverse
+        // Store vertex indices
         for (int iVertexIndex = 0; iVertexIndex < m_vFaces[iFaceIndex].indices().count(); iVertexIndex++)
         {
             m_vFaces[iFaceIndex].indices()[iVertexIndex] = vIndices[iVertexIndex];
@@ -1467,18 +1413,18 @@ void CMeshGeometry::scaleUVs(CVector2 vScale)
 
 //-------------------------------------------------------------------------------------------------
 
-RayTracingResult CMeshGeometry::intersect(CComponent* pContainer, CRay3 ray)
+RayTracingResult CMeshGeometry::intersect(CComponent* pContainer, CRay3 rGlobalRay)
 {
     RayTracingResult dReturnResult(Q3D_INFINITY, pContainer);
 
-    // Transformation du rayon dans le repère local
-    CRay3 rLocalray = pContainer->worldTransformInverse() * ray;
+    // Transform ray to local space
+    CRay3 rLocalray = pContainer->worldTransformInverse() * rGlobalRay;
 
     if (m_bBounds.intersect(rLocalray).m_dDistance < Q3D_INFINITY)
     {
         if (m_bUseSpacePartitionning)
         {
-            return intersectRecurse(pContainer, m_mpPartitions, rLocalray);
+            return intersectPartitions(pContainer, rLocalray);
         }
         else
         {
@@ -1517,60 +1463,35 @@ RayTracingResult CMeshGeometry::intersect(CComponent* pContainer, CRay3 ray)
 
 //-------------------------------------------------------------------------------------------------
 
-RayTracingResult CMeshGeometry::intersectRecurse(CComponent* pContainer, CMeshPartition& mpPartition, CRay3 ray)
+Math::RayTracingResult CMeshGeometry::intersectPartitionData(CComponent* pContainer, const CBoundPartition<int>& partition, Math::CRay3 rLocalray)
 {
     RayTracingResult dReturnResult(Q3D_INFINITY, pContainer);
-    double dDistanceToBox = mpPartition.getBounds().intersect(ray).m_dDistance;
 
-    /*
-    if (dDistanceToBox < dReturnDistance)
+    for (int iPartFaceIndex = 0; iPartFaceIndex < partition.data().count(); iPartFaceIndex++)
     {
-        dReturnDistance = dDistanceToBox;
-    }
-    */
+        int iFaceIndex = partition.data()[iPartFaceIndex];
 
-    if (dDistanceToBox < Q3D_INFINITY)
-    {
-        if (mpPartition.getChildren().count() > 0)
+        if (iFaceIndex < m_vFaces.count() && m_vFaces[iFaceIndex].indices().count() > 2)
         {
-            foreach (CMeshPartition mpChild, mpPartition.getChildren())
+            for (int iVertIndex = 2; iVertIndex < m_vFaces[iFaceIndex].indices().count(); iVertIndex++)
             {
-                RayTracingResult dNewResult = intersectRecurse(pContainer, mpChild, ray);
+                int i1 = m_vFaces[iFaceIndex].indices()[0];
+                int i2 = m_vFaces[iFaceIndex].indices()[iVertIndex - 1];
+                int i3 = m_vFaces[iFaceIndex].indices()[iVertIndex];
+
+                CVector3 v1 = m_vVertices[i1].position();
+                CVector3 v2 = m_vVertices[i2].position();
+                CVector3 v3 = m_vVertices[i3].position();
+
+                RayTracingResult dNewResult = CFace::intersectTriangle(
+                            rLocalray,
+                            v1, v2, v3
+                            );
 
                 if (dNewResult.m_dDistance < dReturnResult.m_dDistance)
                 {
                     dReturnResult.m_dDistance = dNewResult.m_dDistance;
-                }
-            }
-        }
-        else
-        {
-            for (int iPartFaceIndex = 0; iPartFaceIndex < mpPartition.getFaceIndices().count(); iPartFaceIndex++)
-            {
-                int iFaceIndex = mpPartition.getFaceIndices()[iPartFaceIndex];
-
-                if (m_vFaces[iFaceIndex].indices().count() > 2)
-                {
-                    for (int iVertIndex = 2; iVertIndex < m_vFaces[iFaceIndex].indices().count(); iVertIndex++)
-                    {
-                        int i1 = m_vFaces[iFaceIndex].indices()[0];
-                        int i2 = m_vFaces[iFaceIndex].indices()[iVertIndex - 1];
-                        int i3 = m_vFaces[iFaceIndex].indices()[iVertIndex];
-
-                        CVector3 v1 = m_vVertices[i1].position();
-                        CVector3 v2 = m_vVertices[i2].position();
-                        CVector3 v3 = m_vVertices[i3].position();
-
-                        RayTracingResult dNewResult = CFace::intersectTriangle(
-                                    ray,
-                                    v1, v2, v3
-                                    );
-
-                        if (dNewResult.m_dDistance < dReturnResult.m_dDistance)
-                        {
-                            dReturnResult.m_dDistance = dNewResult.m_dDistance;
-                        }
-                    }
+                    dReturnResult.m_vNormal = dNewResult.m_vNormal;
                 }
             }
         }

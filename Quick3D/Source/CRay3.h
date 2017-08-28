@@ -55,7 +55,7 @@ public:
     {
     }
 
-    //! Constructeur par composants
+    //! Constructor with components
     inline CRay3 (CVector3 dNewOrigin, CVector3 vNewNormal)
     {
         vOrigin = dNewOrigin;

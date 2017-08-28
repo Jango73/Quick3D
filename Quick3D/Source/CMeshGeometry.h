@@ -11,6 +11,7 @@
 #include "quick3d_global.h"
 #include "CQ3DConstants.h"
 #include "CBoundingBox.h"
+#include "CBoundPartition.h"
 #include "CComponent.h"
 #include "CVertex.h"
 #include "CFace.h"
@@ -25,77 +26,7 @@ class C3DScene;
 
 //-------------------------------------------------------------------------------------------------
 
-class QUICK3D_EXPORT CMeshPartition
-{
-public:
-
-    CMeshPartition()
-    {
-    }
-
-    CMeshPartition(CBoundingBox bBounds)
-        : m_bBounds(bBounds)
-    {
-    }
-
-    //-------------------------------------------------------------------------------------------------
-    // Setters
-    //-------------------------------------------------------------------------------------------------
-
-    //-------------------------------------------------------------------------------------------------
-    // Getters
-    //-------------------------------------------------------------------------------------------------
-
-    //! Retourne le délimiteur de la partition
-    CBoundingBox& getBounds() { return m_bBounds; }
-
-    //! Retourne le vecteur de partitions enfant
-    QVector<CMeshPartition>& getChildren() { return m_vChildren; }
-
-    //! Retourne le vecteur d'indices de facettes
-    QVector<int>& getFaceIndices() { return m_vFaceIndices; }
-
-    //! Retourne le vecteur d'indices de facettes
-    const QVector<int>& getFaceIndices() const { return m_vFaceIndices; }
-
-    //-------------------------------------------------------------------------------------------------
-    // Control methods
-    //-------------------------------------------------------------------------------------------------
-
-    //!
-    CMeshPartition& operator = (const CMeshPartition& target)
-    {
-        m_bBounds = target.m_bBounds;
-        m_vChildren = target.m_vChildren;
-        m_vFaceIndices = target.m_vFaceIndices;
-
-        return *this;
-    }
-
-    //!
-    void clear()
-    {
-        m_bBounds = CBoundingBox();
-        m_vChildren.clear();
-        m_vFaceIndices.clear();
-    }
-
-    //!
-    void addChild(CMeshPartition mpChild)
-    {
-        m_vChildren.append(mpChild);
-    }
-
-protected:
-
-    CBoundingBox                m_bBounds;
-    QVector<CMeshPartition>     m_vChildren;
-    QVector<int>                m_vFaceIndices;
-};
-
-//-------------------------------------------------------------------------------------------------
-
-class QUICK3D_EXPORT CMeshGeometry : public QSharedData, public CDumpable
+class QUICK3D_EXPORT CMeshGeometry : public QSharedData, public CBoundPartitioned<int>, public CDumpable
 {
 public:
 
@@ -184,6 +115,12 @@ public:
     //! Dumps contents to a stream
     virtual void dump(QTextStream& stream, int iIdent);
 
+    //!
+    virtual void addDataForPartition(CBoundPartition<int>& partition) Q_DECL_OVERRIDE;
+
+    //! Ray intersection
+    Math::RayTracingResult intersect(CComponent* pContainer, Math::CRay3 rGlobalRay);
+
     //-------------------------------------------------------------------------------------------------
     // Control methods
     //-------------------------------------------------------------------------------------------------
@@ -214,9 +151,6 @@ public:
 
     //!
     void deleteMaterials();
-
-    //!
-    void createPartition(CMeshPartition& mpCurrentPartition, int iLevel);
 
     //! Creates unique vertices for each polygon
     void isolateVertices();
@@ -273,9 +207,6 @@ public:
     //! Scales all UV coords by vScale
     void scaleUVs(Math::CVector2 vScale);
 
-    //! Ray intersection
-    virtual Math::RayTracingResult intersect(CComponent* pContainer, Math::CRay3 ray);
-
     //-------------------------------------------------------------------------------------------------
     // Protected methods
     //-------------------------------------------------------------------------------------------------
@@ -283,7 +214,7 @@ public:
 protected:
 
     //!
-    Math::RayTracingResult intersectRecurse(CComponent* pContainer, CMeshPartition& mpPartition, Math::CRay3 ray);
+    Math::RayTracingResult intersectPartitionData(CComponent* pContainer, const CBoundPartition<int>& partition, Math::CRay3 rLocalray) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Properties
@@ -302,7 +233,6 @@ protected:
     QVector<CVertexGroup>           m_vVertexGroups;            // Skinning and deforming vertex groupd
     QVector<CGLMeshData*>           m_vGLMeshData;
     QMap<QString, QString>          m_mDynTexUpdaters;          // Components that update dynamic textures
-    CMeshPartition                  m_mpPartitions;             // Ray-tracing acceleration partitions
     double                          m_dMaxDistance;             // Maximum distance at which this mesh is visible
     int                             m_iGLType;
     bool                            m_bUseSpacePartitionning;   // If true, polygons are partitioned

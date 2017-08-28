@@ -230,6 +230,7 @@ HEADERS += \
     Source/CBone.h \
     Source/CBoundedMeshInstances.h \
     Source/CBoundingBox.h \
+    Source/CBoundPartition.h \
     Source/CBox.h \
     Source/CBuildingGenerator.h \
     Source/CCamera.h \

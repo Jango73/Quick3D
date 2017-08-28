@@ -64,6 +64,9 @@ public:
     //!
     double altitude_m() const { return m_dAltitude_m; }
 
+    //!
+    double altitudeAGL_m() const { return m_dAltitudeAGL_m; }
+
     //-------------------------------------------------------------------------------------------------
     // Inherited methods
     //-------------------------------------------------------------------------------------------------
@@ -94,4 +97,5 @@ protected:
     double          m_dRoll_deg;
     double          m_dVerticalSpeed_ms;
     double          m_dAltitude_m;
+    double          m_dAltitudeAGL_m;
 };

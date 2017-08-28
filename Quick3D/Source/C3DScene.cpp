@@ -331,7 +331,7 @@ void C3DScene::setRainVisible(bool bOnOff)
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Forces a wide FOV when rendering when \a value is \c true.
+    Forces a wide FOV when rendering if \a value is \c true.
 */
 void C3DScene::forceWideFOV(bool value)
 {
@@ -341,7 +341,7 @@ void C3DScene::forceWideFOV(bool value)
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Forces a small FOV when rendering when \a value is \c true.
+    Forces a small FOV when rendering if \a value is \c true.
 */
 void C3DScene::forceSmallFOV(bool value)
 {
@@ -351,7 +351,7 @@ void C3DScene::forceSmallFOV(bool value)
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Forces IR effect when rendering.
+    Forces IR effect when rendering if \a value is \c true.
 */
 void C3DScene::forceIR(bool value)
 {

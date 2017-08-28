@@ -119,6 +119,7 @@ public:
     {
         m_tPartition.clear();
         m_bBounds = bBounds;
+        m_tPartition.bounds() = bBounds;
         createPartitionsInternal(m_tPartition, 0);
     }
 

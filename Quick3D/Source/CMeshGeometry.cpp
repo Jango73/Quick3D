@@ -1417,7 +1417,7 @@ RayTracingResult CMeshGeometry::intersect(CComponent* pContainer, CRay3 rGlobalR
 {
     RayTracingResult dReturnResult(Q3D_INFINITY, pContainer);
 
-    // Transformation du rayon dans le repère local
+    // Transform ray to local space
     CRay3 rLocalray = pContainer->worldTransformInverse() * rGlobalRay;
 
     if (m_bBounds.intersect(rLocalray).m_dDistance < Q3D_INFINITY)
@@ -1451,7 +1451,6 @@ RayTracingResult CMeshGeometry::intersect(CComponent* pContainer, CRay3 rGlobalR
                         {
                             dReturnResult.m_dDistance = dNewResult.m_dDistance;
                             dReturnResult.m_vNormal = dNewResult.m_vNormal;
-                            dReturnResult.m_pObject = dNewResult.m_pObject;
                         }
                     }
                 }
@@ -1472,7 +1471,7 @@ Math::RayTracingResult CMeshGeometry::intersectPartitionData(CComponent* pContai
     {
         int iFaceIndex = partition.data()[iPartFaceIndex];
 
-        if (m_vFaces[iFaceIndex].indices().count() > 2)
+        if (iFaceIndex < m_vFaces.count() && m_vFaces[iFaceIndex].indices().count() > 2)
         {
             for (int iVertIndex = 2; iVertIndex < m_vFaces[iFaceIndex].indices().count(); iVertIndex++)
             {

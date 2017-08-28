@@ -138,6 +138,8 @@ public:
     {
         Q_UNUSED(pContainer);
         Q_UNUSED(ray);
+
+        return Math::RayTracingResult(Q3D_INFINITY);
     }
 
 protected:
@@ -203,15 +205,14 @@ protected:
         {
             if (tPartition.children().count() > 0)
             {
-                foreach (CBoundPartition<T> mpChild, tPartition.children())
+                foreach (CBoundPartition<T> mtChild, tPartition.children())
                 {
-                    Math::RayTracingResult dNewResult = intersectPartitionsInternal(pContainer, mpChild, ray);
+                    Math::RayTracingResult dNewResult = intersectPartitionsInternal(pContainer, mtChild, ray);
 
                     if (dNewResult.m_dDistance < dReturnResult.m_dDistance)
                     {
                         dReturnResult.m_dDistance = dNewResult.m_dDistance;
                         dReturnResult.m_vNormal = dNewResult.m_vNormal;
-                        dReturnResult.m_pObject = dNewResult.m_pObject;
                     }
                 }
             }
@@ -223,7 +224,6 @@ protected:
                 {
                     dReturnResult.m_dDistance = dNewResult.m_dDistance;
                     dReturnResult.m_vNormal = dNewResult.m_vNormal;
-                    dReturnResult.m_pObject = dNewResult.m_pObject;
                 }
             }
         }
@@ -233,7 +233,7 @@ protected:
 
 protected:
 
-    int                         m_iMaxLevel;
-    CBoundingBox                m_bBounds;
-    CBoundPartition<T>          m_tPartition;
+    int                 m_iMaxLevel;
+    CBoundingBox        m_bBounds;
+    CBoundPartition<T>  m_tPartition;
 };

@@ -214,7 +214,7 @@ public:
 protected:
 
     //!
-    Math::RayTracingResult intersectPartitionData(CComponent* pContainer, const CBoundPartition<int>& partition, Math::CRay3 rLocalray) Q_DECL_OVERRIDE;
+    virtual Math::RayTracingResult intersectPartitionData(CComponent* pContainer, const CBoundPartition<int>& partition, Math::CRay3 rLocalray) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Properties

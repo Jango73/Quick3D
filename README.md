@@ -13,9 +13,10 @@ Open .pro file in Qt Creator and build **without** shadow build option.
 * Global terrain with automatic level of detail. Can be generated from real earth elevation data or procedurally and can be populated with vegetation.
 * Geo-referenced objects, with parent-child relationship
 * Q3D file format, with a python script to export from Blender
-* Scenes are setup in a XML file
+* Scenes are setup in a XML file or at runtime
+* Basic animation classes
 
-## Things to work on
+## Things to code or to fix
 
 ### Terrain
 * Tile seams : for now, seams between terrain tiles are visible
@@ -24,8 +25,11 @@ Open .pro file in Qt Creator and build **without** shadow build option.
 * Vegetation rendering : vegetation objects (and all alpha containing objects) should be rendered last to avoid alpha problems
 * Vegetation spawning : still some bug in this algorithm
 
+### Animation
+* Skinning : nothing done yet
+
 ### Camera
 * Frustum : sometimes objects disappear because they not considered inside the viewing frustum (although we know they are)
 
 ### Materials
-* PBR rendering : materials must be refactored in order to allow for more physically based rendering
+* PBR rendering : allow scripting of PBR methods for realistic shading

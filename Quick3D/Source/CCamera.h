@@ -171,7 +171,7 @@ public:
             );
 
     //! Computes the frustum (visualization pyramid) of the camera
-    void computeFrustum(double dFOV, double dAspectRatio, double dMinDistance, double dMaxDistance);
+    void computeFrustum(double dHorizontalFOV, double dAspectRatio, double dMinDistance, double dMaxDistance);
 
     //! Returns \c true if the frustum partially contains the sphere defined by \a vPosition and \a dRadius
     bool contains(const Math::CVector3& vPosition, double dRadius) const;
@@ -180,13 +180,13 @@ public:
     bool contains(const CBoundingBox& bounds) const;
 
     //! Returns a projection Qt matrix
-    static QMatrix4x4 getQtProjectionMatrix(double dFOV, double dAspectRatio, double dMinDistance, double dMaxDistance);
+    static QMatrix4x4 getQtProjectionMatrix(double dVerticalFOV, double dAspectRatio, double dMinDistance, double dMaxDistance);
 
     //! Returns a model view Qt matrix
     static QMatrix4x4 getQtCameraMatrix(Math::CVector3 vPosition, Math::CVector3 vRotation);
 
     //! Returns a projection matrix used by non Quick3D methods
-    static Math::CMatrix4 getInternalProjectionMatrix(double dFOV, double dAspectRatio, double dMinDistance, double dMaxDistance);
+    static Math::CMatrix4 getInternalProjectionMatrix(double dVerticalFOV, double dAspectRatio, double dMinDistance, double dMaxDistance);
 
     //! Returns a model view matrix used by non Quick3D methods
     static Math::CMatrix4 getInternalCameraMatrix(Math::CVector3 vPosition, Math::CVector3 vRotation);

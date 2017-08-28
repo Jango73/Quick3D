@@ -280,7 +280,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
                 this
                 );
 
-    computeFrustum(Math::Angles::toRad(dFOV), (double) iWidth / (double) iHeight, m_dMinDistance, m_dMaxDistance);
+    computeFrustum(Math::Angles::toRad(dFOV), (double) iHeight / (double) iWidth, m_dMinDistance, m_dMaxDistance);
 
     //-------------------------------------------------------------------------------------------------
     // Update objects
@@ -721,16 +721,19 @@ void CCamera::renderDepth_CubeMapped
 
 //-------------------------------------------------------------------------------------------------
 
-void CCamera::computeFrustum(double dFOV, double dAspectRatio, double dMinDistance, double dMaxDistance)
+void CCamera::computeFrustum(double dHorizontalFOV, double dAspectRatio, double dMinDistance, double dMaxDistance)
 {
     // Remise à zéro des plans du frustum (pyramide de visualisation)
     m_pFrustumPlanes.clear();
 
+    // double dVerticalFOV = dHorizontalFOV * dAspectRatio;
+    double dVerticalFOV = dHorizontalFOV;
+
     // Création des matrices de rotation des plans
-    CMatrix4 mRotateY1 = CMatrix4().makeRotation(CVector3(0.0, dFOV *  1.0, 0.0));
-    CMatrix4 mRotateY2 = CMatrix4().makeRotation(CVector3(0.0, dFOV * -1.0, 0.0));
-    CMatrix4 mRotateX1 = CMatrix4().makeRotation(CVector3(dFOV *  1.0, 0.0, 0.0));
-    CMatrix4 mRotateX2 = CMatrix4().makeRotation(CVector3(dFOV * -1.0, 0.0, 0.0));
+    CMatrix4 mRotateY1 = CMatrix4().makeRotation(CVector3(0.0, dHorizontalFOV *  1.0, 0.0));
+    CMatrix4 mRotateY2 = CMatrix4().makeRotation(CVector3(0.0, dHorizontalFOV * -1.0, 0.0));
+    CMatrix4 mRotateX1 = CMatrix4().makeRotation(CVector3(dVerticalFOV *  1.0, 0.0, 0.0));
+    CMatrix4 mRotateX2 = CMatrix4().makeRotation(CVector3(dVerticalFOV * -1.0, 0.0, 0.0));
 
     // Création des vecteurs normaux des plans
     CVector3 v1(-1.0,  0.0,  0.0);
@@ -772,13 +775,13 @@ bool CCamera::contains(const CBoundingBox& bounds) const
 
 //-------------------------------------------------------------------------------------------------
 
-QMatrix4x4 CCamera::getQtProjectionMatrix(double dFOV, double dAspectRatio, double dMinDistance, double dMaxDistance)
+QMatrix4x4 CCamera::getQtProjectionMatrix(double dVerticalFOV, double dAspectRatio, double dMinDistance, double dMaxDistance)
 {
     // Création d'uine matrice de projection Qt
     QMatrix4x4 mMatrix;
 
     mMatrix.setToIdentity();
-    mMatrix.perspective(dFOV, dAspectRatio, dMinDistance, dMaxDistance);
+    mMatrix.perspective(dVerticalFOV, dAspectRatio, dMinDistance, dMaxDistance);
     mMatrix.scale(QVector3D(1.0, 1.0, -1.0));
 
     return mMatrix;
@@ -803,9 +806,9 @@ QMatrix4x4 CCamera::getQtCameraMatrix(CVector3 vPosition, CVector3 vRotation)
 
 //-------------------------------------------------------------------------------------------------
 
-CMatrix4 CCamera::getInternalProjectionMatrix(double dFOV, double dAspectRatio, double dMinDistance, double dMaxDistance)
+CMatrix4 CCamera::getInternalProjectionMatrix(double dVerticalFOV, double dAspectRatio, double dMinDistance, double dMaxDistance)
 {
-    return CMatrix4::fromQtMatrix(getQtProjectionMatrix(dFOV, dAspectRatio, dMinDistance, dMaxDistance));
+    return CMatrix4::fromQtMatrix(getQtProjectionMatrix(dVerticalFOV, dAspectRatio, dMinDistance, dMaxDistance));
 }
 
 //-------------------------------------------------------------------------------------------------

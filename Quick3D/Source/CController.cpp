@@ -263,17 +263,19 @@ void CController::mousePressEvent(QMouseEvent* event)
 
                         if (pCamera != nullptr)
                         {
-                            CVector2 normalizedPoint(
-                                        (point.x() - pViewport->position().X) / pViewport->size().X,
-                                        (point.y() - pViewport->position().Y) / pViewport->size().Y
-                                        );
+//                            CVector2 normalizedPoint(
+//                                        (point.x() - pViewport->position().X) / pViewport->size().X,
+//                                        (point.y() - pViewport->position().Y) / pViewport->size().Y
+//                                        );
 
-                            CVector2 vAngles2 = CVector2::pointToAngles(pViewport->size(), pCamera->getFOV(), normalizedPoint);
-                            CVector3 vAngles3(vAngles2.Y, vAngles2.X, 0.0);
+//                            CVector2 vAngles2 = CVector2::pointToAngles(pViewport->size(), pCamera->getFOV(), normalizedPoint);
+//                            CVector3 vAngles3(vAngles2.Y, vAngles2.X, 0.0);
 
-                            m_rLastRay.vOrigin = pCamera->worldTransform() * CVector3();
-                            m_rLastRay.vNormal = CMatrix4::makeRotation(vAngles3) * CVector3(0.0, 0.0, 1.0);
-                            m_rLastRay.vNormal = (pCamera->worldTransform() * m_rLastRay.vNormal) - m_rLastRay.vOrigin;
+//                            m_rLastRay.vOrigin = pCamera->worldTransform() * CVector3();
+//                            m_rLastRay.vNormal = CMatrix4::makeRotation(vAngles3) * CVector3(0.0, 0.0, 1.0);
+//                            m_rLastRay.vNormal = (pCamera->worldTransform() * m_rLastRay.vNormal) - m_rLastRay.vOrigin;
+
+                            CRay3 m_rLastRay = pCamera->screenPointToWorldRay(pViewport, CVector2(point.x(), point.y()));
 
                             RayTracingResult aResult = pScene->intersectComponentHierarchy(m_pParent, m_rLastRay);
 

@@ -166,7 +166,7 @@ public:
     static void computeCollisions(QVector<QSP<CComponent> >& vComponents, double dDeltaTimeS);
 
     //!
-    static void computeCollisionsForComponent(QSP<CPhysicalComponent> pComponent, QVector<QSP<CComponent> >& vOtherComponents, double dDeltaTimeS);
+    static void computeCollisionsForComponent(QSP<CPhysicalComponent> pPhysical, QVector<QSP<CComponent> >& vOtherComponents, double dDeltaTimeS);
 
     //-------------------------------------------------------------------------------------------------
     // Properties

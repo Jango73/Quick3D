@@ -34,7 +34,7 @@ Math::CVector3 CAnimatorFrame::compute(double dDeltaTime, Math::CVector3 vCurren
 
 //-------------------------------------------------------------------------------------------------
 
-CVector3 CAnimatorFrame::getCurrentValue() const
+CVector3 CAnimatorFrame::currentValue() const
 {
 	return CVector3();
 }

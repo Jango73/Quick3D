@@ -77,7 +77,7 @@ public:
 
 protected:
 
-    QPoint	m_pPreviousMousePos;
-    bool	m_bUseMouse;
-    bool	m_bPanTilt;
+    QPoint      m_pPreviousMousePos;
+    bool        m_bUseMouse;
+    bool        m_bPanTilt;
 };

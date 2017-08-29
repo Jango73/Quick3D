@@ -16,57 +16,57 @@ class QUICK3D_EXPORT CServoAnimatorFrame : public CAnimatorFrame
 
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructors and destructor
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructors and destructor
+    //-------------------------------------------------------------------------------------------------
 
-	//! Default constructor
-	CServoAnimatorFrame();
+    //! Default constructor
+    CServoAnimatorFrame();
 
-	//! Destructor
-	virtual ~CServoAnimatorFrame();
+    //! Destructor
+    virtual ~CServoAnimatorFrame();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//! Règle le facteur d'accélération
-	void setAccelerationFactor(double dValue);
+    //! Sets the acceleration factor
+    void setAccelerationFactor(double dValue);
 
-	//! Règle le facteur de vitesse
-	void setVelocityFactor(double value);
+    //! Sets the velocity factor
+    void setVelocityFactor(double value);
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Control methods
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Control methods
+    //-------------------------------------------------------------------------------------------------
 
-	//! Calcule une valeur cible selon une valeur courante
-	virtual Math::CVector3 compute(double dDeltaTime, Math::CVector3 vCurrentValue);
+    //! Computes a target value given a current value and a delta time
+    virtual Math::CVector3 compute(double dDeltaTime, Math::CVector3 vCurrentValue) Q_DECL_OVERRIDE;
 
-	//!
-	virtual Math::CVector3 getCurrentValue() const;
+    //! Returns the current value
+    virtual Math::CVector3 currentValue() const Q_DECL_OVERRIDE;
 
-	//-------------------------------------------------------------------------------------------------
-	// Protected methods
-	//-------------------------------------------------------------------------------------------------
-
-protected:
-
-	//! Calcule une valeur cible selon une valeur courante
-	double computeSingleAxis(double dDeltaTime, double dCurrentValue, double dTargetValue, double dSpeed);
-
-	//-------------------------------------------------------------------------------------------------
-	// Properties
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Protected methods
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	Math::CVector3	m_vCurrentValue;
-	CServoPosition	m_tServo_X;
-	CServoPosition	m_tServo_Y;
-	CServoPosition	m_tServo_Z;
+    //! Computes the value on a single axis
+    double computeSingleAxis(double dDeltaTime, double dCurrentValue, double dTargetValue, double dSpeed);
+
+    //-------------------------------------------------------------------------------------------------
+    // Properties
+    //-------------------------------------------------------------------------------------------------
+
+protected:
+
+    Math::CVector3      m_vCurrentValue;
+    CServoPosition      m_tServo_X;
+    CServoPosition      m_tServo_Y;
+    CServoPosition      m_tServo_Z;
 };

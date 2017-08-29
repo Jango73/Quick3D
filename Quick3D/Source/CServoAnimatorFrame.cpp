@@ -103,7 +103,7 @@ CVector3 CServoAnimatorFrame::compute(double dDeltaTime, CVector3 vCurrentValue)
 
 //-------------------------------------------------------------------------------------------------
 
-CVector3 CServoAnimatorFrame::getCurrentValue() const
+CVector3 CServoAnimatorFrame::currentValue() const
 {
 	return m_vCurrentValue;
 }

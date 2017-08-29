@@ -60,7 +60,7 @@ CVector3 CBasicAnimatorFrame::compute(double dDeltaTime, CVector3 vCurrentValue)
 
 //-------------------------------------------------------------------------------------------------
 
-CVector3 CBasicAnimatorFrame::getCurrentValue() const
+CVector3 CBasicAnimatorFrame::currentValue() const
 {
 	return m_vCurrentValue;
 }

@@ -15,56 +15,56 @@ class QUICK3D_EXPORT CAnimatorFrame
 
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructors and destructor
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructors and destructor
+    //-------------------------------------------------------------------------------------------------
 
-	//! Default constructor
-	CAnimatorFrame();
+    //! Default constructor
+    CAnimatorFrame();
 
-	//! Destructor
-	virtual ~CAnimatorFrame();
+    //! Destructor
+    virtual ~CAnimatorFrame();
 
-	//-------------------------------------------------------------------------------------------------
-	// Setters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Setters
+    //-------------------------------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------------------------------
-	// Getters
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
 
-	//! Retourne une référence sur la liste de pas
+    //! Returns the list of steps as a reference
     QVector<CBasicAnimationStep>& steps() { return m_vSteps; }
 
-	//! Retourne une référence sur la liste de pas
+    //! Returns the list of steps as a constant reference
     const QVector<CBasicAnimationStep>& steps() const { return m_vSteps; }
 
-	//-------------------------------------------------------------------------------------------------
-	// Control methods
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Control methods
+    //-------------------------------------------------------------------------------------------------
 
-	//! Ajoute un pas de rotation
-	void addStep(CBasicAnimationStep value);
+    //! Adds an animation step
+    void addStep(CBasicAnimationStep value);
 
-	//! Calcule une valeur cible selon une valeur courante
-	virtual Math::CVector3 compute(double dDeltaTime, Math::CVector3 vCurrentValue);
+    //! Computes a target value given a current value and a delta time
+    virtual Math::CVector3 compute(double dDeltaTime, Math::CVector3 vCurrentValue);
 
-	//!
-	virtual Math::CVector3 getCurrentValue() const;
+    //! Returns the current value
+    virtual Math::CVector3 currentValue() const;
 
-	//-------------------------------------------------------------------------------------------------
-	// Protected methods
-	//-------------------------------------------------------------------------------------------------
-
-protected:
-
-	//-------------------------------------------------------------------------------------------------
-	// Properties
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Protected methods
+    //-------------------------------------------------------------------------------------------------
 
 protected:
 
-	QVector<CBasicAnimationStep>	m_vSteps;
-	int								m_iCurrentStep;
-	double							m_dTime;
+    //-------------------------------------------------------------------------------------------------
+    // Properties
+    //-------------------------------------------------------------------------------------------------
+
+protected:
+
+    QVector<CBasicAnimationStep>    m_vSteps;
+    int                             m_iCurrentStep;
+    double                          m_dTime;
 };

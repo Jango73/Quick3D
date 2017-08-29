@@ -1,8 +1,7 @@
 
-#ifndef QUICK3DTEST_H
-#define QUICK3DTEST_H
+#pragma once
 
-// QT
+// Qt
 #include <QtGlobal>
 
 #if QT_VERSION >= 0x050000
@@ -13,11 +12,9 @@
 
 // Application
 #include "ui_Quick3DTest.h"
-
 #include "CGLWidgetScene.h"
 #include "CComponent.h"
 #include "CView.h"
-#include "CWorldTerrain.h"
 
 class Quick3DTest : public QMainWindow
 {
@@ -116,5 +113,3 @@ protected:
     bool                            m_bProcessEvents;
     bool                            m_bRun;
 };
-
-#endif // QUICK3DTEST_H

@@ -5,7 +5,6 @@
 // Quick3D
 #include "CConsoleBoard.h"
 #include "CQ3DConstants.h"
-#include "CComponent.h"
 #include "CComponentFactory.h"
 #include "CComponentLoader.h"
 #include "CTerrain.h"

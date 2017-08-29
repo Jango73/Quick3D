@@ -55,10 +55,12 @@ QMAKE_PRE_LINK += $$QMAKE_COPY /y $$quote($$shell_path($$copyfile)) $$quote($$sh
 # Code
 SOURCES += \
     Quick3DTest.cpp \
+    CUnitTests.cpp \
     main.cpp
 
 HEADERS  += \
-    Quick3DTest.h
+    Quick3DTest.h \
+    CUnitTests.h
 
 RESOURCES += \
     Quick3DTest.qrc

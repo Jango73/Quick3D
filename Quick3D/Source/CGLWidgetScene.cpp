@@ -77,9 +77,9 @@ void CGLWidgetScene::paintGL()
         //-------------------------------------------------------------------------------------------------
         // Compute world origin
 
-        if (m_pViewports.count() > 0 && m_pViewports[0]->getCamera())
+        if (m_pViewports.count() > 0 && m_pViewports[0]->camera())
         {
-            m_vWorldOrigin = m_pViewports[0]->getCamera()->worldPosition();
+            m_vWorldOrigin = m_pViewports[0]->camera()->worldPosition();
 
             m_vWorldOrigin.X = m_vWorldOrigin.X - fmod(m_vWorldOrigin.X, 1000.0);
             m_vWorldOrigin.Y = m_vWorldOrigin.Y - fmod(m_vWorldOrigin.Y, 1000.0);
@@ -91,9 +91,9 @@ void CGLWidgetScene::paintGL()
 
         foreach (int iIndex, m_pViewports.keys())
         {
-            if (m_pViewports[iIndex]->isEnabled() && m_pViewports[iIndex]->getCamera())
+            if (m_pViewports[iIndex]->isEnabled() && m_pViewports[iIndex]->camera())
             {
-                m_pViewports[iIndex]->getCamera()->render(this, m_pViewports[iIndex], m_bforceWideFOV, m_bforceSmallFOV, m_bForceIR);
+                m_pViewports[iIndex]->camera()->render(this, m_pViewports[iIndex], m_bforceWideFOV, m_bforceSmallFOV, m_bForceIR);
             }
         }
 
@@ -104,7 +104,7 @@ void CGLWidgetScene::paintGL()
 
         foreach (int iIndex, m_pViewports.keys())
         {
-            if (m_pViewports[iIndex]->getStreamView() || m_pViewports[iIndex]->getNeedFrameBuffer())
+            if (m_pViewports[iIndex]->streamView() || m_pViewports[iIndex]->needFrameBuffer())
             {
                 bGrabFrame = true;
                 break;

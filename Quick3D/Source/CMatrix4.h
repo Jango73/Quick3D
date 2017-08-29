@@ -264,7 +264,7 @@ public:
         return *this;
     }
 
-    //! Multiplie deux matrices
+    //! Multiplies two matrices
     inline CMatrix4 operator * (const CMatrix4& m2)
     {
         CMatrix4 m;
@@ -291,7 +291,7 @@ public:
         return m;
     }
 
-    //! Multiplie un vecteur et une matrice
+    //! Multiplies a vector and an affine transform matrix
     inline CVector3 operator * (const CVector3& a) const
     {
         CVector3 c;
@@ -303,7 +303,7 @@ public:
         return c;
     }
 
-    //! Multiplie un vecteur et une matrice de projection
+    //! Multiplies a vector and a projection matrix
     inline CVector3 project (const CVector3& a) const
     {
         CVector3 c;
@@ -318,7 +318,7 @@ public:
         return c;
     }
 
-    //! Multiplie un rayon et une matrice
+    //! Multiplies a ray and a projection matrix
     inline CRay3 operator * (const CRay3& a) const
     {
         CRay3 aRay;

@@ -1,6 +1,9 @@
 
-#include "CAxis.h"
+// qt-plus
+#include "CLogger.h"
 
+// Application
+#include "CAxis.h"
 #include "C3DScene.h"
 #include "CRessourcesManager.h"
 #include "COBJLoader.h"

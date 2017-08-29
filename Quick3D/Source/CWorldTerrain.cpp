@@ -66,7 +66,7 @@ CWorldTerrain::CWorldTerrain(C3DScene* pScene, CGeoloc gCameraPosition, CHeightF
     {
         LOG_DEBUG("CWorldTerrain::CWorldTerrain() : Generating terrain now");
 
-        if (pScene->viewports().count() > 0 && pScene->viewports()[0]->getCamera())
+        if (pScene->viewports().count() > 0 && pScene->viewports()[0]->camera())
         {
             CRenderContext context(
                         QMatrix4x4(),
@@ -76,7 +76,7 @@ CWorldTerrain::CWorldTerrain(C3DScene* pScene, CGeoloc gCameraPosition, CHeightF
                         Math::CMatrix4(),
                         Math::CMatrix4(),
                         pScene,
-                        pScene->viewports()[0]->getCamera().data()
+                        pScene->viewports()[0]->camera().data()
                     );
 
             buildRoot(&context);

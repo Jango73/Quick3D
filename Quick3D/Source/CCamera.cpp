@@ -194,12 +194,12 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     //-------------------------------------------------------------------------------------------------
     // Viewport
 
-    int iWidth =  pViewport->getSize().X;
-    int iHeight = pViewport->getSize().Y;
+    int iWidth =  pViewport->size().X;
+    int iHeight = pViewport->size().Y;
 
     if (iHeight == 0) return;
 
-    glViewport((int) pViewport->getPosition().X, (int) pViewport->getPosition().Y, iWidth, iHeight);
+    glViewport((int) pViewport->position().X, (int) pViewport->position().Y, iWidth, iHeight);
 
     //-------------------------------------------------------------------------------------------------
     // Rendering context and transform matrices
@@ -875,6 +875,29 @@ CGeoZone::EGeoZoneFlag CCamera::categorizePointFromZones(const QVector<CGeoZone>
         }
     }
 
-    // return CGeoZone::EGeoZoneFlag::gzfUnknown;
     return CGeoZone::gzfUnknown;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+CRay3 CCamera::screenPointToWorldRay(CViewport* pViewport, CVector2 vPoint)
+{
+    CRay3 rResult;
+    CVector3 vCamPos = worldPosition();
+    CVector3 vCamRot = worldRotation();
+    double dVerticalFOV = CVector2::computeVerticalFOV(pViewport->size(), m_dFOV);
+    CMatrix4 mTransform = getInternalCameraMatrix(vCamPos, vCamRot);
+    CMatrix4 mProjection = getInternalProjectionMatrix(dVerticalFOV, pViewport->size().Y / pViewport->size().X, m_dMinDistance, m_dMaxDistance);
+    CMatrix4 mProjectionInverse = mProjection.inverse();
+
+    double x =  2.0 * (vPoint.X - pViewport->position().X) / pViewport->size().X - 1;
+    double y = -2.0 * (vPoint.Y - pViewport->position().Y) / pViewport->size().Y + 1;
+
+    CVector3 vPoint3D(x, y, -1.0);
+
+    rResult.vNormal = mProjectionInverse * vPoint3D;
+    rResult = mTransform * rResult;
+    rResult.vNormal = rResult.vNormal.normalized();
+
+    return rResult;
 }

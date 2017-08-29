@@ -70,22 +70,22 @@ public:
     bool isEnabled() const { return m_bEnabled; }
 
     //!
-    QSP<CCamera> getCamera() const { return m_pCamera; }
+    QSP<CCamera> camera() const { return m_pCamera; }
 
     //!
-    Math::CVector2 getPosition() const { return m_vPosition; }
+    Math::CVector2 position() const { return m_vPosition; }
 
     //!
-    Math::CVector2 getSize() const { return m_vSize; }
+    Math::CVector2 size() const { return m_vSize; }
 
     //!
-    bool getStreamView() const { return m_bStreamView; }
+    bool streamView() const { return m_bStreamView; }
 
     //!
-    bool getNeedFrameBuffer() const { return m_bNeedFrameBuffer; }
+    bool needFrameBuffer() const { return m_bNeedFrameBuffer; }
 
     //!
-    const QImage& getFrameBuffer() const { return m_imgFrameBuffer; }
+    const QImage& frameBuffer() const { return m_imgFrameBuffer; }
 
     //-------------------------------------------------------------------------------------------------
     // Control methods
@@ -107,16 +107,16 @@ public:
 
 protected:
 
-    C3DScene*       m_pScene;				// The scene displayed in this viewport
-    CMJPEGServer*   m_pServer;				// The streaming server for this viewport
-    Math::CVector2  m_vPosition;			// The viewport's position in the render window
-    Math::CVector2  m_vSize;				// The viewport's size
-    QImage          m_imgFrameBuffer;		// The captured frame
-    bool            m_bEnabled;				// Is the viewport active?
-    bool            m_bStreamView;			// Is the view streaming enabled?
-    bool            m_bNeedFrameBuffer;		// Do we need the frame buffer?
+    C3DScene*       m_pScene;               // The scene displayed in this viewport
+    CMJPEGServer*   m_pServer;              // The streaming server for this viewport
+    Math::CVector2  m_vPosition;            // The viewport's position in the render window
+    Math::CVector2  m_vSize;                // The viewport's size
+    QImage          m_imgFrameBuffer;       // The captured frame
+    bool            m_bEnabled;             // Is the viewport active?
+    bool            m_bStreamView;          // Is the view streaming enabled?
+    bool            m_bNeedFrameBuffer;     // Do we need the frame buffer?
 
     // Shared data
 
-    QSP<CCamera>    m_pCamera;				// The camera used by this viewport
+    QSP<CCamera>    m_pCamera;              // The camera used by this viewport
 };

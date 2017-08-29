@@ -253,22 +253,22 @@ void CController::mousePressEvent(QMouseEvent* event)
                 if (pViewport != nullptr)
                 {
                     if (
-                            point.x() >= pViewport->getPosition().X &&
-                            point.y() >= pViewport->getPosition().Y &&
-                            point.x() < pViewport->getPosition().X + pViewport->getSize().X &&
-                            point.y() < pViewport->getPosition().Y + pViewport->getSize().Y
+                            point.x() >= pViewport->position().X &&
+                            point.y() >= pViewport->position().Y &&
+                            point.x() < pViewport->position().X + pViewport->size().X &&
+                            point.y() < pViewport->position().Y + pViewport->size().Y
                             )
                     {
-                        QSP<CCamera> pCamera = pViewport->getCamera();
+                        QSP<CCamera> pCamera = pViewport->camera();
 
                         if (pCamera != nullptr)
                         {
                             CVector2 normalizedPoint(
-                                        (point.x() - pViewport->getPosition().X) / pViewport->getSize().X,
-                                        (point.y() - pViewport->getPosition().Y) / pViewport->getSize().Y
+                                        (point.x() - pViewport->position().X) / pViewport->size().X,
+                                        (point.y() - pViewport->position().Y) / pViewport->size().Y
                                         );
 
-                            CVector2 vAngles2 = CVector2::pointToAngles(pViewport->getSize(), pCamera->getFOV(), normalizedPoint);
+                            CVector2 vAngles2 = CVector2::pointToAngles(pViewport->size(), pCamera->getFOV(), normalizedPoint);
                             CVector3 vAngles3(vAngles2.Y, vAngles2.X, 0.0);
 
                             m_rLastRay.vOrigin = pCamera->worldTransform() * CVector3();

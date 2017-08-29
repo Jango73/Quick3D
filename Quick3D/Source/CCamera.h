@@ -185,14 +185,17 @@ public:
     //! Returns a model view Qt matrix
     static QMatrix4x4 getQtCameraMatrix(Math::CVector3 vPosition, Math::CVector3 vRotation);
 
-    //! Returns a projection matrix used by non Quick3D methods
+    //! Returns a projection matrix used internally
     static Math::CMatrix4 getInternalProjectionMatrix(double dVerticalFOV, double dAspectRatio, double dMinDistance, double dMaxDistance);
 
-    //! Returns a model view matrix used by non Quick3D methods
+    //! Returns a model view matrix used internally
     static Math::CMatrix4 getInternalCameraMatrix(Math::CVector3 vPosition, Math::CVector3 vRotation);
 
     //! Returns a detection category for \a vPoint using polygons in \a vZones
     CGeoZone::EGeoZoneFlag categorizePointFromZones(const QVector<CGeoZone>& vZones, Math::CVector2 vPoint);
+
+    //!
+    Math::CRay3 screenPointToWorldRay(CViewport* pViewport, Math::CVector2 vPoint);
 
     //-------------------------------------------------------------------------------------------------
     // Properties

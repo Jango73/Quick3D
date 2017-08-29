@@ -2,7 +2,6 @@
 #pragma once
 
 // qt-plus
-#include "CLogger.h"
 #include "CAverager.h"
 
 // Application

@@ -97,6 +97,7 @@ CComponent::~CComponent()
     foreach (QSP<CComponent> pChild, m_vChildren)
     {
         // TODO : Dispose of children
+        pChild->clearLinks(m_pScene);
     }
 }
 

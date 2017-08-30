@@ -83,7 +83,9 @@ void CUnitTests::run()
     vPoints << CVector2(1024, 384);
 
     vPoints << CVector2(0, 768);
+    vPoints << CVector2(256, 768);
     vPoints << CVector2(512, 768);
+    vPoints << CVector2(768, 768);
     vPoints << CVector2(1024, 768);
 
     C3DScene* pScene = new C3DScene();
@@ -93,8 +95,14 @@ void CUnitTests::run()
     pScene->viewports()[0]->setSize(Math::CVector2(1024, 768));
     pScene->viewports()[0]->setCamera(pCamera);
 
-    // pCamera->setGeoloc(CGeoloc(0.0, 0.0, 0.0));
-    // pCamera->computeWorldTransform();
+    pCamera->setGeoloc(CGeoloc(0.0, 0.0, 0.0));
+    pCamera->computeWorldTransform();
+
+    double dVerticalFOV = CVector2::computeVerticalFOV(pScene->viewports()[0]->size(), pCamera->getFOV());
+    double dAspectRatio = pScene->viewports()[0]->size().X / pScene->viewports()[0]->size().Y;
+
+    CMatrix4 mTransform = CCamera::getInternalCameraMatrix(pCamera->worldPosition(), pCamera->worldRotation());
+    CMatrix4 mProject = CCamera::getInternalProjectionMatrix(dVerticalFOV, dAspectRatio, 1.0, 1000.0);
 
     foreach (CVector2 vPoint, vPoints)
     {
@@ -105,6 +113,14 @@ void CUnitTests::run()
         qDebug() << "Ray pos =" << ray.vOrigin.X << "," << ray.vOrigin.Y << "," << ray.vOrigin.Z;
         qDebug() << "Ray norm =" << ray.vNormal.X << "," << ray.vNormal.Y << "," << ray.vNormal.Z;
         qDebug() << "Ray length =" << ray.vNormal.magnitude();
+
+        CVector3 vPoint3D = ray.vOrigin + (ray.vNormal * 10.0);
+        vPoint3D = mTransform * vPoint3D;
+        vPoint3D = mProject.project(vPoint3D);
+        vPoint3D.X = (vPoint3D.X + 0.5) * pScene->viewports()[0]->size().X;
+        vPoint3D.Y = (vPoint3D.Y + 0.5) * pScene->viewports()[0]->size().Y;
+
+        qDebug() << "Projected point =" << vPoint3D.X << "," << vPoint3D.Y << "," << vPoint3D.Z;
     }
 
     delete pScene;

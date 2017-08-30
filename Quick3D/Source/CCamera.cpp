@@ -883,25 +883,17 @@ CGeoZone::EGeoZoneFlag CCamera::categorizePointFromZones(const QVector<CGeoZone>
 CRay3 CCamera::screenPointToWorldRay(CViewport* pViewport, CVector2 vPoint)
 {
     CRay3 rResult;
-    // CVector3 vCamPos = worldPosition();
-    // CVector3 vCamRot = worldRotation();
-    double dVerticalFOV = CVector2::computeVerticalFOV(pViewport->size(), m_dFOV);
-    // CMatrix4 mTransform = getInternalCameraMatrix(vCamPos, vCamRot);
-    CMatrix4 mProjection = getInternalProjectionMatrix(dVerticalFOV, pViewport->size().Y / pViewport->size().X, m_dMinDistance, m_dMaxDistance);
-    // CMatrix4 mTransformInverse = mTransform.inverse();
-    CMatrix4 mProjectionInverse = mProjection.inverse();
+    CAxis axis = geoloc().getNOLLAxis();
 
-    double x =  2.0 * ((vPoint.X - pViewport->position().X) / pViewport->size().X - 0.5);
-    double y = -2.0 * ((vPoint.Y - pViewport->position().Y) / pViewport->size().Y - 0.5);
+    // Convert the x coordinate -0.5 to 0.5.
+    double x0 = (vPoint.X - pViewport->position().X) / pViewport->size().X - 0.5;
 
-    CVector3 vPoint3D(x, y, -1.0);
+    // Convert the y coordinate from -0.5 to 0.5.
+    double y0 = 0.5 - (vPoint.Y - pViewport->position().Y) / pViewport->size().Y;
 
-    rResult.vNormal = mProjectionInverse * vPoint3D;
+    rResult.vNormal = axis.Front + (axis.Right * x0) + (axis.Up * y0);
     rResult.vNormal = rResult.vNormal.normalized();
-    // rResult = mTransformInverse * rResult;
-
-    rResult.vOrigin = worldTransform() * CVector3();
-    rResult.vNormal = (worldTransform() * rResult.vNormal) - rResult.vOrigin;
+    rResult.vOrigin = worldPosition();
 
     return rResult;
 }

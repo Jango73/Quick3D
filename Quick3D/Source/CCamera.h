@@ -106,29 +106,29 @@ public:
     virtual void setGain(double dValue) { m_dGain = dValue; }
 
     //! Sets the minimum visibility distance of objects (used by projection matrix)
-    virtual void setMinDistance(double dValue) { m_dMinDistance = dValue; }
+    void setMinDistance(double dValue) { m_dMinDistance = dValue; }
 
     //! Sets the maximum visibility distance of objects (used by projection matrix)
-    virtual void setMaxDistance(double dValue) { m_dMaxDistance = dValue; }
+    void setMaxDistance(double dValue) { m_dMaxDistance = dValue; }
 
     //-------------------------------------------------------------------------------------------------
     // Getters
     //-------------------------------------------------------------------------------------------------
 
     //! Returns the field of view in degrees
-    virtual double getFOV() const { return m_dFOV; }
+    virtual double FOV() const { return m_dFOV; }
 
     //! Returns the normalized focus (0.0 -> 1.0)
-    virtual double getFocus() const { return m_dFocus; }
+    virtual double focus() const { return m_dFocus; }
 
     //! Returns the normalized gain (0.0 -> 1.0)
-    virtual double getGain() const { return m_dGain; }
+    virtual double gain() const { return m_dGain; }
 
     //! Returns the minimum visibility distance of objects (used by projection matrix)
-    virtual double getMinDistance() const { return m_dMinDistance; }
+    double minDistance() const { return m_dMinDistance; }
 
     //! Returns the maximum visibility distance of objects (used by projection matrix)
-    virtual double getMaxDistance() const { return m_dMaxDistance; }
+    double maxDistance() const { return m_dMaxDistance; }
 
     //-------------------------------------------------------------------------------------------------
     // Inherited methods
@@ -152,7 +152,7 @@ public:
 
     //! Renders the scene in the provided viewport
     //! The FOV may be overridden using bForceWideFOV or bForceSmallFOV
-    virtual void render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV, bool bForceSmallFOV, bool bForceIR);
+    virtual void render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV, bool bForceSmallFOV, bool bForceIR, bool bOverlook);
 
     //! Generates a depth matrix using ray tracing technique
     virtual void renderDepth_RayTraced(

@@ -268,7 +268,7 @@ void CController::mousePressEvent(QMouseEvent* event)
                                         (point.y() - pViewport->position().Y) / pViewport->size().Y
                                         );
 
-                            CVector2 vAngles2 = CVector2::pointToAngles(pViewport->size(), pCamera->getFOV(), normalizedPoint);
+                            CVector2 vAngles2 = CVector2::pointToAngles(pViewport->size(), pCamera->FOV(), normalizedPoint);
                             CVector3 vAngles3(vAngles2.Y, vAngles2.X, 0.0);
 
                             m_rLastRay.vOrigin = pCamera->worldTransform() * CVector3();
@@ -286,7 +286,7 @@ void CController::mousePressEvent(QMouseEvent* event)
 //                                        (point.y() - pViewport->position().Y) / pViewport->size().Y
 //                                        );
 
-//                            CVector2 vNormal = CVector2::pointToVector(pViewport->size(), pCamera->getFOV(), normalizedPoint);
+//                            CVector2 vNormal = CVector2::pointToVector(pViewport->size(), pCamera->FOV(), normalizedPoint);
 
 //                            m_rLastRay.vOrigin = pCamera->worldTransform() * CVector3();
 //                            m_rLastRay.vNormal = CVector3(vNormal.X, vNormal.Y, 0.7);

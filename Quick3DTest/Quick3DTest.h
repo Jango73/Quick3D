@@ -95,6 +95,7 @@ private slots:
     void onBoundsOnlyClicked();
     void onNormalsOnlyClicked();
     void onDepthClicked();
+    void onOverlookClicked();
     void onResize();
 
     //-------------------------------------------------------------------------------------------------

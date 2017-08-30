@@ -98,7 +98,7 @@ void CUnitTests::run()
     pCamera->setGeoloc(CGeoloc(0.0, 0.0, 0.0));
     pCamera->computeWorldTransform();
 
-    double dVerticalFOV = CVector2::computeVerticalFOV(pScene->viewports()[0]->size(), pCamera->getFOV());
+    double dVerticalFOV = CVector2::computeVerticalFOV(pScene->viewports()[0]->size(), pCamera->FOV());
     double dAspectRatio = pScene->viewports()[0]->size().X / pScene->viewports()[0]->size().Y;
 
     CMatrix4 mTransform = CCamera::getInternalCameraMatrix(pCamera->worldPosition(), pCamera->worldRotation());

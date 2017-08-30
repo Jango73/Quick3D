@@ -45,7 +45,7 @@ void CSkyBox::update(double dDeltaTime)
 
 void CSkyBox::paint(CRenderContext* pContext)
 {
-    double dScale = pContext->camera()->getMaxDistance() * 0.75;
+    double dScale = pContext->camera()->maxDistance() * 0.75;
 
     setScale(CVector3(dScale, dScale, dScale));
     setWorldTransform(pContext->camera()->worldTransform());

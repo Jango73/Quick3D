@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1119</width>
-    <height>737</height>
+    <height>745</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -288,7 +288,7 @@
           <property name="minimumSize">
            <size>
             <width>180</width>
-            <height>150</height>
+            <height>170</height>
            </size>
           </property>
           <property name="title">
@@ -454,6 +454,22 @@
             <string>Normals only</string>
            </property>
           </widget>
+          <widget class="QCheckBox" name="m_chkOverlook">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>140</y>
+             <width>91</width>
+             <height>17</height>
+            </rect>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
+           <property name="text">
+            <string>Overlook</string>
+           </property>
+          </widget>
          </widget>
         </item>
         <item>
@@ -527,7 +543,7 @@
      <x>0</x>
      <y>0</y>
      <width>1119</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

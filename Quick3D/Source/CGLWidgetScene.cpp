@@ -93,7 +93,7 @@ void CGLWidgetScene::paintGL()
         {
             if (m_pViewports[iIndex]->isEnabled() && m_pViewports[iIndex]->camera())
             {
-                m_pViewports[iIndex]->camera()->render(this, m_pViewports[iIndex], m_bforceWideFOV, m_bforceSmallFOV, m_bForceIR);
+                m_pViewports[iIndex]->camera()->render(this, m_pViewports[iIndex], m_bforceWideFOV, m_bforceSmallFOV, m_bForceIR, m_bOverlookScene);
             }
         }
 
@@ -310,7 +310,7 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
         if (dAtmosphereFactor > 1.0) dAtmosphereFactor = 1.0;
 
         // Compute fog distance
-        m_tFog.distance() = (1.0 - m_tFog.level()) * pContext->camera()->getMaxDistance();
+        m_tFog.distance() = (1.0 - m_tFog.level()) * pContext->camera()->maxDistance();
 
         // Underwater fog
         if (pContext->camera()->geoloc().Altitude < 0.0)
@@ -389,7 +389,7 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
                     u_light_color[iOpenGLLightIndex]                = QVector3D(vColor.X, vColor.Y, vColor.Z);
                     u_light_distance_to_camera[iOpenGLLightIndex]   = (GLfloat) vRelativePosition.length();
                     u_light_distance[iOpenGLLightIndex]             = (GLfloat) vLights[iLightIndex]->lightingDistance();
-                    u_light_spot_angle[iOpenGLLightIndex]           = (GLfloat) Math::Angles::toRad(vLights[iLightIndex]->getFOV());
+                    u_light_spot_angle[iOpenGLLightIndex]           = (GLfloat) Math::Angles::toRad(vLights[iLightIndex]->FOV());
                     u_light_occlusion[iOpenGLLightIndex]            = (GLfloat) vLights[iLightIndex]->occlusion();
 
                     iOpenGLLightIndex++;

@@ -114,6 +114,9 @@ public:
     //!
     void setNormalsOnly(bool value) { m_bNormalsOnly = value; }
 
+    //! Sets the overlook scene flag, for debug purposes
+    void setOverlookScene(bool value) { m_bOverlookScene = value; }
+
     //-------------------------------------------------------------------------------------------------
     // Getters
     //-------------------------------------------------------------------------------------------------
@@ -201,6 +204,9 @@ public:
 
     //!
     bool normalsOnly() { return m_bNormalsOnly; }
+
+    //! Returns the overlook scene flag, for debug purposes
+    bool overlookScene() const { return m_bOverlookScene; }
 
     //-------------------------------------------------------------------------------------------------
     // Control methods
@@ -304,6 +310,7 @@ protected:
     bool                                    m_DebugMode;
     bool                                    m_bBoundsOnly;
     bool                                    m_bNormalsOnly;
+    bool                                    m_bOverlookScene;
     double                                  m_dShaderQuality;
     double                                  m_dWindLevel;
     bool                                    m_bRenderingShadows;

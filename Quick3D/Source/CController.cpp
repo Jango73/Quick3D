@@ -237,73 +237,43 @@ void CController::keyReleaseEvent(QKeyEvent *event)
 
 void CController::mousePressEvent(QMouseEvent* event)
 {
-    m_bUseMouse = true;
-    m_pPreviousMousePos = event->globalPos();
-
-    if (m_pParent != nullptr) // && event->button() == Qt::RightButton)
+    if (event->button() == Qt::LeftButton)
     {
-        C3DScene* pScene = m_pParent->scene();
-
-        if (pScene != nullptr)
+        if (m_pParent != nullptr) // && event->button() == Qt::RightButton)
         {
-            QPointF point = event->localPos();
+            C3DScene* pScene = m_pParent->scene();
 
-            foreach (CViewport* pViewport, pScene->viewports().values())
+            if (pScene != nullptr)
             {
-                if (pViewport != nullptr)
+                QPointF point = event->localPos();
+
+                foreach (CViewport* pViewport, pScene->viewports().values())
                 {
-                    if (
-                            point.x() >= pViewport->position().X &&
-                            point.y() >= pViewport->position().Y &&
-                            point.x() < pViewport->position().X + pViewport->size().X &&
-                            point.y() < pViewport->position().Y + pViewport->size().Y
-                            )
+                    if (pViewport != nullptr)
                     {
-                        QSP<CCamera> pCamera = pViewport->camera();
-
-                        if (pCamera != nullptr)
+                        if (
+                                point.x() >= pViewport->position().X &&
+                                point.y() >= pViewport->position().Y &&
+                                point.x() < pViewport->position().X + pViewport->size().X &&
+                                point.y() < pViewport->position().Y + pViewport->size().Y
+                                )
                         {
-                            CVector2 normalizedPoint(
-                                        (point.x() - pViewport->position().X) / pViewport->size().X,
-                                        (point.y() - pViewport->position().Y) / pViewport->size().Y
-                                        );
+                            QSP<CCamera> pCamera = pViewport->camera();
 
-                            CVector2 vAngles2 = CVector2::pointToAngles(pViewport->size(), pCamera->FOV(), normalizedPoint);
-                            CVector3 vAngles3(vAngles2.Y, vAngles2.X, 0.0);
-
-                            m_rLastRay.vOrigin = pCamera->worldTransform() * CVector3();
-                            m_rLastRay.vNormal = CMatrix4::makeRotation(vAngles3) * CVector3(0.0, 0.0, 1.0);
-                            m_rLastRay.vNormal = (pCamera->worldTransform() * m_rLastRay.vNormal) - m_rLastRay.vOrigin;
-
-
-
-//                            m_rLastRay = pCamera->screenPointToWorldRay(pViewport, CVector2(point.x(), point.y()));
-
-
-
-//                            CVector2 normalizedPoint(
-//                                        (point.x() - pViewport->position().X) / pViewport->size().X,
-//                                        (point.y() - pViewport->position().Y) / pViewport->size().Y
-//                                        );
-
-//                            CVector2 vNormal = CVector2::pointToVector(pViewport->size(), pCamera->FOV(), normalizedPoint);
-
-//                            m_rLastRay.vOrigin = pCamera->worldTransform() * CVector3();
-//                            m_rLastRay.vNormal = CVector3(vNormal.X, vNormal.Y, 0.7);
-//                            m_rLastRay.vNormal = (pCamera->worldTransform() * m_rLastRay.vNormal) - m_rLastRay.vOrigin;
-//                            m_rLastRay.vNormal = m_rLastRay.vNormal.normalized();
-
-
-
-                            RayTracingResult aResult = pScene->intersectComponentHierarchy(m_pParent, m_rLastRay);
-
-                            if (aResult.m_dDistance < Q3D_INFINITY)
+                            if (pCamera != nullptr)
                             {
-                                if (aResult.m_pObject != nullptr)
-                                {
-                                    CComponent* pComponent = (CComponent*)aResult.m_pObject;
+                                m_rLastRay = pCamera->screenPointToWorldRay(pViewport, CVector2(point.x(), point.y()));
 
-                                    generateQ3DMouseEvent(CQ3DEvent::Press, event, pComponent);
+                                RayTracingResult aResult = pScene->intersectComponentHierarchy(m_pParent, m_rLastRay);
+
+                                if (aResult.m_dDistance < Q3D_INFINITY)
+                                {
+                                    if (aResult.m_pObject != nullptr)
+                                    {
+                                        CComponent* pComponent = (CComponent*)aResult.m_pObject;
+
+                                        generateQ3DMouseEvent(CQ3DEvent::Press, event, pComponent);
+                                    }
                                 }
                             }
                         }
@@ -311,6 +281,11 @@ void CController::mousePressEvent(QMouseEvent* event)
                 }
             }
         }
+    }
+    else
+    {
+        m_bUseMouse = true;
+        m_pPreviousMousePos = event->globalPos();
     }
 }
 

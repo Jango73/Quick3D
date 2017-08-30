@@ -892,14 +892,15 @@ CGeoZone::EGeoZoneFlag CCamera::categorizePointFromZones(const QVector<CGeoZone>
 CRay3 CCamera::screenPointToWorldRay(CViewport* pViewport, CVector2 vPoint)
 {
     CRay3 rResult;
-    CAxis axis = geoloc().getNOLLAxis();
+    CAxis axis(worldRotation());
     double dAspectRatio = pViewport->size().Y / pViewport->size().X;
+    double dFOV = (m_dFOV / 90.0) * 1.62;
 
     // Convert the x coordinate -0.5 to 0.5.
-    double x0 = (vPoint.X - pViewport->position().X) / pViewport->size().X - 0.5;
+    double x0 = ((vPoint.X - pViewport->position().X) / pViewport->size().X - 0.5) * dFOV;
 
     // Convert the y coordinate from -0.5 to 0.5.
-    double y0 = 0.5 - ((vPoint.Y - pViewport->position().Y) / pViewport->size().Y) * dAspectRatio;
+    double y0 = (0.5 - (vPoint.Y - pViewport->position().Y) / pViewport->size().Y) * dAspectRatio * dFOV;
 
     rResult.vNormal = axis.Front + (axis.Right * x0) + (axis.Up * y0);
     rResult.vNormal = rResult.vNormal.normalized();

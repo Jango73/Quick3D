@@ -53,6 +53,7 @@ public:
     //! Default constructor
     inline CRay3 ()
     {
+        vNormal = CVector3(0.0, 0.0, 1.0);
     }
 
     //! Constructor with components

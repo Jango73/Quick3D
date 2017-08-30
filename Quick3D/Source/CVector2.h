@@ -236,13 +236,13 @@ namespace Math
 		//! Convertit un point en angles
 		static CVector2 pointToAngles(const CVector2& imageSize, double dCameraHorizontalFOVDegrees, const CVector2& normalized2DPoint)
 		{
-			double dCameraFOVW = dCameraHorizontalFOVDegrees;
+            double dCameraFOVW = dCameraHorizontalFOVDegrees * 1.1;
 			double dCameraFOVH = computeVerticalFOV(imageSize, dCameraHorizontalFOVDegrees);
 
 			double dPixX = normalized2DPoint.X - 0.5;
 			double dPixY = normalized2DPoint.Y - 0.5;
 
-			double dLW = 0.5 / tan(Angles::toRad(dCameraFOVW / 2.0));
+            double dLW = 0.5 / tan(Angles::toRad(dCameraFOVW / 2.0));
 			double dLH = 0.5 / tan(Angles::toRad(dCameraFOVH / 2.0));
 
 			double dRadX = atan(dPixX / dLW);
@@ -250,5 +250,16 @@ namespace Math
 
 			return CVector2(dRadX, dRadY);
 		}
-	};
+
+        //! Convertit un point en angles
+        static CVector2 pointToVector(const CVector2& imageSize, double dCameraHorizontalFOVDegrees, const CVector2& normalized2DPoint)
+        {
+            double dRatio = imageSize.Y / imageSize.X;
+
+            double dPixX = (normalized2DPoint.X - 0.5) * 1.0;
+            double dPixY = (normalized2DPoint.Y - 0.5) * -dRatio;
+
+            return CVector2(dPixX, dPixY);
+        }
+    };
 }

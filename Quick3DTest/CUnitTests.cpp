@@ -70,9 +70,21 @@ void CUnitTests::run()
     qDebug() << "--------------------------------------------------";
     qDebug() << "Testing CCamera::screenPointToWorldRay()";
 
+    vPoints << CVector2(0, 0);
+    vPoints << CVector2(256, 0);
+    vPoints << CVector2(512, 0);
+    vPoints << CVector2(768, 0);
+    vPoints << CVector2(1024, 0);
+
     vPoints << CVector2(0, 384);
+    vPoints << CVector2(256, 384);
     vPoints << CVector2(512, 384);
+    vPoints << CVector2(768, 384);
     vPoints << CVector2(1024, 384);
+
+    vPoints << CVector2(0, 768);
+    vPoints << CVector2(512, 768);
+    vPoints << CVector2(1024, 768);
 
     C3DScene* pScene = new C3DScene();
     QSP<CCamera> pCamera = QSP<CCamera>(new CCamera(pScene));
@@ -81,13 +93,17 @@ void CUnitTests::run()
     pScene->viewports()[0]->setSize(Math::CVector2(1024, 768));
     pScene->viewports()[0]->setCamera(pCamera);
 
+    // pCamera->setGeoloc(CGeoloc(0.0, 0.0, 0.0));
+    // pCamera->computeWorldTransform();
+
     foreach (CVector2 vPoint, vPoints)
     {
         CRay3 ray = pCamera->screenPointToWorldRay(pScene->viewports()[0], vPoint);
 
         qDebug() << "--------------------";
         qDebug() << "Point =" << vPoint.X << "," << vPoint.Y;
-        qDebug() << "Ray =" << ray.vNormal.X << "," << ray.vNormal.Y << "," << ray.vNormal.Z;
+        qDebug() << "Ray pos =" << ray.vOrigin.X << "," << ray.vOrigin.Y << "," << ray.vOrigin.Z;
+        qDebug() << "Ray norm =" << ray.vNormal.X << "," << ray.vNormal.Y << "," << ray.vNormal.Z;
         qDebug() << "Ray length =" << ray.vNormal.magnitude();
     }
 

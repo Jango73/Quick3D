@@ -19,7 +19,7 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-#define DEFAULT_FOV	60.0
+#define DEFAULT_FOV	90.0
 #define SMALL_FOV	10.0
 
 //-------------------------------------------------------------------------------------------------
@@ -254,7 +254,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     CVector3 vCamPos = worldPosition();
     CVector3 vCamRot = worldRotation();
 
-    double dVerticalFOV = dFOV * ((double) iHeight / (double) iWidth);
+    double dVerticalFOV = CVector2::computeVerticalFOV(pViewport->size(), dFOV);
 
     QMatrix4x4 mCameraMatrix = CCamera::getQtCameraMatrix(vCamPos - pScene->worldOrigin(), vCamRot);
     QMatrix4x4 mCameraProjection = CCamera::getQtProjectionMatrix(
@@ -895,16 +895,13 @@ CRay3 CCamera::screenPointToWorldRay(CViewport* pViewport, CVector2 vPoint)
 
     CRay3 rResult;
     CAxis axis(worldRotation());
-    double dAspectRatio = pViewport->size().Y / pViewport->size().X;
-    double z0 = (pViewport->size().X * 0.5) * (1.0 + (1.0 / tan(Angles::toRad(m_dFOV * 0.5))));
 
-    // Convert the x coordinate -0.5 to 0.5.
-    // double x0 = ((vPoint.X - pViewport->position().X) / pViewport->size().X - 0.5);
-    double x0 = (vPoint.X - pViewport->position().X) - (pViewport->size().X * 0.5);
+    double halfW = pViewport->size().X * 0.5;
+    double halfH = pViewport->size().Y * 0.5;
 
-    // Convert the y coordinate from -0.5 to 0.5.
-    // double y0 = (0.5 - (vPoint.Y - pViewport->position().Y) / pViewport->size().Y) * dAspectRatio;
-    double y0 = (pViewport->size().Y * 0.5) - (vPoint.Y - pViewport->position().Y);
+    double z0 = halfW * (1.0 + (1.0 / tan(Angles::toRad(m_dFOV * 0.5))));
+    double x0 = (vPoint.X - pViewport->position().X) - halfW;
+    double y0 = halfH - (vPoint.Y - pViewport->position().Y);
 
     rResult.vNormal = (axis.Front * z0) + (axis.Right * x0) + (axis.Up * y0);
     rResult.vNormal = rResult.vNormal.normalized();

@@ -54,6 +54,10 @@ public:
         Front = mRotationY * ((mRotationX * (mRotationZ * Front)));
         Up = mRotationY * ((mRotationX * (mRotationZ * Up)));
         Right = mRotationY * ((mRotationX * (mRotationZ * Right)));
+
+        Front = Front.normalized();
+        Up = Up.normalized();
+        Right = Right.normalized();
     }
 
     //! Copy constructor

@@ -35,7 +35,7 @@ void CUnitTests::run()
 
     QVector<CVector2> vNormalizedPoints;
     QVector<CVector2> vPoints;
-    CVector2 viewportSize(1024, 768);
+    CVector2 viewportSize(1000, 1000);
     CMatrix4 transform;
     double dFOV = 90.0;
 
@@ -71,22 +71,28 @@ void CUnitTests::run()
     qDebug() << "Testing CCamera::screenPointToWorldRay()";
 
     vPoints << CVector2(0, 0);
-    vPoints << CVector2(256, 0);
-    vPoints << CVector2(512, 0);
-    vPoints << CVector2(768, 0);
-    vPoints << CVector2(1024, 0);
+    vPoints << CVector2(250, 0);
+    vPoints << CVector2(500, 0);
+    vPoints << CVector2(750, 0);
+    vPoints << CVector2(1000, 0);
 
-    vPoints << CVector2(0, 384);
-    vPoints << CVector2(256, 384);
-    vPoints << CVector2(512, 384);
-    vPoints << CVector2(768, 384);
-    vPoints << CVector2(1024, 384);
+    vPoints << CVector2(0, 500);
+    vPoints << CVector2(250, 500);
+    vPoints << CVector2(500, 500);
+    vPoints << CVector2(750, 500);
+    vPoints << CVector2(1000, 500);
 
-    vPoints << CVector2(0, 768);
-    vPoints << CVector2(256, 768);
-    vPoints << CVector2(512, 768);
-    vPoints << CVector2(768, 768);
-    vPoints << CVector2(1024, 768);
+    vPoints << CVector2(0, 750);
+    vPoints << CVector2(250, 750);
+    vPoints << CVector2(500, 750);
+    vPoints << CVector2(750, 750);
+    vPoints << CVector2(1000, 750);
+
+    vPoints << CVector2(0, 1000);
+    vPoints << CVector2(250, 1000);
+    vPoints << CVector2(500, 1000);
+    vPoints << CVector2(750, 1000);
+    vPoints << CVector2(1000, 1000);
 
     C3DScene* pScene = new C3DScene();
     QSP<CCamera> pCamera = QSP<CCamera>(new CCamera(pScene));
@@ -101,8 +107,8 @@ void CUnitTests::run()
     double dVerticalFOV = CVector2::computeVerticalFOV(pScene->viewports()[0]->size(), pCamera->FOV());
     double dAspectRatio = pScene->viewports()[0]->size().X / pScene->viewports()[0]->size().Y;
 
-    CMatrix4 mTransform = CCamera::getInternalCameraMatrix(pCamera->worldPosition(), pCamera->worldRotation());
-    CMatrix4 mProject = CCamera::getInternalProjectionMatrix(dVerticalFOV, dAspectRatio, 1.0, 1000.0);
+//    CMatrix4 mTransform = CCamera::getInternalCameraMatrix(pCamera->worldPosition(), pCamera->worldRotation());
+//    CMatrix4 mProject = CCamera::getInternalProjectionMatrix(dVerticalFOV, dAspectRatio, 1.0, 1000.0);
 
     foreach (CVector2 vPoint, vPoints)
     {
@@ -114,13 +120,28 @@ void CUnitTests::run()
         qDebug() << "Ray norm =" << ray.vNormal.X << "," << ray.vNormal.Y << "," << ray.vNormal.Z;
         qDebug() << "Ray length =" << ray.vNormal.magnitude();
 
-        CVector3 vPoint3D = ray.vOrigin + (ray.vNormal * 10.0);
-        vPoint3D = mTransform * vPoint3D;
-        vPoint3D = mProject.project(vPoint3D);
-        vPoint3D.X = (vPoint3D.X + 0.5) * pScene->viewports()[0]->size().X;
-        vPoint3D.Y = (vPoint3D.Y + 0.5) * pScene->viewports()[0]->size().Y;
+//        CVector3 vPoint3D = ray.vOrigin + (ray.vNormal * 10.0);
+//        vPoint3D = mTransform * vPoint3D;
+//        vPoint3D = mProject.project(vPoint3D);
+//        vPoint3D.X = (vPoint3D.X + 0.5) * pScene->viewports()[0]->size().X;
+//        vPoint3D.Y = (vPoint3D.Y + 0.5) * pScene->viewports()[0]->size().Y;
 
-        qDebug() << "Projected point =" << vPoint3D.X << "," << vPoint3D.Y << "," << vPoint3D.Z;
+//        qDebug() << "Projected point =" << vPoint3D.X << "," << vPoint3D.Y << "," << vPoint3D.Z;
+
+//        CAxis cameraAxis(ray.vNormal, CAxis(pCamera->worldRotation()).Up);
+//        CAxis nollAxis(pCamera->geoloc().getNOLLAxis());
+//        CAxis axis = cameraAxis.transferTo(nollAxis);
+//        CVector3 angles = axis.eulerAngles();
+
+        // ray.vNormal = (pCamera->worldTransformInverse() * (ray.vNormal - ray.vOrigin)).normalized();
+        ray = pCamera->worldTransformInverse() * ray;
+//        CVector3 angles;
+//        angles.Y = ray.vNormal.eulerYAngle();
+//        ray.vNormal = CMatrix4::makeRotation(CVector3(0.0, -angles.Y, 0.0)) * ray.vNormal;
+//        angles.X = ray.vNormal.eulerXAngle();
+        CVector3 angles = eulerAngles(ray.vNormal);
+
+        qDebug() << "Angles =" << Angles::toDeg(angles.X) << "," << Angles::toDeg(angles.Y) << "," << Angles::toDeg(angles.Z);
     }
 
     delete pScene;

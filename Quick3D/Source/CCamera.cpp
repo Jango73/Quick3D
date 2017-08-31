@@ -19,7 +19,7 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-#define DEFAULT_FOV	80.0
+#define DEFAULT_FOV	90.0
 #define SMALL_FOV	10.0
 
 //-------------------------------------------------------------------------------------------------
@@ -891,10 +891,13 @@ CGeoZone::EGeoZoneFlag CCamera::categorizePointFromZones(const QVector<CGeoZone>
 
 CRay3 CCamera::screenPointToWorldRay(CViewport* pViewport, CVector2 vPoint)
 {
+    // https://math.stackexchange.com/questions/985669/calculating-distance-of-camera-in-3d-environment
+
     CRay3 rResult;
     CAxis axis(worldRotation());
     double dAspectRatio = pViewport->size().Y / pViewport->size().X;
-    double dFOV = (m_dFOV / 90.0) * 1.62;
+    // double dFOV = (m_dFOV / 90.0) * 1.62;
+    double dFOV = (pViewport->size().X * 0.5) * (1.0 + (1.0 / tan(Angles::toRad(m_dFOV * 0.5))));
 
     // Convert the x coordinate -0.5 to 0.5.
     double x0 = ((vPoint.X - pViewport->position().X) / pViewport->size().X - 0.5) * dFOV;

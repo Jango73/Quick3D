@@ -318,7 +318,7 @@ public:
         return c;
     }
 
-    //! Multiplies a ray and a projection matrix
+    //! Multiplies a ray and an affine matrix
     inline CRay3 operator * (const CRay3& a) const
     {
         CRay3 aRay;

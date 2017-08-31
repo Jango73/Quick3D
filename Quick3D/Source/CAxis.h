@@ -27,17 +27,17 @@ public:
 
     //! Constructor with front and up vectors
     CAxis (CVector3 NewFront, CVector3 NewUp)
-        : Front(NewFront)
-        , Up(NewUp)
+        : Front(NewFront.normalized())
+        , Up(NewUp.normalized())
     {
         Right = Up.cross(Front);
     }
 
     //! Constructor with front, up and right vectors
     CAxis (CVector3 NewFront, CVector3 NewUp, CVector3 NewRight)
-        : Front(NewFront)
-        , Up(NewUp)
-        , Right(NewRight)
+        : Front(NewFront.normalized())
+        , Up(NewUp.normalized())
+        , Right(NewRight.normalized())
     {
     }
 

@@ -631,7 +631,7 @@ vec3 lightRays(vec3 origin, vec3 direction, vec2 xy)
             float distanceFactor = clamp((u_light_distance[index] * 2.0) / u_light_distance_to_camera[index], 0.0, 1.0);
 
             // Large glow
-            if (u_light_is_sun[index] > 0)
+            if (u_light_screen_position[index].z > 0.0 && u_light_is_sun[index] > 0)
             {
                 vec3 lightDirection = normalize(u_light_position[index] - origin);
                 float amount = max(dot(direction, lightDirection), 0.0);
@@ -641,17 +641,17 @@ vec3 lightRays(vec3 origin, vec3 direction, vec2 xy)
             }
 
             // Ray
-            if (u_light_screen_position[index].z > 0.0)
-            {
-                float diffX = abs(xy.x - u_light_screen_position[index].x);
-                float mixX = mix(1.0, 0.90, diffX);
-                float rayAmountX = clamp(mixX, 0.0, 1.0) * distanceFactor;
-                float diffY = abs(xy.y - u_light_screen_position[index].y);
-                float mixY = mix(0.9, 0.00, diffY);
-                float rayAmountY = clamp(mixY, 0.0, 1.0) * distanceFactor;
-                float final = pow(rayAmountX * rayAmountY, 20.0);
-                color += u_light_color[index] * final;
-            }
+//            if (u_light_screen_position[index].z > 0.0)
+//            {
+//                float diffX = abs(xy.x - u_light_screen_position[index].x);
+//                float mixX = mix(1.0, 0.90, diffX);
+//                float rayAmountX = clamp(mixX, 0.0, 1.0) * distanceFactor;
+//                float diffY = abs(xy.y - u_light_screen_position[index].y);
+//                float mixY = mix(0.9, 0.00, diffY);
+//                float rayAmountY = clamp(mixY, 0.0, 1.0) * distanceFactor;
+//                float final = pow(rayAmountX * rayAmountY, 20.0);
+//                color += u_light_color[index] * final;
+//            }
         }
     }
 
@@ -856,114 +856,6 @@ vec4 volumetricLights(vec3 pos)
 
 //-------------------------------------------------------------------------------------------------
 // Lights
-
-vec3 doLighting_Old(vec3 worldPosition, vec3 surfaceNormal, vec3 viewDirection, vec2 normScreenCoords)
-{
-    vec3 color = vec3(0.0, 0.0, 0.0);
-
-    float selfIllumination = u_material_self_illum;
-
-    if (bool(u_IR_enable))
-    {
-        if (selfIllumination < u_IR_factor) selfIllumination = u_IR_factor;
-    }
-
-    for (int index = 0; index < u_num_lights; index++)
-    {
-        vec3 rawLightRay = u_light_position[index] - worldPosition;
-        float lightRayLength = distance(rawLightRay);
-
-        if (u_light_distance[index] == 0.0 || lightRayLength < u_light_distance[index])
-        {
-            // Light ray
-            vec3 lightRay = normalize(rawLightRay);
-
-            // Compute distance attenuation
-            float attenuation = 1.0;
-
-            if (u_light_distance[index] > 0.0)
-            {
-                attenuation = clamp(1.0 - (lightRayLength / u_light_distance[index]), 0.0, 1.0);
-            }
-
-            // Compute spot attenuation
-            if (u_light_direction[index] != vec3(0.0, 0.0, 0.0) && u_light_spot_angle[index] != 0.0)
-            {
-                float spotCutoff = cos(u_light_spot_angle[index]);
-                float dotDirectionRay = dot(-u_light_direction[index], lightRay);
-
-                if (dotDirectionRay < spotCutoff)
-                {
-                    attenuation = 0.0;
-                }
-            }
-
-            // Continue if attenuation is not 0
-            if (attenuation > 0.0)
-            {
-                // Light angle
-                float dotNormalLightRay = max(dot(surfaceNormal, lightRay), 0.0);
-
-                // Reflected ray
-                vec3 reflected = normalize(reflect(lightRay, surfaceNormal));
-
-                float dot_reflected_eye = dot(reflected, viewDirection);
-
-                // Diffuse light
-                vec3 diffuse = u_material_diffuse.xyz * (u_light_color[index] * dotNormalLightRay);
-
-                // Specular light
-                vec3 specular;
-                vec3 subdermal;
-
-                if (u_material_shininess > 0.0)
-                {
-                    specular = u_material_specular.xyz * pow(max(dot_reflected_eye, 0.0), u_material_shininess * 0.2);
-                }
-                else
-                {
-                    specular = vec3(0.0, 0.0, 0.0);
-                }
-
-                // Reflected light
-                vec3 reflection;
-
-                if (u_shaderQuality >= 0.75 && u_material_reflection > 0.0)
-                {
-                    reflection = getSkyAt(worldPosition, reflect(viewDirection, surfaceNormal), normScreenCoords) * u_material_reflection;
-
-                    if (u_material_reflection_steepness > 0.0)
-                    {
-                        float dot_normal_eye = dot(surfaceNormal, viewDirection);
-                        float one_minus_dot_normal_eye = 1.0 - abs(dot_normal_eye);
-
-                        reflection = reflection * clamp(pow(one_minus_dot_normal_eye, u_material_reflection_steepness), 0.0, 1.0);
-                    }
-                }
-                else
-                {
-                    reflection = vec3(0.0, 0.0, 0.0);
-                }
-
-                // Subsurface scattering
-                if (u_material_sss_factor > 0.0)
-                {
-                    subdermal = (u_material_subdermal.xyz * (u_light_color[index] * dotNormalLightRay)) * u_material_sss_factor;
-                }
-                else
-                {
-                    subdermal = vec3(0.0, 0.0, 0.0);
-                }
-
-                // Add color components
-                color = color + ((diffuse + subdermal + specular) * attenuation) + reflection;
-            }
-        }
-    }
-
-    // Return material ambient plus light color
-    return u_global_ambient + u_material_ambient.xyz + u_material_diffuse.xyz * selfIllumination + color;
-}
 
 vec4 uberShader(
         vec3 lightDirection,

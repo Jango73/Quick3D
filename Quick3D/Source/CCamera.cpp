@@ -19,7 +19,7 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-#define DEFAULT_FOV	90.0
+#define DEFAULT_FOV	60.0
 #define SMALL_FOV	10.0
 
 //-------------------------------------------------------------------------------------------------
@@ -896,16 +896,15 @@ CRay3 CCamera::screenPointToWorldRay(CViewport* pViewport, CVector2 vPoint)
     CRay3 rResult;
     CAxis axis(worldRotation());
     double dAspectRatio = pViewport->size().Y / pViewport->size().X;
-    // double dFOV = (m_dFOV / 90.0) * 1.62;
-    double dFOV = (pViewport->size().X * 0.5) * (1.0 + (1.0 / tan(Angles::toRad(m_dFOV * 0.5))));
+    double z0 = (pViewport->size().X * 0.5) * (1.0 + (1.0 / tan(Angles::toRad(m_dFOV * 0.5))));
 
     // Convert the x coordinate -0.5 to 0.5.
-    double x0 = ((vPoint.X - pViewport->position().X) / pViewport->size().X - 0.5) * dFOV;
+    double x0 = ((vPoint.X - pViewport->position().X) / pViewport->size().X - 0.5);
 
     // Convert the y coordinate from -0.5 to 0.5.
-    double y0 = (0.5 - (vPoint.Y - pViewport->position().Y) / pViewport->size().Y) * dAspectRatio * dFOV;
+    double y0 = (0.5 - (vPoint.Y - pViewport->position().Y) / pViewport->size().Y) * dAspectRatio;
 
-    rResult.vNormal = axis.Front + (axis.Right * x0) + (axis.Up * y0);
+    rResult.vNormal = (axis.Front * z0) + (axis.Right * x0) + (axis.Up * y0);
     rResult.vNormal = rResult.vNormal.normalized();
     rResult.vOrigin = worldPosition();
 

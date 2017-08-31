@@ -704,5 +704,5 @@ void Quick3DTest::onDepthClicked()
 
 void Quick3DTest::onOverlookClicked()
 {
-    m_pScene->setOverlookScene(ui.m_chkDepth->checkState() == Qt::Checked);
+    m_pScene->setOverlookScene(ui.m_chkOverlook->checkState() == Qt::Checked);
 }

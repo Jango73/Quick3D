@@ -248,13 +248,12 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     // For tests
     if (bOverlook)
     {
-        dMaxDistance = (geoloc().getPlanetRadius() * 0.5) * 10.0;
+        dMaxDistance = (geoloc().getPlanetRadius() * 0.5) * 2.0;
+        dMinDistance = dMaxDistance / 100.0;
     }
 
     CVector3 vCamPos = worldPosition();
     CVector3 vCamRot = worldRotation();
-
-    double dHorizontalFOV = CVector2::computeHorizontalFOV(pViewport->size(), dFOV);
 
     QMatrix4x4 mCameraMatrix = CCamera::getQtCameraMatrix(vCamPos - pScene->worldOrigin(), vCamRot);
     QMatrix4x4 mCameraProjection = CCamera::getQtProjectionMatrix(
@@ -272,8 +271,8 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
                         geoloc().Latitude,
                         geoloc().Longitude,
                         geoloc().getPlanetRadius() * 0.5
-                        ).toVector3() - vCamPos,
-                    CVector3(Math::Pi * 0.5, 0.0, 0.0)
+                        ).toVector3() - pScene->worldOrigin(),
+                    CAxis(CVector3(Math::Pi * 0.5, 0.0, 0.0)).transferTo(geoloc().getNOLLAxis()).eulerAngles()
                     );
     }
 

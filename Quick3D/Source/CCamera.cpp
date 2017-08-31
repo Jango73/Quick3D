@@ -19,7 +19,7 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-#define DEFAULT_FOV	90.0
+#define DEFAULT_FOV	40.0
 #define SMALL_FOV	10.0
 
 //-------------------------------------------------------------------------------------------------
@@ -142,10 +142,10 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
             CVector3 vCamRot = pLight->worldRotation();
 
             mShadowMatrix = CCamera::getQtCameraMatrix(vCamPos - pScene->worldOrigin(), vCamRot);
-            mShadowProjectionMatrix = CCamera::getQtProjectionMatrix(pLight->FOV(), 1.0, pLight->minDistance(), pLight->maxDistance());
+            mShadowProjectionMatrix = CCamera::getQtProjectionMatrix(pLight->verticalFOV(), 1.0, pLight->minDistance(), pLight->maxDistance());
 
             CMatrix4 mInternalCameraMatrix = CCamera::getInternalCameraMatrix(vCamPos, vCamRot);
-            CMatrix4 mInternalProjectionMatrix = CCamera::getInternalProjectionMatrix(pLight->FOV(), 1.0, pLight->minDistance(), pLight->maxDistance());
+            CMatrix4 mInternalProjectionMatrix = CCamera::getInternalProjectionMatrix(pLight->verticalFOV(), 1.0, pLight->minDistance(), pLight->maxDistance());
 
             CRenderContext Context(
                         mShadowProjectionMatrix, mShadowMatrix,
@@ -156,7 +156,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
                         pLight.data()
                         );
 
-            pLight->computeFrustum(Math::Angles::toRad(pLight->FOV()), 1.0, pLight->minDistance(), pLight->maxDistance());
+            pLight->computeFrustum(Math::Angles::toRad(pLight->verticalFOV()), 1.0, pLight->minDistance(), pLight->maxDistance());
 
             //-------------------------------------------------------------------------------------------------
             // Render objects
@@ -225,7 +225,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
             double dMaxDistance = 2000.0;
 
             mShadowMatrix = CCamera::getQtCameraMatrix(vLitePos - pScene->worldOrigin(), vLiteRot);
-            mShadowProjectionMatrix = CCamera::getQtProjectionMatrix(pLight->FOV(), 1.0, dMinDistance, dMaxDistance);
+            mShadowProjectionMatrix = CCamera::getQtProjectionMatrix(pLight->verticalFOV(), 1.0, dMinDistance, dMaxDistance);
 
             pLight->loadTransform();
         }
@@ -254,11 +254,11 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     CVector3 vCamPos = worldPosition();
     CVector3 vCamRot = worldRotation();
 
-    double dVerticalFOV = CVector2::computeVerticalFOV(pViewport->size(), dFOV);
+    double dHorizontalFOV = CVector2::computeHorizontalFOV(pViewport->size(), dFOV);
 
     QMatrix4x4 mCameraMatrix = CCamera::getQtCameraMatrix(vCamPos - pScene->worldOrigin(), vCamRot);
     QMatrix4x4 mCameraProjection = CCamera::getQtProjectionMatrix(
-                dVerticalFOV,
+                dFOV,
                 (double) iWidth / (double) iHeight,
                 m_dMinDistance,
                 m_dMaxDistance
@@ -289,7 +289,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
                 this
                 );
 
-    computeFrustum(Math::Angles::toRad(dFOV), (double) iHeight / (double) iWidth, m_dMinDistance, m_dMaxDistance);
+    computeFrustum(Math::Angles::toRad(dFOV), (double) iWidth / (double) iHeight, m_dMinDistance, m_dMaxDistance);
 
     //-------------------------------------------------------------------------------------------------
     // Update objects
@@ -562,7 +562,7 @@ void CCamera::renderDepth_CubeMapped
         START_SAMPLE("CCamera::renderDepth_CubeMapped:render");
 
         // Réglage du FOV caméra horizontal (le FOV vertical est fonction de la taille du viewport)
-        m_dFOV = dFOV_Pan;
+        m_dFOV = dFOV_Tilt;
 
         double dHalfFOV_Pan = dFOV_Pan * 0.5;
         double dHalfFOV_Tilt = dFOV_Tilt * 0.5;
@@ -730,13 +730,13 @@ void CCamera::renderDepth_CubeMapped
 
 //-------------------------------------------------------------------------------------------------
 
-void CCamera::computeFrustum(double dHorizontalFOV, double dAspectRatio, double dMinDistance, double dMaxDistance)
+void CCamera::computeFrustum(double dVerticalFOV, double dAspectRatio, double dMinDistance, double dMaxDistance)
 {
     // Remise à zéro des plans du frustum (pyramide de visualisation)
     m_pFrustumPlanes.clear();
 
     // double dVerticalFOV = dHorizontalFOV * dAspectRatio;
-    double dVerticalFOV = dHorizontalFOV;
+    double dHorizontalFOV = dVerticalFOV;
 
     // Création des matrices de rotation des plans
     CMatrix4 mRotateY1 = CMatrix4().makeRotation(CVector3(0.0, dHorizontalFOV *  1.0, 0.0));
@@ -899,7 +899,7 @@ CRay3 CCamera::screenPointToWorldRay(CViewport* pViewport, CVector2 vPoint)
     double halfW = pViewport->size().X * 0.5;
     double halfH = pViewport->size().Y * 0.5;
 
-    double z0 = halfW * (1.0 + (1.0 / tan(Angles::toRad(m_dFOV * 0.5))));
+    double z0 = halfH * (1.0 + (1.0 / tan(Angles::toRad(m_dFOV * 0.5))));
     double x0 = (vPoint.X - pViewport->position().X) - halfW;
     double y0 = halfH - (vPoint.Y - pViewport->position().Y);
 

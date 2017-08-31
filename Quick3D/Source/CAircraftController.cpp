@@ -388,7 +388,7 @@ void CAircraftController::q3dEvent(CQ3DEvent* event)
         {
             if (pRotationTarget != nullptr)
             {
-                pRotationTarget->setRotation(CVector3((Math::Pi / 20.0) * 1.0, (Math::Pi / 4.0) * 0.0, 0.0));
+                pRotationTarget->setRotation(CVector3(0.0, 0.0, 0.0));
             }
         }
     }

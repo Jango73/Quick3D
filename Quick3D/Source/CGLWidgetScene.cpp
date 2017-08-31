@@ -389,7 +389,7 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
                     u_light_color[iOpenGLLightIndex]                = QVector3D(vColor.X, vColor.Y, vColor.Z);
                     u_light_distance_to_camera[iOpenGLLightIndex]   = (GLfloat) vRelativePosition.length();
                     u_light_distance[iOpenGLLightIndex]             = (GLfloat) vLights[iLightIndex]->lightingDistance();
-                    u_light_spot_angle[iOpenGLLightIndex]           = (GLfloat) Math::Angles::toRad(vLights[iLightIndex]->FOV());
+                    u_light_spot_angle[iOpenGLLightIndex]           = (GLfloat) Math::Angles::toRad(vLights[iLightIndex]->verticalFOV());
                     u_light_occlusion[iOpenGLLightIndex]            = (GLfloat) vLights[iLightIndex]->occlusion();
 
                     iOpenGLLightIndex++;

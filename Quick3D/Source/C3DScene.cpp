@@ -198,7 +198,7 @@ void C3DScene::init(QVector<QSP<CComponent> > vComponents)
         pLight->setName("SUN");
         pLight->setTag("SUN");
         pLight->setCastShadows(true);
-        pLight->setFOV(10.0);
+        pLight->setVerticalFOV(10.0);
 
         m_vComponents.append(pLight);
     }

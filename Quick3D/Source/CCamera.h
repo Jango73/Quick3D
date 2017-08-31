@@ -97,7 +97,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Sets the field of view in degrees
-    virtual void setFOV(double dValue) { m_dFOV = dValue; }
+    virtual void setVerticalFOV(double dValue) { m_dFOV = dValue; }
 
     //! Sets the normalized focus (0.0 -> 1.0)
     virtual void setFocus(double dValue) { m_dFocus = dValue; }
@@ -116,7 +116,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Returns the field of view in degrees
-    virtual double FOV() const { return m_dFOV; }
+    virtual double verticalFOV() const { return m_dFOV; }
 
     //! Returns the normalized focus (0.0 -> 1.0)
     virtual double focus() const { return m_dFocus; }
@@ -171,7 +171,7 @@ public:
             );
 
     //! Computes the frustum (visualization pyramid) of the camera
-    void computeFrustum(double dHorizontalFOV, double dAspectRatio, double dMinDistance, double dMaxDistance);
+    void computeFrustum(double dVerticalFOV, double dAspectRatio, double dMinDistance, double dMaxDistance);
 
     //! Returns \c true if the frustum partially contains the sphere defined by \a vPosition and \a dRadius
     bool contains(const Math::CVector3& vPosition, double dRadius) const;

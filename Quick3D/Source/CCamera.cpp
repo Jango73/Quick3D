@@ -248,8 +248,8 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     // For tests
     if (bOverlook)
     {
-        dMaxDistance = (geoloc().getPlanetRadius() * 0.5) * 2.0;
-        dMinDistance = dMaxDistance / 100.0;
+        m_dMaxDistance = (geoloc().getPlanetRadius() * 0.5) * 2.0;
+        m_dMinDistance = dMaxDistance / 100.0;
     }
 
     CVector3 vCamPos = worldPosition();

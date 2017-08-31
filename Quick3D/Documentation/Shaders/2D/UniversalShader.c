@@ -1,3 +1,7 @@
+#version 120
+#extension GL_ARB_arrays_of_arrays : require
+#extension GL_EXT_gpu_shader4 : require
+
 varying highp vec2 qt_TexCoord0;
 uniform lowp float qt_Opacity;
 
@@ -32,6 +36,8 @@ uniform lowp float bumpFloorHeight;
 uniform lowp float bumpCeilingHeight;
 uniform lowp float fogAmount;
 uniform lowp float fogSize;
+
+uniform lowp int useDithering;
 
 uniform lowp float pixelDistanceX;
 uniform lowp float pixelDistanceY;
@@ -165,7 +171,7 @@ vec2 mapDirectionVectorToEqui(vec3 position)
 {
     vec2 result;
 
-    result.x = (atan2(position.z, position.x) / _2PI) + 0.25;
+    result.x = (atan(position.z, position.x) / _2PI) + 0.25;
     result.y = acos(position.y) / PI;
 
     result.x = mod(1.0 - result.x, 1.0);
@@ -199,6 +205,27 @@ vec4 contrastSaturationBrightness(vec4 color, float contrast, float saturation, 
     vec3 newColor = mix(vec3(0.5), mix(vec3(dot(vec3(0.2125, 0.7154, 0.0721), color.rgb * brightness)), color.rgb * brightness, saturation), contrast);
 
     return vec4(newColor.rgb, color.a);
+}
+
+//-------------------------------------------------------------------------------------------------
+// Dithering functions
+
+int ditherMatrix[8][8] = int[][] (
+        int[]( 0, 32,  8, 40,  2, 34, 10, 42),
+        int[](48, 16, 56, 24, 50, 18, 58, 26),
+        int[](12, 44,  4, 36, 14, 46,  6, 38),
+        int[](60, 28, 52, 20, 62, 30, 54, 22),
+        int[]( 3, 35, 11, 43,  1, 33,  9, 41),
+        int[](51, 19, 59, 27, 49, 17, 57, 25),
+        int[](15, 47,  7, 39, 13, 45,  5, 37),
+        int[](63, 31, 55, 23, 61, 29, 53, 21)
+        );
+
+vec4 dither(vec4 inputColor)
+{
+    float luma = colorLuminosity(inputColor);
+    float value = (float(ditherMatrix[int(gl_FragCoord.x) % 8][int(gl_FragCoord.y) % 8]) / 256.0 - (1.0 / 128.0)) * luma;
+    return vec4(inputColor.r + value, inputColor.g + value, inputColor.b + value, inputColor.a);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -566,7 +593,7 @@ float turbulence(vec3 ipos)
 
 float getFloor(vec2 position)
 {
-    if (useBumpFloorMap)
+    if (useBumpFloorMap != 0)
     {
         vec4 sampledColor = texture2D(bumpFloorMap, position);
 
@@ -585,7 +612,7 @@ float getFloor(vec2 position)
 
 float getCeiling(vec2 position)
 {
-    if (useBumpCeilingMap)
+    if (useBumpCeilingMap != 0)
     {
         vec4 sampledColor = texture2D(bumpCeilingMap, position);
 
@@ -657,7 +684,7 @@ float rayMarchShadows(vec3 start, vec3 finish)
 #else
             float angle = (float(areaIndex) / float(actualAreaSampleCount)) * _2PI;
             mat4 rot = rotationMatrix(vec3(0.0, 0.0, 1.0), angle);
-            areaPosition = finish + (rot * vec4(lightAreaRadius, 0.0, 0.0, 1.0));
+            areaPosition = finish + (rot * vec4(lightAreaRadius, 0.0, 0.0, 1.0)).xyz;
 #endif
         }
 
@@ -730,7 +757,7 @@ vec4 lightUp()
     //-----------------------------------------------
     // Compute bump normal
 
-    if (computeBumps)
+    if (computeBumps != 0)
     {
         float me = position.z;
         float n = getCeiling(position.xy + vec2(0.0, -pixelDistanceY)) * 20.0;
@@ -773,7 +800,7 @@ vec4 lightUp()
         if (lightDistance == 0.0 || dist < lightDistance)
         {
             // Light ray
-            if (lightIsDirectional)
+            if (lightIsDirectional != 0)
             {
                 lightRay = lightDirection;
             }
@@ -823,7 +850,7 @@ vec4 lightUp()
                 // Get shadows
                 if (lightShadowSampleCount > 0)
                 {
-                    if (lightIsDirectional)
+                    if (lightIsDirectional != 0)
                     {
                         attenuation *= rayMarchShadows(position, position - lightRay);
                     }
@@ -1007,7 +1034,14 @@ void main()
     // Uncomment to see light position
     // finalColor.rgb += vec3(1.0, 0.0, 0.0) * flatDisc(vec3(lightPosition.xy, 0.0), 0.01, vec3(position.xy, 0.0));
 
-    gl_FragColor = vec4(finalColor.rgb, finalColor.a * qt_Opacity);
+    if (useDithering != 0)
+    {
+        gl_FragColor = dither(vec4(finalColor.rgb, finalColor.a * qt_Opacity));
+    }
+    else
+    {
+        gl_FragColor = vec4(finalColor.rgb, finalColor.a * qt_Opacity);
+    }
 
     // Uncomment to visualize a vector
     // gl_FragColor = vec4((position.rgb + 1.0) / 2.0, 1.0);

@@ -899,10 +899,12 @@ CRay3 CCamera::screenPointToWorldRay(CViewport* pViewport, CVector2 vPoint)
     double z0 = (pViewport->size().X * 0.5) * (1.0 + (1.0 / tan(Angles::toRad(m_dFOV * 0.5))));
 
     // Convert the x coordinate -0.5 to 0.5.
-    double x0 = ((vPoint.X - pViewport->position().X) / pViewport->size().X - 0.5);
+    // double x0 = ((vPoint.X - pViewport->position().X) / pViewport->size().X - 0.5);
+    double x0 = (vPoint.X - pViewport->position().X) - (pViewport->size().X * 0.5);
 
     // Convert the y coordinate from -0.5 to 0.5.
-    double y0 = (0.5 - (vPoint.Y - pViewport->position().Y) / pViewport->size().Y) * dAspectRatio;
+    // double y0 = (0.5 - (vPoint.Y - pViewport->position().Y) / pViewport->size().Y) * dAspectRatio;
+    double y0 = (pViewport->size().Y * 0.5) - (vPoint.Y - pViewport->position().Y);
 
     rResult.vNormal = (axis.Front * z0) + (axis.Right * x0) + (axis.Up * y0);
     rResult.vNormal = rResult.vNormal.normalized();

@@ -252,6 +252,12 @@ public:
     //!
     double status() const;
 
+    //!
+    static void incComponentCounter(QString sClassName);
+
+    //!
+    static void decComponentCounter(QString sClassName);
+
     //! Retourne le nombre d'instances de cette classe dans l'application
     static int getNumComponents() { return m_iNumComponents; }
 
@@ -341,6 +347,8 @@ public:
     // Static methods
     //-------------------------------------------------------------------------------------------------
 
+    static QMap<QString, int> componentCounter() { return m_mComponentCounter; }
+
     //-------------------------------------------------------------------------------------------------
     // Properties
     //-------------------------------------------------------------------------------------------------
@@ -387,4 +395,5 @@ protected:
     QVector<QSP<CComponent> >   m_vChildren;                    // Object's children
 
     static int                  m_iNumComponents;
+    static QMap<QString, int>   m_mComponentCounter;
 };

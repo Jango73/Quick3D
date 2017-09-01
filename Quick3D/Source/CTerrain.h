@@ -93,9 +93,6 @@ public:
     //!
     const CMeshGeometry* mesh () const { return m_pMesh; }
 
-    //!
-    static int numTerrains() { return m_iNumTerrains; }
-
     //-------------------------------------------------------------------------------------------------
     // Inherited methods
     //-------------------------------------------------------------------------------------------------
@@ -168,8 +165,6 @@ protected:
     bool                                m_bAllHeightsOverSea;
     bool                                m_bIsWater;
     bool                                m_bOK;
-
-    static int                          m_iNumTerrains;
 
     static CInterpolator<double>        m_iAltitudes_Sand;
     static CInterpolator<double>        m_iAltitudes_Dirt;

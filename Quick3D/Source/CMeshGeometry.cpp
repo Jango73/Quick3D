@@ -96,7 +96,7 @@ void CMeshGeometry::clear()
 
 //-------------------------------------------------------------------------------------------------
 
-CBoundingBox CMeshGeometry::getBounds()
+CBoundingBox CMeshGeometry::bounds()
 {
     checkAndUpdateGeometry();
 
@@ -105,15 +105,15 @@ CBoundingBox CMeshGeometry::getBounds()
 
 //-------------------------------------------------------------------------------------------------
 
-CBoundingBox CMeshGeometry::getWorldBounds(CComponent* pContainer)
+CBoundingBox CMeshGeometry::worldBounds(CComponent* pContainer)
 {
-    CBoundingBox bounds = getBounds();
+    CBoundingBox bBounds = bounds();
 
     // Récupération de la position "monde"
     CVector3 vWorldPosition = pContainer->worldPosition();
 
     // Retour de la boite englobante
-    return CBoundingBox(vWorldPosition + bounds.minimum(), vWorldPosition + bounds.maximum());
+    return CBoundingBox(vWorldPosition + bBounds.minimum(), vWorldPosition + bBounds.maximum());
 }
 
 //-------------------------------------------------------------------------------------------------

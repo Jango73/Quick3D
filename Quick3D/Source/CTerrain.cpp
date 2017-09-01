@@ -14,8 +14,6 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-int CTerrain::m_iNumTerrains = 0;
-
 CInterpolator<double> CTerrain::m_iAltitudes_Sand;
 CInterpolator<double> CTerrain::m_iAltitudes_Dirt;
 CInterpolator<double> CTerrain::m_iAltitudes_Grass;
@@ -42,6 +40,7 @@ CTerrain::CTerrain(
     , m_gOriginalGeoloc(gOriginalGeoloc)
     , m_gOriginalSize(gOriginalSize)
     , m_gSize(gSize)
+    , m_pMesh(nullptr)
     , m_iNumPoints(iPoints)
     , m_iLevel(iLevel)
     , m_iMaxLevel(iMaxLevel)
@@ -49,11 +48,11 @@ CTerrain::CTerrain(
     , m_bIsWater(bIsWater)
     , m_bOK(false)
 {
+    CComponent::incComponentCounter(ClassName_CTerrain);
+
     QString sGeolocName = QString("_%1_%2").arg(m_gOriginalGeoloc.Latitude).arg(m_gOriginalGeoloc.Longitude);
 
     setName(QString("Terrain%1").arg(sGeolocName));
-
-    m_iNumTerrains++;
 
     if (m_iNumPoints % 2 == 0) m_iNumPoints++;
 
@@ -78,26 +77,21 @@ CTerrain::CTerrain(
     computeWorldTransform();
 
     // Create terrain mesh
+    LOG_DEBUG(QString("Creating CTerrain::m_pMesh (%1, %2, %3)")
+              .arg(gOriginalGeoloc.Latitude)
+              .arg(gOriginalGeoloc.Longitude)
+              .arg(m_sName)
+              );
+
     m_pMesh = new CMeshGeometry(pScene, 100000000.0, true);
     // m_pMesh->setName(QString("TerrainMesh%1").arg(sGeolocName));
 
     if (bIsWater == false)
     {
-        /*
-        // For tests
-        m_pMesh->setMaterial(new CMaterial(pScene));
-        CPerlin* pPerlin = CPerlin::getInstance();
-        Vector3 vPosition = gCenter.toVector3();
-        m_pMesh->getMaterial()->material()->getDiffuse() = Vector4(pPerlin->getNoise_0_1(vPosition * 1.1), pPerlin->getNoise_0_1(vPosition * 1.2), pPerlin->getNoise_0_1(vPosition * 1.3), 1.0);
-        */
     }
     else
     {
-        // Delete default material and create a water material
-        m_pMesh->setMaterial(QSP<CWaterMaterial>(new CWaterMaterial(pScene)));
-
-        // Set material IR factor
-        m_pMesh->materials()[0]->setIRFactor(0.2);
+        m_pMesh->setMaterial(pScene->ressourcesManager()->getWaterMaterial());
     }
 
     if (bGenerateNow)
@@ -115,12 +109,15 @@ CTerrain::CTerrain(
 
 CTerrain::~CTerrain()
 {
-    m_iNumTerrains--;
+    CComponent::decComponentCounter(ClassName_CTerrain);
 
     // Remove this from workers
     CWorkerManager::getInstance()->removeWorker(this);
 
-    delete m_pMesh;
+    if (m_pMesh != nullptr)
+    {
+        delete m_pMesh;
+    }
 
     foreach (CMeshGeometry* pSeam, m_vSeams)
     {
@@ -134,7 +131,7 @@ CBoundingBox CTerrain::bounds()
 {
     if (m_pMesh != nullptr)
     {
-        return m_pMesh->getBounds();
+        return m_pMesh->bounds();
     }
 
     return CBoundingBox();
@@ -146,7 +143,7 @@ CBoundingBox CTerrain::worldBounds()
 {
     if (m_pMesh != nullptr)
     {
-        return m_pMesh->getWorldBounds(this);
+        return m_pMesh->worldBounds(this);
     }
 
     return CBoundingBox();

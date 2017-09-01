@@ -81,7 +81,7 @@ public:
     QSP<CTerrain> getWater() const { return m_pWater; }
 
     //!
-    QVector<CBoundedMeshInstances*>& meshes() { return m_vMeshes; }
+    QVector<CBoundedMeshInstances*>& meshes() { return m_vBoundedMeshes; }
 
     //!
     QMap<QString, QSP<CMeshGeometry> >& bushMeshes() { return m_vBushMeshes; }
@@ -89,21 +89,18 @@ public:
     //!
     bool isOK() const { return m_bOK; }
 
-    //!
-    static int getNumWorldChunks() { return m_iNumWorldChunks; }
-
     //-------------------------------------------------------------------------------------------------
     // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
     //!
-    virtual CBoundingBox bounds();
+    virtual CBoundingBox bounds() Q_DECL_OVERRIDE;
 
     //!
-    virtual CBoundingBox worldBounds();
+    virtual CBoundingBox worldBounds() Q_DECL_OVERRIDE;
 
     //!
-    virtual CBoundingBox getBuildWorldBounds();
+    virtual CBoundingBox buildWorldBounds();
 
     //! Deletes this object's links
     virtual void clearLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
@@ -112,7 +109,7 @@ public:
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //!
-    virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = nullptr);
+    virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = nullptr) Q_DECL_OVERRIDE;
 
     //!
     virtual void flatten(const CGeoloc& gPosition, double dRadius);
@@ -121,10 +118,10 @@ public:
     virtual Math::RayTracingResult intersect(Math::CRay3 ray) Q_DECL_OVERRIDE;
 
     //!
-    virtual bool isReallyExpendable() const;
+    virtual bool isReallyExpendable() const Q_DECL_OVERRIDE;
 
     //! Dumps contents to a stream
-    virtual void dump(QTextStream& stream, int iIdent);
+    virtual void dump(QTextStream& stream, int iIdent) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Control methods
@@ -169,12 +166,10 @@ protected:
     CGeoloc                             m_gOriginalSize;
     CGeoloc                             m_gSize;
     CBoundingBox                        m_bWorldBounds;
-    QVector<CBoundedMeshInstances*>     m_vMeshes;
+    QVector<CBoundedMeshInstances*>     m_vBoundedMeshes;
     QMutex                              m_mMutex;
     double                              m_dDistance;
     bool                                m_bOK;
-
-    static int                          m_iNumWorldChunks;
 
     // Shared data
 

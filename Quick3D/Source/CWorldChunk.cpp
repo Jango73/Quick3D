@@ -16,10 +16,6 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-int CWorldChunk::m_iNumWorldChunks = 0;
-
-//-------------------------------------------------------------------------------------------------
-
 CWorldChunk::CWorldChunk(C3DScene* pScene, CWorldTerrain* pAutoTerrain, CHeightField* pContainer)
     : CComponent(pScene)
     , m_pAutoTerrain(pAutoTerrain)
@@ -30,7 +26,7 @@ CWorldChunk::CWorldChunk(C3DScene* pScene, CWorldTerrain* pAutoTerrain, CHeightF
     , m_dDistance(0.0)
     , m_bOK(false)
 {
-    m_iNumWorldChunks++;
+    CComponent::incComponentCounter(ClassName_CWorldChunk);
 
     m_tLastUsed = QDateTime::currentDateTime();
 }
@@ -39,7 +35,7 @@ CWorldChunk::CWorldChunk(C3DScene* pScene, CWorldTerrain* pAutoTerrain, CHeightF
 
 CWorldChunk::~CWorldChunk()
 {
-    m_iNumWorldChunks--;
+    CComponent::decComponentCounter(ClassName_CWorldChunk);
 
     // Remove this from workers
     CWorkerManager::getInstance()->removeWorker(this);
@@ -47,7 +43,13 @@ CWorldChunk::~CWorldChunk()
     {
         QMutexLocker locker(&m_mMutex);
 
-        foreach (CBoundedMeshInstances* pBounded, m_vMeshes)
+        LOG_DEBUG(QString("Deleting %1 CWorldChunk::CBoundedMeshInstances for tile at lat %2, lon %3")
+                  .arg(m_vBoundedMeshes.count())
+                  .arg(geoloc().Latitude)
+                  .arg(geoloc().Longitude)
+                  );
+
+        foreach (CBoundedMeshInstances* pBounded, m_vBoundedMeshes)
         {
             delete pBounded;
         }
@@ -154,7 +156,7 @@ CBoundingBox CWorldChunk::worldBounds()
 
 //-------------------------------------------------------------------------------------------------
 
-CBoundingBox CWorldChunk::getBuildWorldBounds()
+CBoundingBox CWorldChunk::buildWorldBounds()
 {
     return m_bWorldBounds;
 }
@@ -267,7 +269,7 @@ void CWorldChunk::paint(CRenderContext* pContext)
 
         if (m_bOK)
         {
-            foreach (CBoundedMeshInstances* pBoundedMeshInstance, m_vMeshes)
+            foreach (CBoundedMeshInstances* pBoundedMeshInstance, m_vBoundedMeshes)
             {
                 pBoundedMeshInstance->paint(pContext);
             }
@@ -378,7 +380,7 @@ void CWorldChunk::clearTerrain()
 
     if (m_pTerrain != nullptr)
     {
-        LOG_DEBUG(QString("Deleting terrain for chunk at %1, %2 (%3)")
+        LOG_DEBUG(QString("Deleting CWorldChunk::m_pTerrain (%1, %2, %3)")
                   .arg(gChunkPosition.Latitude)
                   .arg(gChunkPosition.Longitude)
                   .arg(m_pTerrain->name())
@@ -389,6 +391,12 @@ void CWorldChunk::clearTerrain()
 
     if (m_pWater != nullptr)
     {
+        LOG_DEBUG(QString("Deleting CWorldChunk::m_pWater (%1, %2, %3)")
+                  .arg(gChunkPosition.Latitude)
+                  .arg(gChunkPosition.Longitude)
+                  .arg(m_pWater->name())
+                  );
+
         m_pWater.reset();
     }
 }
@@ -399,7 +407,7 @@ void CWorldChunk::work()
 {
     while (true)
     {
-        if (!m_pTerrain) return;
+        if (m_pTerrain == nullptr) return;
         if (m_bStopRequested) return;
         if (m_pTerrain->isOK() == true) break;
         msleep(50);
@@ -428,11 +436,16 @@ void CWorldChunk::work()
 
                     CBoundingBox bBox = createBoundsForTerrain(gPosition, gSize, 1000.0);
 
+                    LOG_DEBUG(QString("Creating CWorldChunk::CBoundedMeshInstances for tile at lat %1, lon %2")
+                              .arg(geoloc().Latitude)
+                              .arg(geoloc().Longitude)
+                              );
+
                     CBoundedMeshInstances* pBounded = new CBoundedMeshInstances(m_pScene);
                     pBounded->setGeoloc(gPosition);
                     pBounded->setBounds(bBox);
 
-                    m_vMeshes.append(pBounded);
+                    m_vBoundedMeshes.append(pBounded);
                 }
             }
         }
@@ -525,6 +538,15 @@ void CWorldChunk::dump(QTextStream& stream, int iIdent)
 
     dumpOpenBlock(stream, iIdent); iIdent++;
     if (m_pTerrain != nullptr) m_pTerrain->dump(stream, iIdent);
+    iIdent--; dumpCloseBlock(stream, iIdent);
+
+    dumpIdent(stream, iIdent, QString("Bounded meshes :"));
+
+    dumpOpenBlock(stream, iIdent); iIdent++;
+    foreach (CBoundedMeshInstances* pBounded, m_vBoundedMeshes)
+    {
+        pBounded->dump(stream, iIdent);
+    }
     iIdent--; dumpCloseBlock(stream, iIdent);
 
     CComponent::dump(stream, iIdent);

@@ -41,6 +41,8 @@ using namespace Math;
 
 int CComponent::m_iNumComponents = 0;
 
+QMap<QString, int> CComponent::m_mComponentCounter;
+
 //-------------------------------------------------------------------------------------------------
 
 /*!
@@ -96,7 +98,6 @@ CComponent::~CComponent()
 
     foreach (QSP<CComponent> pChild, m_vChildren)
     {
-        // TODO : Dispose of children
         pChild->clearLinks(m_pScene);
     }
 }
@@ -1132,4 +1133,28 @@ void CComponent::dump(QTextStream& stream, int iIdent)
         pChild->dump(stream, iIdent + 1);
     }
     dumpCloseBlock(stream, iIdent);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CComponent::incComponentCounter(QString sClassName)
+{
+    if (m_mComponentCounter.contains(sClassName) == false)
+    {
+        m_mComponentCounter[sClassName] = 0;
+    }
+
+    m_mComponentCounter[sClassName]++;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CComponent::decComponentCounter(QString sClassName)
+{
+    if (m_mComponentCounter.contains(sClassName) == false)
+    {
+        m_mComponentCounter[sClassName] = 0;
+    }
+
+    m_mComponentCounter[sClassName]--;
 }

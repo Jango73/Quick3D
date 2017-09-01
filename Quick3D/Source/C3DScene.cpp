@@ -707,6 +707,13 @@ void C3DScene::dump(QTextStream& stream, int iIdent)
     dumpIdent(stream, iIdent, QString("[C3DScene]"));
     dumpIdent(stream, iIdent, QString("CComponent::getNumComponents() : %1").arg(CComponent::getNumComponents()));
 
+    foreach (QString sName, CComponent::componentCounter().keys())
+    {
+        dumpIdent(stream, iIdent, QString("CComponent::componentCounter(%1) : %2")
+                  .arg(sName)
+                  .arg(CComponent::componentCounter()[sName]));
+    }
+
     foreach (QSP<CComponent> pComponent, m_vComponents)
     {
         dumpOpenBlock(stream, iIdent);

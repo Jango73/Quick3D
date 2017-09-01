@@ -11,12 +11,15 @@ using namespace Math;
 CBoundedMeshInstances::CBoundedMeshInstances(C3DScene* pScene)
     : CComponent(pScene)
 {
+    CComponent::incComponentCounter(ClassName_CBoundedMeshInstances);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CBoundedMeshInstances::~CBoundedMeshInstances()
 {
+    CComponent::decComponentCounter(ClassName_CBoundedMeshInstances);
+
     foreach (CMeshInstance* pMesh, m_vMeshes)
     {
         if (pMesh != nullptr)
@@ -81,4 +84,21 @@ void CBoundedMeshInstances::add(CMeshInstance* pMeshInstance)
     {
         m_vMeshes.append(pMeshInstance);
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CBoundedMeshInstances::dump(QTextStream& stream, int iIdent)
+{
+    dumpIdent(stream, iIdent, QString("[CBoundedMeshInstances]"));
+    dumpIdent(stream, iIdent, QString("Meshes :"));
+
+    dumpOpenBlock(stream, iIdent); iIdent++;
+    foreach (CMeshInstance* pMesh, m_vMeshes)
+    {
+        pMesh->dump(stream, iIdent);
+    }
+    iIdent--; dumpCloseBlock(stream, iIdent);
+
+    CComponent::dump(stream, iIdent);
 }

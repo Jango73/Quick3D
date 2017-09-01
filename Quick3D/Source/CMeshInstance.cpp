@@ -12,6 +12,8 @@ using namespace Math;
 CMeshInstance::CMeshInstance(QSP<CMesh> pMesh)
     : CComponent(pMesh->scene())
 {
+    CComponent::incComponentCounter(ClassName_CMeshInstance);
+
     m_vMeshes.append(pMesh);
 }
 
@@ -20,6 +22,8 @@ CMeshInstance::CMeshInstance(QSP<CMesh> pMesh)
 CMeshInstance::CMeshInstance(const QVector<QSP<CMesh> >& vMeshes)
     : CComponent(vMeshes[0]->scene())
 {
+    CComponent::incComponentCounter(ClassName_CMeshInstance);
+
     foreach (QSP<CMesh> pMesh, vMeshes)
     {
         m_vMeshes.append(pMesh);
@@ -30,6 +34,7 @@ CMeshInstance::CMeshInstance(const QVector<QSP<CMesh> >& vMeshes)
 
 CMeshInstance::~CMeshInstance()
 {
+    CComponent::decComponentCounter(ClassName_CMeshInstance);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -92,4 +97,21 @@ void CMeshInstance::paint(CRenderContext* pContext)
             }
         }
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CMeshInstance::dump(QTextStream& stream, int iIdent)
+{
+    dumpIdent(stream, iIdent, QString("[CMeshInstance]"));
+    dumpIdent(stream, iIdent, QString("Meshes :"));
+
+    dumpOpenBlock(stream, iIdent); iIdent++;
+    foreach (QSP<CMesh> pMesh, m_vMeshes)
+    {
+        pMesh->dump(stream, iIdent);
+    }
+    iIdent--; dumpCloseBlock(stream, iIdent);
+
+    CComponent::dump(stream, iIdent);
 }

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1119</width>
-    <height>745</height>
+    <width>900</width>
+    <height>765</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,7 +38,7 @@
          <widget class="QLabel" name="m_lInfo">
           <property name="minimumSize">
            <size>
-            <width>200</width>
+            <width>600</width>
             <height>60</height>
            </size>
           </property>
@@ -72,8 +72,8 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>20000</width>
-            <height>20000</height>
+            <width>100</width>
+            <height>100</height>
            </size>
           </property>
          </widget>
@@ -542,7 +542,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1119</width>
+     <width>900</width>
      <height>20</height>
     </rect>
    </property>

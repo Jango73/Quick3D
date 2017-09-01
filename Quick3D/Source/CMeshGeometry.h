@@ -108,6 +108,12 @@ public:
     //!
     int triangleCountForFaces(const QVector<int>& vFaceIndices);
 
+    //!
+    CBoundingBox bounds();
+
+    //!
+    CBoundingBox worldBounds(CComponent* pContainer);
+
     //-------------------------------------------------------------------------------------------------
     // Inherited methods
     //-------------------------------------------------------------------------------------------------
@@ -133,12 +139,6 @@ public:
 
     //! Met à jour les buffers de géométrie OpenGL
     void checkAndUpdateGeometry();
-
-    //!
-    CBoundingBox getBounds();
-
-    //!
-    CBoundingBox getWorldBounds(CComponent* pContainer);
 
     //! Dessine l'objet
     void paint(CRenderContext* pContext, CComponent* pContainer);

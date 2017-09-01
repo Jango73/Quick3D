@@ -58,6 +58,9 @@ public:
     //! Renders the mesh
     virtual void paint(CRenderContext* pContext) Q_DECL_OVERRIDE;
 
+    //! Dumps contents to a stream
+    virtual void dump(QTextStream& stream, int iIdent) Q_DECL_OVERRIDE;
+
     //-------------------------------------------------------------------------------------------------
     // Control methods
     //-------------------------------------------------------------------------------------------------

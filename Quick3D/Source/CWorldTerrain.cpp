@@ -57,6 +57,8 @@ CWorldTerrain::CWorldTerrain(C3DScene* pScene, CGeoloc gCameraPosition, CHeightF
     , m_iLevels(15)
     , m_iTerrainResolution(31)
 {
+    CComponent::incComponentCounter(ClassName_CWorldTerrain);
+
     setName("AutoTerrain");
     setInheritTransform(false);
 
@@ -96,6 +98,7 @@ CWorldTerrain::CWorldTerrain(C3DScene* pScene, CGeoloc gCameraPosition, CHeightF
 */
 CWorldTerrain::~CWorldTerrain()
 {
+    CComponent::decComponentCounter(ClassName_CWorldTerrain);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -599,6 +602,7 @@ void CWorldTerrain::collectGarbageRecurse(QSP<CWorldChunk> pChunk)
     {
         if (pChunk->isExpendable())
         {
+            pChunk->clearLinks(m_pScene);
             pChunk->clearTerrain();
         }
     }

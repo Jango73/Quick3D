@@ -23,6 +23,8 @@ CComponent* CMesh::instanciator(C3DScene* pScene)
 CMesh::CMesh(C3DScene* pScene, double dMaxDistance, bool bUseSpacePartitionning)
     : CPhysicalComponent(pScene)
 {
+    CComponent::incComponentCounter(ClassName_CMesh);
+
     m_pGeometry = QSP<CMeshGeometry>(new CMeshGeometry(pScene, dMaxDistance, bUseSpacePartitionning));
 }
 
@@ -30,6 +32,7 @@ CMesh::CMesh(C3DScene* pScene, double dMaxDistance, bool bUseSpacePartitionning)
 
 CMesh::~CMesh()
 {
+    CComponent::decComponentCounter(ClassName_CMesh);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -45,7 +48,7 @@ CBoundingBox CMesh::bounds()
 {
     if (m_pGeometry != nullptr)
     {
-        return m_pGeometry->getBounds();
+        return m_pGeometry->bounds();
     }
 
     return CBoundingBox();
@@ -57,7 +60,7 @@ CBoundingBox CMesh::worldBounds()
 {
     if (m_pGeometry != nullptr)
     {
-        return m_pGeometry->getWorldBounds(this);
+        return m_pGeometry->worldBounds(this);
     }
 
     return CBoundingBox();

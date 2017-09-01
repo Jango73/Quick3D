@@ -313,8 +313,8 @@ void Quick3DTest::onTimer()
                 .arg(m_pScene->m_tStatistics.m_iNumChunksDrawn)
                 .arg(m_pScene->m_tStatistics.m_iNumFrustumTests)
                 .arg(CComponent::getNumComponents())
-                .arg(CWorldChunk::getNumWorldChunks())
-                .arg(CTerrain::numTerrains())
+                .arg(CComponent::componentCounter()[ClassName_CWorldChunk])
+                .arg(CComponent::componentCounter()[ClassName_CTerrain])
                 ;
 
         ui.m_lInfo->setText(sInfo);

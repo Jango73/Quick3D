@@ -159,6 +159,24 @@ CBoundingBox CWorldChunk::getBuildWorldBounds()
     return m_bWorldBounds;
 }
 
+
+//-------------------------------------------------------------------------------------------------
+
+void CWorldChunk::clearLinks(C3DScene* pScene)
+{
+    CComponent::clearLinks(pScene);
+
+    m_pTerrain.reset();
+    m_pWater.reset();
+
+    foreach (QString sName, m_vBushMeshes.keys())
+    {
+        m_vBushMeshes[sName].reset();
+    }
+
+    m_vBushMeshes.clear();
+}
+
 //-------------------------------------------------------------------------------------------------
 
 void CWorldChunk::update(double dDeltaTime)

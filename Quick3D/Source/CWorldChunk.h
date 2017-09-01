@@ -105,6 +105,9 @@ public:
     //!
     virtual CBoundingBox getBuildWorldBounds();
 
+    //! Deletes this object's links
+    virtual void clearLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
+
     //!
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 

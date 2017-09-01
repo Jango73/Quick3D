@@ -399,6 +399,14 @@ void CStandardController::q3dEvent(CQ3DEvent* event)
     {
         m_bTurnLeft = (event->getAction() == CQ3DEvent::Press);
     }
+    else if (event->getName() == Q3DEvent_LookUp)
+    {
+        m_bLookUp = (event->getAction() == CQ3DEvent::Press);
+    }
+    else if (event->getName() == Q3DEvent_LookDown)
+    {
+        m_bLookDown = (event->getAction() == CQ3DEvent::Press);
+    }
     else if (event->getName() == Q3DEvent_StrafeRight)
     {
         m_bStrafeRight = (event->getAction() == CQ3DEvent::Press);

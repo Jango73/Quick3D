@@ -206,6 +206,8 @@ void CWorldTerrain::loadParameters(const QString& sBaseFile, CXMLNode xComponent
 
 void CWorldTerrain::clearLinks(C3DScene* pScene)
 {
+    CComponent::clearLinks(pScene);
+
     if (m_pRoot != nullptr)
     {
         m_pRoot->clearLinks(pScene);

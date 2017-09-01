@@ -80,6 +80,7 @@ void CElectricalComponent::solveLinks(C3DScene* pScene)
 
 void CElectricalComponent::clearLinks(C3DScene* pScene)
 {
+    CComponent::clearLinks(pScene);
 }
 
 //-------------------------------------------------------------------------------------------------

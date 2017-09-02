@@ -100,7 +100,6 @@ void CTexture::update(double dDeltaTime)
             {
                 m_TextureUpdateWorker->setDeltaTime(dDeltaTime);
                 m_TextureUpdateWorker->start();
-                m_TextureUpdateWorker->setPriority(QThread::NormalPriority);
             }
         }
     }

@@ -51,18 +51,23 @@ public:
     //!
     CElectricalLoad& operator = (const CElectricalLoad& target)
     {
-        m_eType			= target.m_eType;
-        m_dVoltage		= target.m_dVoltage;
-        m_dAmperage		= target.m_dAmperage;
-        m_dFrequency	= target.m_dFrequency;
+        m_eType         = target.m_eType;
+        m_dVoltage      = target.m_dVoltage;
+        m_dAmperage     = target.m_dAmperage;
+        m_dFrequency    = target.m_dFrequency;
 
         return *this;
     }
 
-    ECurrentType	m_eType;
-    double			m_dVoltage;
-    double			m_dAmperage;
-    double			m_dFrequency;
+    static CElectricalLoad noPower()
+    {
+        return CElectricalLoad(ctNone, 0.0, 0.0, 0.0);
+    }
+
+    ECurrentType    m_eType;
+    double          m_dVoltage;
+    double          m_dAmperage;
+    double          m_dFrequency;
 };
 
 class QUICK3D_EXPORT CElectricalComponent : public CComponent

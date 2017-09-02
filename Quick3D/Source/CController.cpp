@@ -81,6 +81,11 @@ void CController::solveLinks(C3DScene* pScene)
     {
         m_rRotationTarget.setComponent(m_pParent);
     }
+
+    if (!m_rLookTarget.component() && m_pParent)
+    {
+        m_rLookTarget.setComponent(m_pParent);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------

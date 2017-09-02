@@ -35,6 +35,20 @@ CEngineGenerator::~CEngineGenerator()
 
 //-------------------------------------------------------------------------------------------------
 
+CElectricalLoad& CEngineGenerator::current()
+{
+    return m_tCurrent;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+const CElectricalLoad& CEngineGenerator::current() const
+{
+    return m_tCurrent;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CEngineGenerator::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
     CElectricalComponent::loadParameters(sBaseFile, xComponent);
@@ -70,8 +84,12 @@ void CEngineGenerator::update(double dDeltaTime)
 
     QSP<CEngine> pEngine = QSP_CAST(CEngine, m_rEngineTarget.component());
 
-    if (pEngine != nullptr)
+    if (pEngine != nullptr && pEngine->alternatorActive())
     {
         push(m_tCurrent, dDeltaTime);
+    }
+    else
+    {
+        push(CElectricalLoad::noPower(), dDeltaTime);
     }
 }

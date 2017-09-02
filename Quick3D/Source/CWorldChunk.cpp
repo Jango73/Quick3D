@@ -521,7 +521,7 @@ RayTracingResult CWorldChunk::intersect(Math::CRay3 ray)
 
 bool CWorldChunk::isReallyExpendable() const
 {
-    return m_pTerrain && m_pTerrain->isOK();
+    return m_pTerrain != nullptr && m_pTerrain->isOK();
 }
 
 //-------------------------------------------------------------------------------------------------

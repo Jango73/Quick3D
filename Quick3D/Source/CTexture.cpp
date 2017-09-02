@@ -146,7 +146,6 @@ void CTexture::onUpdateFinished()
     QImage tImage = QGLWidget::convertToGLFormat(m_imgTexture);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tImage.width(), tImage.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tImage.bits());
-    // glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, tImage.width(), tImage.height(), GL_RGBA, GL_UNSIGNED_BYTE, tImage.bits());
 
     m_iUpdateCounter = 0;
 }

@@ -248,7 +248,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     // For tests
     if (bOverlook)
     {
-        m_dMaxDistance = (geoloc().getPlanetRadius() * 0.5) * 2.0;
+        m_dMaxDistance = geoloc().getPlanetRadius() * 2.0;
         m_dMinDistance = dMaxDistance / 100.0;
     }
 
@@ -273,6 +273,13 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
                         geoloc().getPlanetRadius() * 0.5
                         ).toVector3() - pScene->worldOrigin(),
                     CAxis(CVector3(Math::Pi * 0.5, 0.0, 0.0)).transferTo(geoloc().getNOLLAxis()).eulerAngles()
+                    );
+
+        mCameraProjection = CCamera::getQtProjectionMatrix(
+                    DEFAULT_FOV,
+                    (double) iWidth / (double) iHeight,
+                    m_dMinDistance,
+                    m_dMaxDistance
                     );
     }
 
@@ -734,7 +741,6 @@ void CCamera::computeFrustum(double dVerticalFOV, double dAspectRatio, double dM
     // Remise à zéro des plans du frustum (pyramide de visualisation)
     m_pFrustumPlanes.clear();
 
-    // double dVerticalFOV = dHorizontalFOV * dAspectRatio;
     double dHorizontalFOV = dVerticalFOV;
 
     // Création des matrices de rotation des plans

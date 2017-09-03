@@ -66,19 +66,19 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    CGeoloc getOriginalGeoloc() const { return m_gOriginalGeoloc; }
+    CGeoloc originalGeoloc() const { return m_gOriginalGeoloc; }
 
     //!
-    CGeoloc getOriginalSize() const { return m_gOriginalSize; }
+    CGeoloc originalSize() const { return m_gOriginalSize; }
 
     //!
-    CGeoloc getSize() const { return m_gSize; }
+    CGeoloc size() const { return m_gSize; }
 
     //!
-    QSP<CTerrain> getTerrain() const { return m_pTerrain; }
+    QSP<CTerrain> terrain() const { return m_pTerrain; }
 
     //!
-    QSP<CTerrain> getWater() const { return m_pWater; }
+    QSP<CTerrain> water() const { return m_pWater; }
 
     //!
     QVector<CBoundedMeshInstances*>& meshes() { return m_vBoundedMeshes; }

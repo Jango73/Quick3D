@@ -330,11 +330,11 @@ bool CWorldTerrain::enoughDetail(QSP<CWorldChunk> pChunk, CRenderContext* pConte
 */
 void CWorldTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pContext, int iLevel)
 {
-    CGeoloc gOriginalChunkPosition = pChunk->getOriginalGeoloc();
-    CGeoloc gOriginalChunkSize = pChunk->getOriginalSize();
+    CGeoloc gOriginalChunkPosition = pChunk->originalGeoloc();
+    CGeoloc gOriginalChunkSize = pChunk->originalSize();
 
     CGeoloc gChunkPosition = pChunk->geoloc();
-    CGeoloc gChunkSize = pChunk->getSize();
+    CGeoloc gChunkSize = pChunk->size();
 
     // On décide si ce niveau de détail est suffisant
     // Decide whether this level of detail is enough
@@ -343,7 +343,7 @@ void CWorldTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pConte
     if (bStayHere)
     {
         // Create terrain for the chunk if needed
-        if (!pChunk->getTerrain())
+        if (!pChunk->terrain())
         {
             LOG_DEBUG(QString("Creating terrain for tile at lat %1, lon %2, level %3")
                       .arg(gChunkPosition.Latitude)
@@ -508,7 +508,7 @@ void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRen
 
     if (bStayHere)
     {
-        if (pChunk->getTerrain() && pChunk->getTerrain()->isOK())
+        if (pChunk->terrain() && pChunk->terrain()->isOK())
         {
             pChunk->setDistance(
                         (
@@ -522,7 +522,7 @@ void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRen
             vChunkCollect.append(pChunk);
 
             // Get rid of unneeded water
-            if (pChunk->getWater() && pChunk->getTerrain()->allHeightsOverSea())
+            if (pChunk->water() && pChunk->terrain()->allHeightsOverSea())
             {
                 pChunk->setWater(QSP<CTerrain>());
             }
@@ -598,15 +598,6 @@ void CWorldTerrain::collectGarbage()
 */
 void CWorldTerrain::collectGarbageRecurse(QSP<CWorldChunk> pChunk)
 {
-    if (pChunk->getTerrain())
-    {
-        if (pChunk->isExpendable())
-        {
-            pChunk->clearLinks(m_pScene);
-            pChunk->clearTerrain();
-        }
-    }
-
     foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
     {
         QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
@@ -614,6 +605,15 @@ void CWorldTerrain::collectGarbageRecurse(QSP<CWorldChunk> pChunk)
         if (pChild != nullptr)
         {
             collectGarbageRecurse(pChild);
+        }
+    }
+
+    if (pChunk->terrain() != nullptr)
+    {
+        if (pChunk->isExpendable())
+        {
+            pChunk->clearLinks(m_pScene);
+            pChunk->clearTerrain();
         }
     }
 }
@@ -640,8 +640,8 @@ double CWorldTerrain::getHeightAtRecurse(const CGeoloc& gPosition, QSP<CWorldChu
     if (pRigidness != nullptr) *pRigidness = 0.0;
 
     if (
-            fabs(dDiffLatitude) < pChunk->getSize().Latitude * 0.5 &&
-            fabs(dDiffLongitude) < pChunk->getSize().Longitude * 0.5
+            fabs(dDiffLatitude) < pChunk->size().Latitude * 0.5 &&
+            fabs(dDiffLongitude) < pChunk->size().Longitude * 0.5
             )
     {
         foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
@@ -658,15 +658,15 @@ double CWorldTerrain::getHeightAtRecurse(const CGeoloc& gPosition, QSP<CWorldChu
             }
         }
 
-        if (pChunk->getTerrain() && pChunk->getTerrain()->isOK())
+        if (pChunk->terrain() && pChunk->terrain()->isOK())
         {
             double dTerrainRigidness = 0.0;
-            double dTerrainAltitude = pChunk->getTerrain()->getHeightAt(gPosition, &dTerrainRigidness);
+            double dTerrainAltitude = pChunk->terrain()->getHeightAt(gPosition, &dTerrainRigidness);
 
-            if (pChunk->getWater())
+            if (pChunk->water())
             {
                 double dWaterRigidness = 0.0;
-                double dWaterAltitude = pChunk->getWater()->getHeightAt(gPosition, &dWaterRigidness);
+                double dWaterAltitude = pChunk->water()->getHeightAt(gPosition, &dWaterRigidness);
 
                 if (dWaterAltitude != Q3D_INFINITY && dWaterAltitude > dTerrainAltitude)
                 {

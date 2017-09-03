@@ -150,10 +150,10 @@ void CVegetationGenerator::generate(QSP<CWorldChunk> pChunk)
     {
         QSP<CVegetation> pVegetation = m_vVegetation[iVegetIndex];
 
-        double dSpread = pVegetation->m_dSpread * ((double) pChunk->getTerrain()->level() + 1.0);
+        double dSpread = pVegetation->m_dSpread * ((double) pChunk->terrain()->level() + 1.0);
         double dAltitude_Trees = 10.0;
 
-        CGeoloc gStart(pChunk->geoloc().Latitude - pChunk->getSize().Latitude * 0.5, pChunk->geoloc().Longitude - pChunk->getSize().Longitude * 0.5, 0.0);
+        CGeoloc gStart(pChunk->geoloc().Latitude - pChunk->size().Latitude * 0.5, pChunk->geoloc().Longitude - pChunk->size().Longitude * 0.5, 0.0);
 
         double dLatStart = fmod(gStart.Latitude, dSpread);
         double dLonStart = fmod(gStart.Longitude, dSpread);
@@ -163,13 +163,13 @@ void CVegetationGenerator::generate(QSP<CWorldChunk> pChunk)
 
         CGeoloc gStartOffset = CGeoloc(gStart.Latitude - dLatStart, gStart.Longitude - dLonStart, 0.0);
 
-        for (double dLat = gStartOffset.Latitude; dLat < gStartOffset.Latitude + pChunk->getSize().Latitude; dLat += dSpread)
+        for (double dLat = gStartOffset.Latitude; dLat < gStartOffset.Latitude + pChunk->size().Latitude; dLat += dSpread)
         {
-            for (double dLon = gStartOffset.Longitude; dLon < gStartOffset.Longitude + pChunk->getSize().Longitude; dLon += dSpread)
+            for (double dLon = gStartOffset.Longitude; dLon < gStartOffset.Longitude + pChunk->size().Longitude; dLon += dSpread)
             {
                 if (
-                        dLat > gStart.Latitude && dLat < gStart.Latitude + pChunk->getSize().Latitude &&
-                        dLon > gStart.Longitude && dLon < gStart.Longitude + pChunk->getSize().Longitude
+                        dLat > gStart.Latitude && dLat < gStart.Latitude + pChunk->size().Latitude &&
+                        dLon > gStart.Longitude && dLon < gStart.Longitude + pChunk->size().Longitude
                         )
                 {
                     CGeoloc gPosition(dLat, dLon, 0.0);
@@ -194,7 +194,7 @@ void CVegetationGenerator::generate(QSP<CWorldChunk> pChunk)
                     if (dLandscapeValue > 0.0)
                     {
                         double dRigidness = 0.0;
-                        gPosition.Altitude = pChunk->getTerrain()->getHeightAt(gPosition, &dRigidness);
+                        gPosition.Altitude = pChunk->terrain()->getHeightAt(gPosition, &dRigidness);
 
                         if (gPosition.Altitude >= dAltitude_Trees)
                         {

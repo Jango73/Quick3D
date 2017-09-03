@@ -627,15 +627,15 @@ void C3DScene::deleteComponentsByTag(const QString& sTag)
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Checks if \a ray intersects components in the scene.
+    Checks if \a rRay intersects components in the scene.
 */
-RayTracingResult C3DScene::intersect(Math::CRay3 aRay) const
+RayTracingResult C3DScene::intersect(Math::CRay3 rRay) const
 {
     RayTracingResult dReturnResult(Q3D_INFINITY);
 
     foreach (QSP<CComponent> pComponent, m_vComponents)
     {
-        RayTracingResult dNewResult = intersectRecurse(pComponent, aRay);
+        RayTracingResult dNewResult = intersectRecurse(pComponent, rRay);
 
         if (dNewResult.m_dDistance < dReturnResult.m_dDistance)
         {

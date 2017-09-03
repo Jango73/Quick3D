@@ -109,10 +109,10 @@ CBoundingBox CMeshGeometry::worldBounds(CComponent* pContainer)
 {
     CBoundingBox bBounds = bounds();
 
-    // Récupération de la position "monde"
+    // Get world position
     CVector3 vWorldPosition = pContainer->worldPosition();
 
-    // Retour de la boite englobante
+    // Return the world bouding box
     return CBoundingBox(vWorldPosition + bBounds.minimum(), vWorldPosition + bBounds.maximum());
 }
 
@@ -139,15 +139,15 @@ void CMeshGeometry::checkAndUpdateGeometry()
 
         if (m_vVertices.count() > 0)
         {
-            // Tri des faces par matériau
+            // Sort faces by material
             qSort(m_vFaces);
 
-            // Calcul des vecteurs normaux
+            // Compute normal vectors
             computeNormals();
 
             if (m_vMaterials.count() != m_vGLMeshData.count())
             {
-                // Destruction des buffers de géométrie OpenGL
+                // Destroy OpenGL geometry buffers
                 foreach (CGLMeshData* data, m_vGLMeshData)
                 {
                     delete data;
@@ -163,7 +163,7 @@ void CMeshGeometry::checkAndUpdateGeometry()
                 }
             }
 
-            // Remise à zéro de la boite englobante
+            // Reset the bouding box
             if (m_bAutomaticBounds)
             {
                 m_bBounds.prepare();
@@ -173,7 +173,7 @@ void CMeshGeometry::checkAndUpdateGeometry()
             {
                 CGLMeshData* pGLMeshData = m_vGLMeshData[iMaterialIndex];
 
-                // Les buffers doivent être retransmis à OpenGL
+                // Buffers must be transmitted to OpenGL
                 pGLMeshData->m_bNeedTransferBuffers = true;
 
                 if (m_iGLType == GL_POINTS || m_iGLType == GL_LINES)
@@ -183,7 +183,7 @@ void CMeshGeometry::checkAndUpdateGeometry()
                         pGLMeshData->m_iNumRenderPoints = m_vVertices.count();
                         pGLMeshData->m_iNumRenderIndices = m_vVertices.count();
 
-                        // Création des buffers de géométrie OpenGL
+                        // Create OpenGL geometry buffers
                         pGLMeshData->m_vRenderPoints = new CVertex[pGLMeshData->m_iNumRenderPoints];
                         pGLMeshData->m_vRenderIndices = new GLuint[pGLMeshData->m_iNumRenderIndices];
 
@@ -209,7 +209,7 @@ void CMeshGeometry::checkAndUpdateGeometry()
                 {
                     QVector<int> vFaceIndices;
 
-                    // Récupération des faces associées à ce matériau
+                    // Get faces for currrent material
                     for (int iFaceIndex = 0; iFaceIndex < m_vFaces.count(); iFaceIndex++)
                     {
                         if (m_vFaces[iFaceIndex].materialIndex() == iMaterialIndex)
@@ -220,7 +220,7 @@ void CMeshGeometry::checkAndUpdateGeometry()
 
                     if (vFaceIndices.count() > 0)
                     {
-                        // Définition des quantités
+                        // Define quantities
                         pGLMeshData->m_iNumRenderPoints = m_vVertices.count();
 
                         if (m_iGLType == GL_QUADS)
@@ -246,7 +246,7 @@ void CMeshGeometry::checkAndUpdateGeometry()
                             pGLMeshData->m_vRenderPoints = new CVertex[pGLMeshData->m_iNumRenderPoints];
                             pGLMeshData->m_vRenderIndices = new GLuint[pGLMeshData->m_iNumRenderIndices];
 
-                            // Remplissage du buffer de vertex OpenGL
+                            // Fill OpenGL vertex buffer
                             for (int iVertex = 0; iVertex < m_vVertices.count(); iVertex++)
                             {
                                 pGLMeshData->m_vRenderPoints[iVertex] = m_vVertices[iVertex];
@@ -262,7 +262,7 @@ void CMeshGeometry::checkAndUpdateGeometry()
 
                             m_bBounds.expand(CVector3(0.1, 0.1, 0.1));
 
-                            // Remplissage du buffer d'indices OpenGL
+                            // Fill OpenGL index buffer
                             int iIndiceIndex = 0;
 
                             if (m_iGLType == GL_QUADS)
@@ -338,13 +338,13 @@ void CMeshGeometry::addDataForPartition(CBoundPartition<int>& partition)
 
 void CMeshGeometry::isolateVertices()
 {
-    // Copie du vecteur de vertex
+    // Copy the vertex vector
     QVector<CVertex> vVertices(m_vVertices);
 
-    // Effacement du vecteur de vertex
+    // Clear the vertex vector
     m_vVertices.clear();
 
-    // Parcours de tous les polygones
+    // Iterate through polygons
     for (int iFaceIndex = 0; iFaceIndex < m_vFaces.count(); iFaceIndex++)
     {
         for (int iVertexInFaceIndex = 0; iVertexInFaceIndex < m_vFaces[iFaceIndex].indices().count(); iVertexInFaceIndex++)
@@ -375,10 +375,10 @@ void CMeshGeometry::splitVerticesBySmoothingGroup()
         }
     }
 
-    // Récupération des smoothing groups par sommet
-    // Parcours de chaque face
-    //   Parcours de chaque sommet de la face
-    //     Dans le sommet, on associe au smoothing group de la face le sommet lui-même
+    // Retrieve smoothing groups by vertex
+    // Iterate through polygons
+    //   Iterate through the polygon's vertex
+    //     In the vertex, associate to the polygon's smoothing group the vertex itself
     {
         for (int iFaceIndex = 0; iFaceIndex < m_vFaces.count(); iFaceIndex++)
         {
@@ -397,9 +397,9 @@ void CMeshGeometry::splitVerticesBySmoothingGroup()
         }
     }
 
-    // Duplication des sommets
-    // Parcours de chaque sommet
-    //   Si le sommet est associé à plus d'un smoothing group
+    // Duplicate the vertices
+    // Iterate through vertices
+    //   If the vertex is associated to more than one smoothing group
     {
         int iCurrentVertexCount = m_vVertices.count();
 
@@ -425,7 +425,7 @@ void CMeshGeometry::splitVerticesBySmoothingGroup()
         }
     }
 
-    // Assignation des nouveaux sommets aux facettes
+    // Assign the new vertices to polygons
     {
         for (int iFaceIndex = 0; iFaceIndex < m_vFaces.count(); iFaceIndex++)
         {
@@ -444,7 +444,7 @@ void CMeshGeometry::splitVerticesBySmoothingGroup()
         }
     }
 
-    // Remise à zéro des données propres aux tri par smoothing group
+    // Reset data related to smoothing group sorting
     {
         for (int iVertexIndex = 0; iVertexIndex < m_vVertices.count(); iVertexIndex++)
         {

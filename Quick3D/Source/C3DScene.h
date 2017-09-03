@@ -255,7 +255,7 @@ public:
     void deleteComponentsByTag(const QString& sTag);
 
     //! Ray intersection
-    virtual Math::RayTracingResult intersect(Math::CRay3 aRay) const;
+    virtual Math::RayTracingResult intersect(Math::CRay3 rRay) const;
 
     //! Ray intersection
     virtual Math::RayTracingResult intersectComponentHierarchy(QSP<CComponent> pComponent, Math::CRay3 aRay) const;

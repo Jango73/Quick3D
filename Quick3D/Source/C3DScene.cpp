@@ -103,6 +103,9 @@ void C3DScene::clear()
     clearViewports();
 
     m_pRessourcesManager->clear();
+
+    m_pController = nullptr;
+    m_pDefaultController = nullptr;
 }
 
 //-------------------------------------------------------------------------------------------------

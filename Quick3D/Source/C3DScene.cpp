@@ -9,6 +9,7 @@
 
 // qt-plus
 #include "CLogger.h"
+#include "CMemoryMonitor.h"
 
 // Application
 #include "C3DScene.h"
@@ -713,6 +714,10 @@ void C3DScene::dump(QTextStream& stream, int iIdent)
                   .arg(sName)
                   .arg(CComponent::componentCounter()[sName]));
     }
+
+    dumpIdent(stream, iIdent, QString("CMemoryMonitor::allocatedBytes() : %1").arg(CMemoryMonitor::getInstance()->allocatedBytes()));
+
+    dumpIdent(stream, iIdent, QString("Components :"));
 
     foreach (QSP<CComponent> pComponent, m_vComponents)
     {

@@ -265,6 +265,12 @@ public:
     // Control methods
     //-------------------------------------------------------------------------------------------------
 
+    //!
+    void* operator new (size_t size);
+
+    //!
+    void operator delete(void* ptr, size_t size);
+
     //! Opérateur d'assignation
     CComponent& operator = (const CComponent& target);
 

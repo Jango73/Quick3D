@@ -55,6 +55,7 @@ Quick3DTest::Quick3DTest(QString sSceneFileName, QWidget *parent, Qt::WFlags fla
     connect(&m_tTimer, SIGNAL(timeout()), this, SLOT(onTimer()));
 
     connect(ui.actionLoad_scene, SIGNAL(triggered()), this, SLOT(onLoadSceneClicked()));
+    connect(ui.actionClear_scene, SIGNAL(triggered()), this, SLOT(onClearSceneClicked()));
     connect(ui.actionExport_terrain, SIGNAL(triggered()), this, SLOT(onExportTerrainClicked()));
     connect(ui.actionGenerate_matrix, SIGNAL(triggered()), this, SLOT(onGenerateMatrixClicked()));
     connect(ui.actionDump_scene, SIGNAL(triggered()), this, SLOT(onDumpSceneClicked()));
@@ -118,7 +119,7 @@ void Quick3DTest::loadScene(QString sFileName)
     m_pScene->viewports()[0]->setEnabled(true);
 
     //-----------------------------------------------
-    // Chargement des composants
+    // Load components
 
     LOG_DEBUG("Quick3DTest::Quick3DTest() : loading components...");
 
@@ -146,7 +147,7 @@ void Quick3DTest::resizeEvent(QResizeEvent *event)
 
 void Quick3DTest::onResize()
 {
-    if (m_pScene != nullptr)
+    if (m_pScene != nullptr && m_pScene->viewports().count() > 0)
     {
         m_pView->setGeometry(0, 0, ui.Render1->width(), ui.Render1->height());
         m_pScene->setGeometry(0, 0, m_pView->width(), m_pView->height());
@@ -337,6 +338,13 @@ void Quick3DTest::onLoadSceneClicked()
     }
 
     m_bRun = true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void Quick3DTest::onClearSceneClicked()
+{
+    m_pScene->clear();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -613,14 +621,17 @@ void Quick3DTest::onIRClicked()
 
 void Quick3DTest::onStreamView1Clicked()
 {
-    m_pScene->viewports()[0]->setStreamView(ui.m_chkStreamView1->checkState() == Qt::Checked);
+    if (m_pScene->viewports().count() > 0)
+    {
+        m_pScene->viewports()[0]->setStreamView(ui.m_chkStreamView1->checkState() == Qt::Checked);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void Quick3DTest::onViews1IndexChanged(const QString& sName)
 {
-    if (m_bProcessEvents)
+    if (m_bProcessEvents && m_pScene->viewports().count() > 0)
     {
         foreach (QSP<CComponent> pComponent, m_pScene->components())
         {

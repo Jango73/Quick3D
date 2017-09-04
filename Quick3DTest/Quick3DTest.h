@@ -74,6 +74,7 @@ private slots:
 
     void onTimer();
     void onLoadSceneClicked();
+    void onClearSceneClicked();
     void onExportTerrainClicked();
     void onGenerateMatrixClicked();
     void onDumpSceneClicked();

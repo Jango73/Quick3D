@@ -551,6 +551,7 @@
      <string>File</string>
     </property>
     <addaction name="actionLoad_scene"/>
+    <addaction name="actionClear_scene"/>
     <addaction name="actionExport_terrain"/>
     <addaction name="actionGenerate_matrix"/>
     <addaction name="actionDump_scene"/>
@@ -584,6 +585,11 @@
   <action name="actionLoad_scene">
    <property name="text">
     <string>Load scene...</string>
+   </property>
+  </action>
+  <action name="actionClear_scene">
+   <property name="text">
+    <string>Clear scene</string>
    </property>
   </action>
  </widget>

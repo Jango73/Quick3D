@@ -1,6 +1,7 @@
 
 // qt-plus
 #include "CLogger.h"
+#include "CMemoryMonitor.h"
 
 // Application
 #include "Angles.h"
@@ -1157,4 +1158,20 @@ void CComponent::decComponentCounter(QString sClassName)
     }
 
     m_mComponentCounter[sClassName]--;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void* CComponent::operator new (size_t size)
+{
+    CMemoryMonitor::getInstance()->allocBytes("CComponent", size);
+    return malloc(size);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CComponent::operator delete(void* ptr, size_t size)
+{
+    CMemoryMonitor::getInstance()->freeBytes("CComponent", size);
+    free(ptr);
 }

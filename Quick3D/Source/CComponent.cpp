@@ -56,6 +56,22 @@ CComponent* CComponent::instanciator(C3DScene* pScene)
 
 //-------------------------------------------------------------------------------------------------
 
+void* CComponent::operator new (size_t size)
+{
+    CMemoryMonitor::getInstance()->allocBytes("CComponent", size);
+    return malloc(size);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CComponent::operator delete(void* ptr, size_t size)
+{
+    CMemoryMonitor::getInstance()->freeBytes("CComponent", size);
+    free(ptr);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /*!
     Constructs a CComponent with its default parameters.
 */
@@ -1158,20 +1174,4 @@ void CComponent::decComponentCounter(QString sClassName)
     }
 
     m_mComponentCounter[sClassName]--;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void* CComponent::operator new (size_t size)
-{
-    CMemoryMonitor::getInstance()->allocBytes("CComponent", size);
-    return malloc(size);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void CComponent::operator delete(void* ptr, size_t size)
-{
-    CMemoryMonitor::getInstance()->freeBytes("CComponent", size);
-    free(ptr);
 }

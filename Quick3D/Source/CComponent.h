@@ -262,7 +262,7 @@ public:
     static int getNumComponents() { return m_iNumComponents; }
 
     //-------------------------------------------------------------------------------------------------
-    // Control methods
+    // Operators
     //-------------------------------------------------------------------------------------------------
 
     //!
@@ -271,8 +271,12 @@ public:
     //!
     void operator delete(void* ptr, size_t size);
 
-    //! Opérateur d'assignation
+    //! Assign operator
     CComponent& operator = (const CComponent& target);
+
+    //-------------------------------------------------------------------------------------------------
+    // Control methods
+    //-------------------------------------------------------------------------------------------------
 
     //! Loads this object's parameters
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);

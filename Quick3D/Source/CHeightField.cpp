@@ -1,4 +1,8 @@
 
+// qt-plus
+#include "CLogger.h"
+#include "CMemoryMonitor.h"
+
 // Application
 #include "CHeightField.h"
 

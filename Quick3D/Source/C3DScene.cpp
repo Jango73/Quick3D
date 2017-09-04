@@ -720,6 +720,13 @@ void C3DScene::dump(QTextStream& stream, int iIdent)
 
     dumpIdent(stream, iIdent, QString("CMemoryMonitor::allocatedBytes() : %1").arg(CMemoryMonitor::getInstance()->allocatedBytes()));
 
+    foreach (QString sName, CMemoryMonitor::getInstance()->allocationMap().keys())
+    {
+        dumpIdent(stream, iIdent, QString("Allocated bytes for %1 : %2")
+                  .arg(sName)
+                  .arg(CMemoryMonitor::getInstance()->allocationMap()[sName]));
+    }
+
     dumpIdent(stream, iIdent, QString("Components :"));
 
     foreach (QSP<CComponent> pComponent, m_vComponents)

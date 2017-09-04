@@ -26,7 +26,6 @@ public:
 
     //-------------------------------------------------------------------------------------------------
     // Constructors and destructor
-    // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
     //!
@@ -36,7 +35,16 @@ public:
     ~CGLMeshData();
 
     //-------------------------------------------------------------------------------------------------
-    // Control methods
+    // Operators
+    //-------------------------------------------------------------------------------------------------
+
+    //!
+    void* operator new (size_t size);
+
+    //!
+    void operator delete(void* ptr, size_t size);
+
+    //-------------------------------------------------------------------------------------------------
     // Control methods
     //-------------------------------------------------------------------------------------------------
 
@@ -45,17 +53,16 @@ public:
 
     //-------------------------------------------------------------------------------------------------
     // Properties
-    // Properties
     //-------------------------------------------------------------------------------------------------
 
     C3DScene*       m_pScene;
-    GLuint          m_iNumRenderPoints;         // Nombre de sommets transférés à OpenGL
-    GLuint          m_iNumRenderIndices;        // Nombre d'indices de sommets des polygones transférés à OpenGL
+    GLuint          m_iNumRenderPoints;         // Number of vertices transfered to OpenGL
+    GLuint          m_iNumRenderIndices;        // Number of polygon indices transfered to OpenGL
     CVertex*        m_vRenderPoints;            // Sommets transférés à OpenGL
     GLuint*         m_vRenderIndices;           // Indices de sommets des polygones transférés à OpenGL
     GLuint          m_iVBO [2];                 // Buffers de données alloués par OpenGL
     int             m_iGLType;
     bool            m_bNeedTransferBuffers;     // Si vrai, il est temps de donner à OpenGL les buffers de géométrie
 
-    static GLuint   m_iCurrentVBO;              // Numéro du dernier VBO transmis à OpenGL
+    static GLuint   m_iCurrentVBO;              // Last VBO transmitted to OpenGL
 };

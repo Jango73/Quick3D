@@ -5,7 +5,7 @@
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CMan::instanciator(C3DScene* pScene)
+CComponent* CMan::instantiator(C3DScene* pScene)
 {
     return new CMan(pScene);
 }

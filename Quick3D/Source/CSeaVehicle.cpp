@@ -5,7 +5,7 @@
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CSeaVehicle::instanciator(C3DScene* pScene)
+CComponent* CSeaVehicle::instantiator(C3DScene* pScene)
 {
 	return new CSeaVehicle(pScene);
 }

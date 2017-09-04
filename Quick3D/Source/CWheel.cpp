@@ -12,7 +12,7 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CWheel::instanciator(C3DScene* pScene)
+CComponent* CWheel::instantiator(C3DScene* pScene)
 {
     return new CWheel(pScene);
 }

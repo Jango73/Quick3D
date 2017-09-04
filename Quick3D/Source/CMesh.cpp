@@ -13,7 +13,7 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CMesh::instanciator(C3DScene* pScene)
+CComponent* CMesh::instantiator(C3DScene* pScene)
 {
     return new CMesh(pScene);
 }

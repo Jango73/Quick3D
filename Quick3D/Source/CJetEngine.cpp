@@ -6,7 +6,7 @@
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CJetEngine::instanciator(C3DScene* pScene)
+CComponent* CJetEngine::instantiator(C3DScene* pScene)
 {
     return new CJetEngine(pScene);
 }

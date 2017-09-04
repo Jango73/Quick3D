@@ -11,7 +11,7 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CCartoController::instanciator(C3DScene* pScene)
+CComponent* CCartoController::instantiator(C3DScene* pScene)
 {
     return new CCartoController(pScene);
 }

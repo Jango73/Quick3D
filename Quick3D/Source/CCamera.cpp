@@ -37,7 +37,7 @@ inline CVector2 degreesToPixels(double dCameraFOVW, double dCameraFOVH, CVector2
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CCamera::instanciator(C3DScene* pScene)
+CComponent* CCamera::instantiator(C3DScene* pScene)
 {
     return new CCamera(pScene);
 }

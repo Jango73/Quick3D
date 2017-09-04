@@ -13,7 +13,7 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CWing::instanciator(C3DScene* pScene)
+CComponent* CWing::instantiator(C3DScene* pScene)
 {
     return new CWing(pScene);
 }

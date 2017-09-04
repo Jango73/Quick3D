@@ -282,7 +282,7 @@ HEADERS += \
     Source/CMeshInstance.h \
     Source/CNamed.h \
     Source/COBJLoader.h \
-    Source/ComponentInstanciator.h \
+    Source/ComponentInstantiator.h \
     Source/CParented.h \
     Source/CParticle.h \
     Source/CParticleSystem.h \

@@ -29,7 +29,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Retourne une nouvelle instance de cet objet
-    static CComponent* instanciator(C3DScene* pScene);
+    static CComponent* instantiator(C3DScene* pScene);
 
     //! Constructor using a scene
     CBasicAnimator(C3DScene* pScene);

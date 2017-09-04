@@ -12,7 +12,7 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CVegetationGenerator::instanciator(C3DScene* pScene)
+CComponent* CVegetationGenerator::instantiator(C3DScene* pScene)
 {
     return new CVegetationGenerator(pScene);
 }

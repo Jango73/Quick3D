@@ -13,7 +13,7 @@
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CLight::instanciator(C3DScene* pScene)
+CComponent* CLight::instantiator(C3DScene* pScene)
 {
     return new CLight(pScene);
 }

@@ -10,7 +10,7 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CEngine::instanciator(C3DScene* pScene)
+CComponent* CEngine::instantiator(C3DScene* pScene)
 {
     return new CEngine(pScene);
 }

@@ -34,7 +34,7 @@ using namespace Math;
 /*!
     Instantiates a new CWorldTerrain.
 */
-CComponent* CWorldTerrain::instanciator(C3DScene* pScene)
+CComponent* CWorldTerrain::instantiator(C3DScene* pScene)
 {
     return new CWorldTerrain(pScene);
 }
@@ -160,7 +160,7 @@ void CWorldTerrain::loadParameters(const QString& sBaseFile, CXMLNode xComponent
     foreach (CXMLNode xGenerator, xComponentNodes)
     {
         QString sClass = xGenerator.attributes()[ParamName_Class];
-        QSP<CComponent> pComponent(CComponentFactory::getInstance()->instanciateComponent(sClass, m_pScene));
+        QSP<CComponent> pComponent(CComponentFactory::getInstance()->instantiateComponent(sClass, m_pScene));
 
         if (pComponent != nullptr)
         {

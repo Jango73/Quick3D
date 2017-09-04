@@ -15,7 +15,7 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CStandardController::instanciator(C3DScene* pScene)
+CComponent* CStandardController::instantiator(C3DScene* pScene)
 {
     return new CStandardController(pScene);
 }

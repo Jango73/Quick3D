@@ -15,7 +15,7 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CRudder::instanciator(C3DScene* pScene)
+CComponent* CRudder::instantiator(C3DScene* pScene)
 {
     return new CRudder(pScene);
 }

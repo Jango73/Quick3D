@@ -10,7 +10,7 @@
 
 // Application
 #include "quick3d_global.h"
-#include "ComponentInstanciator.h"
+#include "ComponentInstantiator.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -38,10 +38,10 @@ public:
     void registerCoreComponents();
 
     //! Enregistre un composant
-    void registerComponent(QString sClassName, MComponentInstanciator pInstanciator);
+    void registerComponent(QString sClassName, MComponentInstantiator pInstantiator);
 
     //! Instancie un composant selon son nom de classe pour la scène donnée
-    CComponent* instanciateComponent(QString sClassName, C3DScene* pScene);
+    CComponent* instantiateComponent(QString sClassName, C3DScene* pScene);
 
     //-------------------------------------------------------------------------------------------------
     // Properties
@@ -49,5 +49,5 @@ public:
 
 protected:
 
-    static QMap<QString, MComponentInstanciator>    s_vComponentInstanciators;
+    static QMap<QString, MComponentInstantiator>    s_vComponentInstantiators;
 };

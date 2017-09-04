@@ -8,7 +8,7 @@
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CElectricalContactor::instanciator(C3DScene* pScene)
+CComponent* CElectricalContactor::instantiator(C3DScene* pScene)
 {
 	return new CElectricalContactor(pScene);
 }

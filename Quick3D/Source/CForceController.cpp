@@ -15,7 +15,7 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CForceController::instanciator(C3DScene* pScene)
+CComponent* CForceController::instantiator(C3DScene* pScene)
 {
     return new CForceController(pScene);
 }

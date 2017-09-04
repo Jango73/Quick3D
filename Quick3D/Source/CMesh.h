@@ -29,7 +29,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Retourne une nouvelle instance de cet objet
-    static CComponent* instanciator(C3DScene* pScene);
+    static CComponent* instantiator(C3DScene* pScene);
 
     //!
     CMesh(C3DScene* pScene, double dMaxDistance = 10000.0, bool bUseSpacePartitionning = true);

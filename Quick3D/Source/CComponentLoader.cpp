@@ -116,7 +116,7 @@ CComponent* CComponentLoader::loadComponent(const QString& sBaseFile, C3DScene* 
 {
     QString sClass = xComponent.attributes()[ParamName_Class];
 
-    CComponent* pComponent = CComponentFactory::getInstance()->instanciateComponent(sClass, pScene);
+    CComponent* pComponent = CComponentFactory::getInstance()->instantiateComponent(sClass, pScene);
 
     if (pComponent != nullptr)
     {
@@ -151,7 +151,7 @@ CComponent* CComponentLoader::loadComponent(const QString& sBaseFile, C3DScene* 
         {
             QString sControllerClass = xController.attributes()[ParamName_Class];
 
-            CComponent* pControllerComponent = CComponentFactory::getInstance()->instanciateComponent(sControllerClass, pScene);
+            CComponent* pControllerComponent = CComponentFactory::getInstance()->instantiateComponent(sControllerClass, pScene);
 
             if (pControllerComponent != nullptr)
             {

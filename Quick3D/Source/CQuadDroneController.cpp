@@ -21,7 +21,7 @@ Engine numbers (top view) :
 
 -------------------------------------------------------------------------------------------------*/
 
-CComponent* CQuadDroneController::instanciator(C3DScene* pScene)
+CComponent* CQuadDroneController::instantiator(C3DScene* pScene)
 {
     return new CQuadDroneController(pScene);
 }

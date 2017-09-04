@@ -52,7 +52,7 @@
 
 //-------------------------------------------------------------------------------------------------
 
-QMap<QString, MComponentInstanciator> CComponentFactory::s_vComponentInstanciators;
+QMap<QString, MComponentInstantiator> CComponentFactory::s_vComponentInstantiators;
 
 //-------------------------------------------------------------------------------------------------
 
@@ -74,63 +74,63 @@ CComponentFactory::~CComponentFactory()
 
 void CComponentFactory::registerCoreComponents()
 {
-    registerComponent(ClassName_CComponent, CComponent::instanciator);
-    registerComponent(ClassName_CPhysicalComponent, CPhysicalComponent::instanciator);
-    registerComponent(ClassName_CCamera, CCamera::instanciator);
-    registerComponent(ClassName_CLight, CLight::instanciator);
-    registerComponent(ClassName_CStandardController, CStandardController::instanciator);
-    registerComponent(ClassName_CForceController, CForceController::instanciator);
-    registerComponent(ClassName_CCartoController, CCartoController::instanciator);
-    registerComponent(ClassName_CTankController, CTankController::instanciator);
-    registerComponent(ClassName_CAircraftController, CAircraftController::instanciator);
-    registerComponent(ClassName_CQuadDroneController, CQuadDroneController::instanciator);
-    registerComponent(ClassName_CBasicAnimator, CBasicAnimator::instanciator);
-    registerComponent(ClassName_CSkyBox, CSkyBox::instanciator);
-    registerComponent(ClassName_CWorldTerrain, CWorldTerrain::instanciator);
-    registerComponent(ClassName_CVegetationGenerator, CVegetationGenerator::instanciator);
+    registerComponent(ClassName_CComponent, CComponent::instantiator);
+    registerComponent(ClassName_CPhysicalComponent, CPhysicalComponent::instantiator);
+    registerComponent(ClassName_CCamera, CCamera::instantiator);
+    registerComponent(ClassName_CLight, CLight::instantiator);
+    registerComponent(ClassName_CStandardController, CStandardController::instantiator);
+    registerComponent(ClassName_CForceController, CForceController::instantiator);
+    registerComponent(ClassName_CCartoController, CCartoController::instantiator);
+    registerComponent(ClassName_CTankController, CTankController::instantiator);
+    registerComponent(ClassName_CAircraftController, CAircraftController::instantiator);
+    registerComponent(ClassName_CQuadDroneController, CQuadDroneController::instantiator);
+    registerComponent(ClassName_CBasicAnimator, CBasicAnimator::instantiator);
+    registerComponent(ClassName_CSkyBox, CSkyBox::instantiator);
+    registerComponent(ClassName_CWorldTerrain, CWorldTerrain::instantiator);
+    registerComponent(ClassName_CVegetationGenerator, CVegetationGenerator::instantiator);
 
-    registerComponent(ClassName_CMesh, CMesh::instanciator);
-    registerComponent(ClassName_CArmature, CArmature::instanciator);
-    registerComponent(ClassName_CBone, CBone::instanciator);
+    registerComponent(ClassName_CMesh, CMesh::instantiator);
+    registerComponent(ClassName_CArmature, CArmature::instantiator);
+    registerComponent(ClassName_CBone, CBone::instantiator);
 
-    registerComponent(ClassName_CVehicle, CVehicle::instanciator);
-    registerComponent(ClassName_CTerrestrialVehicle, CTerrestrialVehicle::instanciator);
-    registerComponent(ClassName_CSeaVehicle, CSeaVehicle::instanciator);
-    registerComponent(ClassName_CWheel, CWheel::instanciator);
-    registerComponent(ClassName_CMan, CMan::instanciator);
+    registerComponent(ClassName_CVehicle, CVehicle::instantiator);
+    registerComponent(ClassName_CTerrestrialVehicle, CTerrestrialVehicle::instantiator);
+    registerComponent(ClassName_CSeaVehicle, CSeaVehicle::instantiator);
+    registerComponent(ClassName_CWheel, CWheel::instantiator);
+    registerComponent(ClassName_CMan, CMan::instantiator);
 
-    registerComponent(ClassName_CAircraft, CAircraft::instanciator);
-    registerComponent(ClassName_CWing, CWing::instanciator);
-    registerComponent(ClassName_CElevator, CElevator::instanciator);
-    registerComponent(ClassName_CRudder, CRudder::instanciator);
-    registerComponent(ClassName_CEngine, CEngine::instanciator);
-    registerComponent(ClassName_CJetEngine, CJetEngine::instanciator);
+    registerComponent(ClassName_CAircraft, CAircraft::instantiator);
+    registerComponent(ClassName_CWing, CWing::instantiator);
+    registerComponent(ClassName_CElevator, CElevator::instantiator);
+    registerComponent(ClassName_CRudder, CRudder::instantiator);
+    registerComponent(ClassName_CEngine, CEngine::instantiator);
+    registerComponent(ClassName_CJetEngine, CJetEngine::instantiator);
 
-    registerComponent(ClassName_CElectricalComponent, CElectricalComponent::instanciator);
-    registerComponent(ClassName_CElectricalBus, CElectricalBus::instanciator);
-    registerComponent(ClassName_CElectricalContactor, CElectricalContactor::instanciator);
-    registerComponent(ClassName_CElectricalConsumer, CElectricalConsumer::instanciator);
-    registerComponent(ClassName_CEngineGenerator, CEngineGenerator::instanciator);
+    registerComponent(ClassName_CElectricalComponent, CElectricalComponent::instantiator);
+    registerComponent(ClassName_CElectricalBus, CElectricalBus::instantiator);
+    registerComponent(ClassName_CElectricalContactor, CElectricalContactor::instantiator);
+    registerComponent(ClassName_CElectricalConsumer, CElectricalConsumer::instantiator);
+    registerComponent(ClassName_CEngineGenerator, CEngineGenerator::instantiator);
 
-    registerComponent(ClassName_CHydraulicComponent, CHydraulicComponent::instanciator);
+    registerComponent(ClassName_CHydraulicComponent, CHydraulicComponent::instantiator);
 
     CPluginLoader::getInstance()->loadPlugins();
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void CComponentFactory::registerComponent(QString sClassName, MComponentInstanciator pInstanciator)
+void CComponentFactory::registerComponent(QString sClassName, MComponentInstantiator pInstantiator)
 {
-    s_vComponentInstanciators[sClassName] = pInstanciator;
+    s_vComponentInstantiators[sClassName] = pInstantiator;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CComponentFactory::instanciateComponent(QString sClassName, C3DScene* pScene)
+CComponent* CComponentFactory::instantiateComponent(QString sClassName, C3DScene* pScene)
 {
-    if (s_vComponentInstanciators.contains(sClassName))
+    if (s_vComponentInstantiators.contains(sClassName))
     {
-        return s_vComponentInstanciators[sClassName](pScene);
+        return s_vComponentInstantiators[sClassName](pScene);
     }
 
     return nullptr;

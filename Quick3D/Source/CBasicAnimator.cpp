@@ -12,7 +12,7 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CBasicAnimator::instanciator(C3DScene* pScene)
+CComponent* CBasicAnimator::instantiator(C3DScene* pScene)
 {
     return new CBasicAnimator(pScene);
 }

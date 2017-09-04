@@ -5,7 +5,7 @@
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CTerrestrialVehicle::instanciator(C3DScene* pScene)
+CComponent* CTerrestrialVehicle::instantiator(C3DScene* pScene)
 {
     return new CTerrestrialVehicle(pScene);
 }

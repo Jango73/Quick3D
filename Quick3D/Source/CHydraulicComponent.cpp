@@ -9,7 +9,7 @@
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CHydraulicComponent::instanciator(C3DScene* pScene)
+CComponent* CHydraulicComponent::instantiator(C3DScene* pScene)
 {
     return new CHydraulicComponent(pScene);
 }

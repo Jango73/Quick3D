@@ -8,7 +8,7 @@
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CElectricalBus::instanciator(C3DScene* pScene)
+CComponent* CElectricalBus::instantiator(C3DScene* pScene)
 {
 	return new CElectricalBus(pScene);
 }

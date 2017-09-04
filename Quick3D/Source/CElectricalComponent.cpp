@@ -9,7 +9,7 @@
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CElectricalComponent::instanciator(C3DScene* pScene)
+CComponent* CElectricalComponent::instantiator(C3DScene* pScene)
 {
     return new CElectricalComponent(pScene);
 }

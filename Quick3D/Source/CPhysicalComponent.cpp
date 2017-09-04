@@ -23,7 +23,7 @@ using namespace Math;
 /*!
     Instantiates a new CPhysicalComponent.
 */
-CComponent* CPhysicalComponent::instanciator(C3DScene* pScene)
+CComponent* CPhysicalComponent::instantiator(C3DScene* pScene)
 {
     return new CPhysicalComponent(pScene);
 }

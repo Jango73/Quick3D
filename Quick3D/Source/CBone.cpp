@@ -13,7 +13,7 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CBone::instanciator(C3DScene* pScene)
+CComponent* CBone::instantiator(C3DScene* pScene)
 {
     return new CBone(pScene);
 }

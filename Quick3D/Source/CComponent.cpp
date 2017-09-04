@@ -49,7 +49,7 @@ QMap<QString, int> CComponent::m_mComponentCounter;
 /*!
     Instantiates a new CComponent.
 */
-CComponent* CComponent::instanciator(C3DScene* pScene)
+CComponent* CComponent::instantiator(C3DScene* pScene)
 {
     return new CComponent(pScene);
 }

@@ -12,7 +12,7 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CSkyBox::instanciator(C3DScene* pScene)
+CComponent* CSkyBox::instantiator(C3DScene* pScene)
 {
     return new CSkyBox(pScene);
 }

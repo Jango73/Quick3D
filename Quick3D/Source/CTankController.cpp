@@ -13,7 +13,7 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CTankController::instanciator(C3DScene* pScene)
+CComponent* CTankController::instantiator(C3DScene* pScene)
 {
     return new CTankController(pScene);
 }

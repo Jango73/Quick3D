@@ -6,7 +6,7 @@
 //-------------------------------------------------------------------------------------------------
 
 #include "CSingleton.h"
-#include "ComponentInstanciator.h"
+#include "ComponentInstantiator.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -28,7 +28,7 @@ public:
     CPluginInterface();
 
     //!
-    void registerComponent(QString sClassName, MComponentInstanciator pInstanciator);
+    void registerComponent(QString sClassName, MComponentInstantiator pInstantiator);
 };
 
 //-------------------------------------------------------------------------------------------------

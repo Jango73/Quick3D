@@ -16,7 +16,7 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CVehicle::instanciator(C3DScene* pScene)
+CComponent* CVehicle::instantiator(C3DScene* pScene)
 {
     return new CVehicle(pScene);
 }

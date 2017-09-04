@@ -24,7 +24,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Returns a new instance of this class
-    static CComponent* instanciator(C3DScene* pScene);
+    static CComponent* instantiator(C3DScene* pScene);
 
     //! Constructor using a scene
     CLight(C3DScene* pScene);

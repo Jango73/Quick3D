@@ -13,7 +13,7 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CArmature::instanciator(C3DScene* pScene)
+CComponent* CArmature::instantiator(C3DScene* pScene)
 {
     return new CArmature(pScene);
 }

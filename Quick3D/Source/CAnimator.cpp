@@ -6,7 +6,7 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CAnimator::instanciator(C3DScene* pScene)
+CComponent* CAnimator::instantiator(C3DScene* pScene)
 {
 	return new CAnimator(pScene);
 }

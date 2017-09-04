@@ -15,7 +15,7 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CElevator::instanciator(C3DScene* pScene)
+CComponent* CElevator::instantiator(C3DScene* pScene)
 {
     return new CElevator(pScene);
 }

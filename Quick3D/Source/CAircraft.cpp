@@ -19,6 +19,7 @@ CComponent* CAircraft::instantiator(C3DScene* pScene)
 
 CAircraft::CAircraft(C3DScene* pScene)
     : CVehicle(pScene)
+    , m_bOnGround(true)
     , m_dAngleOfAttack_rad(0.0)
     , m_dTrueAirSpeed_ms(0.0)
     , m_dIndicatedAirSpeed_ms(0.0)
@@ -86,6 +87,7 @@ void CAircraft::update(double dDeltaTime)
     if (m_pFields.count() > 0.0)
     {
         m_dAltitudeAGL_m = m_dAltitude_m - m_pFields[0]->getHeightAt(geoloc(), nullptr);
+        m_bOnGround = m_dAltitudeAGL_m < 5.0;
     }
 
     m_dMach = m_dTrueAirSpeed_ms / dSpeedOfSound_ms;

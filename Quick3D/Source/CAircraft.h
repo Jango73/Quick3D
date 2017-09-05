@@ -32,6 +32,9 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
+    bool onGround() const { return m_bOnGround; }
+
+    //!
     double angleOfAttack_rad() const { return m_dAngleOfAttack_rad; }
 
     //!
@@ -86,6 +89,7 @@ public:
 
 protected:
 
+    bool            m_bOnGround;
     double          m_dAngleOfAttack_rad;
     double          m_dTrueAirSpeed_ms;
     double          m_dIndicatedAirSpeed_ms;

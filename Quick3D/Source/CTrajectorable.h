@@ -63,7 +63,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    virtual QString getClassName() const { return ClassName_CTrajectorable; }
+    virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CTrajectorable; }
 
     //!
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;

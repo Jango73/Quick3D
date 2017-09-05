@@ -60,7 +60,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Returns this object's class name
-    virtual QString getClassName() const { return ClassName_CQuadDroneController; }
+    virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CQuadDroneController; }
 
     //!
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;

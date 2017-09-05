@@ -37,7 +37,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Returns this object's class name
-    virtual QString getClassName() const { return "CImageFilter_Matrix"; }
+    virtual QString getClassName() const Q_DECL_OVERRIDE { return "CImageFilter_Matrix"; }
 
     //!
     virtual void process(QImage& imgImage);

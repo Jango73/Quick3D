@@ -44,7 +44,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Returns this object's class name
-    virtual QString getClassName() const { return ClassName_CForceController; }
+    virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CForceController; }
 
     //! Met l'objet à jour d'après le temps écoulé depuis la dernière image
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;

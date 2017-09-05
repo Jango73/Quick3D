@@ -41,7 +41,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Returns this object's class name
-    virtual QString getClassName() const { return ClassName_CWaterMaterial; }
+    virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CWaterMaterial; }
 
     //-------------------------------------------------------------------------------------------------
     // Inherited methods

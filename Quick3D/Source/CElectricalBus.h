@@ -43,7 +43,7 @@ public:
 	//-------------------------------------------------------------------------------------------------
 
 	//!
-	virtual QString getClassName() const { return ClassName_CElectricalBus; }
+	virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CElectricalBus; }
 
 	//-------------------------------------------------------------------------------------------------
 	// Control methods

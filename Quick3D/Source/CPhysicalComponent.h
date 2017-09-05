@@ -79,7 +79,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Retourne le nom de cette classe
-    virtual QString getClassName() const { return ClassName_CPhysicalComponent; }
+    virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CPhysicalComponent; }
 
     //! Retourne la trainée normalisée
     double drag_norm() const { return m_dDrag_norm; }

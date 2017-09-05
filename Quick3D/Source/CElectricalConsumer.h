@@ -43,7 +43,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    virtual QString getClassName() const { return ClassName_CElectricalConsumer; }
+    virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CElectricalConsumer; }
 
     //!
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;

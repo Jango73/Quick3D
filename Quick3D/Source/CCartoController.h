@@ -48,7 +48,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    virtual QString getClassName() const { return ClassName_CCartoController; }
+    virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CCartoController; }
 
     //!
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;

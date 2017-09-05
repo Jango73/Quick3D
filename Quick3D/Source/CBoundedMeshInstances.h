@@ -44,7 +44,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    virtual QString getClassName() const { return ClassName_CBoundedMeshInstances; }
+    virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CBoundedMeshInstances; }
 
     //!
     virtual CBoundingBox bounds();

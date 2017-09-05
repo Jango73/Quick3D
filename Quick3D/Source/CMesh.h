@@ -56,7 +56,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    virtual QString getClassName() const { return ClassName_CMesh; }
+    virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CMesh; }
 
     //!
     virtual CBoundingBox bounds();

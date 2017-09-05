@@ -36,7 +36,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Returns this object's class name
-    virtual QString getClassName() const { return ClassName_CWater; }
+    virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CWater; }
 
     //! Updates this object using the elapsed time since last update
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;

@@ -93,7 +93,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    virtual QString getClassName() const { return ClassName_CVegetationGenerator; }
+    virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CVegetationGenerator; }
 
     //-------------------------------------------------------------------------------------------------
     // Control methods

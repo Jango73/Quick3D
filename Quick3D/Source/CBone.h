@@ -47,7 +47,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    virtual QString getClassName() const { return ClassName_CBone; }
+    virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CBone; }
 
     //!
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;

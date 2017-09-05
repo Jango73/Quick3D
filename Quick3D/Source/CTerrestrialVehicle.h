@@ -38,7 +38,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    virtual QString getClassName() const { return ClassName_CTerrestrialVehicle; }
+    virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CTerrestrialVehicle; }
 
     //!
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;

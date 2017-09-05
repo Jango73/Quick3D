@@ -43,7 +43,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    virtual QString getClassName() const { return ClassName_CElevator; }
+    virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CElevator; }
 
     //!
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;

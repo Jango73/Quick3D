@@ -60,7 +60,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Returns this object's class name
-    virtual QString getClassName() const { return ClassName_CAnimator; }
+    virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CAnimator; }
 
     //! Loads this object's parameters d'après le noeud XML fourni
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;

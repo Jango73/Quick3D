@@ -47,7 +47,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    virtual QString getClassName() const { return ClassName_CHydraulicComponent; }
+    virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CHydraulicComponent; }
 
     //! Loads this object's parameters
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;

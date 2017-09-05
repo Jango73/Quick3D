@@ -135,7 +135,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Returns this object's class name
-    virtual QString getClassName() const { return ClassName_CCamera; }
+    virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CCamera; }
 
     //! Returns \c true if this object is a camera
     virtual bool isCamera() const { return true; }

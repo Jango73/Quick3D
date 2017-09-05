@@ -78,6 +78,7 @@
 #define ClassName_CElectricalConsumer       "CElectricalConsumer"
 #define ClassName_CElectricalContactor      "CElectricalContactor"
 #define ClassName_CEngineGenerator          "CEngineGenerator"
+#define ClassName_CHydraulicGenerator       "CHydraulicGenerator"
 
 #define ClassName_CHydraulicComponent       "CHydraulicComponent"
 
@@ -135,6 +136,7 @@
 #define ParamName_GravityFactor             "GravityFactor"
 #define ParamName_Hardness                  "Hardness"
 #define ParamName_Height                    "Height"
+#define ParamName_HydraulicInput            "HydraulicInput"
 #define ParamName_Ignore                    "Ignore"
 #define ParamName_InputScale                "InputScale"
 #define ParamName_Intensity                 "Intensity"

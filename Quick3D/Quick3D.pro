@@ -90,6 +90,7 @@ SOURCES += \
     Source/CGLMeshData.cpp \
     Source/CGeneratedField.cpp \
     Source/CGenerateFunction.cpp \
+    Source/CGenerator.cpp \
     Source/CGeoBounds.cpp \
     Source/CGeoloc.cpp \
     Source/CGeometryGenerator.cpp \
@@ -100,6 +101,7 @@ SOURCES += \
     Source/CHGTField.cpp \
     Source/CHTTPMapClient.cpp \
     Source/CHydraulicComponent.cpp \
+    Source/CHydraulicGenerator.cpp \
     Source/CImageFilter.cpp \
     Source/CImageFilter_Matrix.cpp \
     Source/CImageUtilities.cpp \
@@ -257,6 +259,7 @@ HEADERS += \
     Source/CGLMeshData.h \
     Source/CGeneratedField.h \
     Source/CGenerateFunction.h \
+    Source/CGenerator.h \
     Source/CGeoBounds.h \
     Source/CGeoloc.h \
     Source/CGeometryGenerator.h \
@@ -268,6 +271,7 @@ HEADERS += \
     Source/CHGTField.h \
     Source/CHTTPMapClient.h \
     Source/CHydraulicComponent.h \
+    Source/CHydraulicGenerator.h \
     Source/CImageFilter.h \
     Source/CImageFilter_Matrix.h \
     Source/CImageUtilities.h \

@@ -5,7 +5,7 @@
 #include "quick3d_global.h"
 #include "CComponentReference.h"
 #include "CGenerator.h"
-#include "CEngine.h"
+#include "CHydraulicComponent.h"
 
 //-------------------------------------------------------------------------------------------------
 // Forward declarations
@@ -14,7 +14,7 @@ class C3DScene;
 
 //-------------------------------------------------------------------------------------------------
 
-class QUICK3D_EXPORT CEngineGenerator : public CGenerator
+class QUICK3D_EXPORT CHydraulicGenerator : public CGenerator
 {
 public:
 
@@ -26,10 +26,10 @@ public:
     static CComponent* instantiator(C3DScene* pScene);
 
     //!
-    CEngineGenerator(C3DScene* pScene);
+    CHydraulicGenerator(C3DScene* pScene);
 
     //!
-    virtual ~CEngineGenerator();
+    virtual ~CHydraulicGenerator();
 
     //-------------------------------------------------------------------------------------------------
     // Setters
@@ -44,7 +44,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Returns this object's class name
-    virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CEngineGenerator; }
+    virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CHydraulicGenerator; }
 
     //! Loads this object's parameters
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
@@ -68,5 +68,5 @@ public:
 
 protected:
 
-    CComponentReference<CEngine>    m_rEngineInput;
+    CComponentReference<CHydraulicComponent>    m_rHydraulicInput;
 };

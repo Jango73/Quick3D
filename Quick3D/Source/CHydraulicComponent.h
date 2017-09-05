@@ -40,7 +40,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    double pressure() const { return m_dPressure; }
+    double pressure_norm() const;
 
     //-------------------------------------------------------------------------------------------------
     // Inherited methods
@@ -77,7 +77,7 @@ public:
 
 protected:
 
-    double                                              m_dPressure;
+    double                                              m_dPressure_norm;
     QVector<CComponentReference<CHydraulicComponent> >  m_vInputs;
     QVector<CComponentReference<CHydraulicComponent> >  m_vOutputs;
 };

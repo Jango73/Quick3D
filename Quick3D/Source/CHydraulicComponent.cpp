@@ -18,7 +18,7 @@ CComponent* CHydraulicComponent::instantiator(C3DScene* pScene)
 
 CHydraulicComponent::CHydraulicComponent(C3DScene* pScene)
     : CComponent(pScene)
-    , m_dPressure(0.0)
+    , m_dPressure_norm(0.0)
 {
     LOG_DEBUG("CHydraulicComponent::CHydraulicComponent()");
 }
@@ -28,6 +28,13 @@ CHydraulicComponent::CHydraulicComponent(C3DScene* pScene)
 CHydraulicComponent::~CHydraulicComponent()
 {
     LOG_DEBUG("CHydraulicComponent::~CHydraulicComponent()");
+}
+
+//-------------------------------------------------------------------------------------------------
+
+double CHydraulicComponent::pressure_norm() const
+{
+    return m_dPressure_norm;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -105,14 +112,16 @@ void CHydraulicComponent::update(double dDeltaTime)
 
 void CHydraulicComponent::push(double dPressure, double dDeltaTime)
 {
-    m_dPressure += dPressure;
+    m_dPressure_norm += dPressure;
+    m_dPressure_norm = Math::Angles::clipDouble(m_dPressure_norm, 0.0, 1.0);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 double CHydraulicComponent::pull(double dPressure, double dDeltaTime)
 {
-    m_dPressure -= dPressure * dDeltaTime;
+    m_dPressure_norm -= dPressure * dDeltaTime;
+    m_dPressure_norm = Math::Angles::clipDouble(m_dPressure_norm, 0.0, 1.0);
 
-    return m_dPressure;
+    return m_dPressure_norm;
 }

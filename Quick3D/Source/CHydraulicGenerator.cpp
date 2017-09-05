@@ -6,70 +6,70 @@
 #include "C3DScene.h"
 
 // Application
-#include "CEngineGenerator.h"
+#include "CHydraulicGenerator.h"
 
 using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
-CComponent* CEngineGenerator::instantiator(C3DScene* pScene)
+CComponent* CHydraulicGenerator::instantiator(C3DScene* pScene)
 {
-    return new CEngineGenerator(pScene);
+    return new CHydraulicGenerator(pScene);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-CEngineGenerator::CEngineGenerator(C3DScene* pScene)
+CHydraulicGenerator::CHydraulicGenerator(C3DScene* pScene)
     : CGenerator(pScene)
 {
-    LOG_DEBUG("CEngineGenerator::CEngineGenerator()");
+    LOG_DEBUG("CHydraulicGenerator::CHydraulicGenerator()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
-CEngineGenerator::~CEngineGenerator()
+CHydraulicGenerator::~CHydraulicGenerator()
 {
-    LOG_DEBUG("CEngineGenerator::~CEngineGenerator()");
+    LOG_DEBUG("CHydraulicGenerator::~CHydraulicGenerator()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void CEngineGenerator::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
+void CHydraulicGenerator::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
     CGenerator::loadParameters(sBaseFile, xComponent);
 
-    CXMLNode xNode = xComponent.getNodeByTagName(ParamName_EngineInput);
+    CXMLNode xNode = xComponent.getNodeByTagName(ParamName_HydraulicInput);
 
-    m_rEngineInput.setName(xNode.attributes()[ParamName_Name]);
+    m_rHydraulicInput.setName(xNode.attributes()[ParamName_Name]);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void CEngineGenerator::solveLinks(C3DScene* pScene)
+void CHydraulicGenerator::solveLinks(C3DScene* pScene)
 {
     CGenerator::solveLinks(pScene);
 
-    m_rEngineInput.solve(pScene, QSP<CComponent>(this));
+    m_rHydraulicInput.solve(pScene, QSP<CComponent>(this));
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void CEngineGenerator::clearLinks(C3DScene* pScene)
+void CHydraulicGenerator::clearLinks(C3DScene* pScene)
 {
     CGenerator::clearLinks(pScene);
 
-    m_rEngineInput.clear();
+    m_rHydraulicInput.clear();
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void CEngineGenerator::update(double dDeltaTime)
+void CHydraulicGenerator::update(double dDeltaTime)
 {
-    CGenerator::update(dDeltaTime);
+    CElectricalComponent::update(dDeltaTime);
 
-    QSP<CEngine> pEngine = QSP_CAST(CEngine, m_rEngineInput.component());
+    QSP<CHydraulicComponent> pInput = QSP_CAST(CHydraulicComponent, m_rHydraulicInput.component());
 
-    if (pEngine != nullptr && pEngine->alternatorActive())
+    if (pInput != nullptr && pInput->pressure_norm() > 0.5)
     {
         push(m_tCurrent, dDeltaTime);
     }

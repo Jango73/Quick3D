@@ -318,6 +318,12 @@ bool CWorldTerrain::enoughDetail(QSP<CWorldChunk> pChunk, CRenderContext* pConte
                 iLevel == 0
                 )
             && iLevel < m_iLevels;
+
+//    return (
+//                (pChunk->worldBounds().closestDistance(pContext->camera()->worldPosition()) > 10000.0) ||
+//                iLevel == 0
+//                )
+//            && iLevel < m_iLevels;
 }
 
 //-------------------------------------------------------------------------------------------------

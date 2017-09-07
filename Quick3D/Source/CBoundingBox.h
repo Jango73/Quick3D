@@ -115,6 +115,9 @@ public:
     CBoundingBox operator & (const CBoundingBox& target) const;
 
     //!
+    double closestDistance(Math::CVector3 pPoint);
+
+    //!
     void addSegments(C3DScene* pScene);
 
     //-------------------------------------------------------------------------------------------------

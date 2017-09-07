@@ -253,6 +253,48 @@ CBoundingBox CBoundingBox::operator & (const CBoundingBox& target) const
 
 //-------------------------------------------------------------------------------------------------
 
+double CBoundingBox::closestDistance(CVector3 pPoint)
+{
+    double dReturnValue = 0.0;
+
+    if (m_vMinimum.X > pPoint.X)
+    {
+        double diff = m_vMinimum.X - pPoint.X;
+        dReturnValue += diff * diff;
+    }
+    else if (pPoint.X > m_vMaximum.X)
+    {
+        double diff = pPoint.X - m_vMaximum.X;
+        dReturnValue += diff * diff;
+    }
+
+    if (m_vMinimum.Y > pPoint.Y)
+    {
+        double diff = m_vMinimum.Y - pPoint.Y;
+        dReturnValue += diff * diff;
+    }
+    else if (pPoint.Y > m_vMaximum.Y)
+    {
+        double diff = pPoint.Y - m_vMaximum.Y;
+        dReturnValue += diff * diff;
+    }
+
+    if (m_vMinimum.Z > pPoint.Z)
+    {
+        double diff = m_vMinimum.Z - pPoint.Z;
+        dReturnValue += diff * diff;
+    }
+    else if (pPoint.Z > m_vMaximum.Z)
+    {
+        double diff = pPoint.Z - m_vMaximum.Z;
+        dReturnValue += diff * diff;
+    }
+
+    return sqrt(dReturnValue);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CBoundingBox::addSegments(C3DScene* pScene)
 {
     pScene->addSegment(CVector3(m_vMinimum.X, m_vMinimum.Y, m_vMinimum.Z), CVector3(m_vMinimum.X, m_vMaximum.Y, m_vMinimum.Z));

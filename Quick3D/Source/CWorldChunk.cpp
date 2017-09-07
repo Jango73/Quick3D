@@ -227,56 +227,56 @@ bool CWorldChunk::operator < (const CWorldChunk& other) const
 
 void CWorldChunk::paint(CRenderContext* pContext)
 {
-    // CVector3 vPosition = pContext->internalCameraMatrix() * getWorldBounds().center();
-    // double dRadius = getWorldBounds().radius();
+    // CVector3 vPosition = pContext->internalCameraMatrix() * worldBounds().center();
+    // double dRadius = worldBounds().radius();
 
     m_tLastUsed = QDateTime::currentDateTime();
 
-    /*
-    if (vPosition.getMagnitude() < 10000.0)
+    if (pContext->scene()->boundsOnly())
     {
-        getWorldBounds().addSegments(pContext->scene());
+        worldBounds().addSegments(pContext->scene());
     }
-    */
-
-    // Paint chunk if containing sphere is within the viewing frustum
-    // if (pContext->scene()->getFrustumCheck() == false || pContext->camera()->contains(vPosition, dRadius))
+    else
     {
-        // pContext->tStatistics.m_iNumFrustumTests++;
-
-        if (m_pTerrain && m_pTerrain->isOK())
+        // Paint chunk if containing sphere is within the viewing frustum
+        // if (pContext->scene()->getFrustumCheck() == false || pContext->camera()->contains(vPosition, dRadius))
         {
-            CMaterial* pMaterial = m_pAutoTerrain->material();
+            // pContext->tStatistics.m_iNumFrustumTests++;
 
-            CTiledMaterial* pTiled = dynamic_cast<CTiledMaterial*>(pMaterial);
-
-            if (pTiled != nullptr)
+            if (m_pTerrain && m_pTerrain->isOK())
             {
-                pTiled->setCurrentPositionAndLevel(m_gOriginalGeoloc, m_pTerrain->level());
+                CMaterial* pMaterial = m_pAutoTerrain->material();
+
+                CTiledMaterial* pTiled = dynamic_cast<CTiledMaterial*>(pMaterial);
+
+                if (pTiled != nullptr)
+                {
+                    pTiled->setCurrentPositionAndLevel(m_gOriginalGeoloc, m_pTerrain->level());
+                }
+
+                m_pTerrain->paint(pContext);
             }
 
-            m_pTerrain->paint(pContext);
-        }
-
-        if (m_pWater && m_pWater->isOK())
-        {
-            glDisable(GL_CULL_FACE);
-
-            m_pWater->paint(pContext);
-
-            glEnable(GL_CULL_FACE);
-        }
-
-        if (m_bOK)
-        {
-            foreach (CBoundedMeshInstances* pBoundedMeshInstance, m_vBoundedMeshes)
+            if (m_pWater && m_pWater->isOK())
             {
-                pBoundedMeshInstance->paint(pContext);
+                glDisable(GL_CULL_FACE);
+
+                m_pWater->paint(pContext);
+
+                glEnable(GL_CULL_FACE);
             }
 
-            foreach (QString sBushName, m_vBushMeshes.keys())
+            if (m_bOK)
             {
-                m_vBushMeshes[sBushName]->paint(pContext, this);
+                foreach (CBoundedMeshInstances* pBoundedMeshInstance, m_vBoundedMeshes)
+                {
+                    pBoundedMeshInstance->paint(pContext);
+                }
+
+                foreach (QString sBushName, m_vBushMeshes.keys())
+                {
+                    m_vBushMeshes[sBushName]->paint(pContext, this);
+                }
             }
         }
     }

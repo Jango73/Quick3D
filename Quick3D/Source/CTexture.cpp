@@ -21,6 +21,8 @@ using namespace Math;
 CTextureUpdater::CTextureUpdater(CTexture* pTexture)
     : m_pTexture(pTexture)
     , m_dDeltaTime(0.0)
+    , m_bWork(false)
+    , m_bStop(false)
 {
 }
 
@@ -33,15 +35,45 @@ void CTextureUpdater::setDeltaTime(double dDeltaTime)
 
 //-------------------------------------------------------------------------------------------------
 
+void CTextureUpdater::stop()
+{
+    m_bStop = true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CTextureUpdater::work()
+{
+    m_bWork = true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CTextureUpdater::run()
 {
-    m_pTexture->m_pUpdater->updateTexture(m_pTexture, m_dDeltaTime);
+    while (m_bStop == false)
+    {
+        if (m_bWork)
+        {
+            if (m_pTexture->lock())
+            {
+                m_bWork = false;
+                m_pTexture->m_pUpdater->updateTexture(m_pTexture, m_dDeltaTime);
+                m_pTexture->unlock();
+            }
+
+            emit updateFinished();
+        }
+
+        msleep(20);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CTexture::CTexture(C3DScene* pScene, QString sName, const QImage& imgTexture, QSize size, int iIndex, bool bIsDynamic)
-    : m_pScene(pScene)
+    : m_tMutex(QMutex::Recursive)
+    , m_pScene(pScene)
     , m_sName(sName)
     , m_pUpdater(nullptr)
     , m_TextureUpdateWorker(nullptr)
@@ -65,7 +97,8 @@ CTexture::CTexture(C3DScene* pScene, QString sName, const QImage& imgTexture, QS
         {
             m_imgTexture = imgTexture.copy();
             m_TextureUpdateWorker = new CTextureUpdater(this);
-            connect(m_TextureUpdateWorker, SIGNAL(finished()), this, SLOT(onUpdateFinished()));
+            connect(m_TextureUpdateWorker, SIGNAL(updateFinished()), this, SLOT(onUpdateFinished()));
+            m_TextureUpdateWorker->start();
         }
 
         glBindTexture(GL_TEXTURE_2D, m_uiGLTexture);
@@ -81,6 +114,8 @@ CTexture::CTexture(C3DScene* pScene, QString sName, const QImage& imgTexture, QS
 
 CTexture::~CTexture()
 {
+    m_TextureUpdateWorker->stop();
+
     m_pScene->makeCurrentRenderingContext();
 
     glDeleteTextures(1, &m_uiGLTexture);
@@ -96,11 +131,8 @@ void CTexture::update(double dDeltaTime)
 
         if (m_iUpdateCounter > 3)
         {
-            if (m_TextureUpdateWorker->isRunning() == false)
-            {
-                m_TextureUpdateWorker->setDeltaTime(dDeltaTime);
-                m_TextureUpdateWorker->start();
-            }
+            m_TextureUpdateWorker->setDeltaTime(dDeltaTime);
+            m_TextureUpdateWorker->work();
         }
     }
 }
@@ -135,17 +167,36 @@ void CTexture::activate(int iIndex)
 
 //-------------------------------------------------------------------------------------------------
 
+bool CTexture::lock()
+{
+    return m_tMutex.tryLock(2000);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CTexture::unlock()
+{
+    m_tMutex.unlock();
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CTexture::onUpdateFinished()
 {
-    m_pScene->makeCurrentRenderingContext();
+    if (lock())
+    {
+        m_pScene->makeCurrentRenderingContext();
 
-    GL_glActiveTexture(GL_TEXTURE1 + 0);
+        GL_glActiveTexture(GL_TEXTURE1 + 0);
 
-    glBindTexture(GL_TEXTURE_2D, m_uiGLTexture);
+        glBindTexture(GL_TEXTURE_2D, m_uiGLTexture);
 
-    QImage tImage = QGLWidget::convertToGLFormat(m_imgTexture);
+        QImage tImage = QGLWidget::convertToGLFormat(m_imgTexture);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tImage.width(), tImage.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tImage.bits());
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tImage.width(), tImage.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tImage.bits());
 
-    m_iUpdateCounter = 0;
+        m_iUpdateCounter = 0;
+
+        unlock();
+    }
 }

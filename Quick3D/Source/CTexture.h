@@ -5,6 +5,7 @@
 #include <QImage>
 #include <QtOpenGL>
 #include <QThread>
+#include <QMutex>
 
 // qt-plus
 #include "CXMLNode.h"
@@ -27,6 +28,8 @@ class CTexture;
 
 class QUICK3D_EXPORT CTextureUpdater : public QThread
 {
+    Q_OBJECT
+
 public:
 
     //!
@@ -36,12 +39,24 @@ public:
     void setDeltaTime(double dDeltaTime);
 
     //!
+    void stop();
+
+    //!
+    void work();
+
+    //!
     virtual void run();
+
+signals:
+
+    void updateFinished();
 
 protected:
 
     CTexture*   m_pTexture;
     double      m_dDeltaTime;
+    bool        m_bStop;
+    bool        m_bWork;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -103,6 +118,12 @@ public:
     //!
     virtual void activate(int iIndex = 0);
 
+    //!
+    bool lock();
+
+    //!
+    void unlock();
+
     //-------------------------------------------------------------------------------------------------
     // Slots
     //-------------------------------------------------------------------------------------------------
@@ -123,6 +144,7 @@ protected:
 
 protected:
 
+    QMutex              m_tMutex;
     C3DScene*           m_pScene;
     CComponent*         m_pUpdater;
     CTextureUpdater*    m_TextureUpdateWorker;

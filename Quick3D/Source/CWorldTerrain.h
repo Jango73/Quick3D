@@ -124,7 +124,7 @@ public:
     virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = nullptr);
 
     //!
-    virtual void flatten(const CGeoloc& gPosition, double dRadius);
+    virtual void flatten(const CGeoloc& gPosition, double dRadius) Q_DECL_OVERRIDE;
 
     //! Ray intersection
     virtual Math::RayTracingResult intersect(Math::CRay3 ray) Q_DECL_OVERRIDE;
@@ -161,6 +161,9 @@ protected:
 
     //! Ray intersection
     Math::RayTracingResult intersectRecurse(QSP<CWorldChunk> pChunk, const Math::CRay3& ray) const;
+
+    //!
+    void flattenRecurse(QSP<CWorldChunk> pChunk, const CGeoloc& gPosition, double dRadius);
 
     //-------------------------------------------------------------------------------------------------
     // Properties

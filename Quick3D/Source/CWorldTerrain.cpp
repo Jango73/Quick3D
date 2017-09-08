@@ -697,18 +697,29 @@ double CWorldTerrain::getHeightAtRecurse(const CGeoloc& gPosition, QSP<CWorldChu
 */
 void CWorldTerrain::flatten(const CGeoloc& gPosition, double dRadius)
 {
-    /*
-    foreach (ChunkMap map, m_vChunks)
+    if (m_pRoot != nullptr)
     {
-        if (map.pChunk)
+        return flattenRecurse(m_pRoot, gPosition, dRadius);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CWorldTerrain::flattenRecurse(QSP<CWorldChunk> pChunk, const CGeoloc& gPosition, double dRadius)
+{
+    if (pChunk->terrain() != nullptr)
+    {
+    }
+
+    foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
+    {
+        QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
+
+        if (pChild != nullptr)
         {
-            if (map.pChunk->getWorldBounds().contains(gPosition, dRadius))
-            {
-                map.pChunk->flatten(gPosition, dRadius);
-            }
+            flattenRecurse(pChild, gPosition, dRadius);
         }
     }
-    */
 }
 
 //-------------------------------------------------------------------------------------------------

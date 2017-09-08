@@ -553,6 +553,10 @@ void CTerrain::work()
 
 void CTerrain::flatten(const CGeoloc& gPosition, double dRadius)
 {
+    if (worldBounds().contains(gPosition, dRadius))
+    {
+    }
+
     /*
     Vector3 vLocal = vPosition - m_vCenter;
 

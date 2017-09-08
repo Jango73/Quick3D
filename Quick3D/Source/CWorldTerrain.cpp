@@ -349,7 +349,7 @@ void CWorldTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pConte
     if (bStayHere)
     {
         // Create terrain for the chunk if needed
-        if (!pChunk->terrain())
+        if (pChunk->terrain() == nullptr)
         {
             LOG_DEBUG(QString("Creating terrain for tile at lat %1, lon %2, level %3")
                       .arg(gChunkPosition.Latitude)
@@ -409,7 +409,7 @@ void CWorldTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pConte
     }
     else
     {
-        // Création des sous-chunks si besoin
+        // Create sub chunks if required
         if (pChunk->childComponents().count() == 0)
         {
             LOG_DEBUG(QString("Creating sub-quads for tile at lat %1, lon %2, level %3")
@@ -495,10 +495,7 @@ void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRen
 {
     CGeoloc gChunkPosition = pChunk->geoloc();
 
-    // On décide si ce niveau de détail est suffisant
-    // Decide whether this level of detail is enough
     bool bStayHere = enoughDetail(pChunk, pContext, iLevel);
-
     bool bChildrenDrawable = true;
 
     foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
@@ -528,7 +525,7 @@ void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRen
             vChunkCollect.append(pChunk);
 
             // Get rid of unneeded water
-            if (pChunk->water() && pChunk->terrain()->allHeightsOverSea())
+            if (pChunk->water() != nullptr && pChunk->terrain()->allHeightsOverSea())
             {
                 pChunk->setWater(QSP<CTerrain>());
             }
@@ -538,7 +535,7 @@ void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRen
             {
                 QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChunk->childComponents()[iIndex]);
 
-                if (pChild && pChild->isEmpty())
+                if (pChild != nullptr && pChild->isEmpty())
                 {
                     pChunk->childComponents().remove(iIndex);
                     iIndex--;

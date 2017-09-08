@@ -28,7 +28,7 @@ CWorldChunk::CWorldChunk(C3DScene* pScene, CWorldTerrain* pAutoTerrain, CHeightF
 {
     CComponent::incComponentCounter(ClassName_CWorldChunk);
 
-    m_tLastUsed = QDateTime::currentDateTime();
+    setUsedNow();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -230,7 +230,7 @@ void CWorldChunk::paint(CRenderContext* pContext)
     // CVector3 vPosition = pContext->internalCameraMatrix() * worldBounds().center();
     // double dRadius = worldBounds().radius();
 
-    m_tLastUsed = QDateTime::currentDateTime();
+    setUsedNow();
 
     if (pContext->scene()->boundsOnly())
     {
@@ -315,7 +315,7 @@ bool CWorldChunk::drawable()
 bool CWorldChunk::isEmpty()
 {
     bool bWaitingForBuild = CWorkerManager::getInstance()->containsWorker(this);
-    bool bSelfEmpty = (bWaitingForBuild == false && (!m_pTerrain));
+    bool bSelfEmpty = (bWaitingForBuild == false && m_pTerrain == nullptr);
     bool bChildrenEmpty = true;
 
     foreach (QSP<CComponent> pChildComponent, m_vChildren)
@@ -532,7 +532,7 @@ void CWorldChunk::dump(QTextStream& stream, int iIdent)
     dumpIdent(stream, iIdent, QString("Original geoloc : %1").arg(m_gOriginalGeoloc.toString()));
     dumpIdent(stream, iIdent, QString("Original size : %1").arg(m_gOriginalSize.toString()));
     dumpIdent(stream, iIdent, QString("Size : %1").arg(m_gSize.toString()));
-    dumpIdent(stream, iIdent, QString("Last used : %1").arg(m_tLastUsed.toString()));
+    dumpIdent(stream, iIdent, QString("Last used seconds : %1").arg(m_tLastUsed.secsTo(QDateTime::currentDateTime())));
     dumpIdent(stream, iIdent, QString("Distance : %1").arg(m_dDistance));
     dumpIdent(stream, iIdent, QString("Terrain :"));
 

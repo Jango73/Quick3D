@@ -80,6 +80,7 @@ Quick3DTest::Quick3DTest(QString sSceneFileName, QWidget *parent, Qt::WFlags fla
     connect(ui.m_chkNormalsOnly, SIGNAL(clicked()), this, SLOT(onNormalsOnlyClicked()));
     connect(ui.m_chkDepth, SIGNAL(clicked()), this, SLOT(onDepthClicked()));
     connect(ui.m_chkOverlook, SIGNAL(clicked()), this, SLOT(onOverlookClicked()));
+    connect(ui.m_chkEdit, SIGNAL(clicked()), this, SLOT(onEditClicked()));
 
     connect(ui.m_bReset, SIGNAL(clicked()), this, SLOT(onResetClicked()));
 
@@ -724,4 +725,11 @@ void Quick3DTest::onDepthClicked()
 void Quick3DTest::onOverlookClicked()
 {
     m_pScene->setOverlookScene(ui.m_chkOverlook->checkState() == Qt::Checked);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void Quick3DTest::onEditClicked()
+{
+    m_pScene->setEditMode(ui.m_chkEdit->checkState() == Qt::Checked);
 }

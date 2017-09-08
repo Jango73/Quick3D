@@ -18,6 +18,7 @@
 #include "CQ3DConstants.h"
 #include "CVertex.h"
 #include "CTexture.h"
+#include "CDumpable.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -34,7 +35,7 @@ class CRenderContext;
 
 //-------------------------------------------------------------------------------------------------
 
-class QUICK3D_EXPORT CMaterial : public QObject, public QSharedData, public CNamed, public ILoadable
+class QUICK3D_EXPORT CMaterial : public QObject, public QSharedData, public CNamed, public CDumpable, public ILoadable
 {
     Q_OBJECT
 
@@ -59,9 +60,6 @@ public:
 
     //! Sets metalness factor
     void setMetalness(double value) { m_dMetalness = value; }
-
-    //! Sets reflection factor
-    void setReflection(double value) { m_dReflection = value; }
 
     //! Sets SSS factor (Sub-surface scattering)
     void setSSSFactor(double value) { m_dSSSFactor = value; }
@@ -105,9 +103,6 @@ public:
 
     //! Returns a reference to the subdermal color
     Math::CVector4& subdermal() { return m_cSubdermal; }
-
-    //! Returns the reflection factor
-    double reflection() const { return m_dReflection; }
 
     //! Returns the IR factor
     double IRFactor() const { return m_dIRFactor; }
@@ -178,6 +173,9 @@ public:
     //! Applique des transformations à la géolocalisation donnée (ex: Mercator)
     virtual CGeoloc transformGeoloc(const CGeoloc& gPosition);
 
+    //! Dumps contents to a stream
+    virtual void dump(QTextStream& stream, int iIdent) Q_DECL_OVERRIDE;
+
     //!
     static Math::CVector4 black()	{ return Math::CVector4(0.0, 0.0, 0.0, 1.0); }
     static Math::CVector4 white()	{ return Math::CVector4(1.0, 1.0, 1.0, 1.0); }
@@ -199,8 +197,6 @@ protected:
     double                  m_dSelfIllumination;
     double                  m_dShininess;
     double                  m_dMetalness;
-    double                  m_dReflection;
-    double                  m_dReflectionSteepness;
     double                  m_dSSSFactor;
     double                  m_dSSSRadius;
     QVector<CTexture*>      m_vDiffuseTextures;

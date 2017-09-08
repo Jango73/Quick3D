@@ -768,8 +768,9 @@ RayTracingResult CWorldTerrain::intersectRecurse(QSP<CWorldChunk> pChunk, const 
 void CWorldTerrain::dump(QTextStream& stream, int iIdent)
 {
     dumpIdent(stream, iIdent, QString("[CWorldTerrain]"));
+    dumpIdent(stream, iIdent, QString("GenerateNow : %1").arg(m_bGenerateNow));
     dumpIdent(stream, iIdent, QString("Levels : %1").arg(m_iLevels));
-    dumpIdent(stream, iIdent, QString("Terrain res : %1").arg(m_iTerrainResolution));
+    dumpIdent(stream, iIdent, QString("Terrain resolution : %1").arg(m_iTerrainResolution));
     dumpIdent(stream, iIdent, QString("Root :"));
 
     if (m_pRoot != nullptr)

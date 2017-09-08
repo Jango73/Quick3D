@@ -4,6 +4,9 @@
 // Std
 #include "math.h"
 
+// Qt
+#include <QString>
+
 // Application
 #include "Angles.h"
 
@@ -343,6 +346,12 @@ public:
     {
         if (X == 0.0) return 0.0;
         return atan2(Y, X);
+    }
+
+    //! Returns a string representation of this vector
+    inline QString toString() const
+    {
+        return QString("<%1, %2, %3, %4>").arg(X).arg(Y).arg(Z).arg(W);
     }
 };
 }

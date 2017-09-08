@@ -466,8 +466,7 @@ void C3DScene::getLightsByTagRecurse(QVector<QSP<CLight> >& vLights, const QStri
 */
 void C3DScene::updateScene(double dDeltaTimeS)
 {
-    if (dDeltaTimeS < 0.0) dDeltaTimeS = 0.0;
-    if (dDeltaTimeS > 1.0) dDeltaTimeS = 1.0;
+    dDeltaTimeS = Angles::clipDouble(dDeltaTimeS, 0.0, 1.0);
 
     if (m_bEditMode == false)
     {
@@ -479,7 +478,7 @@ void C3DScene::updateScene(double dDeltaTimeS)
         m_pController->update(dDeltaTimeS);
     }
 
-    if (m_bEditMode)
+    if (m_bEditMode == true)
     {
         dDeltaTimeS = 0.0;
     }

@@ -12,8 +12,6 @@ CWaterMaterial::CWaterMaterial(C3DScene* pScene)
     m_cSpecular = CVector4(0.8, 0.8, 0.8, 1.0);
     m_dShininess = 0.8;
     m_dMetalness = 0.6;
-    m_dReflection = 0.8;
-    m_dReflectionSteepness = 4.0;
     m_dIRFactor = 0.2;
     m_dRigidness = 0.75;
     m_bHasAlpha = true;

@@ -332,9 +332,6 @@ public:
     //! Transforme les sommets
     void transformVertices(const Math::CMatrix4& matrix);
 
-    //! Dumps contents to a stream
-    virtual void dump(QTextStream& stream, int iIdent);
-
     //! Calcule la matrice de transformation en coordonnées "monde"
     void computeWorldTransform();
 
@@ -352,6 +349,9 @@ public:
 
     //! Copie la matrice de l'objet cible dans la matrice de cet objet
     void copyTransform(const CComponent* pTarget);
+
+    //! Dumps contents to a stream
+    virtual void dump(QTextStream& stream, int iIdent) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Static methods

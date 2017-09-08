@@ -65,8 +65,6 @@ uniform vec4			u_material_subdermal;
 uniform float			u_material_self_illum;
 uniform float			u_material_shininess;
 uniform float           u_material_metalness;
-uniform float			u_material_reflection;
-uniform float			u_material_reflection_steepness;
 uniform float			u_material_sss_factor;
 uniform float			u_material_sss_radius;
 

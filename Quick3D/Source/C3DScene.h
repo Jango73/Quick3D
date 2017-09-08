@@ -194,19 +194,19 @@ public:
     const QImage& frameBuffer() const { return m_imgFrameBuffer; }
 
     //!
-    bool editMode() { return m_bEditMode; }
+    bool editMode() const { return m_bEditMode; }
 
     //!
-    bool debugMode() { return m_DebugMode; }
+    bool debugMode() const { return m_DebugMode; }
 
     //!
-    bool frustumCheck() { return m_bFrustumCheck; }
+    bool frustumCheck() const { return m_bFrustumCheck; }
 
     //!
-    bool boundsOnly() { return m_bBoundsOnly; }
+    bool boundsOnly() const { return m_bBoundsOnly; }
 
     //!
-    bool normalsOnly() { return m_bNormalsOnly; }
+    bool normalsOnly() const { return m_bNormalsOnly; }
 
     //! Returns the overlook scene flag, for debug purposes
     bool overlookScene() const { return m_bOverlookScene; }

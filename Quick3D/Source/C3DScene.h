@@ -117,6 +117,9 @@ public:
     //! Sets the overlook scene flag, for debug purposes
     void setOverlookScene(bool value) { m_bOverlookScene = value; }
 
+    //!
+    void setOverlookFOV(double value) { m_dOverlookFOV = value; }
+
     //-------------------------------------------------------------------------------------------------
     // Getters
     //-------------------------------------------------------------------------------------------------
@@ -207,6 +210,9 @@ public:
 
     //! Returns the overlook scene flag, for debug purposes
     bool overlookScene() const { return m_bOverlookScene; }
+
+    //!
+    double overlookFOV() const { return m_dOverlookFOV; }
 
     //-------------------------------------------------------------------------------------------------
     // Control methods
@@ -321,6 +327,7 @@ protected:
     bool                                    m_bDepthComputing;
     double                                  m_dTime;
     double                                  m_dSunIntensity;
+    double                                  m_dOverlookFOV;
     QImage                                  m_imgFrameBuffer;
 
     // Shared data

@@ -89,6 +89,7 @@ private slots:
     void onShaderQualityChanged(int iValue);
     void onTerrainResChanged(int iValue);
     void onMoveSpeedChanged(int iValue);
+    void onOverlookFOVChanged(int iValue);
     void onViews1IndexChanged(const QString&);
     void onControllableIndexChanged(const QString& sName);
     void onResetClicked();

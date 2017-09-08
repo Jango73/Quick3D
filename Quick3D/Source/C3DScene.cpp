@@ -59,7 +59,6 @@ C3DScene::C3DScene(bool bForDisplay)
     , m_dShaderQuality(0.5)
     , m_pRain(nullptr)
     , m_tTimeOfDay(12, 0, 0)
-    , m_dTime(0.0)
     , m_dWindLevel(0.5)
     , m_bRenderingShadows(false)
     , m_bforceWideFOV(false)
@@ -67,6 +66,9 @@ C3DScene::C3DScene(bool bForDisplay)
     , m_bForceIR(false)
     , m_bStreamView(false)
     , m_bDepthComputing(false)
+    , m_dTime(0.0)
+    , m_dSunIntensity(0.0)
+    , m_dOverlookFOV(90.0)
 {
     LOG_DEBUG("C3DScene::C3DScene()");
 

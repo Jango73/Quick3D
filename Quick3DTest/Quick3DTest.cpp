@@ -66,6 +66,7 @@ Quick3DTest::Quick3DTest(QString sSceneFileName, QWidget *parent, Qt::WFlags fla
     connect(ui.m_sShaderQuality, SIGNAL(valueChanged(int)), this, SLOT(onShaderQualityChanged(int)));
     connect(ui.m_sTerrainRes, SIGNAL(valueChanged(int)), this, SLOT(onTerrainResChanged(int)));
     connect(ui.m_sMoveSpeed, SIGNAL(valueChanged(int)), this, SLOT(onMoveSpeedChanged(int)));
+    connect(ui.m_sOverlookFOV, SIGNAL(valueChanged(int)), this, SLOT(onOverlookFOVChanged(int)));
 
     connect(ui.m_chkRain, SIGNAL(clicked()), this, SLOT(onRainClicked()));
     connect(ui.m_chkWideFOV, SIGNAL(clicked()), this, SLOT(onWideFOVClicked()));
@@ -587,6 +588,13 @@ void Quick3DTest::onMoveSpeedChanged(int iValue)
     {
         m_pScene->controller()->setMoveSpeed((double) iValue / 100.0);
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void Quick3DTest::onOverlookFOVChanged(int iValue)
+{
+    m_pScene->setOverlookFOV((double) iValue);
 }
 
 //-------------------------------------------------------------------------------------------------

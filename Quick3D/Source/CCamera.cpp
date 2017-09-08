@@ -276,7 +276,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
                     );
 
         mCameraProjection = CCamera::getQtProjectionMatrix(
-                    DEFAULT_FOV,
+                    pScene->overlookFOV(),
                     (double) iWidth / (double) iHeight,
                     m_dMinDistance,
                     m_dMaxDistance

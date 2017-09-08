@@ -114,7 +114,11 @@ CTexture::CTexture(C3DScene* pScene, QString sName, const QImage& imgTexture, QS
 
 CTexture::~CTexture()
 {
-    m_TextureUpdateWorker->stop();
+    if (m_TextureUpdateWorker != nullptr)
+    {
+        m_TextureUpdateWorker->stop();
+        delete m_TextureUpdateWorker;
+    }
 
     m_pScene->makeCurrentRenderingContext();
 

@@ -692,7 +692,7 @@ RayTracingResult C3DScene::intersectRecurse(QSP<CComponent> pComponent, const Ma
 */
 void C3DScene::addSegment(Math::CVector3 vStart, Math::CVector3 vEnd)
 {
-    if (m_pSegments->vertices().count() > 400) return;
+    if (m_pSegments->vertices().count() > 1000) return;
 
     if (m_bEditMode == false)
     {

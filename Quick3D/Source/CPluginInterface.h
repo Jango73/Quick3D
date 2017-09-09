@@ -1,14 +1,13 @@
 
 #pragma once
 
+// Application
 #include "quick3d_global.h"
-
-//-------------------------------------------------------------------------------------------------
-
 #include "CSingleton.h"
 #include "ComponentInstantiator.h"
 
 //-------------------------------------------------------------------------------------------------
+// Constants
 
 #define PLUGIN_ENTRY_NAME	Quick3DPluginEntry
 

@@ -247,9 +247,6 @@ void CStandardController::keyPressEvent(QKeyEvent* event)
         case Qt::Key_L:
             generateQ3DEvent(CQ3DEvent(Q3DEvent_DownFast, CQ3DEvent::Press));
             break;
-        case Qt::Key_Backspace:
-            generateQ3DEvent(CQ3DEvent(Q3DEvent_ToggleEdit, CQ3DEvent::Press));
-            break;
     }
 }
 

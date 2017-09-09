@@ -38,6 +38,7 @@ void CTextureUpdater::setDeltaTime(double dDeltaTime)
 void CTextureUpdater::stop()
 {
     m_bStop = true;
+    wait();
 }
 
 //-------------------------------------------------------------------------------------------------

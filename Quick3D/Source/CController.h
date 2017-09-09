@@ -195,6 +195,7 @@ protected:
     QPoint                              m_pPreviousMousePos;
     Math::CRay3                         m_rLastRay;
     bool                                m_bUseMouse;
+    bool                                m_bShiftPressed;
     bool                                m_bControlPressed;
     bool                                m_bAltPressed;
     double                              m_dMoveSpeed;

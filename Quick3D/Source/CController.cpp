@@ -19,6 +19,7 @@ CController::CController(C3DScene* pScene)
     : CComponent(pScene)
     , m_pJoystick(nullptr)
     , m_bUseMouse(false)
+    , m_bShiftPressed(false)
     , m_bControlPressed(false)
     , m_bAltPressed(false)
     , m_dMoveSpeed(0.0)
@@ -214,9 +215,14 @@ void CController::keyPressEvent(QKeyEvent* event)
 {
     switch (event->key())
     {
+        case Qt::Key_Shift:
+            m_bShiftPressed = true;
+            break;
+
         case Qt::Key_Control:
             m_bControlPressed = true;
             break;
+
         case Qt::Key_Alt:
             m_bAltPressed = true;
             break;
@@ -229,9 +235,14 @@ void CController::keyReleaseEvent(QKeyEvent *event)
 {
     switch (event->key())
     {
+        case Qt::Key_Shift:
+            m_bShiftPressed = false;
+            break;
+
         case Qt::Key_Control:
             m_bControlPressed = false;
             break;
+
         case Qt::Key_Alt:
             m_bAltPressed = false;
             break;

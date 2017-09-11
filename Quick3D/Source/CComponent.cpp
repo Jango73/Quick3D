@@ -587,13 +587,13 @@ void CComponent::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
     Q_UNUSED(sBaseFile);
 
-    CXMLNode tGeolocNode = xComponent.getNodeByTagName(ParamName_Geoloc);
-    CXMLNode tPositionNode = xComponent.getNodeByTagName(ParamName_Position);
-    CXMLNode tRotationNode = xComponent.getNodeByTagName(ParamName_Rotation);
-    CXMLNode tScaleNode = xComponent.getNodeByTagName(ParamName_Scale);
-    CXMLNode tRotationFactorNode = xComponent.getNodeByTagName(ParamName_RotationFactor);
-    CXMLNode tRotationMinimumNode = xComponent.getNodeByTagName(ParamName_RotationMinimum);
-    CXMLNode tRotationMaximumNode = xComponent.getNodeByTagName(ParamName_RotationMaximum);
+    CXMLNode xGeoloc = xComponent.getNodeByTagName(ParamName_Geoloc);
+    CXMLNode xPosition = xComponent.getNodeByTagName(ParamName_Position);
+    CXMLNode xRotation = xComponent.getNodeByTagName(ParamName_Rotation);
+    CXMLNode xScale = xComponent.getNodeByTagName(ParamName_Scale);
+    CXMLNode xRotationFactor = xComponent.getNodeByTagName(ParamName_RotationFactor);
+    CXMLNode xRotationMinimum = xComponent.getNodeByTagName(ParamName_RotationMinimum);
+    CXMLNode xRotationMaximum = xComponent.getNodeByTagName(ParamName_RotationMaximum);
 
     // Component name
 
@@ -604,78 +604,78 @@ void CComponent::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 
     // Original position
 
-    if (tPositionNode.isEmpty() == false)
+    if (xPosition.isEmpty() == false)
     {
         setPosition(CVector3(
-                              tPositionNode.attributes()[ParamName_x].toDouble(),
-                              tPositionNode.attributes()[ParamName_y].toDouble(),
-                              tPositionNode.attributes()[ParamName_z].toDouble()
+                              xPosition.attributes()[ParamName_x].toDouble(),
+                              xPosition.attributes()[ParamName_y].toDouble(),
+                              xPosition.attributes()[ParamName_z].toDouble()
                               ));
     }
 
     // Geo-location
 
-    if (tGeolocNode.isEmpty() == false)
+    if (xGeoloc.isEmpty() == false)
     {
         setGeoloc(CGeoloc(
-                      tGeolocNode.attributes()[ParamName_Latitude].toDouble(),
-                      tGeolocNode.attributes()[ParamName_Longitude].toDouble(),
-                      tGeolocNode.attributes()[ParamName_Altitude].toDouble()
+                      xGeoloc.attributes()[ParamName_Latitude].toDouble(),
+                      xGeoloc.attributes()[ParamName_Longitude].toDouble(),
+                      xGeoloc.attributes()[ParamName_Altitude].toDouble()
                       ));
     }
 
     // Original rotation
 
-    if (tRotationNode.isEmpty() == false)
+    if (xRotation.isEmpty() == false)
     {
         setRotation(CVector3(
-                              Angles::toRad(tRotationNode.attributes()[ParamName_x].toDouble()),
-                              Angles::toRad(tRotationNode.attributes()[ParamName_y].toDouble()),
-                              Angles::toRad(tRotationNode.attributes()[ParamName_z].toDouble())
+                              Angles::toRad(xRotation.attributes()[ParamName_x].toDouble()),
+                              Angles::toRad(xRotation.attributes()[ParamName_y].toDouble()),
+                              Angles::toRad(xRotation.attributes()[ParamName_z].toDouble())
                               ));
     }
 
     // Rotation factors (allows locking one or more axes)
 
-    if (tRotationFactorNode.isEmpty() == false)
+    if (xRotationFactor.isEmpty() == false)
     {
         m_vRotationFactor = CVector3(
-                    tRotationFactorNode.attributes()[ParamName_x].toDouble(),
-                    tRotationFactorNode.attributes()[ParamName_y].toDouble(),
-                    tRotationFactorNode.attributes()[ParamName_z].toDouble()
+                    xRotationFactor.attributes()[ParamName_x].toDouble(),
+                    xRotationFactor.attributes()[ParamName_y].toDouble(),
+                    xRotationFactor.attributes()[ParamName_z].toDouble()
                     );
     }
 
     // Minimum rotation
 
-    if (tRotationMinimumNode.isEmpty() == false)
+    if (xRotationMinimum.isEmpty() == false)
     {
         m_vRotationMinimum = CVector3(
-                    Angles::toRad(tRotationMinimumNode.attributes()[ParamName_x].toDouble()),
-                    Angles::toRad(tRotationMinimumNode.attributes()[ParamName_y].toDouble()),
-                    Angles::toRad(tRotationMinimumNode.attributes()[ParamName_z].toDouble())
+                    Angles::toRad(xRotationMinimum.attributes()[ParamName_x].toDouble()),
+                    Angles::toRad(xRotationMinimum.attributes()[ParamName_y].toDouble()),
+                    Angles::toRad(xRotationMinimum.attributes()[ParamName_z].toDouble())
                     );
     }
 
     // Maximum rotation
 
-    if (tRotationMaximumNode.isEmpty() == false)
+    if (xRotationMaximum.isEmpty() == false)
     {
         m_vRotationMaximum = CVector3(
-                    Angles::toRad(tRotationMaximumNode.attributes()[ParamName_x].toDouble()),
-                    Angles::toRad(tRotationMaximumNode.attributes()[ParamName_y].toDouble()),
-                    Angles::toRad(tRotationMaximumNode.attributes()[ParamName_z].toDouble())
+                    Angles::toRad(xRotationMaximum.attributes()[ParamName_x].toDouble()),
+                    Angles::toRad(xRotationMaximum.attributes()[ParamName_y].toDouble()),
+                    Angles::toRad(xRotationMaximum.attributes()[ParamName_z].toDouble())
                     );
     }
 
     // Scale
 
-    if (tScaleNode.isEmpty() == false)
+    if (xScale.isEmpty() == false)
     {
         CVector3 vScale = CVector3(
-                    tScaleNode.attributes()[ParamName_x].toDouble(),
-                    tScaleNode.attributes()[ParamName_y].toDouble(),
-                    tScaleNode.attributes()[ParamName_z].toDouble()
+                    xScale.attributes()[ParamName_x].toDouble(),
+                    xScale.attributes()[ParamName_y].toDouble(),
+                    xScale.attributes()[ParamName_z].toDouble()
                     );
 
         if (vScale.X != 0.0 && vScale.Y != 0.0 && vScale.Z != 0.0)

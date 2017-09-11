@@ -94,7 +94,6 @@ SOURCES += \
     Source/CGeoBounds.cpp \
     Source/CGeoloc.cpp \
     Source/CGeometryGenerator.cpp \
-    Source/CGeoTree.cpp \
     Source/CGLExtension.cpp \
     Source/CGLWidgetScene.cpp \
     Source/CHeightField.cpp \

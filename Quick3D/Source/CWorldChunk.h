@@ -160,6 +160,7 @@ public:
 
 protected:
 
+    QMutex                              m_mMutex;
     CWorldTerrain*                      m_pAutoTerrain;
     CHeightField*                       m_pContainer;
     CGeoloc                             m_gOriginalGeoloc;
@@ -167,7 +168,6 @@ protected:
     CGeoloc                             m_gSize;
     CBoundingBox                        m_bWorldBounds;
     QVector<CBoundedMeshInstances*>     m_vBoundedMeshes;
-    QMutex                              m_mMutex;
     double                              m_dDistance;
     bool                                m_bOK;
 

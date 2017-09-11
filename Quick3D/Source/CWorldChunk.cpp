@@ -18,11 +18,11 @@ using namespace Math;
 
 CWorldChunk::CWorldChunk(C3DScene* pScene, CWorldTerrain* pAutoTerrain, CHeightField* pContainer)
     : CComponent(pScene)
+    , m_mMutex(QMutex::Recursive)
     , m_pAutoTerrain(pAutoTerrain)
     , m_pTerrain(nullptr)
     , m_pWater(nullptr)
     , m_pContainer(pContainer)
-    , m_mMutex(QMutex::Recursive)
     , m_dDistance(0.0)
     , m_bOK(false)
 {

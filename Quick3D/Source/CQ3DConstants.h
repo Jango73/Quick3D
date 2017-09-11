@@ -1,7 +1,19 @@
 
 #pragma once
 
+// Qt
+#include <QExplicitlySharedDataPointer>
+
+// Application
 #include "quick3d_global.h"
+
+//-------------------------------------------------------------------------------------------------
+// Macros
+
+#define QSP                     QExplicitlySharedDataPointer
+#define QSP_CAST(T,O)           QSP<T>(dynamic_cast<T*>(O.data()))
+
+#define DELETE_VECTOR_ITEMS(v)  { for (auto d : v) { delete d; } }
 
 //-------------------------------------------------------------------------------------------------
 // Component class names

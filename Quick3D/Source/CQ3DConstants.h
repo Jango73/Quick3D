@@ -148,6 +148,7 @@
 #define ParamName_Geoloc                    "Geoloc"
 #define ParamName_GravityFactor             "GravityFactor"
 #define ParamName_Hardness                  "Hardness"
+#define ParamName_Heading                   "Heading"
 #define ParamName_Height                    "Height"
 #define ParamName_HydraulicInput            "HydraulicInput"
 #define ParamName_Ignore                    "Ignore"

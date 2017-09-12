@@ -47,7 +47,8 @@ CGeoloc::CGeoloc ()
     Constructs a CGeoloc with specified arguments. \br\br
     Latitude is set to \a NewLatitude. \br
     Longitude is set to \a NewLongitude. \br
-    Altitude is set to \a NewAltitude.
+    Altitude is set to \a NewAltitude. \br
+    \a NewDatum
 */
 CGeoloc::CGeoloc (double NewLatitude, double NewLongitude, double NewAltitude, EGeolocDatum NewDatum)
     : Latitude(NewLatitude)
@@ -205,6 +206,9 @@ CVector3 CGeoloc::toVector3(const CGeoloc& gReference) const
 
 //---------------------------------------------------------------------------------------------
 
+/*!
+    Returns the great circle true heading from this to geo loc to \a other.
+*/
 double CGeoloc::headingTo(const CGeoloc& other)
 {
     QGeoCoordinate coord1(Latitude, Longitude, Altitude);
@@ -215,6 +219,9 @@ double CGeoloc::headingTo(const CGeoloc& other)
 
 //---------------------------------------------------------------------------------------------
 
+/*!
+    Returns the great circle distance from this to geo loc to \a other.
+*/
 double CGeoloc::distanceTo(const CGeoloc& other)
 {
     QGeoCoordinate coord1(Latitude, Longitude, Altitude);

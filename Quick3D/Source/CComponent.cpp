@@ -602,6 +602,13 @@ void CComponent::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
         m_sName = xComponent.attributes()[ParamName_Name];
     }
 
+    // Component tag
+
+    if (xComponent.attributes()[ParamName_Tag].isEmpty() == false)
+    {
+        m_sTag = xComponent.attributes()[ParamName_Tag];
+    }
+
     // Original position
 
     if (xPosition.isEmpty() == false)
@@ -941,10 +948,10 @@ double CComponent::status() const
 */
 void CComponent::saveTransform()
 {
-    m_gSavedGeoloc			= m_gGeoloc;
-    m_vSavedPosition	= m_vPosition;
-    m_vSavedRotation	= m_vRotation;
-    m_vSavedScale		= m_vScale;
+    m_gSavedGeoloc      = m_gGeoloc;
+    m_vSavedPosition    = m_vPosition;
+    m_vSavedRotation    = m_vRotation;
+    m_vSavedScale       = m_vScale;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -954,10 +961,10 @@ void CComponent::saveTransform()
 */
 void CComponent::loadTransform()
 {
-    m_gGeoloc			= m_gSavedGeoloc;
-    m_vPosition	= m_vSavedPosition;
-    m_vRotation	= m_vSavedRotation;
-    m_vScale		= m_vSavedScale;
+    m_gGeoloc       = m_gSavedGeoloc;
+    m_vPosition     = m_vSavedPosition;
+    m_vRotation     = m_vSavedRotation;
+    m_vScale        = m_vSavedScale;
 
     if (isRootObject() && m_bInheritTransform)
     {

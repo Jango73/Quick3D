@@ -2,7 +2,7 @@
 <Scene>
     <Camera1 Name="Man1.Head" />
     <Camera2 Name="VBCI.Pilot" />
-    <Camera2 Name="Drone01.Pilot" />
+    <Camera3 Name="Drone01.Pilot" />
     <ControlledComponent Name="Man1" />
     <!--
     <Camera1 Name="Plascoa01Pilot"/>
@@ -22,6 +22,12 @@
     -->
     <Components>
         <Component Name="SkyBox" Class="CSkyBox" />
+        <Component Name="Sun" Class="CLight" Tag="SUN">
+            <Position x="0.0" y="0.0" z="0.0"/>
+            <Rotation x="0.0" y="0.0" z="0.0"/>
+            <General FOV="10.0" CastShadows="1"/>
+            <Color r="1.0" g="1.0" b="1.0"/>
+        </Component>
         <Component Name="Terrain" Class="CWorldTerrain">
             <Parameters>
                 <General Levels="16" Resolution="31" />

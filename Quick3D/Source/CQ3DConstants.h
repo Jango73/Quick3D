@@ -199,6 +199,7 @@
 #define ParamName_Spread                    "Spread"
 #define ParamName_Sphere                    "Sphere"
 #define ParamName_Step                      "Step"
+#define ParamName_Tag                       "Tag"
 #define ParamName_Target                    "Target"
 #define ParamName_Texture                   "Texture"
 #define ParamName_Thrust                    "Thrust"

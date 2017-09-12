@@ -98,7 +98,7 @@ void CGLWidgetScene::paintGL()
         }
 
         //-------------------------------------------------------------------------------------------------
-        // Récupération du frame buffer
+        // Get the frame buffer
 
         bool bGrabFrame = false;
 
@@ -255,9 +255,7 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
 
         // Lights
 
-        // pProgram->setUniformValue("u_global_ambient", QVector3D(0.2, 0.2, 0.3));
         pProgram->setUniformValue("u_global_ambient", QVector3D(0.05, 0.05, 0.15));
-
         pProgram->setUniformValue("u_shadow_enable", u_shadow_enable);
 
         pProgram->setUniformValue("u_num_lights", (GLint) iOpenGLLightIndex);

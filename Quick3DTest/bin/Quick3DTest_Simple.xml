@@ -3,6 +3,13 @@
     <Camera1 Name="VBCI.Driver" />
     <ControlledComponent Name="VBCI" />
     <Components>
+        <Component Name="SkyBox" Class="CSkyBox" />
+        <Component Name="Sun" Class="CLight" Tag="SUN">
+            <Position x="0.0" y="0.0" z="0.0"/>
+            <Rotation x="0.0" y="0.0" z="0.0"/>
+            <General FOV="10.0" CastShadows="1"/>
+            <Color r="1.0" g="1.0" b="1.0"/>
+        </Component>
         <Component Name="Terrain" Class="CWorldTerrain">
             <Parameters>
                 <General Levels="18" Resolution="21" />
@@ -221,7 +228,6 @@
                 </Height>
             </Parameters>
         </Component>
-        <Component Name="SkyBox" Class="CSkyBox" />
         <Component Name="VBCI" Class="CTerrestrialVehicle">
             <Geoloc Latitude="19.237430" Longitude="10.895408" Altitude="0.0" />
             <Rotation x="0.0" y="0.0" z="0.0" />

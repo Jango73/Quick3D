@@ -72,19 +72,17 @@ public:
     //! Returns distance in meters of this geoloc to \a other
     double distanceTo(const CGeoloc& other);
 
-    //! Retourne le repère NOLL de cette géolocalisation (North-Oriented Local-level)
-    //! La composante front pointe vers le nord géographique
-    //! La composante up pointe à l'opposé de la gravité
-    //! La composante right est perpendiculaire aux deux autres axes
+    //! Returns the NOLL (North-Oriented Local-Level) axis of this geoloc.
+    //! See CComponent for details on the NOLL frame.
     Math::CAxis getNOLLAxis() const;
 
-    //! Converti un cap magnétique en cap vrai depuis cette géolocalisation
+    //! Converts dHeading which is expressed in magnetic degrees to true heading degrees.
     double magneticHeadingtoTrueHeading(double dHeading) const;
 
-    //! Converti un cap vrai en cap magnétique depuis cette géolocalisation
+    //! Converts dHeading which is expressed in true degrees to magnetic heading degrees.
     double trueHeadingToMagneticHeading(double dHeading) const;
 
-    //! Retourne vrai si l'objet n'est pas à Lat=0, Lon=0
+    //! Returns true if this geo loc is not 0.0
     bool valid() const { return !(Latitude == 0.0 && Longitude == 0.0); }
 
     //! Transforme en chaine de caractères

@@ -168,11 +168,6 @@ void C3DScene::init(QVector<QSP<CComponent> > vComponents)
     m_iSunColor.addValue( 1.00, CVector4(1.4, 1.4, 1.2, 1.0));
 
     //-----------------------------------------------
-    // Create particles
-
-    // m_pRain = new CRain(this);
-
-    //-----------------------------------------------
     // Assign components
 
     m_vComponents = vComponents;
@@ -180,33 +175,6 @@ void C3DScene::init(QVector<QSP<CComponent> > vComponents)
     foreach(QSP<CComponent> pComponent, m_vComponents)
     {
         pComponent->addItems(this);
-    }
-
-    //-----------------------------------------------
-    // Add sun
-
-    QVector<QSP<CLight> > vLights = lights();
-    bool bFoundSun = false;
-
-    foreach (QSP<CLight> pLight, vLights)
-    {
-        if (pLight->tag() == "SUN")
-        {
-            bFoundSun = true;
-            break;
-        }
-    }
-
-    if (bFoundSun == false)
-    {
-        QSP<CLight> pLight = QSP<CLight>(new CLight(this));
-
-        pLight->setName("SUN");
-        pLight->setTag("SUN");
-        pLight->setCastShadows(true);
-        pLight->setVerticalFOV(10.0);
-
-        m_vComponents.append(pLight);
     }
 
     //-----------------------------------------------

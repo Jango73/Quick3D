@@ -7,6 +7,9 @@
 #include <QMutexLocker>
 #include <QVector>
 
+// qt-plus
+#include "CMemoryMonitor.h"
+
 // Application
 #include "quick3d_global.h"
 #include "CQ3DConstants.h"
@@ -28,6 +31,8 @@ class C3DScene;
 
 class QUICK3D_EXPORT CMeshGeometry : public QSharedData, public CBoundPartitioned<int>, public CDumpable
 {
+    DECLARE_MEMORY_MONITORED
+
 public:
 
     //-------------------------------------------------------------------------------------------------

@@ -1,7 +1,6 @@
 
 // qt-plus
 #include "CLogger.h"
-#include "CMemoryMonitor.h"
 
 // Application
 #include "Angles.h"
@@ -37,6 +36,8 @@
 
 using namespace Math;
 
+IMPLEMENT_MEMORY_MONITORED(CComponent, "CComponent")
+
 //-------------------------------------------------------------------------------------------------
 // Properties statiques
 
@@ -52,22 +53,6 @@ QMap<QString, int> CComponent::m_mComponentCounter;
 CComponent* CComponent::instantiator(C3DScene* pScene)
 {
     return new CComponent(pScene);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void* CComponent::operator new (size_t size)
-{
-    CMemoryMonitor::getInstance()->allocBytes("CComponent", size);
-    return malloc(size);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void CComponent::operator delete(void* ptr, size_t size)
-{
-    CMemoryMonitor::getInstance()->freeBytes("CComponent", size);
-    free(ptr);
 }
 
 //-------------------------------------------------------------------------------------------------

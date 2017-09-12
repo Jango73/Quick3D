@@ -10,6 +10,9 @@
 #include <QSharedData>
 #include <QtOpenGL>
 
+// qt-plus
+#include "CMemoryMonitor.h"
+
 // Application
 #include "quick3d_global.h"
 #include "CQ3DConstants.h"
@@ -73,6 +76,8 @@ class CController;
 
 class QUICK3D_EXPORT CComponent : public QSharedData, public CNamed, public CParented, public CExpendable, public CDumpable, public ILoadable
 {
+    DECLARE_MEMORY_MONITORED
+
 public:
 
     //-------------------------------------------------------------------------------------------------
@@ -261,12 +266,6 @@ public:
     //-------------------------------------------------------------------------------------------------
     // Operators
     //-------------------------------------------------------------------------------------------------
-
-    //!
-    void* operator new (size_t size);
-
-    //!
-    void operator delete(void* ptr, size_t size);
 
     //! Assign operator
     CComponent& operator = (const CComponent& target);

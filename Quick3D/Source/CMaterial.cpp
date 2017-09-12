@@ -14,6 +14,8 @@
 
 using namespace Math;
 
+IMPLEMENT_MEMORY_MONITORED(CMaterial, "CMaterial")
+
 //-------------------------------------------------------------------------------------------------
 
 double CMaterial::m_dTime = 0.0;

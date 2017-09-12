@@ -11,6 +11,8 @@
 
 using namespace Math;
 
+IMPLEMENT_MEMORY_MONITORED(CMeshGeometry, "CMeshGeometry")
+
 //-------------------------------------------------------------------------------------------------
 
 CMeshGeometry::CMeshGeometry(C3DScene* pScene, double dMaxDistance, bool bUseSpacePartitionning)
@@ -28,10 +30,7 @@ CMeshGeometry::CMeshGeometry(C3DScene* pScene, double dMaxDistance, bool bUseSpa
 
 CMeshGeometry::~CMeshGeometry()
 {
-    foreach (CGLMeshData* data, m_vGLMeshData)
-    {
-        delete data;
-    }
+    DELETE_VECTOR_ITEMS(m_vGLMeshData);
 
     deleteMaterials();
 }

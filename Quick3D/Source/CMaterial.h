@@ -9,6 +9,9 @@
 #include <QtOpenGL/QGLShaderProgram>
 #include <QGLFramebufferObject>
 
+// qt-plus
+#include "CMemoryMonitor.h"
+
 // Application
 #include "quick3d_global.h"
 #include "CNamed.h"
@@ -38,6 +41,7 @@ class CRenderContext;
 class QUICK3D_EXPORT CMaterial : public QObject, public QSharedData, public CNamed, public CDumpable, public ILoadable
 {
     Q_OBJECT
+    DECLARE_MEMORY_MONITORED
 
 public:
 

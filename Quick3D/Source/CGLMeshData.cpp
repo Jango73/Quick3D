@@ -1,7 +1,6 @@
 
 // qt-plus
 #include "CLogger.h"
-#include "CMemoryMonitor.h"
 
 // Application
 #include "CGLMeshData.h"
@@ -11,26 +10,12 @@
 
 using namespace Math;
 
+IMPLEMENT_MEMORY_MONITORED(CGLMeshData, "CGLMeshData")
+
 //-------------------------------------------------------------------------------------------------
 // Properties statiques
 
 GLuint CGLMeshData::m_iCurrentVBO = 0;
-
-//-------------------------------------------------------------------------------------------------
-
-void* CGLMeshData::operator new (size_t size)
-{
-    CMemoryMonitor::getInstance()->allocBytes("CGLMeshData", size);
-    return malloc(size);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void CGLMeshData::operator delete(void* ptr, size_t size)
-{
-    CMemoryMonitor::getInstance()->freeBytes("CGLMeshData", size);
-    free(ptr);
-}
 
 //-------------------------------------------------------------------------------------------------
 

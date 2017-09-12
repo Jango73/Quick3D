@@ -7,6 +7,9 @@
 #include <QMutexLocker>
 #include <QVector>
 
+// qt-plus
+#include "CMemoryMonitor.h"
+
 // Application
 #include "quick3d_global.h"
 #include "CVertex.h"
@@ -22,6 +25,8 @@ class C3DScene;
 
 class QUICK3D_EXPORT CGLMeshData
 {
+    DECLARE_MEMORY_MONITORED
+
 public:
 
     //-------------------------------------------------------------------------------------------------
@@ -33,16 +38,6 @@ public:
 
     //!
     ~CGLMeshData();
-
-    //-------------------------------------------------------------------------------------------------
-    // Operators
-    //-------------------------------------------------------------------------------------------------
-
-    //!
-    void* operator new (size_t size);
-
-    //!
-    void operator delete(void* ptr, size_t size);
 
     //-------------------------------------------------------------------------------------------------
     // Control methods

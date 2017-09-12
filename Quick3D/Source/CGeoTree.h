@@ -125,12 +125,14 @@ public:
             {
                 CGeoloc gMin(
                             pChild->geoloc().Latitude - pChild->size().Latitude * 0.5,
-                            pChild->geoloc().Longitude - pChild->size().Longitude * 0.5
+                            pChild->geoloc().Longitude - pChild->size().Longitude * 0.5,
+                            0.0
                             );
 
                 CGeoloc gMax(
                             pChild->geoloc().Latitude + pChild->size().Latitude * 0.5,
-                            pChild->geoloc().Longitude + pChild->size().Longitude * 0.5
+                            pChild->geoloc().Longitude + pChild->size().Longitude * 0.5,
+                            0.0
                             );
 
                 if (
@@ -214,7 +216,7 @@ public:
 
         if (m_pRoot != nullptr)
         {
-            m_pRoot->queryRecurse(vResults, gGeoloc, dRadius_m);
+            m_pRoot->query(vResults, gGeoloc, dRadius_m);
         }
 
         return vResults;

@@ -32,7 +32,7 @@ using namespace Math;
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Instantiates a new CWorldTerrain.
+    Instantiates a new CWorldTerrain using \a pScene.
 */
 CComponent* CWorldTerrain::instantiator(C3DScene* pScene)
 {
@@ -737,7 +737,7 @@ RayTracingResult CWorldTerrain::intersect(Math::CRay3 ray)
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Checks if \a ray intersects this terrain.
+    Checks if \a ray intersects this terrain, using \a pChunk as current chunk.
 */
 RayTracingResult CWorldTerrain::intersectRecurse(QSP<CWorldChunk> pChunk, const Math::CRay3& ray) const
 {

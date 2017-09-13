@@ -93,6 +93,7 @@ SOURCES += \
     Source/CGenerator.cpp \
     Source/CGeoBounds.cpp \
     Source/CGeoloc.cpp \
+    Source/CGeolocalized.cpp \
     Source/CGeometryGenerator.cpp \
     Source/CGLExtension.cpp \
     Source/CGLWidgetScene.cpp \
@@ -262,6 +263,7 @@ HEADERS += \
     Source/CGenerator.h \
     Source/CGeoBounds.h \
     Source/CGeoloc.h \
+    Source/CGeolocalized.h \
     Source/CGeometryGenerator.h \
     Source/CGeoTree.h \
     Source/CGeoZone.h \

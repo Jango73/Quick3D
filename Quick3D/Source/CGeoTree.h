@@ -5,16 +5,18 @@
 #include <QImage>
 #include <QDateTime>
 
+// qt-plus
+#include "CLogger.h"
+
 // Application
 #include "quick3d_global.h"
 #include "CQ3DConstants.h"
-#include "CGeoloc.h"
-#include "CBoundingBox.h"
+#include "CGeolocalized.h"
+#include "CDumpable.h"
 
 //-------------------------------------------------------------------------------------------------
 
-template<class T>
-class CGeoTreeItem
+class CGeoTreeItem : public CGeolocalized, public CDumpable
 {
 public:
 
@@ -24,15 +26,15 @@ public:
 
     //!
     CGeoTreeItem(CGeoloc gGeoloc, CGeoloc gSize, int iMaxLevel, int iLevel)
-        : m_iLevel(iLevel)
-        , m_gGeoloc(gGeoloc)
+        : CGeolocalized(gGeoloc)
+        , m_iLevel(iLevel)
         , m_gSize(gSize)
     {
         if (iLevel < iMaxLevel)
         {
             CGeoloc gStart(
-                        m_gGeoloc.Latitude - m_gSize.Latitude * 0.5,
-                        m_gGeoloc.Longitude - m_gSize.Longitude * 0.5,
+                        geoloc().Latitude - m_gSize.Latitude * 0.5,
+                        geoloc().Longitude - m_gSize.Longitude * 0.5,
                         0.0
                         );
 
@@ -47,10 +49,10 @@ public:
             CGeoloc g3(gStart.Latitude + m_gSize.Latitude * 0.75, gStart.Longitude + m_gSize.Longitude * 0.25, 0.0);
             CGeoloc g4(gStart.Latitude + m_gSize.Latitude * 0.75, gStart.Longitude + m_gSize.Longitude * 0.75, 0.0);
 
-            m_vChildren << new CGeoTreeItem<T>(g1, gSize, iMaxLevel, iLevel + 1);
-            m_vChildren << new CGeoTreeItem<T>(g2, gSize, iMaxLevel, iLevel + 1);
-            m_vChildren << new CGeoTreeItem<T>(g3, gSize, iMaxLevel, iLevel + 1);
-            m_vChildren << new CGeoTreeItem<T>(g4, gSize, iMaxLevel, iLevel + 1);
+            m_vChildren << new CGeoTreeItem(g1, gSize, iMaxLevel, iLevel + 1);
+            m_vChildren << new CGeoTreeItem(g2, gSize, iMaxLevel, iLevel + 1);
+            m_vChildren << new CGeoTreeItem(g3, gSize, iMaxLevel, iLevel + 1);
+            m_vChildren << new CGeoTreeItem(g4, gSize, iMaxLevel, iLevel + 1);
         }
     }
 
@@ -65,63 +67,44 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    CGeoloc geoloc() const { return m_gGeoloc; }
-
-    //!
     CGeoloc size() const { return m_gSize; }
+
+    //-------------------------------------------------------------------------------------------------
+    // Overridden methods
+    //-------------------------------------------------------------------------------------------------
+
+    //! Dumps contents of this object to \a stream using indent value in \a iIdent
+    virtual void dump(QTextStream& stream, int iIdent) Q_DECL_OVERRIDE
+    {
+        dumpIdent(stream, iIdent, QString("[CGeoTreeItem]"));
+        dumpIdent(stream, iIdent, QString("Level : %1").arg(m_iLevel));
+        dumpIdent(stream, iIdent, QString("Geoloc : %1").arg(m_gGeoloc.toString()));
+        dumpIdent(stream, iIdent, QString("Size : %1").arg(m_gSize.toString()));
+        dumpIdent(stream, iIdent, QString("Data count : %1").arg(m_vData.count()));
+        dumpIdent(stream, iIdent, QString("Children :"));
+
+        dumpOpenBlock(stream, iIdent);
+        for (auto pChild : m_vChildren)
+        {
+            pChild->dump(stream, iIdent + 1);
+        }
+        dumpCloseBlock(stream, iIdent);
+    }
 
     //-------------------------------------------------------------------------------------------------
     // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //!
-    void append(const CGeoloc& gGeoloc, T data)
+    void append(CGeolocalized* pGeolocalized)
     {
         if (m_vChildren.count() == 0)
         {
-            m_vData << data;
+            m_vData << pGeolocalized;
         }
         else
         {
-            foreach (CGeoTreeItem<T>* pChild, m_vChildren)
-            {
-                CGeoloc gMin(
-                            pChild->geoloc().Latitude - pChild->size().Latitude * 0.5,
-                            pChild->geoloc().Longitude - pChild->size().Longitude * 0.5
-                            );
-
-                CGeoloc gMax(
-                            pChild->geoloc().Latitude + pChild->size().Latitude * 0.5,
-                            pChild->geoloc().Longitude + pChild->size().Longitude * 0.5
-                            );
-
-                if (
-                        gGeoloc.Latitude >= gMin.Latitude &&
-                        gGeoloc.Latitude <= gMax.Latitude &&
-                        gGeoloc.Longitude >= gMin.Longitude &&
-                        gGeoloc.Longitude <= gMax.Longitude
-                        )
-                {
-                    pChild->append(gGeoloc, data);
-                    return;
-                }
-            }
-        }
-    }
-
-    //!
-    void query(QVector<T>& vResults, const CGeoloc& gPosition, double dRadius_m)
-    {
-        if (m_vChildren.count() == 0)
-        {
-            for (auto data : m_vData)
-            {
-                vResults << data;
-            }
-        }
-        else
-        {
-            foreach (CGeoTreeItem<T>* pChild, m_vChildren)
+            foreach (CGeoTreeItem* pChild, m_vChildren)
             {
                 CGeoloc gMin(
                             pChild->geoloc().Latitude - pChild->size().Latitude * 0.5,
@@ -136,13 +119,55 @@ public:
                             );
 
                 if (
-                        gPosition.Latitude >= gMin.Latitude &&
-                        gPosition.Latitude <= gMax.Latitude &&
-                        gPosition.Longitude >= gMin.Longitude &&
-                        gPosition.Longitude <= gMax.Longitude
+                        pGeolocalized->geoloc().Latitude >= gMin.Latitude &&
+                        pGeolocalized->geoloc().Latitude <= gMax.Latitude &&
+                        pGeolocalized->geoloc().Longitude >= gMin.Longitude &&
+                        pGeolocalized->geoloc().Longitude <= gMax.Longitude
                         )
                 {
-                    pChild->query(vResults, gPosition, dRadius_m);
+                    pChild->append(pGeolocalized);
+                    return;
+                }
+            }
+        }
+    }
+
+    //!
+    void query(QVector<CGeolocalized*>& vResults, const CGeoloc& gPosition, double dRange_deg)
+    {
+        if (m_vChildren.count() == 0)
+        {
+            for (auto data : m_vData)
+            {
+                vResults << data;
+            }
+        }
+        else
+        {
+            foreach (CGeoTreeItem* pChild, m_vChildren)
+            {
+                CGeoloc gMin(
+                            pChild->geoloc().Latitude - pChild->size().Latitude * 0.5,
+                            pChild->geoloc().Longitude - pChild->size().Longitude * 0.5,
+                            0.0
+                            );
+
+                CGeoloc gMax(
+                            pChild->geoloc().Latitude + pChild->size().Latitude * 0.5,
+                            pChild->geoloc().Longitude + pChild->size().Longitude * 0.5,
+                            0.0
+                            );
+
+                bool bContains = true;
+
+                if (gPosition.Latitude + dRange_deg < gMin.Latitude) bContains = false;
+                if (gPosition.Latitude - dRange_deg > gMax.Latitude) bContains = false;
+                if (gPosition.Longitude + dRange_deg < gMin.Longitude) bContains = false;
+                if (gPosition.Longitude - dRange_deg > gMax.Longitude) bContains = false;
+
+                if (bContains)
+                {
+                    pChild->query(vResults, gPosition, dRange_deg);
                 }
             }
         }
@@ -155,16 +180,14 @@ protected:
     //-------------------------------------------------------------------------------------------------
 
     int                         m_iLevel;
-    CGeoloc                     m_gGeoloc;
     CGeoloc                     m_gSize;
-    QVector<T>                  m_vData;
-    QVector<CGeoTreeItem<T>*>   m_vChildren;
+    QVector<CGeolocalized*>     m_vData;
+    QVector<CGeoTreeItem*>      m_vChildren;
 };
 
 //-------------------------------------------------------------------------------------------------
 
-template<class T>
-class CGeoTree
+class CGeoTree : public CDumpable
 {
 public:
 
@@ -183,10 +206,7 @@ public:
     //!
     virtual ~CGeoTree()
     {
-        if (m_pRoot != nullptr)
-        {
-            delete m_pRoot;
-        }
+        clear();
     }
 
     //-------------------------------------------------------------------------------------------------
@@ -200,23 +220,62 @@ public:
     //!
     int levels() const { return m_iLevels; }
 
+    //!
+    CGeoTreeItem* root() { return m_pRoot; }
+
+    //!
+    const CGeoTreeItem* root() const { return m_pRoot; }
+
+    //-------------------------------------------------------------------------------------------------
+    // Overridden methods
+    //-------------------------------------------------------------------------------------------------
+
+    //! Dumps contents of this object to \a stream using indentation value in \a iIdent
+    virtual void dump(QTextStream& stream, int iIdent) Q_DECL_OVERRIDE
+    {
+        dumpIdent(stream, iIdent, QString("[CGeoTree]"));
+        dumpIdent(stream, iIdent, QString("Levels : %1").arg(m_iLevels));
+        dumpIdent(stream, iIdent, QString("Root :"));
+
+        if (m_pRoot != nullptr)
+        {
+            m_pRoot->dump(stream, iIdent + 1);
+        }
+    }
+
     //-------------------------------------------------------------------------------------------------
     // Control methods
     //-------------------------------------------------------------------------------------------------
 
     //!
-    void append(const CGeoloc& gGeoloc, T data)
+    void clear()
     {
+        if (m_pRoot != nullptr)
+        {
+            delete m_pRoot;
+            m_pRoot = nullptr;
+        }
     }
 
     //!
-    QVector<T> query(const CGeoloc& gGeoloc, double dRadius_m)
+    void append(CGeolocalized* pGeolocalized)
     {
-        QVector<T> vResults;
+        if (m_pRoot != nullptr)
+        {
+            m_pRoot->append(pGeolocalized);
+        }
+    }
+
+    //!
+    QVector<CGeolocalized*> query(const CGeoloc& gGeoloc, double dRadius_m)
+    {
+        QVector<CGeolocalized*> vResults;
+
+        CGeoloc g2(gGeoloc, Math::CVector3(dRadius_m, 0.0, 0.0));
 
         if (m_pRoot != nullptr)
         {
-            m_pRoot->query(vResults, gGeoloc, dRadius_m);
+            m_pRoot->query(vResults, gGeoloc, fabs(Math::Angles::angleDifferenceDegree(g2.Longitude, gGeoloc.Longitude)));
         }
 
         return vResults;
@@ -239,7 +298,7 @@ protected:
             CGeoloc gGeoloc(startLat, startLon, 0.0);
             CGeoloc gSize(CGeoloc(180.0, 360.0, 0.0));
 
-            m_pRoot = new CGeoTreeItem<T>(gGeoloc, gSize, m_iLevels, 0);
+            m_pRoot = new CGeoTreeItem(gGeoloc, gSize, m_iLevels, 0);
         }
     }
 
@@ -249,6 +308,6 @@ protected:
 
 protected:
 
-    int                 m_iLevels;
-    CGeoTreeItem<T>*    m_pRoot;
+    int             m_iLevels;
+    CGeoTreeItem*   m_pRoot;
 };

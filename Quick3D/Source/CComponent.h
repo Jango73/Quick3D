@@ -20,7 +20,7 @@
 #include "CVector3.h"
 #include "CMatrix4.h"
 #include "CRay3.h"
-#include "CGeoloc.h"
+#include "CGeolocalized.h"
 #include "CXMLNode.h"
 #include "CGLExtension.h"
 #include "CRenderContext.h"
@@ -31,9 +31,6 @@
 #include "CBoundingBox.h"
 #include "CHeightField.h"
 #include "CTexture.h"
-
-//-------------------------------------------------------------------------------------------------
-
 
 //-------------------------------------------------------------------------------------------------
 
@@ -74,7 +71,7 @@ class CController;
 
 //-------------------------------------------------------------------------------------------------
 
-class QUICK3D_EXPORT CComponent : public QSharedData, public CNamed, public CParented, public CExpendable, public CDumpable, public ILoadable
+class QUICK3D_EXPORT CComponent : public QSharedData, public CNamed, public CGeolocalized, public CParented, public CExpendable, public CDumpable, public ILoadable
 {
     DECLARE_MEMORY_MONITORED
 
@@ -122,7 +119,7 @@ public:
     void setParent(QSP<CComponent> pParent);
 
     //! Définit la géolocalisation
-    virtual void setGeoloc(CGeoloc gGeoloc);
+    virtual void setGeoloc(CGeoloc gGeoloc) Q_DECL_OVERRIDE;
 
     //! Définit la position d'origine
     void setPosition(Math::CVector3 vPosition);
@@ -207,7 +204,7 @@ public:
     QSP<CComponent> root();
 
     //! Returns the object's geo-location
-    virtual CGeoloc geoloc() const;
+    virtual CGeoloc geoloc() const Q_DECL_OVERRIDE;
 
     //! Returns the rotation in the ECEF frame (Earth-centered earth-fixed)
     virtual Math::CVector3 ECEFRotation() const;
@@ -361,7 +358,6 @@ public:
 
 private:
 
-    CGeoloc                     m_gGeoloc;                      // Object's geo-location
     Math::CVector3              m_vECEFRotation;                // Object's rotation in the ECEF frame (Earth-centered earth-fixed)
     Math::CVector3              m_vPosition;                    // Object's position in the NOLL frame (North-oriented local-level)
     Math::CVector3              m_vRotation;                    // Object's rotation (euler) in the NOLL frame

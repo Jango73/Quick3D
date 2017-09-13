@@ -19,9 +19,9 @@ CWaypoint::CWaypoint()
 //-------------------------------------------------------------------------------------------------
 
 CWaypoint::CWaypoint(EWaypointType eType, QString sName, CGeoloc gGeoloc, double dFrequency_MHz, bool bGenerated)
-    : m_eType(eType)
+    : CGeolocalized(gGeoloc)
+    , m_eType(eType)
     , m_sName(sName)
-    , m_gGeoloc(gGeoloc)
     , m_gEndGeoloc(gGeoloc)
     , m_dFrequency_MHz(dFrequency_MHz)
     , m_dMinimumAltitude_m(0.0)

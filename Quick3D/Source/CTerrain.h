@@ -24,7 +24,7 @@ class C3DScene;
 
 /*
 
-    Description du référentiel de la tuile
+    Tile reference system
 
     m_gSize.Longitude
     <-------------->

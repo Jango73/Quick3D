@@ -358,10 +358,10 @@ void CTerrain::work()
         if (m_bIsWater == false && m_iLevel < m_iMaxLevel / 2)
         {
             if (
-                gPosition.Latitude < m_gGeoloc.Latitude - m_gSize.Latitude * 0.5 ||
-                gPosition.Latitude > m_gGeoloc.Latitude + m_gSize.Latitude * 0.5 ||
-                gPosition.Longitude < m_gGeoloc.Longitude - m_gSize.Longitude * 0.5 ||
-                gPosition.Longitude > m_gGeoloc.Longitude + m_gSize.Longitude * 0.5
+                gPosition.Latitude < geoloc().Latitude - m_gSize.Latitude * 0.5 ||
+                gPosition.Latitude > geoloc().Latitude + m_gSize.Latitude * 0.5 ||
+                gPosition.Longitude < geoloc().Longitude - m_gSize.Longitude * 0.5 ||
+                gPosition.Longitude > geoloc().Longitude + m_gSize.Longitude * 0.5
                 )
             {
                 gPosition.Altitude = -m_gSize.Longitude * 100.0;

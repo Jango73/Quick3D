@@ -4,7 +4,7 @@
 // Application
 #include "quick3d_global.h"
 #include "CQ3DConstants.h"
-#include "CGeoloc.h"
+#include "CGeolocalized.h"
 
 //-------------------------------------------------------------------------------------------------
 // Forward declarations
@@ -18,6 +18,7 @@ enum EWaypointType
     wtNone,
     wtFix,
     wtVOR,
+    wtVORDME,
     wtVORTAC,
     wtNDB,
     wtAirport,
@@ -30,7 +31,7 @@ enum EWaypointType
 
 //-------------------------------------------------------------------------------------------------
 
-class QUICK3D_EXPORT CWaypoint
+class QUICK3D_EXPORT CWaypoint : public CGeolocalized
 {
 public:
 
@@ -87,9 +88,6 @@ public:
     EWaypointType type() const { return m_eType; }
 
     //!
-    CGeoloc geoloc() const { return m_gGeoloc; }
-
-    //!
     CGeoloc endGeoloc() const { return m_gEndGeoloc; }
 
     //!
@@ -126,7 +124,6 @@ protected:
     // General data
     EWaypointType   m_eType;
     QString         m_sName;
-    CGeoloc         m_gGeoloc;
     CGeoloc         m_gEndGeoloc;
     double          m_dFrequency_MHz;
 

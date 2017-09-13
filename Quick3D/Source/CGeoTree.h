@@ -139,7 +139,13 @@ public:
         {
             for (auto data : m_vData)
             {
-                vResults << data;
+                double dLatDiff = fabs(Math::Angles::angleDifferenceDegree(gPosition.Latitude, data->geoloc().Latitude));
+                double dLonDiff = fabs(Math::Angles::angleDifferenceDegree(gPosition.Longitude, data->geoloc().Longitude));
+
+                if (dLatDiff < dRange_deg && dLonDiff < dRange_deg)
+                {
+                    vResults << data;
+                }
             }
         }
         else

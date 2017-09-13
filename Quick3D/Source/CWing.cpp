@@ -181,3 +181,19 @@ void CWing::update(double dDeltaTime)
                   );
     }
 }
+
+//-------------------------------------------------------------------------------------------------
+
+void CWing::dump(QTextStream& stream, int iIdent)
+{
+    dumpIdent(stream, iIdent, QString("[CWing]"));
+    dumpIdent(stream, iIdent, QString("Area m2 : %1").arg(m_dArea_m2));
+    dumpIdent(stream, iIdent, QString("Wing angle rad : %1").arg(m_dWingAngle_rad));
+    dumpIdent(stream, iIdent, QString("Aileron area m2 : %1").arg(m_dAileronArea_m2));
+    dumpIdent(stream, iIdent, QString("Aileron max pos angle rad : %1").arg(m_dAileronMaxPositiveAngle_rad));
+    dumpIdent(stream, iIdent, QString("Aileron angle rad : %1").arg(m_dAileronAngle_rad));
+    dumpIdent(stream, iIdent, QString("Flaps position norm : %1").arg(m_dFlapsPosition_norm));
+    dumpIdent(stream, iIdent, QString("Aileron position : %1").arg(m_vAileronPosition.toString()));
+
+    CPhysicalComponent::dump(stream, iIdent);
+}

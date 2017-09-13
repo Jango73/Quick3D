@@ -95,3 +95,14 @@ void CLight::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
         }
     }
 }
+
+//-------------------------------------------------------------------------------------------------
+
+void CLight::dump(QTextStream& stream, int iIdent)
+{
+    dumpIdent(stream, iIdent, QString("[CLight]"));
+    dumpIdent(stream, iIdent, QString("Lighting distance : %1").arg(m_dLightingDistance));
+    dumpIdent(stream, iIdent, QString("Cast shadows : %1").arg(m_bCastShadows));
+
+    CCamera::dump(stream, iIdent);
+}

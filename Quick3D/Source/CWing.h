@@ -54,7 +54,7 @@ public:
     virtual double flapsPosition_norm() const { return m_dFlapsPosition_norm; }
 
     //-------------------------------------------------------------------------------------------------
-    // Inherited methods
+    // Overridden methods
     //-------------------------------------------------------------------------------------------------
 
     //!
@@ -65,6 +65,9 @@ public:
 
     //!
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
+
+    //! Dumps contents to a stream
+    virtual void dump(QTextStream& stream, int iIdent) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Control methods

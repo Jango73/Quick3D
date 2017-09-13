@@ -161,7 +161,7 @@ public:
     virtual void q3dEvent(CQ3DEvent* event);
 
     //-------------------------------------------------------------------------------------------------
-    // Inherited methods
+    // Overridden methods
     //-------------------------------------------------------------------------------------------------
 
     //! Returns this object's class name
@@ -178,6 +178,9 @@ public:
 
     //!
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
+
+    //! Dumps contents to a stream
+    virtual void dump(QTextStream& stream, int iIdent) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Properties

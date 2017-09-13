@@ -65,7 +65,7 @@ public:
     bool castShadows() const { return m_bCastShadows; }
 
     //-------------------------------------------------------------------------------------------------
-    // Inherited methods
+    // Overridden methods
     //-------------------------------------------------------------------------------------------------
 
     //! Returns this object's class name
@@ -74,8 +74,8 @@ public:
     //! Loads this object's parameters
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
 
-    //! Returns \c true if this object is a light
-    virtual bool isLight() const { return true; }
+    //! Dumps contents to a stream
+    virtual void dump(QTextStream& stream, int iIdent) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Control methods
@@ -83,6 +83,9 @@ public:
 
     //!
     CLight& operator = (const CLight& target);
+
+    //! Returns \c true if this object is a light
+    virtual bool isLight() const { return true; }
 
     //-------------------------------------------------------------------------------------------------
     // Properties

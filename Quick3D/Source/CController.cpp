@@ -335,3 +335,15 @@ void CController::joystickEvent(CJoystick* pJoystick)
 void CController::q3dEvent(CQ3DEvent* event)
 {
 }
+
+//-------------------------------------------------------------------------------------------------
+
+void CController::dump(QTextStream& stream, int iIdent)
+{
+    dumpIdent(stream, iIdent, QString("[CController]"));
+    dumpIdent(stream, iIdent, QString("Use mouse : %1").arg(m_bUseMouse));
+    dumpIdent(stream, iIdent, QString("Move speed : %1").arg(m_dMoveSpeed));
+    dumpIdent(stream, iIdent, QString("Force factor : %1").arg(m_dForceFactor));
+
+    CComponent::dump(stream, iIdent);
+}

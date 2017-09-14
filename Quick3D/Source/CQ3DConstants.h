@@ -16,6 +16,37 @@
 #define DELETE_VECTOR_ITEMS(v)  { for (auto d : v) { delete d; } }
 
 //-------------------------------------------------------------------------------------------------
+// Conversion factors
+
+// Meters <-> Feet
+#define FAC_METERS_TO_FEET	3.280840
+#define FAC_FEET_TO_METERS	(1.0 / FAC_METERS_TO_FEET)
+
+// Meters per second <-> Kilometers per hour
+#define FAC_MS_TO_KMH		3.600000
+#define FAC_KMH_TO_MS		(1.0 / FAC_MS_TO_KMH)
+
+// Meters per second <-> Knots
+#define FAC_MS_TO_KNOTS		1.943840
+#define FAC_KNOTS_TO_MS		(1.0 / FAC_MS_TO_KNOTS)
+
+// Meters per second <-> Feet per minute
+#define FAC_MS_TO_FPM		(FAC_METERS_TO_FEET * 60.0)
+#define FAC_FPM_TO_MS		(1.0 / FAC_MS_TO_FPM)
+
+// Kilometers per hour <-> Knots
+#define FAC_KMH_TO_KNOTS	0.539957
+#define FAC_KNOTS_TO_KMH	(1.0 / FAC_KMH_TO_KNOTS)
+
+// Meters <-> Nautical miles
+#define FAC_M_TO_NM			0.000539957
+#define FAC_NM_TO_M			(1.0 / FAC_M_TO_NM)
+
+// Kilometers <-> Nautical miles
+#define FAC_KM_TO_NM		0.539957
+#define FAC_NM_TO_KM		(1.0 / FAC_KM_TO_NM)
+
+//-------------------------------------------------------------------------------------------------
 // Component class names
 
 #define ClassName_CComponent                "CComponent"
@@ -175,6 +206,7 @@
 #define ParamName_MinClamp                  "MinClamp"
 #define ParamName_Minimum                   "Minimum"
 #define ParamName_Name                      "Name"
+#define ParamName_Offset                    "Offset"
 #define ParamName_Operand                   "Operand"
 #define ParamName_OutputScale               "OutputScale"
 #define ParamName_Parameters                "Parameters"

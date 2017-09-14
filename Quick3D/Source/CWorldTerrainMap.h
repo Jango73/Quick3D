@@ -7,6 +7,7 @@
 // Application
 #include "quick3d_global.h"
 #include "CWorldTerrain.h"
+#include "CInterpolator.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -36,6 +37,12 @@ public:
 
     //!
     void setImageSize(QSize sSize);
+
+    //!
+    void setCenter(CGeoloc gCenter);
+
+    //!
+    void setScale(double dScale);
 
     //-------------------------------------------------------------------------------------------------
     // Getters
@@ -67,7 +74,10 @@ public:
 
 protected:
 
-    QSP<CWorldTerrain>  m_pTerrain;
-    QImage*             m_pImage;
-    QSize               m_sImageSize;
+    CInterpolator<Math::CVector3>   m_iColors;
+    QSP<CWorldTerrain>              m_pTerrain;
+    CGeoloc                         m_gCenter;
+    QImage*                         m_pImage;
+    QSize                           m_sImageSize;
+    double                          m_dScale;
 };

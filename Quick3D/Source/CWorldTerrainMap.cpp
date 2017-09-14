@@ -23,8 +23,15 @@ CComponent* CWorldTerrainMap::instantiator(C3DScene* pScene)
 CWorldTerrainMap::CWorldTerrainMap(C3DScene *pScene)
     : CComponent(pScene)
     , m_pImage(nullptr)
-    , m_sImageSize(QSize(512, 256))
+    , m_sImageSize(QSize(128, 64))
+    , m_dScale(1.0)
 {
+    m_iColors.addValue(0.000, CVector3(0.0, 0.0, 0.0));
+    m_iColors.addValue(0.001, CVector3(0.0, 1.0, 0.5));
+    m_iColors.addValue(0.150, CVector3(0.0, 1.0, 0.0));
+    m_iColors.addValue(0.300, CVector3(1.0, 1.0, 0.0));
+    m_iColors.addValue(0.600, CVector3(1.0, 0.5, 0.0));
+    m_iColors.addValue(1.000, CVector3(1.0, 0.0, 0.0));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -49,6 +56,20 @@ void CWorldTerrainMap::setTerrain(QSP<CWorldTerrain> pTerrain)
 void CWorldTerrainMap::setImageSize(QSize sSize)
 {
     m_sImageSize = sSize;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CWorldTerrainMap::setCenter(CGeoloc gCenter)
+{
+    m_gCenter = gCenter;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CWorldTerrainMap::setScale(double dScale)
+{
+    m_dScale = dScale;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -82,13 +103,35 @@ void CWorldTerrainMap::updateImage()
         {
             for (int x = 0; x < m_sImageSize.width(); x++)
             {
-                double dLatitude = (((1.0 - ((double) y / (double) m_sImageSize.height())) - 0.5) * 2.0) * 90.0;
-                double dLongitude = (((((double) x / (double) m_sImageSize.width())) - 0.5) * 2.0) * 180.0;
-                CGeoloc gGeoloc(dLatitude, dLongitude, 0.0);
-                double dAltitude = m_pTerrain->heights()->getHeightAt(gGeoloc);
-                dAltitude = Angles::clipDouble(dAltitude / MAX_ALTITUDE, 0.0, 1.0) * 255.0;
-                QRgb iNewPixel = qRgb((int) dAltitude, (int) dAltitude, (int) dAltitude);
-                m_pImage->setPixel(QPoint(x, y), iNewPixel);
+                double dLatitude = (((1.0 - ((double) y / (double) m_sImageSize.height())) - 0.5) * 2.0) * Math::DegreeQuarter;
+                double dLongitude = (((((double) x / (double) m_sImageSize.width())) - 0.5) * 2.0) * Math::DegreeHalf;
+
+                dLatitude /= m_dScale;
+                dLongitude /= m_dScale;
+
+                dLatitude += m_gCenter.Latitude;
+                dLongitude += m_gCenter.Longitude;
+
+                // Coordinates are clipped between -180.0 and +180.0 degrees
+                dLatitude = Math::Angles::clipAngleDegreePIMinusPI(dLatitude);
+                dLongitude = Math::Angles::clipAngleDegreePIMinusPI(dLongitude);
+
+                // Latitude is clipped between -89.9 and +89.9 degrees
+                dLatitude = Math::Angles::clipDouble(dLatitude, -(Math::DegreeQuarter - 0.1), (Math::DegreeQuarter - 0.1));
+
+                if (dLatitude >= -Math::DegreeQuarter && dLatitude <= Math::DegreeQuarter && dLongitude >= -Math::DegreeHalf && dLongitude <= Math::DegreeHalf)
+                {
+                    // Get an altitude
+                    CGeoloc gGeoloc(dLatitude, dLongitude, 0.0);
+                    double dAltitude = m_pTerrain->heights()->getHeightAt(gGeoloc);
+                    dAltitude = Angles::clipDouble(dAltitude / MAX_ALTITUDE, 0.0, 1.0);
+
+                    // Get a color
+                    CVector3 vColor = m_iColors.getValue(dAltitude);
+                    QRgb iNewPixel = qRgb((int) vColor.X * 255.0, (int) vColor.Y * 255.0, (int) vColor.Z * 255.0);
+
+                    m_pImage->setPixel(QPoint(x, y), iNewPixel);
+                }
             }
         }
     }

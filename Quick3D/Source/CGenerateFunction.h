@@ -65,6 +65,7 @@ protected:
     ETerrainOperation               m_eType;
     double                          m_dConstant;
     QVector<CGenerateFunction*>     m_vOperands;
+    Math::CVector3                  m_vOffset;
     double                          m_dInputScale;
     double                          m_dOutputScale;
     double                          m_dMinClamp;

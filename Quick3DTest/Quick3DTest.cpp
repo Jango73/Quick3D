@@ -302,7 +302,7 @@ void Quick3DTest::onTimer()
                 .arg(QString::number(Math::Angles::toDeg(ViewRotation.Y), 'f', 2))
                 .arg(QString::number(Math::Angles::toDeg(ViewRotation.Z), 'f', 2))
 
-                .arg(QString::number(dSpeedMS * 1.9438444924406046, 'f', 1))
+                .arg(QString::number(dSpeedMS * FAC_MS_TO_KNOTS, 'f', 1))
 
                 .arg(QString::number(ControledVelocity.X, 'f', 2))
                 .arg(QString::number(ControledVelocity.Y, 'f', 2))

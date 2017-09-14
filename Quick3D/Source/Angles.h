@@ -19,6 +19,10 @@ const double Sqrt2	= 1.41421356237309504880;
 //! Constante de PI x 2
 const double _2Pi	= Pi * 2.0;
 
+const double DegreeFull = 360.0;
+const double DegreeHalf = 180.0;
+const double DegreeQuarter = 90.0;
+
 class Angles
 {
 public:

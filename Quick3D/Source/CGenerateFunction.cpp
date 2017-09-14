@@ -172,6 +172,17 @@ void CGenerateFunction::getProceduralParameters(CXMLNode xFunctions, CXMLNode xP
     {
         m_dOutputScaleFactor = xParams.attributes()["OutputScaleFactor"].toDouble();
     }
+
+    CXMLNode xOffset = xParams.getNodeByTagName(ParamName_Offset);
+
+    if (xOffset.isEmpty() == false)
+    {
+        m_vOffset = CVector3(
+                    xOffset.attributes()[ParamName_x].toDouble(),
+                    xOffset.attributes()[ParamName_y].toDouble(),
+                    xOffset.attributes()[ParamName_z].toDouble()
+                    );
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -193,11 +204,11 @@ double CGenerateFunction::process(CPerlin* pPerlin, const CVector3& vPosition, c
         {
             if (m_vOperands.count() > 0)
             {
-                double dReturnValue = m_vOperands[0]->process(pPerlin, vPosition, aAxis);
+                double dReturnValue = m_vOperands[0]->process(pPerlin, vPosition + m_vOffset, aAxis);
 
                 for (int iIndex = 1; iIndex < m_vOperands.count(); iIndex++)
                 {
-                    double dCurrentValue = m_vOperands[iIndex]->process(pPerlin, vPosition, aAxis);
+                    double dCurrentValue = m_vOperands[iIndex]->process(pPerlin, vPosition + m_vOffset, aAxis);
 
                     switch (m_eType)
                     {
@@ -222,7 +233,7 @@ double CGenerateFunction::process(CPerlin* pPerlin, const CVector3& vPosition, c
         {
             if (m_vOperands.count() > 0)
             {
-                return pow(m_vOperands[0]->process(pPerlin, vPosition, aAxis), m_dConstant);
+                return pow(m_vOperands[0]->process(pPerlin, vPosition + m_vOffset, aAxis), m_dConstant);
             }
 
             return 0.0;
@@ -244,17 +255,21 @@ double CGenerateFunction::process(CPerlin* pPerlin, const CVector3& vPosition, c
                 switch (m_eType)
                 {
                     case toPerlin:
-                        dNewValue = pPerlin->noise(vPosition * dInputScale);
+                        dNewValue = pPerlin->noise((vPosition * dInputScale) + m_vOffset);
                         break;
+
                     case toTurbulence:
-                        dNewValue = pPerlin->turbulence(vPosition * dInputScale);
+                        dNewValue = pPerlin->turbulence((vPosition * dInputScale) + m_vOffset);
                         break;
+
                     case toErosion:
-                        dNewValue = pPerlin->erosion(vPosition * dInputScale, aAxis, m_dDisplace);
+                        dNewValue = pPerlin->erosion((vPosition * dInputScale) + m_vOffset, aAxis, m_dDisplace);
                         break;
+
                     case toVoronoi:
-                        dNewValue = pPerlin->voronoi(vPosition * dInputScale, aAxis, m_dDisplace);
+                        dNewValue = pPerlin->voronoi((vPosition * dInputScale) + m_vOffset, aAxis, m_dDisplace);
                         break;
+
                     default:
                         break;
                 }

@@ -46,6 +46,7 @@
 #define ClassName_CWorldTerrain             "CWorldTerrain"
 #define ClassName_CTerrain                  "CTerrain"
 #define ClassName_CWorldChunk               "CWorldChunk"
+#define ClassName_CWorldTerrainMap          "CWorldTerrainMap"
 
 #define ClassName_CArmature                 "CArmature"
 #define ClassName_CBone                     "CBone"

@@ -1,8 +1,3 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2016-01-22T20:41:20
-#
-#-------------------------------------------------
 
 QT += core gui network opengl xml positioning
 
@@ -163,6 +158,8 @@ SOURCES += \
     Source/CWorker.cpp \
     Source/CWorkerManager.cpp \
     Source/CWorldChunk.cpp \
+    Source/CWorldTerrain.cpp \
+    Source/CWorldTerrainMap.cpp \
     Source/CZip.cpp \
     ../COTS/zlib-1.2.6/adler32.c \
     ../COTS/zlib-1.2.6/compress.c \
@@ -212,8 +209,7 @@ SOURCES += \
     ../COTS/SFML-1.6/src/SFML/System/Win32/MutexImpl.cpp \
     ../COTS/SFML-1.6/src/SFML/System/Win32/SleepImpl.cpp \
     ../COTS/SFML-1.6/src/SFML/System/Win32/ThreadImpl.cpp \
-    ../COTS/SFML-1.6/src/SFML/System/Win32/ThreadLocalImpl.cpp \
-    Source/CWorldTerrain.cpp
+    ../COTS/SFML-1.6/src/SFML/System/Win32/ThreadLocalImpl.cpp
 
 HEADERS += \
     Source/Angles.h \
@@ -337,6 +333,8 @@ HEADERS += \
     Source/CWorker.h \
     Source/CWorkerManager.h \
     Source/CWorldChunk.h \
+    Source/CWorldTerrain.h \
+    Source/CWorldTerrainMap.h \
     Source/CZip.h \
     Source/glext.h \
     Source/ILoadable.h \
@@ -381,8 +379,7 @@ HEADERS += \
     ../COTS/SFML-1.6/src/SFML/System/Win32/MutexImpl.hpp \
     ../COTS/SFML-1.6/src/SFML/System/Win32/SleepImpl.hpp \
     ../COTS/SFML-1.6/src/SFML/System/Win32/ThreadImpl.hpp \
-    ../COTS/SFML-1.6/src/SFML/System/Win32/ThreadLocalImpl.hpp \
-    Source/CWorldTerrain.h
+    ../COTS/SFML-1.6/src/SFML/System/Win32/ThreadLocalImpl.hpp
 
 RESOURCES += \
     Quick3DShaders.qrc

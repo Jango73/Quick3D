@@ -150,7 +150,7 @@ void CUnitTests::run()
         dump.close();
     }
 
-    QVector<CGeolocalized*> vResult = tGeoTree.query(CGeoloc(48.5, 2.2, 0.0), 50000.0);
+    QVector<CGeolocalized*> vResult = tGeoTree.query(CGeoloc(48.5, 2.2, 0.0), 400000.0);
     qDebug() << "vResult.count() =" << vResult.count();
 
     delete wp1;

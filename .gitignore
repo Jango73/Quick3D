@@ -20,6 +20,7 @@
 *.qbs.user.*
 *.moc
 moc_*.cpp
+moc_*.h
 qrc_*.cpp
 ui_*.h
 Makefile*
@@ -37,6 +38,7 @@ Makefile*
 
 # Project specific
 Quick3D/help
+Quick3DTest/bin/*.txt
 Quick3DTest/bin/Logs
 Quick3DTest/bin/Tiles
 *.log

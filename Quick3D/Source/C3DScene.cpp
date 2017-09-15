@@ -70,8 +70,6 @@ C3DScene::C3DScene(bool bForDisplay)
     , m_dSunIntensity(0.0)
     , m_dOverlookFOV(90.0)
 {
-    LOG_DEBUG("C3DScene::C3DScene()");
-
     m_pSegments = QSP<CMeshGeometry>(new CMeshGeometry(this));
 }
 
@@ -82,8 +80,6 @@ C3DScene::C3DScene(bool bForDisplay)
 */
 C3DScene::~C3DScene()
 {
-    LOG_DEBUG("C3DScene::~C3DScene()");
-
     clearComponents();
     clearViewports();
 
@@ -151,7 +147,7 @@ void C3DScene::clearViewports()
 */
 void C3DScene::init(QVector<QSP<CComponent> > vComponents)
 {
-    LOG_DEBUG("C3DScene::init()");
+    LOG_METHOD_DEBUG("");
 
     //-----------------------------------------------
     // Init fog and sun color
@@ -201,7 +197,7 @@ void C3DScene::init(QVector<QSP<CComponent> > vComponents)
 */
 void C3DScene::initShaders()
 {
-    LOG_DEBUG("C3DScene::initShaders()");
+    LOG_METHOD_DEBUG("");
 }
 
 //-------------------------------------------------------------------------------------------------

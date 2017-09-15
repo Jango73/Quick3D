@@ -19,14 +19,13 @@ using namespace Math;
 
 CComponentLoader::CComponentLoader()
 {
-    LOG_DEBUG("CComponentLoader::CComponentLoader()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 QVector<QSP<CComponent> > CComponentLoader::load(const QString& sBaseFile, C3DScene* pScene)
 {
-    LOG_DEBUG("CComponentLoader::load()");
+    LOG_METHOD_DEBUG("");
 
     QVector<QSP<CComponent> > vOutput;
 
@@ -34,6 +33,8 @@ QVector<QSP<CComponent> > CComponentLoader::load(const QString& sBaseFile, C3DSc
 
     QString sCamera1;
     QString sCamera2;
+    QString sCamera3;
+    QString sCamera4;
     QString sControlled;
 
     foreach (CXMLNode xNode, tDoc.nodes())
@@ -45,6 +46,14 @@ QVector<QSP<CComponent> > CComponentLoader::load(const QString& sBaseFile, C3DSc
         else if (xNode.tag() == ParamName_Camera2)
         {
             sCamera2 = xNode.attributes()[ParamName_Name];
+        }
+        else if (xNode.tag() == ParamName_Camera3)
+        {
+            sCamera3 = xNode.attributes()[ParamName_Name];
+        }
+        else if (xNode.tag() == ParamName_Camera4)
+        {
+            sCamera4 = xNode.attributes()[ParamName_Name];
         }
         else if (xNode.tag() == ParamName_ControlledComponent)
         {
@@ -70,6 +79,8 @@ QVector<QSP<CComponent> > CComponentLoader::load(const QString& sBaseFile, C3DSc
     {
         QSP<CComponent> pCamera1Found = pComponent->findComponent(sCamera1);
         QSP<CComponent> pCamera2Found = pComponent->findComponent(sCamera2);
+        QSP<CComponent> pCamera3Found = pComponent->findComponent(sCamera3);
+        QSP<CComponent> pCamera4Found = pComponent->findComponent(sCamera4);
         QSP<CComponent> pControlledFound = pComponent->findComponent(sControlled);
 
         if (pCamera1Found && pCamera1Found->isCamera())
@@ -88,13 +99,29 @@ QVector<QSP<CComponent> > CComponentLoader::load(const QString& sBaseFile, C3DSc
             }
         }
 
+        if (pCamera3Found && pCamera3Found->isCamera())
+        {
+            if (pScene->viewports().contains(2))
+            {
+                pScene->viewports()[2]->setCamera(QSP_CAST(CCamera, pCamera3Found));
+            }
+        }
+
+        if (pCamera4Found && pCamera4Found->isCamera())
+        {
+            if (pScene->viewports().contains(3))
+            {
+                pScene->viewports()[3]->setCamera(QSP_CAST(CCamera, pCamera4Found));
+            }
+        }
+
         if (pControlledFound && pControlledFound->controller() != nullptr)
         {
             pScene->setController(pControlledFound->controller());
         }
     }
 
-    LOG_INFO("CComponentLoader::load() : Finished loading scene");
+    LOG_METHOD_INFO("Finished loading scene");
 
     return vOutput;
 }
@@ -127,9 +154,9 @@ CComponent* CComponentLoader::loadComponent(const QString& sBaseFile, C3DScene* 
 
         pComponent->loadParameters(sBaseFile, xComponent);
 
-        LOG_DEBUG(QString("... Adding component %1").arg(pComponent->name()));
+        LOG_METHOD_DEBUG(QString("Adding component %1").arg(pComponent->name()));
 
-        // Chargement des composants enfants
+        // Load child components
 
         QVector<CXMLNode> xChildComponents = xComponent.getNodesByTagName(ParamName_Component);
 
@@ -143,7 +170,7 @@ CComponent* CComponentLoader::loadComponent(const QString& sBaseFile, C3DScene* 
             }
         }
 
-        // Chargement du contrôleur
+        // Load the component's controller
 
         CXMLNode xController = xComponent.getNodeByTagName(ParamName_Controller);
 

@@ -32,7 +32,7 @@ CBILField::CBILField(CXMLNode xParameters, const QString& sPathToBILFiles, doubl
     , m_xParameters(xParameters)
     , m_dValueForNoData(dValueForNoData)
 {
-    LOG_DEBUG(QString("CBILField::CBILField(%1)").arg(sPathToBILFiles));
+    LOG_METHOD_DEBUG(sPathToBILFiles);
 
     // Set path to argument path if not empty, else default to application path + "/BIL"
 

@@ -43,7 +43,7 @@ CWorldChunk::~CWorldChunk()
     {
         QMutexLocker locker(&m_mMutex);
 
-        LOG_DEBUG(QString("Deleting %1 CWorldChunk::CBoundedMeshInstances for tile at lat %2, lon %3")
+        LOG_METHOD_DEBUG(QString("Deleting %1 CWorldChunk::CBoundedMeshInstances for tile at lat %2, lon %3")
                   .arg(m_vBoundedMeshes.count())
                   .arg(geoloc().Latitude)
                   .arg(geoloc().Longitude)
@@ -436,7 +436,7 @@ void CWorldChunk::work()
 
                     CBoundingBox bBox = createBoundsForTerrain(gPosition, gSize, 1000.0);
 
-                    LOG_DEBUG(QString("Creating CWorldChunk::CBoundedMeshInstances for tile at lat %1, lon %2")
+                    LOG_METHOD_DEBUG(QString("Creating CWorldChunk::CBoundedMeshInstances for tile at lat %1, lon %2")
                               .arg(geoloc().Latitude)
                               .arg(geoloc().Longitude)
                               );

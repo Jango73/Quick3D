@@ -33,14 +33,12 @@ CAircraft::CAircraft(C3DScene* pScene)
     , m_dAltitude_m(0.0)
     , m_dAltitudeAGL_m(0.0)
 {
-    LOG_DEBUG("CAircraft::CAircraft()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CAircraft::~CAircraft()
 {
-    LOG_DEBUG("CAircraft::~CAircraft()");
 }
 
 //-------------------------------------------------------------------------------------------------

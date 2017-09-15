@@ -82,7 +82,7 @@ CComponent::CComponent(C3DScene* pScene)
     , m_dStatus(1.0)
 {
     Q_UNUSED(pScene);
-    LOG_DEBUG(QString("CComponent::CComponent() : %1").arg((quint32) this));
+    LOG_METHOD_DEBUG(QString::number((quint32) this, 16));
 
     m_iNumComponents++;
 }
@@ -94,7 +94,7 @@ CComponent::CComponent(C3DScene* pScene)
 */
 CComponent::~CComponent()
 {
-    LOG_DEBUG(QString("CComponent::~CComponent() : %1").arg((quint32) this));
+    LOG_METHOD_DEBUG(QString::number((quint32) this, 16));
 
     m_iNumComponents--;
 

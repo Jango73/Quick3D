@@ -23,14 +23,12 @@ CGenerator::CGenerator(C3DScene* pScene)
     : CElectricalComponent(pScene)
     , m_tCurrent(ctAC, 200.0, 150.0, 400.0)
 {
-    LOG_DEBUG("CGenerator::CGenerator()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CGenerator::~CGenerator()
 {
-    LOG_DEBUG("CGenerator::~CGenerator()");
 }
 
 //-------------------------------------------------------------------------------------------------

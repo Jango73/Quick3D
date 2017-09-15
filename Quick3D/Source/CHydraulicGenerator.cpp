@@ -22,14 +22,12 @@ CComponent* CHydraulicGenerator::instantiator(C3DScene* pScene)
 CHydraulicGenerator::CHydraulicGenerator(C3DScene* pScene)
     : CGenerator(pScene)
 {
-    LOG_DEBUG("CHydraulicGenerator::CHydraulicGenerator()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CHydraulicGenerator::~CHydraulicGenerator()
 {
-    LOG_DEBUG("CHydraulicGenerator::~CHydraulicGenerator()");
 }
 
 //-------------------------------------------------------------------------------------------------

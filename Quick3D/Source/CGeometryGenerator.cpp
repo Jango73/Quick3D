@@ -11,14 +11,12 @@
 CGeometryGenerator::CGeometryGenerator(C3DScene* pScene)
 : CComponent(pScene)
 {
-    LOG_DEBUG("CGeometryGenerator::CGeometryGenerator()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CGeometryGenerator::~CGeometryGenerator()
 {
-    LOG_DEBUG("CGeometryGenerator::~CGeometryGenerator()");
 }
 
 //-------------------------------------------------------------------------------------------------

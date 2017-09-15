@@ -144,6 +144,8 @@
 #define ParamName_CenterOfMass              "CenterOfMass"
 #define ParamName_Camera1                   "Camera1"
 #define ParamName_Camera2                   "Camera2"
+#define ParamName_Camera3                   "Camera3"
+#define ParamName_Camera4                   "Camera4"
 #define ParamName_Cast_Shadows              "CastShadows"
 #define ParamName_Class                     "Class"
 #define ParamName_Closed                    "Closed"

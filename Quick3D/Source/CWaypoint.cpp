@@ -13,7 +13,6 @@ using namespace Math;
 
 CWaypoint::CWaypoint()
 {
-    LOG_DEBUG("CWaypoint::CWaypoint()");
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -37,7 +36,6 @@ CWaypoint::CWaypoint(EWaypointType eType, QString sName, CGeoloc gGeoloc, double
 
 CWaypoint::~CWaypoint()
 {
-    LOG_DEBUG("CWaypoint::~CWaypoint()");
 }
 
 //-------------------------------------------------------------------------------------------------

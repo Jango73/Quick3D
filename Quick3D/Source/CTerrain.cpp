@@ -77,7 +77,7 @@ CTerrain::CTerrain(
     computeWorldTransform();
 
     // Create terrain mesh
-    LOG_DEBUG(QString("Creating CTerrain::m_pMesh (%1, %2, %3)")
+    LOG_METHOD_DEBUG(QString("Creating CTerrain::m_pMesh (%1, %2, %3)")
               .arg(gOriginalGeoloc.Latitude)
               .arg(gOriginalGeoloc.Longitude)
               .arg(m_sName)
@@ -305,7 +305,7 @@ double CTerrain::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 
 void CTerrain::work()
 {
-    LOG_DEBUG(QString("CTerrain::work() : START : %1").arg(m_sName));
+    LOG_METHOD_DEBUG(QString("START : %1").arg(m_sName));
 
     m_bAllHeightsOverSea = true;
     int vVertexCount = 0;
@@ -460,7 +460,7 @@ void CTerrain::work()
     // Loop over vertices
     if (pMaterial != nullptr && pTiledMaterial == nullptr)
     {
-        LOG_DEBUG(QString("CTerrain::work() : Setting up terrain textures for non-tiled material"));
+        LOG_METHOD_DEBUG(QString("Setting up terrain textures for non-tiled material"));
 
         for (int iIndex = 0; iIndex < m_pMesh->vertices().count(); iIndex++)
         {
@@ -535,7 +535,7 @@ void CTerrain::work()
     m_bOK = true;
 
     /*
-    LOG_DEBUG(QString("CTerrain::work() : Terrain built, vertices = %1, faces = %2")
+    LOG_METHOD_DEBUG(QString("Terrain built, vertices = %1, faces = %2")
         .arg(m_pMesh->getVertices().count())
         .arg(m_pMesh->getFaces().count())
         );
@@ -543,10 +543,10 @@ void CTerrain::work()
 
     if (m_pMesh->faces().count() == 0)
     {
-        LOG_WARNING(QString("CTerrain::work() : No faces in %1").arg(m_sName));
+        LOG_METHOD_WARNING(QString("No faces in %1").arg(m_sName));
     }
 
-    LOG_DEBUG(QString("CTerrain::work() : FINISHED : %1").arg(m_sName));
+    LOG_METHOD_DEBUG(QString("FINISHED : %1").arg(m_sName));
 }
 
 //-------------------------------------------------------------------------------------------------

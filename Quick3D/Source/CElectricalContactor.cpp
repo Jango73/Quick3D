@@ -19,14 +19,12 @@ CElectricalContactor::CElectricalContactor(C3DScene* pScene)
 : CElectricalComponent(pScene)
 , m_bClosed(false)
 {
-	LOG_DEBUG("CElectricalContactor::CElectricalContactor()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CElectricalContactor::~CElectricalContactor()
 {
-	LOG_DEBUG("CElectricalContactor::~CElectricalContactor()");
 }
 
 //-------------------------------------------------------------------------------------------------

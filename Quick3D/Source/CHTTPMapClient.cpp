@@ -10,8 +10,6 @@
 CHTTPMapClient::CHTTPMapClient()
     : m_pReply(nullptr)
 {
-    LOG_DEBUG("CHTTPMapClient::CHTTPMapClient()");
-
     m_sTilePath = QCoreApplication::applicationDirPath() + "/Tiles";
 
     if (!QDir().exists(m_sTilePath))
@@ -24,7 +22,6 @@ CHTTPMapClient::CHTTPMapClient()
 
 CHTTPMapClient::~CHTTPMapClient()
 {
-    LOG_DEBUG("CHTTPMapClient::~CHTTPMapClient()");
 }
 
 //-------------------------------------------------------------------------------------------------

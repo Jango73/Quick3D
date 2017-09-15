@@ -20,8 +20,6 @@ CViewport::CViewport(C3DScene* pScene, bool bEnableMJPEGServer)
 {
     static int iPort = 6666;
 
-    LOG_DEBUG("CViewport::CViewport()");
-
     //-----------------------------------------------
     // Création des membres
 
@@ -35,8 +33,6 @@ CViewport::CViewport(C3DScene* pScene, bool bEnableMJPEGServer)
 
 CViewport::~CViewport()
 {
-    LOG_DEBUG("CViewport::~CViewport()");
-
     if (m_pServer != nullptr)
     {
         delete m_pServer;

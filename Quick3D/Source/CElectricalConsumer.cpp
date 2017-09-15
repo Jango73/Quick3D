@@ -20,14 +20,12 @@ CElectricalConsumer::CElectricalConsumer(C3DScene* pScene)
     : CElectricalComponent(pScene)
     , m_bPowered(false)
 {
-    LOG_DEBUG("CElectricalConsumer::CElectricalConsumer()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CElectricalConsumer::~CElectricalConsumer()
 {
-    LOG_DEBUG("CElectricalConsumer::~CElectricalConsumer()");
 }
 
 //-------------------------------------------------------------------------------------------------

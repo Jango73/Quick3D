@@ -21,14 +21,12 @@ CElectricalComponent::CElectricalComponent(C3DScene* pScene)
     , m_dMaxAmperage(150.0)
     , m_bShortCircuited(false)
 {
-    LOG_DEBUG("CElectricalComponent::CElectricalComponent()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CElectricalComponent::~CElectricalComponent()
 {
-    LOG_DEBUG("CElectricalComponent::~CElectricalComponent()");
 }
 
 //-------------------------------------------------------------------------------------------------

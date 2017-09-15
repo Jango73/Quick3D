@@ -23,8 +23,6 @@ CGLWidgetScene::CGLWidgetScene(bool bForDisplay)
     : QGLWidget(QGLFormat (QGL::DoubleBuffer | QGL::DepthBuffer | QGL::StencilBuffer))
     , C3DScene(bForDisplay)
 {
-    LOG_DEBUG("CGLWidgetScene::CGLWidgetScene()");
-
     makeCurrentRenderingContext();
 
     if (m_bForDisplay)
@@ -47,7 +45,6 @@ CGLWidgetScene::CGLWidgetScene(bool bForDisplay)
 
 CGLWidgetScene::~CGLWidgetScene()
 {
-    LOG_DEBUG("CGLWidgetScene::~CGLWidgetScene()");
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -84,12 +84,11 @@ CGeoloc::CGeoloc (const CVector3& vPosition3D)
     {
         case gld_UTM:
             // return fromVector3_UTM(vPosition3D);
+            break;
 
         case gld_WGS84:
         default:
-        {
             *this = fromVector3_WGS84(vPosition3D);
-        }
             break;
     }
 }
@@ -110,12 +109,11 @@ CGeoloc::CGeoloc (const CGeoloc& gReference, const CVector3& vPosition3D)
     {
         case gld_UTM:
             // return fromVector3_UTM(gReference);
+            break;
 
         case gld_WGS84:
         default:
-        {
             *this = fromVector3_WGS84(gReference, vPosition3D);
-        }
             break;
     }
 }
@@ -275,6 +273,25 @@ double CGeoloc::magneticHeadingtoTrueHeading(double dHeading) const
 double CGeoloc::trueHeadingToMagneticHeading(double dHeading) const
 {
     return dHeading - computeMagneticDeclination();
+}
+
+//---------------------------------------------------------------------------------------------
+
+/*!
+    Returns a quad key that refers to this geoloc and \a iLevel.
+*/
+QString CGeoloc::toQuadKey(int iLevel) const
+{
+    double dLatitude = (Latitude * -1.0) + 90.0;
+    double dLongitude = Math::Angles::clipAngleDegree(Longitude + 180.0);
+    double dLatScale = 90.0;
+    double dLonScale = 180.0;
+
+    return QString("a") + TileXYToQuadKey(
+                (int) ( (dLongitude / dLonScale) * (pow(2.0, (double) iLevel - 1.0)) ),
+                (int) ( (dLatitude / dLatScale) * (pow(2.0, (double) iLevel - 1.0)) ),
+                iLevel
+                );
 }
 
 //---------------------------------------------------------------------------------------------
@@ -588,6 +605,32 @@ CGeoloc CGeoloc::fromVector3_WGS84(const CGeoloc& gReference, const CVector3& vP
     gReturnValue.Longitude = gReturnValue.Longitude * GeoTrans::fRad2Deg;
 
     return gReturnValue;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QString CGeoloc::TileXYToQuadKey(int tileX, int tileY, int levelOfDetail) const
+{
+    int lTileX = tileX;
+    int lTileY = tileY;
+
+    QString sKey;
+
+    while (levelOfDetail > 0)
+    {
+        int lX = lTileX % 2;
+        int lY = lTileY % 2;
+
+        lTileX = lTileX / 2;
+        lTileY = lTileY / 2;
+
+        int lCode = (lY * 2) + lX;
+        sKey.insert(0, QString('0' + lCode));
+
+        levelOfDetail--;
+    }
+
+    return sKey;
 }
 
 //---------------------------------------------------------------------------------------------

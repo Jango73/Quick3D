@@ -20,14 +20,12 @@ CHydraulicComponent::CHydraulicComponent(C3DScene* pScene)
     : CComponent(pScene)
     , m_dPressure_norm(0.0)
 {
-    LOG_DEBUG("CHydraulicComponent::CHydraulicComponent()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CHydraulicComponent::~CHydraulicComponent()
 {
-    LOG_DEBUG("CHydraulicComponent::~CHydraulicComponent()");
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -1,4 +1,7 @@
 
+// qt-plus
+#include "CLogger.h"
+
 // Application
 #include "CQ3DConstants.h"
 #include "CRessourcesManager.h"
@@ -76,6 +79,8 @@ CComponentFactory::~CComponentFactory()
 
 void CComponentFactory::registerCoreComponents()
 {
+    LOG_METHOD_DEBUG("Registering Quick3D components");
+
     registerComponent(ClassName_CComponent, CComponent::instantiator);
     registerComponent(ClassName_CPhysicalComponent, CPhysicalComponent::instantiator);
     registerComponent(ClassName_CCamera, CCamera::instantiator);

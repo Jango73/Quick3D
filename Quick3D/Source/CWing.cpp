@@ -29,8 +29,6 @@ CWing::CWing(C3DScene* pScene)
     , m_dAileronAngle_rad(0.0)
     , m_dFlapsPosition_norm(0.0)
 {
-    LOG_DEBUG("CWing::CWing()");
-
     m_iBodyAirflowDotLiftFactor.addValue(-1.00, 0.0);
     m_iBodyAirflowDotLiftFactor.addValue( 0.00, 0.0);
     m_iBodyAirflowDotLiftFactor.addValue( 0.05, 0.5);
@@ -47,7 +45,6 @@ CWing::CWing(C3DScene* pScene)
 
 CWing::~CWing()
 {
-    LOG_DEBUG("CWing::~CWing()");
 }
 
 //-------------------------------------------------------------------------------------------------

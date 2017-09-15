@@ -22,8 +22,6 @@ CComponent* CBasicAnimator::instantiator(C3DScene* pScene)
 CBasicAnimator::CBasicAnimator(C3DScene* pScene)
     : CAnimator(pScene)
 {
-    LOG_DEBUG("CBasicAnimator::CBasicAnimator()");
-
     m_pTranslationFrame = nullptr;
     m_pRotationFrame = nullptr;
 }
@@ -32,17 +30,11 @@ CBasicAnimator::CBasicAnimator(C3DScene* pScene)
 
 CBasicAnimator::~CBasicAnimator()
 {
-    LOG_DEBUG("CBasicAnimator::CBasicAnimator()");
-
     if (m_pTranslationFrame != nullptr)
-    {
         delete m_pTranslationFrame;
-    }
 
     if (m_pRotationFrame != nullptr)
-    {
         delete m_pRotationFrame;
-    }
 }
 
 //-------------------------------------------------------------------------------------------------

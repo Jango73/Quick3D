@@ -29,9 +29,8 @@ CWorldTerrainMap::CWorldTerrainMap(C3DScene *pScene)
     m_iColors.addValue(0.000, CVector3(0.0, 0.0, 0.0));
     m_iColors.addValue(0.001, CVector3(0.0, 1.0, 0.5));
     m_iColors.addValue(0.150, CVector3(0.0, 1.0, 0.0));
-    m_iColors.addValue(0.300, CVector3(1.0, 1.0, 0.0));
-    m_iColors.addValue(0.600, CVector3(1.0, 0.5, 0.0));
-    m_iColors.addValue(1.000, CVector3(1.0, 0.0, 0.0));
+    m_iColors.addValue(0.300, CVector3(1.0, 0.5, 0.0));
+    m_iColors.addValue(1.000, CVector3(1.0, 1.0, 1.0));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -116,9 +115,6 @@ void CWorldTerrainMap::updateImage()
                 dLatitude = Math::Angles::clipAngleDegreePIMinusPI(dLatitude);
                 dLongitude = Math::Angles::clipAngleDegreePIMinusPI(dLongitude);
 
-                // Latitude is clipped between -89.9 and +89.9 degrees
-                dLatitude = Math::Angles::clipDouble(dLatitude, -(Math::DegreeQuarter - 0.1), (Math::DegreeQuarter - 0.1));
-
                 if (dLatitude >= -Math::DegreeQuarter && dLatitude <= Math::DegreeQuarter && dLongitude >= -Math::DegreeHalf && dLongitude <= Math::DegreeHalf)
                 {
                     // Get an altitude
@@ -128,9 +124,13 @@ void CWorldTerrainMap::updateImage()
 
                     // Get a color
                     CVector3 vColor = m_iColors.getValue(dAltitude);
-                    QRgb iNewPixel = qRgb((int) vColor.X * 255.0, (int) vColor.Y * 255.0, (int) vColor.Z * 255.0);
+                    QRgb iNewPixel = qRgb((int) (vColor.X * 255.0), (int) (vColor.Y * 255.0), (int) (vColor.Z * 255.0));
 
                     m_pImage->setPixel(QPoint(x, y), iNewPixel);
+                }
+                else
+                {
+                    m_pImage->setPixel(QPoint(x, y), qRgb(0, 0, 0));
                 }
             }
         }

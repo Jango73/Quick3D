@@ -3,7 +3,6 @@
 #include "CLogger.h"
 
 // Application
-#include "CRessourcesManager.h"
 #include "C3DScene.h"
 #include "CComponentFactory.h"
 #include "CWorldTerrain.h"
@@ -207,6 +206,23 @@ void CWorldTerrain::loadParameters(const QString& sBaseFile, CXMLNode xComponent
 
 //-------------------------------------------------------------------------------------------------
 
+void CWorldTerrain::solveLinks(C3DScene* pScene)
+{
+    CComponent::solveLinks(pScene);
+
+    if (m_pRoot != nullptr)
+    {
+        m_pRoot->solveLinks(pScene);
+    }
+
+    foreach (QSP<CComponent> pGenerator, m_vGenerators)
+    {
+        pGenerator->solveLinks(pScene);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CWorldTerrain::clearLinks(C3DScene* pScene)
 {
     CComponent::clearLinks(pScene);
@@ -217,6 +233,11 @@ void CWorldTerrain::clearLinks(C3DScene* pScene)
     }
 
     m_pRoot.reset();
+
+    foreach (QSP<CComponent> pGenerator, m_vGenerators)
+    {
+        pGenerator->clearLinks(pScene);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -342,7 +363,6 @@ void CWorldTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pConte
     CGeoloc gChunkPosition = pChunk->geoloc();
     CGeoloc gChunkSize = pChunk->size();
 
-    // On décide si ce niveau de détail est suffisant
     // Decide whether this level of detail is enough
     bool bStayHere = enoughDetail(pChunk, pContext, iLevel);
 
@@ -419,64 +439,149 @@ void CWorldTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pConte
                       );
 
             CGeoloc gStart(
-                        gOriginalChunkPosition.Latitude - gOriginalChunkSize.Latitude * 0.5,
-                        gOriginalChunkPosition.Longitude - gOriginalChunkSize.Longitude * 0.5,
+                        gOriginalChunkPosition.Latitude - gOriginalChunkSize.Latitude * 0.50,
+                        gOriginalChunkPosition.Longitude - gOriginalChunkSize.Longitude * 0.50,
                         0.0
                         );
 
             CGeoloc gSize(
-                        gOriginalChunkSize.Latitude * 0.5,
-                        gOriginalChunkSize.Longitude * 0.5,
+                        gOriginalChunkSize.Latitude * 0.50,
+                        gOriginalChunkSize.Longitude * 0.50,
                         0.0
                         );
 
-            // Create for child chunks
-            QSP<CWorldChunk> pChild1(new CWorldChunk(m_pScene, this, this));
-            QSP<CWorldChunk> pChild2(new CWorldChunk(m_pScene, this, this));
-            QSP<CWorldChunk> pChild3(new CWorldChunk(m_pScene, this, this));
-            QSP<CWorldChunk> pChild4(new CWorldChunk(m_pScene, this, this));
+//            if (iLevel == m_iLevels)
+//            {
+//                // Create for child chunks
+//                QSP<CWorldChunk> pChild1(new CWorldChunk(m_pScene, this, this));
+//                QSP<CWorldChunk> pChild2(new CWorldChunk(m_pScene, this, this));
+//                QSP<CWorldChunk> pChild3(new CWorldChunk(m_pScene, this, this));
+//                QSP<CWorldChunk> pChild4(new CWorldChunk(m_pScene, this, this));
+//                QSP<CWorldChunk> pChild5(new CWorldChunk(m_pScene, this, this));
+//                QSP<CWorldChunk> pChild6(new CWorldChunk(m_pScene, this, this));
+//                QSP<CWorldChunk> pChild7(new CWorldChunk(m_pScene, this, this));
+//                QSP<CWorldChunk> pChild8(new CWorldChunk(m_pScene, this, this));
 
-            // Children don't inherit transforms
-            pChild1->setInheritTransform(false);
-            pChild2->setInheritTransform(false);
-            pChild3->setInheritTransform(false);
-            pChild4->setInheritTransform(false);
+//                // Children don't inherit transforms
+//                pChild1->setInheritTransform(false);
+//                pChild2->setInheritTransform(false);
+//                pChild3->setInheritTransform(false);
+//                pChild4->setInheritTransform(false);
+//                pChild5->setInheritTransform(false);
+//                pChild6->setInheritTransform(false);
+//                pChild7->setInheritTransform(false);
+//                pChild8->setInheritTransform(false);
 
-            // Children's parent are the given chunk
-            pChild1->CComponent::setParent(QSP<CComponent>(pChunk));
-            pChild2->CComponent::setParent(QSP<CComponent>(pChunk));
-            pChild3->CComponent::setParent(QSP<CComponent>(pChunk));
-            pChild4->CComponent::setParent(QSP<CComponent>(pChunk));
+//                // Children's parent are the given chunk
+//                pChild1->CComponent::setParent(QSP<CComponent>(pChunk));
+//                pChild2->CComponent::setParent(QSP<CComponent>(pChunk));
+//                pChild3->CComponent::setParent(QSP<CComponent>(pChunk));
+//                pChild4->CComponent::setParent(QSP<CComponent>(pChunk));
+//                pChild5->CComponent::setParent(QSP<CComponent>(pChunk));
+//                pChild6->CComponent::setParent(QSP<CComponent>(pChunk));
+//                pChild7->CComponent::setParent(QSP<CComponent>(pChunk));
+//                pChild8->CComponent::setParent(QSP<CComponent>(pChunk));
 
-            // Append the chlidren to the given chunk
-            pChunk->childComponents().append(pChild1);
-            pChunk->childComponents().append(pChild2);
-            pChunk->childComponents().append(pChild3);
-            pChunk->childComponents().append(pChild4);
+//                // Append the chlidren to the given chunk
+//                pChunk->childComponents().append(pChild1);
+//                pChunk->childComponents().append(pChild2);
+//                pChunk->childComponents().append(pChild3);
+//                pChunk->childComponents().append(pChild4);
+//                pChunk->childComponents().append(pChild5);
+//                pChunk->childComponents().append(pChild6);
+//                pChunk->childComponents().append(pChild7);
+//                pChunk->childComponents().append(pChild8);
 
-            // Distribute children equally in the given chunk's extents
-            pChild1->setGeoloc(CGeoloc(gStart.Latitude + gOriginalChunkSize.Latitude * 0.25, gStart.Longitude + gOriginalChunkSize.Longitude * 0.25, 0.0));
-            pChild2->setGeoloc(CGeoloc(gStart.Latitude + gOriginalChunkSize.Latitude * 0.25, gStart.Longitude + gOriginalChunkSize.Longitude * 0.75, 0.0));
-            pChild3->setGeoloc(CGeoloc(gStart.Latitude + gOriginalChunkSize.Latitude * 0.75, gStart.Longitude + gOriginalChunkSize.Longitude * 0.25, 0.0));
-            pChild4->setGeoloc(CGeoloc(gStart.Latitude + gOriginalChunkSize.Latitude * 0.75, gStart.Longitude + gOriginalChunkSize.Longitude * 0.75, 0.0));
+//                // Distribute children equally in the given chunk's extents
+//                pChild1->setGeoloc(CGeoloc(gStart.Latitude + gOriginalChunkSize.Latitude * 0.25, gStart.Longitude + gOriginalChunkSize.Longitude * 0.125, 0.0));
+//                pChild2->setGeoloc(CGeoloc(gStart.Latitude + gOriginalChunkSize.Latitude * 0.25, gStart.Longitude + gOriginalChunkSize.Longitude * 0.375, 0.0));
+//                pChild3->setGeoloc(CGeoloc(gStart.Latitude + gOriginalChunkSize.Latitude * 0.25, gStart.Longitude + gOriginalChunkSize.Longitude * 0.625, 0.0));
+//                pChild4->setGeoloc(CGeoloc(gStart.Latitude + gOriginalChunkSize.Latitude * 0.25, gStart.Longitude + gOriginalChunkSize.Longitude * 0.875, 0.0));
+//                pChild5->setGeoloc(CGeoloc(gStart.Latitude + gOriginalChunkSize.Latitude * 0.75, gStart.Longitude + gOriginalChunkSize.Longitude * 0.125, 0.0));
+//                pChild6->setGeoloc(CGeoloc(gStart.Latitude + gOriginalChunkSize.Latitude * 0.75, gStart.Longitude + gOriginalChunkSize.Longitude * 0.375, 0.0));
+//                pChild7->setGeoloc(CGeoloc(gStart.Latitude + gOriginalChunkSize.Latitude * 0.75, gStart.Longitude + gOriginalChunkSize.Longitude * 0.625, 0.0));
+//                pChild8->setGeoloc(CGeoloc(gStart.Latitude + gOriginalChunkSize.Latitude * 0.75, gStart.Longitude + gOriginalChunkSize.Longitude * 0.875, 0.0));
 
-            // Compute transforms of children
-            pChild1->computeWorldTransform();
-            pChild2->computeWorldTransform();
-            pChild3->computeWorldTransform();
-            pChild4->computeWorldTransform();
+//                // Compute transforms of children
+//                pChild1->computeWorldTransform();
+//                pChild2->computeWorldTransform();
+//                pChild3->computeWorldTransform();
+//                pChild4->computeWorldTransform();
+//                pChild5->computeWorldTransform();
+//                pChild6->computeWorldTransform();
+//                pChild7->computeWorldTransform();
+//                pChild8->computeWorldTransform();
 
-            // Set size of children
-            pChild1->setSize(gSize);
-            pChild2->setSize(gSize);
-            pChild3->setSize(gSize);
-            pChild4->setSize(gSize);
+//                // Set size of children
+//                pChild1->setSize(gSize);
+//                pChild2->setSize(gSize);
+//                pChild3->setSize(gSize);
+//                pChild4->setSize(gSize);
+//                pChild5->setSize(gSize);
+//                pChild6->setSize(gSize);
+//                pChild7->setSize(gSize);
+//                pChild8->setSize(gSize);
 
-            // Tell children to build themselves
-            pChild1->build();
-            pChild2->build();
-            pChild3->build();
-            pChild4->build();
+//                // Tell children to build themselves
+//                pChild1->build();
+//                pChild2->build();
+//                pChild3->build();
+//                pChild4->build();
+//                pChild5->build();
+//                pChild6->build();
+//                pChild7->build();
+//                pChild8->build();
+//            }
+//            else
+            {
+                // Create for child chunks
+                QSP<CWorldChunk> pChild1(new CWorldChunk(m_pScene, this, this));
+                QSP<CWorldChunk> pChild2(new CWorldChunk(m_pScene, this, this));
+                QSP<CWorldChunk> pChild3(new CWorldChunk(m_pScene, this, this));
+                QSP<CWorldChunk> pChild4(new CWorldChunk(m_pScene, this, this));
+
+                // Children don't inherit transforms
+                pChild1->setInheritTransform(false);
+                pChild2->setInheritTransform(false);
+                pChild3->setInheritTransform(false);
+                pChild4->setInheritTransform(false);
+
+                // Children's parent are the given chunk
+                pChild1->CComponent::setParent(QSP<CComponent>(pChunk));
+                pChild2->CComponent::setParent(QSP<CComponent>(pChunk));
+                pChild3->CComponent::setParent(QSP<CComponent>(pChunk));
+                pChild4->CComponent::setParent(QSP<CComponent>(pChunk));
+
+                // Append the chlidren to the given chunk
+                pChunk->childComponents().append(pChild1);
+                pChunk->childComponents().append(pChild2);
+                pChunk->childComponents().append(pChild3);
+                pChunk->childComponents().append(pChild4);
+
+                // Distribute children equally in the given chunk's extents
+                pChild1->setGeoloc(CGeoloc(gStart.Latitude + gOriginalChunkSize.Latitude * 0.25, gStart.Longitude + gOriginalChunkSize.Longitude * 0.25, 0.0));
+                pChild2->setGeoloc(CGeoloc(gStart.Latitude + gOriginalChunkSize.Latitude * 0.25, gStart.Longitude + gOriginalChunkSize.Longitude * 0.75, 0.0));
+                pChild3->setGeoloc(CGeoloc(gStart.Latitude + gOriginalChunkSize.Latitude * 0.75, gStart.Longitude + gOriginalChunkSize.Longitude * 0.25, 0.0));
+                pChild4->setGeoloc(CGeoloc(gStart.Latitude + gOriginalChunkSize.Latitude * 0.75, gStart.Longitude + gOriginalChunkSize.Longitude * 0.75, 0.0));
+
+                // Compute transforms of children
+                pChild1->computeWorldTransform();
+                pChild2->computeWorldTransform();
+                pChild3->computeWorldTransform();
+                pChild4->computeWorldTransform();
+
+                // Set size of children
+                pChild1->setSize(gSize);
+                pChild2->setSize(gSize);
+                pChild3->setSize(gSize);
+                pChild4->setSize(gSize);
+
+                // Tell children to build themselves
+                pChild1->build();
+                pChild2->build();
+                pChild3->build();
+                pChild4->build();
+            }
         }
 
         // Recurse in child chunks

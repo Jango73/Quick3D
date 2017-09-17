@@ -99,7 +99,7 @@ public:
     QVector<QSP<CComponent> >& generators() { return m_vGenerators; }
 
     //-------------------------------------------------------------------------------------------------
-    // Inherited methods
+    // Overridden methods
     //-------------------------------------------------------------------------------------------------
 
     //!
@@ -108,8 +108,11 @@ public:
     //!
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
 
+    //! Solves the links of this object
+    virtual void solveLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
+
     //! Deletes this object's links
-    virtual void clearLinks(C3DScene* pScene);
+    virtual void clearLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
 
     //!
     virtual void paint(CRenderContext* pContext) Q_DECL_OVERRIDE;

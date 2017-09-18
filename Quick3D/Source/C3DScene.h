@@ -8,6 +8,7 @@
 
 // qt-plus
 #include "CInterpolator.h"
+#include "CAverager.h"
 
 // Application
 #include "quick3d_global.h"
@@ -272,6 +273,9 @@ public:
     //!
     void addSegment(Math::CVector3 vStart, Math::CVector3 vEnd);
 
+    //!
+    QString debugInfo();
+
     //! Dumps contents in a stream
     virtual void dump(QTextStream& stream, int iIdent);
 
@@ -308,6 +312,7 @@ protected:
     CController*                            m_pDefaultController;
     Math::CVector3                          m_vWorldOrigin;
     QTime                                   m_tTimeOfDay;
+    CAverager<double>                       m_FPS;
     CFog                                    m_tFog;
     CInterpolator<Math::CVector4>           m_iSunColor;
     bool                                    m_bForDisplay;

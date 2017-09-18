@@ -121,10 +121,10 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    QSP<CComponent> getPositionTarget() { return m_rPositionTarget.component(); }
+    QSP<CComponent> positionTarget() { return m_rPositionTarget.component(); }
 
     //!
-    QSP<CComponent> getRotationTarget() { return m_rRotationTarget.component(); }
+    QSP<CComponent> rotationTarget() { return m_rRotationTarget.component(); }
 
     //-------------------------------------------------------------------------------------------------
     // Control methods

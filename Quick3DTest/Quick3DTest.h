@@ -111,7 +111,6 @@ protected:
     CGLWidgetScene*                 m_pScene;
     CView*                          m_pView;
     QTimer                          m_tTimer;
-    CAverager<double>               m_FPS;
     QDateTime                       m_tPreviousTime;
     QString                         m_sExportPath;
     bool                            m_bProcessEvents;

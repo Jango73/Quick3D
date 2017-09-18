@@ -36,7 +36,6 @@ Quick3DTest::Quick3DTest(QString sSceneFileName, QWidget *parent, Qt::WFlags fla
     : QMainWindow(parent, flags)
     #endif
     , m_tTimer(this)
-    , m_FPS(100)
     , m_bProcessEvents(true)
     , m_bRun(true)
 {
@@ -252,75 +251,10 @@ void Quick3DTest::onTimer()
         double dDeltaTime = (double) m_tPreviousTime.msecsTo(tCurrentTime) / 1000.0;
         m_tPreviousTime = tCurrentTime;
 
-        m_FPS.append(1.0 / dDeltaTime);
-
         m_pScene->updateScene(dDeltaTime);
         m_pView->update(dDeltaTime);
 
-        CGeoloc ViewGeoloc;
-        CVector3 ViewRotation;
-        CVector3 ControledVelocity;
-        CVector3 ControledTorque;
-        CVector3 Acceleration;
-        CVector3 TorqueAcceleration;
-        double dSpeedMS = 0.0;
-
-        if (m_pScene->controller() != nullptr && m_pScene->controller()->getPositionTarget())
-        {
-            QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, m_pScene->controller()->getPositionTarget()->root());
-
-            if (pPhysical != nullptr)
-            {
-                ViewGeoloc = pPhysical->geoloc();
-                ControledVelocity = pPhysical->velocity_ms();
-                ControledTorque = pPhysical->angularVelocity_rs();
-                dSpeedMS = ControledVelocity.magnitude();
-            }
-        }
-
-        if (m_pScene->controller() != nullptr && m_pScene->controller()->getRotationTarget())
-        {
-            QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, m_pScene->controller()->getPositionTarget()->root());
-
-            if (pPhysical != nullptr)
-            {
-                ViewRotation = pPhysical->rotation();
-            }
-        }
-
-        QString sInfo = QString(
-                    "FPS %1 - LLA (%2, %3, %4) Rotation (%5, %6, %7) Kts %8 \n"
-                    "Physics Vel (%9, %10, %11) Torque (%12, %13, %14) \n"
-                    "Drawn : meshes %15 polys %16 chunks %17 frustum %18 (Existing: components %19, chunks %20, terrains %21) \n"
-                    )
-                .arg((int) m_FPS.getAverage())
-                .arg(QString::number(ViewGeoloc.Latitude, 'f', 6))
-                .arg(QString::number(ViewGeoloc.Longitude, 'f', 6))
-                .arg(QString::number(ViewGeoloc.Altitude, 'f', 1))
-
-                .arg(QString::number(Math::Angles::toDeg(ViewRotation.X), 'f', 2))
-                .arg(QString::number(Math::Angles::toDeg(ViewRotation.Y), 'f', 2))
-                .arg(QString::number(Math::Angles::toDeg(ViewRotation.Z), 'f', 2))
-
-                .arg(QString::number(dSpeedMS * FAC_MS_TO_KNOTS, 'f', 1))
-
-                .arg(QString::number(ControledVelocity.X, 'f', 2))
-                .arg(QString::number(ControledVelocity.Y, 'f', 2))
-                .arg(QString::number(ControledVelocity.Z, 'f', 2))
-                .arg(QString::number(Math::Angles::toDeg(ControledTorque.X), 'f', 2))
-                .arg(QString::number(Math::Angles::toDeg(ControledTorque.Y), 'f', 2))
-                .arg(QString::number(Math::Angles::toDeg(ControledTorque.Z), 'f', 2))
-
-                .arg(m_pScene->m_tStatistics.m_iNumMeshesDrawn)
-                .arg(m_pScene->m_tStatistics.m_iNumPolysDrawn)
-                .arg(m_pScene->m_tStatistics.m_iNumChunksDrawn)
-                .arg(m_pScene->m_tStatistics.m_iNumFrustumTests)
-                .arg(CComponent::getNumComponents())
-                .arg(CComponent::componentCounter()[ClassName_CWorldChunk])
-                .arg(CComponent::componentCounter()[ClassName_CTerrain])
-                ;
-
-        ui.m_lInfo->setText(sInfo);
+        ui.m_lInfo->setText(m_pScene->debugInfo());
     }
 
     m_tTimer.start();

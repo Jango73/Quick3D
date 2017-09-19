@@ -523,8 +523,8 @@ void CCamera::renderDepth_CubeMapped
 
         int iRenderMapSize = 265;	// Puissance de deux
 
-        LOG_DEBUG(
-                    QString("CCamera::renderDepth_CubeMapped() : Rendering %1 x %2 image tiles of %3 pixels resolution")
+        LOG_METHOD_DEBUG(
+                    QString("Rendering %1 x %2 image tiles of %3 pixels resolution")
                     .arg(RENDER_SUBDIVISIONS_PAN)
                     .arg(RENDER_SUBDIVISIONS_TILT)
                     .arg(iRenderMapSize)

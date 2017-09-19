@@ -65,7 +65,7 @@ CWorldTerrain::CWorldTerrain(C3DScene* pScene, CGeoloc gCameraPosition, CHeightF
 
     if (m_bGenerateNow)
     {
-        LOG_DEBUG("CWorldTerrain::CWorldTerrain() : Generating terrain now");
+        LOG_METHOD_DEBUG("Generating terrain now");
 
         if (pScene->viewports().count() > 0 && pScene->viewports()[0]->camera())
         {
@@ -371,7 +371,7 @@ void CWorldTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pConte
         // Create terrain for the chunk if needed
         if (pChunk->terrain() == nullptr)
         {
-            LOG_DEBUG(QString("Creating terrain for tile at lat %1, lon %2, level %3")
+            LOG_METHOD_DEBUG(QString("Creating terrain for tile at lat %1, lon %2, level %3")
                       .arg(gChunkPosition.Latitude)
                       .arg(gChunkPosition.Longitude)
                       .arg(iLevel)
@@ -432,7 +432,7 @@ void CWorldTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pConte
         // Create sub chunks if required
         if (pChunk->childComponents().count() == 0)
         {
-            LOG_DEBUG(QString("Creating sub-quads for tile at lat %1, lon %2, level %3")
+            LOG_METHOD_DEBUG(QString("Creating sub-quads for tile at lat %1, lon %2, level %3")
                       .arg(gChunkPosition.Latitude)
                       .arg(gChunkPosition.Longitude)
                       .arg(iLevel)

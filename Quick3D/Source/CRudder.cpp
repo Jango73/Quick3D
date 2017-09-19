@@ -25,14 +25,12 @@ CComponent* CRudder::instantiator(C3DScene* pScene)
 CRudder::CRudder(C3DScene* pScene)
     : CWing(pScene)
 {
-    LOG_DEBUG("CRudder::CRudder()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CRudder::~CRudder()
 {
-    LOG_DEBUG("CRudder::~CRudder()");
 }
 
 //-------------------------------------------------------------------------------------------------

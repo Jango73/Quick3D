@@ -249,7 +249,7 @@ bool CBILData::contains(const CGeoloc& gPosition) const
 
 void CBILData::setFileName(QString sFileName)
 {
-    LOG_DEBUG(QString("CBILData::setFileName(%1)").arg(sFileName));
+    LOG_METHOD_DEBUG(sFileName);
 
     m_sFileName = sFileName;
 
@@ -276,7 +276,7 @@ void CBILData::setFileName(QString sFileName)
 
 QStringList CBILData::readHeader()
 {
-    LOG_DEBUG(QString("CBILData::readHeader() : %1").arg(m_sFileName));
+    LOG_METHOD_DEBUG(m_sFileName);
 
     QStringList lReturnValue;
 
@@ -314,7 +314,7 @@ QStringList CBILData::readHeader()
 
 void CBILData::readData()
 {
-    LOG_DEBUG(QString("CBILData::readData() : %1").arg(m_sFileName));
+    LOG_METHOD_DEBUG(m_sFileName);
 
     m_vData = new qint16[m_iNumCellsWidth * m_iNumCellsHeight];
 

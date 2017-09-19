@@ -45,7 +45,7 @@ void CWorker::doSleep(int ms)
 
 void CWorker::run()
 {
-    LOG_DEBUG(QString("CWorker::run() : START : Thread ID = %1").arg((qlonglong) QThread::currentThreadId()));
+    LOG_METHOD_DEBUG(QString("START : Thread ID = %1").arg((qlonglong) QThread::currentThreadId()));
 
     m_bStarted = true;
 
@@ -53,5 +53,5 @@ void CWorker::run()
 
     m_bFinished = true;
 
-    LOG_DEBUG(QString("CWorker::run() : FINISHED : Thread ID = %1").arg((qlonglong) QThread::currentThreadId()));
+    LOG_METHOD_DEBUG(QString("FINISHED : Thread ID = %1").arg((qlonglong) QThread::currentThreadId()));
 }

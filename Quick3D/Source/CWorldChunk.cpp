@@ -380,7 +380,7 @@ void CWorldChunk::clearTerrain()
 
     if (m_pTerrain != nullptr)
     {
-        LOG_DEBUG(QString("Deleting CWorldChunk::m_pTerrain (%1, %2, %3)")
+        LOG_METHOD_DEBUG(QString("Deleting CWorldChunk::m_pTerrain (%1, %2, %3)")
                   .arg(gChunkPosition.Latitude)
                   .arg(gChunkPosition.Longitude)
                   .arg(m_pTerrain->name())
@@ -391,7 +391,7 @@ void CWorldChunk::clearTerrain()
 
     if (m_pWater != nullptr)
     {
-        LOG_DEBUG(QString("Deleting CWorldChunk::m_pWater (%1, %2, %3)")
+        LOG_METHOD_DEBUG(QString("Deleting CWorldChunk::m_pWater (%1, %2, %3)")
                   .arg(gChunkPosition.Latitude)
                   .arg(gChunkPosition.Longitude)
                   .arg(m_pWater->name())

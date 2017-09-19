@@ -86,7 +86,7 @@ void CTrajectory::processObject(CTrajectorable* pObject, double dDeltaTime)
             if (m_iCurrentPoint >= m_vPoints.count()) m_iCurrentPoint = 0;
             return;
 
-            LOG_DEBUG(QString("CTrajectory::processVehicle() : %1 reached waypoint, next = %2")
+            LOG_METHOD_DEBUG(QString("%1 reached waypoint, next = %2")
                       .arg(pObject->name())
                       .arg(m_iCurrentPoint));
         }

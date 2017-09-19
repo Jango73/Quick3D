@@ -23,8 +23,6 @@ CView::CView(QWidget *parent)
     : QGraphicsView(parent)
     , m_pScene(nullptr)
 {
-    LOG_DEBUG("CView::CView()");
-
     // setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     setRenderHint(QPainter::Antialiasing, false);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
@@ -39,8 +37,6 @@ CView::CView(CGLWidgetScene* pScene, QWidget *parent)
     : QGraphicsView(parent)
     , m_pScene(nullptr)
 {
-    LOG_DEBUG("CView::CView()");
-
     // setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     setRenderHint(QPainter::Antialiasing, false);
     setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
@@ -55,7 +51,6 @@ CView::CView(CGLWidgetScene* pScene, QWidget *parent)
 
 CView::~CView()
 {
-    LOG_DEBUG("CView::~CView()");
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -270,5 +265,5 @@ void CView::testPerlin()
         }
     }
 
-    LOG_DEBUG(QString("Min and max noise : %1, %2").arg(dMin).arg(dMax));
+    LOG_METHOD_DEBUG(QString("Min and max noise : %1, %2").arg(dMin).arg(dMax));
 }

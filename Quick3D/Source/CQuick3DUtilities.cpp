@@ -148,7 +148,7 @@ void CQuick3DUtilities::computeSphericalDetectionMatrices_CubeMapped(CPanoramicM
 {
     qDebug() << "Computing matrices via OpenGL - START";
 
-    LOG_DEBUG("CQuick3DUtilities::computeSphericalDetectionMatrices_CubeMapped() : Setting up scene...");
+    LOG_METHOD_DEBUG("Setting up scene...");
 
     START_SAMPLE("computeSphericalDetectionMatrices_CubeMapped:setup");
 
@@ -160,7 +160,7 @@ void CQuick3DUtilities::computeSphericalDetectionMatrices_CubeMapped(CPanoramicM
 
     STOP_SAMPLE("computeSphericalDetectionMatrices_CubeMapped:setup");
 
-    LOG_DEBUG("CQuick3DUtilities::computeSphericalDetectionMatrices_CubeMapped() : Rendering matrices...");
+    LOG_METHOD_DEBUG("Rendering matrices...");
 
     START_SAMPLE("computeSphericalDetectionMatrices_CubeMapped:render");
 

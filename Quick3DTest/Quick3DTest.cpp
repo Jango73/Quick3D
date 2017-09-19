@@ -39,8 +39,6 @@ Quick3DTest::Quick3DTest(QString sSceneFileName, QWidget *parent, Qt::WFlags fla
     , m_bProcessEvents(true)
     , m_bRun(true)
 {
-    LOG_DEBUG("Quick3DTest::Quick3DTest()");
-
     // CConsoleBoard::getInstance()->start();
 
     ui.setupUi(this);
@@ -101,8 +99,6 @@ Quick3DTest::Quick3DTest(QString sSceneFileName, QWidget *parent, Qt::WFlags fla
 
 Quick3DTest::~Quick3DTest()
 {
-    LOG_DEBUG("Quick3DTest::~Quick3DTest()");
-
     delete m_pScene;
 
     CComponentFactory::killInstance();
@@ -112,7 +108,7 @@ Quick3DTest::~Quick3DTest()
 
 void Quick3DTest::loadScene(QString sFileName)
 {
-    LOG_DEBUG("Quick3DTest::Quick3DTest() : instanciating scene...");
+    LOG_METHOD_DEBUG("Instanciating scene...");
 
     m_pScene->clear();
 
@@ -122,7 +118,7 @@ void Quick3DTest::loadScene(QString sFileName)
     //-----------------------------------------------
     // Load components
 
-    LOG_DEBUG("Quick3DTest::Quick3DTest() : loading components...");
+    LOG_METHOD_DEBUG("Loading components...");
 
     QVector<QSP<CComponent> > vComponents = CComponentLoader::getInstance()->load(sFileName, m_pScene);
 

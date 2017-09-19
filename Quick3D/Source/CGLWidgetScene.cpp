@@ -119,7 +119,7 @@ void CGLWidgetScene::paintGL()
 
 void CGLWidgetScene::init(QVector<QSP<CComponent> > vComponents)
 {
-    LOG_DEBUG("CGLWidgetScene::init()");
+    LOG_METHOD_DEBUG("");
 
     if (m_bForDisplay)
     {
@@ -135,7 +135,7 @@ void CGLWidgetScene::init(QVector<QSP<CComponent> > vComponents)
 
 void CGLWidgetScene::initShaders()
 {
-    LOG_DEBUG("CGLWidgetScene::initShaders()");
+    LOG_METHOD_DEBUG("");
 
     m_vShaders->clear();
 

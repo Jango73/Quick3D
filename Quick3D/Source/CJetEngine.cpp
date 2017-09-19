@@ -18,14 +18,12 @@ CJetEngine::CJetEngine(C3DScene* pScene)
     , m_dN1_servo(0.5, 0.5, 0.5, 0.2)
     , m_dN2_norm(0.0)
 {
-    LOG_DEBUG("CJetEngine::CJetEngine()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CJetEngine::~CJetEngine()
 {
-    LOG_DEBUG("CJetEngine::~CJetEngine()");
 }
 
 //-------------------------------------------------------------------------------------------------

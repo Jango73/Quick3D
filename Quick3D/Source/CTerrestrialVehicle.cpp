@@ -15,14 +15,12 @@ CComponent* CTerrestrialVehicle::instantiator(C3DScene* pScene)
 CTerrestrialVehicle::CTerrestrialVehicle(C3DScene* pScene)
     : CVehicle(pScene)
 {
-    LOG_DEBUG("CTerrestrialVehicle::CTerrestrialVehicle()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CTerrestrialVehicle::~CTerrestrialVehicle()
 {
-    LOG_DEBUG("CTerrestrialVehicle::~CTerrestrialVehicle()");
 }
 
 //-------------------------------------------------------------------------------------------------

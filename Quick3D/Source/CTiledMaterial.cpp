@@ -33,11 +33,9 @@ void CTiledMaterial::onTileReady(QString sTileName)
 {
     if (m_mTiles.contains(sTileName))
     {
-        // m_mTiles[sTileName].m_uiTexture = createTexture(m_tClient.getTile(sTileName), QSize(256, 256));
-
         m_mTiles[sTileName].m_pTexture = new CTexture(m_pScene, sTileName, m_tClient.getTile(sTileName), QSize(256, 256), m_vDiffuseTextures.count());
 
-        LOG_DEBUG(QString("CTiledMaterial::onTileReady() : created texture %1").arg(m_mTiles[sTileName].m_pTexture->glTexture()));
+        LOG_METHOD_DEBUG(QString("Created texture %1").arg(m_mTiles[sTileName].m_pTexture->glTexture()));
     }
 }
 
@@ -181,9 +179,6 @@ void CTiledMaterial::collectGarbage()
 
             if (m_mTiles[sKey].m_tLastUsed.secsTo(QDateTime::currentDateTime()) > 20)
             {
-                // LOG_DEBUG(QString("CTiledMaterial::collectGarbage() : deleting texture %1").arg(m_mTiles[sKey].m_uiTexture));
-                // destroyTexture(m_mTiles[sKey].m_uiTexture);
-
                 m_mTiles.remove(sKey);
             }
         }

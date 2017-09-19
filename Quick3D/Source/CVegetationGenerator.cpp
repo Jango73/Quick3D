@@ -22,14 +22,12 @@ CComponent* CVegetationGenerator::instantiator(C3DScene* pScene)
 CVegetationGenerator::CVegetationGenerator(C3DScene* pScene)
 : CGeometryGenerator(pScene)
 {
-    LOG_DEBUG("CVegetationGenerator::CVegetationGenerator()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CVegetationGenerator::~CVegetationGenerator()
 {
-    LOG_DEBUG("CVegetationGenerator::~CVegetationGenerator()");
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -18,12 +18,10 @@ CComponent* CElectricalBus::instantiator(C3DScene* pScene)
 CElectricalBus::CElectricalBus(C3DScene* pScene)
 : CElectricalComponent(pScene)
 {
-	LOG_DEBUG("CElectricalBus::CElectricalBus()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CElectricalBus::~CElectricalBus()
 {
-	LOG_DEBUG("CElectricalBus::~CElectricalBus()");
 }

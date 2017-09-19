@@ -25,14 +25,12 @@ CComponent* CElevator::instantiator(C3DScene* pScene)
 CElevator::CElevator(C3DScene* pScene)
     : CWing(pScene)
 {
-    LOG_DEBUG("CElevator::CElevator()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CElevator::~CElevator()
 {
-    LOG_DEBUG("CElevator::~CElevator()");
 }
 
 //-------------------------------------------------------------------------------------------------

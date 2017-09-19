@@ -208,6 +208,7 @@
 #define ParamName_MinClamp                  "MinClamp"
 #define ParamName_Minimum                   "Minimum"
 #define ParamName_Name                      "Name"
+#define ParamName_Normal                    "Normal"
 #define ParamName_Offset                    "Offset"
 #define ParamName_Operand                   "Operand"
 #define ParamName_OutputScale               "OutputScale"

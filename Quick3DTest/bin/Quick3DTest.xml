@@ -4,6 +4,7 @@
     <Camera2 Name="VBCI.Pilot" />
     <Camera3 Name="Drone01.Pilot" />
     <ControlledComponent Name="Man1" />
+
     <!--
     <Camera1 Name="Plascoa01Pilot"/>
     <Camera2 Name="VisitorDriver"/>
@@ -20,14 +21,17 @@
     <Geoloc Latitude="5.6110" Longitude="0.3926" Altitude="0.0"/>
     <Geoloc Latitude="9.7905" Longitude="17.8018" Altitude="0.0"/>
     -->
+
     <Components>
         <Component Name="SkyBox" Class="CSkyBox" />
+
         <Component Name="Sun" Class="CLight" Tag="SUN">
             <Position x="0.0" y="0.0" z="0.0"/>
             <Rotation x="0.0" y="0.0" z="0.0"/>
             <General FOV="10.0" CastShadows="1"/>
             <Color r="1.0" g="1.0" b="1.0"/>
         </Component>
+
         <Component Name="Terrain" Class="CWorldTerrain">
             <Parameters>
                 <General Levels="16" Resolution="31" />
@@ -495,6 +499,7 @@
                 </Generators>
             </Parameters>
         </Component>
+
         <Component Name="Man1" Class="CMan">
             <Geoloc Latitude="19.237731" Longitude="10.896700" Altitude="0.0" />
             <Rotation x="0.0" y="180.0" z="0.0" />
@@ -505,6 +510,7 @@
             </Component>
             <Controller Class="CStandardController" />
         </Component>
+
         <Component Name="Drone01" Class="CAircraft">
             <Geoloc Latitude="19.237734" Longitude="10.896700" Altitude="0.0" />
             <Rotation x="0.0" y="0.0" z="0.0" />
@@ -555,6 +561,7 @@
                 <Thrust MaxThrustKG="5.0" />
             </Component>
         </Component>
+
         <Component Name="Man2" Class="CMan">
             <Geoloc Latitude="19.2379" Longitude="10.896700" Altitude="0.0" />
             <!-- <Geoloc Latitude="31.898053" Longitude="-10.668458" Altitude="0.0" /> -->
@@ -566,6 +573,7 @@
             </Component>
             <Controller Class="CStandardController" />
         </Component>
+
         <Component Name="VBCI" Class="CTerrestrialVehicle">
             <Geoloc Latitude="19.237738" Longitude="10.896701" Altitude="0.0" />
             <Rotation x="0.0" y="0.0" z="0.0" />
@@ -650,6 +658,7 @@
             </Component>
             -->
         </Component>
+
         <Component Name="Visitor2" Class="CTerrestrialVehicle">
             <Geoloc Latitude="19.2380" Longitude="10.8960" Altitude="0.0" />
             <Rotation x="0.0" y="0.0" z="0.0" />
@@ -663,6 +672,7 @@
                 <Rotation x="10.0" y="0.0" z="0.0" />
             </Component>
         </Component>
+
         <Component Name="PCC" Class="CTerrestrialVehicle">
             <Geoloc Latitude="19.2374" Longitude="10.8966" Altitude="0.0" />
             <Rotation x="0.0" y="90.0" z="0.0" />
@@ -684,6 +694,7 @@
                 <Color r="2.0" g="2.0" b="1.5" />
             </Component>
         </Component>
+
         <Component Name="Plascoa01" Class="CAircraft">
             <Geoloc Latitude="19.250000" Longitude="10.880000" Altitude="0.0" />
             <Rotation x="0.0" y="0.0" z="0.0" />

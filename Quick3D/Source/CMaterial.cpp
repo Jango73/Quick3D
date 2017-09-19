@@ -88,12 +88,18 @@ void CMaterial::loadParameters(const QString& sBaseFile, CXMLNode xMaterial)
     // Lecture couleur spéculaire
     CXMLNode xSpecular = xMaterial.getNodeByTagName(ParamName_Specular);
 
-    if (xDiffuse.isEmpty() == false)
+    // Read normal color
+    CXMLNode xNormal = xMaterial.getNodeByTagName(ParamName_Normal);
+
+    if (xAmbient.isEmpty() == false)
     {
         m_cAmbient.X = xAmbient.attributes()[ParamName_r].toDouble();
         m_cAmbient.Y = xAmbient.attributes()[ParamName_g].toDouble();
         m_cAmbient.Z = xAmbient.attributes()[ParamName_b].toDouble();
+    }
 
+    if (xDiffuse.isEmpty() == false)
+    {
         m_cDiffuse.X = xDiffuse.attributes()[ParamName_r].toDouble();
         m_cDiffuse.Y = xDiffuse.attributes()[ParamName_g].toDouble();
         m_cDiffuse.Z = xDiffuse.attributes()[ParamName_b].toDouble();
@@ -122,6 +128,16 @@ void CMaterial::loadParameters(const QString& sBaseFile, CXMLNode xMaterial)
         m_cSpecular.Z = xSpecular.attributes()[ParamName_b].toDouble();
         m_dShininess = xSpecular.attributes()[ParamName_Hardness].toDouble();
         m_dMetalness = xSpecular.attributes()[ParamName_Intensity].toDouble();
+    }
+
+    if (xNormal.isEmpty() == false)
+    {
+        QString sTextureName = xNormal.attributes()[ParamName_Map];
+
+        if (sTextureName.isEmpty() == false)
+        {
+            addNormalTexture(sBaseFile, sTextureName);
+        }
     }
 }
 
@@ -197,6 +213,29 @@ void CMaterial::addDynamicDiffuseTexture(const QString& sName, const QImage& img
 
 //-------------------------------------------------------------------------------------------------
 
+void CMaterial::addNormalTexture(const QString& sBaseFile, const QString& sResourceName)
+{
+    QString sFinalResource = m_pScene->ressourcesManager()->locateResource(sBaseFile, sResourceName);
+
+    if (sFinalResource.isEmpty() == false)
+    {
+        QImage imgTexture = QImage(sFinalResource);
+        addNormalTexture(sFinalResource, imgTexture);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CMaterial::addNormalTexture(const QString& sName, const QImage& imgTexture)
+{
+    if (imgTexture.width() > 0 && imgTexture.height() > 0)
+    {
+        m_vNormalTextures.append(new CTexture(m_pScene, sName, imgTexture, imgTexture.size(), m_vNormalTextures.count(), false));
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CMaterial::createShadowTexture()
 {
     if (m_pScene->forDisplay())
@@ -212,6 +251,11 @@ void CMaterial::createShadowTexture()
 void CMaterial::clearTextures()
 {
     foreach (CTexture* pTexture, m_vDiffuseTextures)
+    {
+        delete pTexture;
+    }
+
+    foreach (CTexture* pTexture, m_vNormalTextures)
     {
         delete pTexture;
     }

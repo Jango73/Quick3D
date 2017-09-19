@@ -120,6 +120,9 @@ public:
     //! Returns a reference to the list of diffuse textures
     QVector<CTexture*>& diffuseTextures() { return m_vDiffuseTextures; }
 
+    //! Returns a reference to the list of normal textures
+    QVector<CTexture*>& normalTextures() { return m_vNormalTextures; }
+
     //! Returns texture coordinates for a given geo loc
     virtual Math::CVector2 texCoords(const CGeoloc& gPosition, int iLevel);
 
@@ -155,6 +158,12 @@ public:
 
     //!
     void addDynamicDiffuseTexture(const QString& sName, const QImage& imgTexture);
+
+    //! Ajoute l'image spécifiée en texture normale
+    void addNormalTexture(const QString& sBaseFile, const QString& sResourceName);
+
+    //! Ajoute l'image spécifiée en texture normale
+    void addNormalTexture(const QString& sName, const QImage& imgTexture);
 
     //! Créé une texture d'ombre portée
     void createShadowTexture();
@@ -204,6 +213,7 @@ protected:
     double                  m_dSSSFactor;
     double                  m_dSSSRadius;
     QVector<CTexture*>      m_vDiffuseTextures;
+    QVector<CTexture*>      m_vNormalTextures;
     QGLFramebufferObject*   m_pShadowBuffer;
     double                  m_dIRFactor;
     bool                    m_bHasAlpha;

@@ -538,6 +538,16 @@ CVector3 CComponent::toECEFRotation(CVector3 vRotation) const
 
 //-------------------------------------------------------------------------------------------------
 
+Math::CVector3 CComponent::fromFrame(CComponent* pFrom, Math::CVector3 vPosition) const
+{
+    vPosition = pFrom->m_mWorldTransform * vPosition;
+    vPosition = m_mWorldTransformInverse * vPosition;
+
+    return vPosition;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /*!
     Copies properties of \a target to this component.
 */

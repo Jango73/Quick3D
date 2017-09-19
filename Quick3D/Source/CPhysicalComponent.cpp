@@ -541,6 +541,21 @@ void CPhysicalComponent::postUpdate(double dDeltaTimeS)
 
 //-------------------------------------------------------------------------------------------------
 
+QVector<CContactPoint> CPhysicalComponent::contactPoints()
+{
+    QVector<CContactPoint> points;
+    CBoundingBox box = bounds();
+
+    points << CContactPoint(CVector3(box.minimum().X * 0.8, 0.0, box.minimum().Z * 0.8), 0.0);
+    points << CContactPoint(CVector3(box.maximum().X * 0.8, 0.0, box.minimum().Z * 0.8), 0.0);
+    points << CContactPoint(CVector3(box.minimum().X * 0.8, 0.0, box.maximum().Z * 0.8), 0.0);
+    points << CContactPoint(CVector3(box.maximum().X * 0.8, 0.0, box.maximum().Z * 0.8), 0.0);
+
+    return points;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /*!
     Computes collisions for the components in \a vComponents using \a dDeltaTimeS, which is the elapsed seconds since the last frame.
 */

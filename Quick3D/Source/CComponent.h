@@ -71,7 +71,14 @@ class CController;
 
 //-------------------------------------------------------------------------------------------------
 
-class QUICK3D_EXPORT CComponent : public QSharedData, public CNamed, public CGeolocalized, public CParented, public CExpendable, public CDumpable, public ILoadable
+class QUICK3D_EXPORT CComponent
+        : public QSharedData
+        , public CNamed
+        , public CGeolocalized
+        , public CParented
+        , public CExpendable
+        , public CDumpable
+        , public ILoadable
 {
     DECLARE_MEMORY_MONITORED
 
@@ -336,6 +343,9 @@ public:
 
     //! Converts a local euler rotation to the equivalent in the ECEF frame
     Math::CVector3 toECEFRotation(Math::CVector3 vRotation) const;
+
+    //!
+    Math::CVector3 fromFrame(CComponent* pFrom, Math::CVector3 vPosition) const;
 
     //! Makes this component look at a target, using Z axis as forward axis
     void lookAt(CComponent* pTarget);

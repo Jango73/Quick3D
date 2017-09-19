@@ -16,14 +16,12 @@ CTrajectorable::CTrajectorable(C3DScene* pScene)
     , m_dTurnSpeedDS(5.0)
     , m_aRotation(10)
 {
-    LOG_DEBUG("CTrajectorable::CTrajectorable()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CTrajectorable::~CTrajectorable()
 {
-    LOG_DEBUG("CTrajectorable::~CTrajectorable()");
 }
 
 //-------------------------------------------------------------------------------------------------

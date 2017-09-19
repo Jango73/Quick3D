@@ -15,6 +15,49 @@ class C3DScene;
 
 //-------------------------------------------------------------------------------------------------
 
+class QUICK3D_EXPORT CContactPoint
+{
+public:
+
+    //-------------------------------------------------------------------------------------------------
+    // Constructors and destructor
+    //-------------------------------------------------------------------------------------------------
+
+    //! Default constructor
+    CContactPoint()
+        : m_dRadius(0.0)
+    {
+    }
+
+    //! Constructor with parameters
+    CContactPoint(Math::CVector3 vPosition, double dRadius = 0.0)
+        : m_vPosition(vPosition)
+        , m_dRadius(dRadius)
+    {
+    }
+
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
+
+    //! Returns the position
+    Math::CVector3 position() const { return m_vPosition; }
+
+    //! Returns the radius
+    double radius() const { return m_dRadius; }
+
+    //-------------------------------------------------------------------------------------------------
+    // Properties
+    //-------------------------------------------------------------------------------------------------
+
+protected:
+
+    Math::CVector3  m_vPosition;
+    double          m_dRadius;
+};
+
+//-------------------------------------------------------------------------------------------------
+
 class QUICK3D_EXPORT CPhysicalComponent : public CComponent
 {
 public:
@@ -130,16 +173,19 @@ public:
     //! Calls the update method for child components
     virtual void postUpdate(double dDeltaTimeS) Q_DECL_OVERRIDE;
 
+    //! Returns a list of contact points for this component
+    virtual QVector<CContactPoint> contactPoints();
+
     //! Dumps contents to a stream
     virtual void dump(QTextStream& stream, int iIdent);
 
-    //! Ajoute un champ de hauteurs pour cet objet
+    //! Adds a height field to this component
     void addField(CHeightField* value);
 
-    //! Removes this object from physical computations.
+    //! Removes this component from physical computations.
     void sleep();
 
-    //! Adds this object to physical computations.
+    //! Adds this component to physical computations.
     void wakeUp();
 
     //! Adds a local force to the component, relative to a position. It can also generate torque.

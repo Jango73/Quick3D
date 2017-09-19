@@ -42,4 +42,10 @@ void CWheel::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 void CWheel::update(double dDeltaTime)
 {
     CPhysicalComponent::update(dDeltaTime);
+
+    QSP<CComponent> pRoot = root();
+
+    if (pRoot != nullptr)
+    {
+    }
 }

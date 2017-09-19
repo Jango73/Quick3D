@@ -51,6 +51,9 @@ public:
     //!
     virtual void paint(CRenderContext* pContext) Q_DECL_OVERRIDE;
 
+    //!
+    virtual QVector<CContactPoint> contactPoints() Q_DECL_OVERRIDE;
+
     //-------------------------------------------------------------------------------------------------
     // Control methods
     //-------------------------------------------------------------------------------------------------

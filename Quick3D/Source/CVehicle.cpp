@@ -26,14 +26,12 @@ CComponent* CVehicle::instantiator(C3DScene* pScene)
 CVehicle::CVehicle(C3DScene* pScene)
     : CTrajectorable(pScene)
 {
-    LOG_DEBUG("CVehicle::CVehicle()");
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CVehicle::~CVehicle()
 {
-    LOG_DEBUG("CVehicle::~CVehicle()");
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -92,10 +90,7 @@ void CVehicle::update(double dDeltaTime)
     {
         if (m_pFields.count() > 0.0)
         {
-            CVector3 vRotation;
-
-            vRotation = rotation();
-
+            CVector3 vRotation = rotation();
             CBoundingBox box = bounds();
 
             CMatrix4 mOrientation = CMatrix4().makeRotation(vRotation);
@@ -145,6 +140,34 @@ void CVehicle::update(double dDeltaTime)
                     addLocalTorque_kg(torque * totalMass_kg() * 0.5);
                 }
             }
+
+//            CVector3 vRotation = rotation();
+//            CMatrix4 mOrientation = CMatrix4().makeRotation(vRotation);
+//            QVector<CContactPoint> vPoints = contactPoints();
+
+//            foreach (CContactPoint point, vPoints)
+//            {
+//                CGeoloc gPosition = CGeoloc(geoloc(), mOrientation * point.position());
+//                double dRigidness = 0.0;
+//                double dHeight = m_pFields[0]->getHeightAt(gPosition, &dRigidness);
+
+//                CVector3 vSeg = gPosition.toVector3();
+
+//                m_pScene->addSegment(vSeg, vSeg + CVector3(0.5, 0.0, 0.0));
+//                m_pScene->addSegment(vSeg, vSeg + CVector3(0.0, 0.5, 0.0));
+//                m_pScene->addSegment(vSeg, vSeg + CVector3(0.0, 0.0, 0.5));
+
+//                if (dHeight != Q3D_INFINITY)
+//                {
+//                    double dDiff = gPosition.Altitude - dHeight;
+
+//                    if (dDiff > 0.0 && dDiff < 5000.0)
+//                    {
+//                        double dForce_kg = dDiff * totalMass_kg() * -0.001;
+//                        addUncenteredLocalForce_kg(point.position(), dForce_kg);
+//                    }
+//                }
+//            }
         }
     }
 }
@@ -154,4 +177,11 @@ void CVehicle::update(double dDeltaTime)
 void CVehicle::paint(CRenderContext* pContext)
 {
     CTrajectorable::paint(pContext);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QVector<CContactPoint> CVehicle::contactPoints()
+{
+    return CTrajectorable::contactPoints();
 }

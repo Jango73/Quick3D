@@ -136,17 +136,17 @@ HEADERS += \
     Source/CQuaternion.h \
     Source/CMatrix4.h \
     Source/CAxis.h \
-    ../COTS/zlib-1.2.6/crc32.h \
-    ../COTS/zlib-1.2.6/deflate.h \
-    ../COTS/zlib-1.2.6/gzguts.h \
-    ../COTS/zlib-1.2.6/inffast.h \
-    ../COTS/zlib-1.2.6/inffixed.h \
-    ../COTS/zlib-1.2.6/inflate.h \
-    ../COTS/zlib-1.2.6/inftrees.h \
-    ../COTS/zlib-1.2.6/trees.h \
-    ../COTS/zlib-1.2.6/zconf.h \
-    ../COTS/zlib-1.2.6/zlib.h \
-    ../COTS/zlib-1.2.6/zutil.h \
+    ../COTS/zlib/crc32.h \
+    ../COTS/zlib/deflate.h \
+    ../COTS/zlib/gzguts.h \
+    ../COTS/zlib/inffast.h \
+    ../COTS/zlib/inffixed.h \
+    ../COTS/zlib/inflate.h \
+    ../COTS/zlib/inftrees.h \
+    ../COTS/zlib/trees.h \
+    ../COTS/zlib/zconf.h \
+    ../COTS/zlib/zlib.h \
+    ../COTS/zlib/zutil.h \
     ../COTS/unzip11/crypt.h \
     ../COTS/unzip11/ioapi.h \
     ../COTS/unzip11/iowin32.h \
@@ -287,21 +287,21 @@ SOURCES += \
     Source/CWorldTerrain.cpp \
     Source/CWorldTerrainMap.cpp \
     Source/CZip.cpp \
-    ../COTS/zlib-1.2.6/adler32.c \
-    ../COTS/zlib-1.2.6/compress.c \
-    ../COTS/zlib-1.2.6/crc32.c \
-    ../COTS/zlib-1.2.6/deflate.c \
-    ../COTS/zlib-1.2.6/gzclose.c \
-    ../COTS/zlib-1.2.6/gzlib.c \
-    ../COTS/zlib-1.2.6/gzread.c \
-    ../COTS/zlib-1.2.6/gzwrite.c \
-    ../COTS/zlib-1.2.6/infback.c \
-    ../COTS/zlib-1.2.6/inffast.c \
-    ../COTS/zlib-1.2.6/inflate.c \
-    ../COTS/zlib-1.2.6/inftrees.c \
-    ../COTS/zlib-1.2.6/trees.c \
-    ../COTS/zlib-1.2.6/uncompr.c \
-    ../COTS/zlib-1.2.6/zutil.c \
+    ../COTS/zlib/adler32.c \
+    ../COTS/zlib/compress.c \
+    ../COTS/zlib/crc32.c \
+    ../COTS/zlib/deflate.c \
+    ../COTS/zlib/gzclose.c \
+    ../COTS/zlib/gzlib.c \
+    ../COTS/zlib/gzread.c \
+    ../COTS/zlib/gzwrite.c \
+    ../COTS/zlib/infback.c \
+    ../COTS/zlib/inffast.c \
+    ../COTS/zlib/inflate.c \
+    ../COTS/zlib/inftrees.c \
+    ../COTS/zlib/trees.c \
+    ../COTS/zlib/uncompr.c \
+    ../COTS/zlib/zutil.c \
     ../COTS/unzip11/ioapi.c \
     ../COTS/unzip11/iowin32.c \
     ../COTS/unzip11/mztools.c \

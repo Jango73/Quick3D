@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scene>
+    <!--
     <Camera1 Name="Man1.Head" />
     <Camera2 Name="VBCI.Pilot" />
     <Camera3 Name="Drone01.Pilot" />
     <ControlledComponent Name="Man1" />
+    -->
+
+    <Camera1 Name="VBCI.Pilot" />
+    <ControlledComponent Name="VBCI" />
 
     <!--
     <Camera1 Name="Plascoa01Pilot"/>
@@ -664,8 +669,8 @@
             <Rotation x="0.0" y="0.0" z="0.0" />
             <Mesh Name="PVP.obj" />
             <IR Factor="0.8" />
-            <Physics MassKG="7500" SpeedMS="4.0" TurnSpeedDS="30.0" PhysicsActive="1" />
-            <Controller Class="CForceController" ForceFactor="1000.0" />
+            <Physics MassKG="7500" SpeedMS="4.0" TurnSpeedDS="30.0" Drag="0.1" Friction="2.0" PhysicsActive="1" />
+            <Controller Class="CForceController" ForceFactor="10000.0" />
             <Component Name="Driver" Class="CCamera">
                 <Physics CollisionsActive="0" />
                 <Position x="0.0" y="3.2" z="-4" />
@@ -678,7 +683,8 @@
             <Rotation x="0.0" y="90.0" z="0.0" />
             <Mesh Name="PCC.obj" />
             <IR Factor="0.8" />
-            <Physics SpeedMS="4.5" TurnSpeedDS="30.0" PhysicsActive="1" />
+            <Physics MassKG="7500" SpeedMS="4.5" TurnSpeedDS="30.0" Drag="0.1" Friction="2.0" PhysicsActive="1" />
+            <Controller Class="CForceController" ForceFactor="10000.0" />
             <Component Name="Light1" Class="CLight">
                 <Physics CollisionsActive="0" />
                 <Position x="0.8" y="1.0" z="3.0" />

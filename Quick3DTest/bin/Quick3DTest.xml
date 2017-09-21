@@ -39,7 +39,7 @@
 
         <Component Name="Terrain" Class="CWorldTerrain">
             <Parameters>
-                <General Levels="16" Resolution="31" />
+                <General Levels="15" Resolution="31" />
                 <Functions>
                     <Function Name="ContinentsFactor">
                         <Value Type="Turbulence" InputScale="0.000001" MinClamp="0.0" MaxClamp="1.0" OutputScale="1.0" />

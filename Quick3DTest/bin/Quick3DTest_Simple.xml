@@ -4,15 +4,17 @@
     <ControlledComponent Name="VBCI" />
     <Components>
         <Component Name="SkyBox" Class="CSkyBox" />
+
         <Component Name="Sun" Class="CLight" Tag="SUN">
             <Position x="0.0" y="0.0" z="0.0"/>
             <Rotation x="0.0" y="0.0" z="0.0"/>
             <General FOV="10.0" CastShadows="1"/>
             <Color r="1.0" g="1.0" b="1.0"/>
         </Component>
+
         <Component Name="Terrain" Class="CWorldTerrain">
             <Parameters>
-                <General Levels="18" Resolution="21" />
+                <General Levels="15" Resolution="31" />
                 <Material Type="blend">
                     <Texture Name="Textures/Stone01.jpg" />
                     <Texture Name="Textures/Stone02.jpg" />

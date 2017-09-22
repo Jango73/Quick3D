@@ -198,10 +198,10 @@ public:
     void addForce_kg(Math::CVector3 vForce_kg);
 
     //! Adds a local torque to the component.
-    void addLocalTorque_kg(Math::CVector3 vForce_kg);
+    void addLocalTorque_kg(Math::CVector3 vTorque_kg);
 
     //! Adds a torque to the component, expressed in the geocentric frame.
-    void addTorque_kg(Math::CVector3 vForce_kg);
+    void addTorque_kg(Math::CVector3 vTorque_kg);
 
     //-------------------------------------------------------------------------------------------------
     // Static methods

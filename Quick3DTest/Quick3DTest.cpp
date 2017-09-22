@@ -401,7 +401,7 @@ void Quick3DTest::onGenerateMatrixClicked()
             dump.close();
         }
 
-        // Calcul de la matrice panoramique
+        // Compute panoramic matrix
 
         QVector<CGeoZone> vZones;
         QVector<double> vDepth;

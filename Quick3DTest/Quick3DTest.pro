@@ -8,11 +8,15 @@ QT += core gui network opengl xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+# CONFIG += console
+
 TEMPLATE = app
+
 INCLUDEPATH += $$PWD/../Quick3D/Source
 INCLUDEPATH += $$PWD/../qt-plus/source/cpp
 INCLUDEPATH += $$PWD/../qt-plus/source/cpp/Web
 DEPENDPATH += $$PWD/../Quick3D
+
 DESTDIR = $$PWD/bin
 MOC_DIR = $$PWD/moc
 OBJECTS_DIR = $$PWD/obj

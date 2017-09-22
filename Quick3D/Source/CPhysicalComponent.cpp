@@ -289,11 +289,11 @@ void CPhysicalComponent::addForce_kg(CVector3 vForce_kg)
     Adds a local torque to the component. \br\br
     \a vForce_kg is the torque to apply.
 */
-void CPhysicalComponent::addLocalTorque_kg(CVector3 vForce_kg)
+void CPhysicalComponent::addLocalTorque_kg(CVector3 vTorque_kg)
 {
     if (m_bPhysicsActive == true)
     {
-        m_vSummedTorques_rss = m_vSummedTorques_rss + (vForce_kg / totalMass_kg()) * 5.0;
+        m_vSummedTorques_rss = m_vSummedTorques_rss + (vTorque_kg / totalMass_kg()) * 5.0;
     }
 }
 
@@ -303,7 +303,7 @@ void CPhysicalComponent::addLocalTorque_kg(CVector3 vForce_kg)
     Adds a torque to the component, expressed in the geocentric frame. \br\br
     \a vForce_kg is the torque to apply.
 */
-void CPhysicalComponent::addTorque_kg(CVector3 vForce_kg)
+void CPhysicalComponent::addTorque_kg(CVector3 vTorque_kg)
 {
     if (m_bPhysicsActive == true)
     {

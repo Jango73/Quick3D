@@ -241,6 +241,7 @@ public:
         Y += V2.Y;
         Z += V2.Z;
         W += V2.W;
+
         return *this;
     }
 
@@ -251,6 +252,7 @@ public:
         Y -= V2.Y;
         Z -= V2.Z;
         W -= V2.W;
+
         return *this;
     }
 
@@ -261,6 +263,18 @@ public:
         Y *= V2.Y;
         Z *= V2.Z;
         W *= V2.W;
+
+        return *this;
+    }
+
+    //! Returns division of this vector and \a V2
+    inline CVector4& operator /= (const CVector4& V2)
+    {
+        X /= V2.X;
+        Y /= V2.Y;
+        Z /= V2.Z;
+        W /= V2.W;
+
         return *this;
     }
 

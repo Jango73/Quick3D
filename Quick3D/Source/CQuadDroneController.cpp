@@ -31,17 +31,17 @@ CComponent* CQuadDroneController::instantiator(C3DScene* pScene)
 CQuadDroneController::CQuadDroneController(C3DScene* pScene)
     : CAircraftController(pScene)
 {
-    m_iThrustModifiers_Forward.addValue(-1.0, CVector4(1.0, 1.0, 0.8, 0.8));
-    m_iThrustModifiers_Forward.addValue( 0.0, CVector4(1.0, 1.0, 1.0, 1.0));
-    m_iThrustModifiers_Forward.addValue( 1.0, CVector4(0.8, 0.8, 1.0, 1.0));
+    m_iThrustModifiers_Forward.addValue(-1.0, CVector4(1.0, 1.0, 0.0, 0.0));
+    m_iThrustModifiers_Forward.addValue( 0.0, CVector4(0.5, 0.5, 0.5, 0.5));
+    m_iThrustModifiers_Forward.addValue( 1.0, CVector4(0.0, 0.0, 1.0, 1.0));
 
-    m_iThrustModifiers_Lateral.addValue(-1.0, CVector4(0.8, 1.0, 0.8, 1.0));
-    m_iThrustModifiers_Lateral.addValue( 0.0, CVector4(1.0, 1.0, 1.0, 1.0));
-    m_iThrustModifiers_Lateral.addValue( 1.0, CVector4(1.0, 0.8, 1.0, 0.8));
+    m_iThrustModifiers_Lateral.addValue(-1.0, CVector4(0.0, 1.0, 0.0, 1.0));
+    m_iThrustModifiers_Lateral.addValue( 0.0, CVector4(0.5, 0.5, 0.5, 0.5));
+    m_iThrustModifiers_Lateral.addValue( 1.0, CVector4(1.0, 0.0, 1.0, 0.0));
 
-    m_iThrustModifiers_Yaw.addValue(-1.0, CVector4(0.8, 1.0, 1.0, 0.8));
-    m_iThrustModifiers_Yaw.addValue( 0.0, CVector4(1.0, 1.0, 1.0, 1.0));
-    m_iThrustModifiers_Yaw.addValue( 1.0, CVector4(1.0, 0.8, 0.8, 1.0));
+    m_iThrustModifiers_Yaw.addValue(-1.0, CVector4(0.0, 1.0, 1.0, 0.0));
+    m_iThrustModifiers_Yaw.addValue( 0.0, CVector4(0.5, 0.5, 0.5, 0.5));
+    m_iThrustModifiers_Yaw.addValue( 1.0, CVector4(1.0, 0.0, 0.0, 1.0));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -106,6 +106,11 @@ void CQuadDroneController::update(double dDeltaTime)
                 dVertSpeedDemand = -1.0;
         }
 
+        LOG_VALUE("dForwardDemand", QString::number(dForwardDemand, 'f', 2));
+        LOG_VALUE("dLateralDemand", QString::number(dLateralDemand, 'f', 2));
+        LOG_VALUE("dYawDemand", QString::number(dYawDemand, 'f', 2));
+        LOG_VALUE("dVertSpeedDemand", QString::number(dVertSpeedDemand, 'f', 2));
+
         CAverager<CVector4> aEngineThrustModifiers(3);
 
         aEngineThrustModifiers << m_iThrustModifiers_Forward.getValue(dForwardDemand);
@@ -113,7 +118,7 @@ void CQuadDroneController::update(double dDeltaTime)
         aEngineThrustModifiers << m_iThrustModifiers_Yaw.getValue(dYawDemand);
 
         CVector4 vFinalThrust((dVertSpeedDemand + 1.0) / 2.0);
-        vFinalThrust *= aEngineThrustModifiers.getAverage();
+        vFinalThrust += aEngineThrustModifiers.getAverage();
 
         pEngine1->setCurrentFuelFlow_norm(vFinalThrust.X);
         pEngine2->setCurrentFuelFlow_norm(vFinalThrust.Y);

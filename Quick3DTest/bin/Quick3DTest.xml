@@ -7,8 +7,8 @@
     <ControlledComponent Name="Man1" />
     -->
 
-    <Camera1 Name="VBCI.Pilot" />
-    <ControlledComponent Name="VBCI" />
+    <Camera1 Name="Drone01.Pilot" />
+    <ControlledComponent Name="Drone01" />
 
     <!--
     <Camera1 Name="Plascoa01Pilot"/>
@@ -517,7 +517,7 @@
         </Component>
 
         <Component Name="Drone01" Class="CAircraft">
-            <Geoloc Latitude="19.237734" Longitude="10.896700" Altitude="0.0" />
+            <Geoloc Latitude="19.237720" Longitude="10.896720" Altitude="100.0" />
             <Rotation x="0.0" y="0.0" z="0.0" />
             <Mesh Name="SmoothingTest.obj" />
             <IR Factor="0.8" />
@@ -541,29 +541,29 @@
                 <Physics CollisionsActive="0" />
                 <Position x="-0.3" y="0.0" z="0.3" />
                 <Rotation x="-90.0" y="0.0" z="0.0" />
-                <Physics MassKG="0.25" />
-                <Thrust MaxThrustKG="5.0" />
+                <Physics MassKG="0.1" />
+                <Thrust MaxThrustKG="20.0" />
             </Component>
             <Component Name="Engine2" Class="CEngine">
                 <Physics CollisionsActive="0" />
                 <Position x="0.3" y="0.0" z="0.3" />
                 <Rotation x="-90.0" y="0.0" z="0.0" />
-                <Physics MassKG="0.25" />
-                <Thrust MaxThrustKG="5.0" />
+                <Physics MassKG="0.1" />
+                <Thrust MaxThrustKG="20.0" />
             </Component>
             <Component Name="Engine3" Class="CEngine">
                 <Physics CollisionsActive="0" />
                 <Position x="-0.3" y="0.0" z="-0.3" />
                 <Rotation x="-90.0" y="0.0" z="0.0" />
-                <Physics MassKG="0.25" />
-                <Thrust MaxThrustKG="5.0" />
+                <Physics MassKG="0.1" />
+                <Thrust MaxThrustKG="20.0" />
             </Component>
             <Component Name="Engine4" Class="CEngine">
                 <Physics CollisionsActive="0" />
                 <Position x="0.3" y="0.0" z="-0.3" />
                 <Rotation x="-90.0" y="0.0" z="0.0" />
-                <Physics MassKG="0.25" />
-                <Thrust MaxThrustKG="5.0" />
+                <Physics MassKG="0.1" />
+                <Thrust MaxThrustKG="20.0" />
             </Component>
         </Component>
 

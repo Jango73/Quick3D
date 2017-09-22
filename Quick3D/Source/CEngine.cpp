@@ -48,7 +48,7 @@ double CEngine::currentFuelFlow_norm() const
 
 double CEngine::currentThrust_kg() const
 {
-    return m_dFuelFlow_norm * 100.0;
+    return m_dFuelFlow_norm * m_dMaxThrust_kg;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -94,6 +94,6 @@ void CEngine::update(double dDeltaTime)
         dAirFactor = Math::Angles::clipDouble((dAirFactor * 2.0) * 40.0, 0.0, 40.0);
         double dCurrentThrust_kg = currentThrust_kg() * dAirFactor;
 
-        pPhysical->addUncenteredLocalForce_kg(position(), CVector3(0.0, 0.0, dCurrentThrust_kg));
+        pPhysical->addUncenteredLocalForce_kg(position(), CAxis(rotation()).Front * dCurrentThrust_kg);
     }
 }

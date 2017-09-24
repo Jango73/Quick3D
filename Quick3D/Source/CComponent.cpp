@@ -448,7 +448,6 @@ void CComponent::setScale(CVector3 vScale)
 */
 void CComponent::setAnimPosition(CVector3 vPosition)
 {
-    // Assignation de la position
     m_vAnimPosition = vPosition;
 }
 
@@ -484,7 +483,6 @@ void CComponent::setAnimRotation(CVector3 vRotation)
 */
 void CComponent::setAnimScale(CVector3 vScale)
 {
-    // Assign the scale
     m_vAnimScale = vScale;
 }
 

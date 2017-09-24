@@ -63,7 +63,7 @@ public:
     virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CQuadDroneController; }
 
     //!
-    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
+    virtual void update(double dDeltaTimeS) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Properties
@@ -74,4 +74,5 @@ protected:
     CInterpolator<Math::CVector4>   m_iThrustModifiers_Forward;
     CInterpolator<Math::CVector4>   m_iThrustModifiers_Lateral;
     CInterpolator<Math::CVector4>   m_iThrustModifiers_Yaw;
+    double                          m_dMainThrust;
 };

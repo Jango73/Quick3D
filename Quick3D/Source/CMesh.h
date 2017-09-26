@@ -65,7 +65,7 @@ public:
     virtual CBoundingBox worldBounds();
 
     //!
-    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
+    virtual void update(double dDeltaTimeS) Q_DECL_OVERRIDE;
 
     //! Charge les paramètres de l'objet
     virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
@@ -95,7 +95,7 @@ public:
     // Static methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Créé une sphère "explosée" pour supporter une grille de textures
+    //! Creates an exploded sphere to allow for multiple image maps
     static CComponent* createMultiTextureSphere(
             C3DScene* pScene,
             int iNumSegments,

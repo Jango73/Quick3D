@@ -13,6 +13,19 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    \class CMesh
+    \brief The class for a polygon mesh component. Does not hold the actual geometry.
+    \inmodule Quick3D
+    \sa CComponent
+*/
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Instantiates a new CMesh. \br\br
+    \a pScene is the scene containing the component.
+*/
 CComponent* CMesh::instantiator(C3DScene* pScene)
 {
     return new CMesh(pScene);
@@ -20,6 +33,12 @@ CComponent* CMesh::instantiator(C3DScene* pScene)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Constructs a CMesh with its default parameters. \br\br
+    \a pScene is the scene containing the component. \br
+    \a dMaxDistance specifies the maximum visibility distance in meters. \br
+    \a bUseSpacePartitionning tells if spatial partitioning should be used to accelerate ray tracing.
+*/
 CMesh::CMesh(C3DScene* pScene, double dMaxDistance, bool bUseSpacePartitionning)
     : CPhysicalComponent(pScene)
 {
@@ -30,6 +49,9 @@ CMesh::CMesh(C3DScene* pScene, double dMaxDistance, bool bUseSpacePartitionning)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Destroys a CMesh.
+*/
 CMesh::~CMesh()
 {
     CComponent::decComponentCounter(ClassName_CMesh);
@@ -37,6 +59,9 @@ CMesh::~CMesh()
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Sets the geometry of this mesh to \a pGeometry.
+*/
 void CMesh::setGeometry(QSP<CMeshGeometry> pGeometry)
 {
     m_pGeometry = pGeometry;
@@ -44,6 +69,9 @@ void CMesh::setGeometry(QSP<CMeshGeometry> pGeometry)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Returns the local bounds of the component.
+*/
 CBoundingBox CMesh::bounds()
 {
     if (m_pGeometry != nullptr)
@@ -56,6 +84,9 @@ CBoundingBox CMesh::bounds()
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Returns the world bounds of the component.
+*/
 CBoundingBox CMesh::worldBounds()
 {
     if (m_pGeometry != nullptr)
@@ -68,18 +99,25 @@ CBoundingBox CMesh::worldBounds()
 
 //-------------------------------------------------------------------------------------------------
 
-void CMesh::update(double dDeltaTime)
+/*!
+    Updates this component using \a dDeltaTimeS, which is the elapsed seconds since the last frame.
+*/
+void CMesh::update(double dDeltaTimeS)
 {
-    CPhysicalComponent::update(dDeltaTime);
+    CPhysicalComponent::update(dDeltaTimeS);
 
     if (m_pGeometry != nullptr)
     {
-        m_pGeometry->update(dDeltaTime);
+        m_pGeometry->update(dDeltaTimeS);
     }
 }
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Loads the properties of this component from \a xComponent. \br\br
+    \a sBaseFile is the file name from which it is loaded.
+*/
 void CMesh::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
     CPhysicalComponent::loadParameters(sBaseFile, xComponent);
@@ -151,6 +189,10 @@ void CMesh::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Solves the links in this component after it has been loaded from an object file (XML or JSON). \br\br
+    \a pScene is the scene containing this component.
+*/
 void CMesh::solveLinks(C3DScene* pScene)
 {
     CPhysicalComponent::solveLinks(pScene);
@@ -200,6 +242,10 @@ void CMesh::solveLinks(C3DScene* pScene)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Clears the links in this component and its children. \br\br
+    \a pScene is the scene containing this component.
+*/
 void CMesh::clearLinks(C3DScene* pScene)
 {
     CPhysicalComponent::clearLinks(pScene);
@@ -207,6 +253,9 @@ void CMesh::clearLinks(C3DScene* pScene)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Flips all normals of the mesh.
+*/
 void CMesh::flipNormals()
 {
     CPhysicalComponent::flipNormals();
@@ -219,6 +268,9 @@ void CMesh::flipNormals()
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Transform all vertices in the mesh using \a matrix.
+*/
 void CMesh::transformVertices(const CMatrix4& matrix)
 {
     CPhysicalComponent::transformVertices(matrix);
@@ -231,6 +283,9 @@ void CMesh::transformVertices(const CMatrix4& matrix)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Checks if \a ray intersects this mesh.
+*/
 RayTracingResult CMesh::intersect(CRay3 ray)
 {
     if (m_pGeometry != nullptr)
@@ -243,6 +298,10 @@ RayTracingResult CMesh::intersect(CRay3 ray)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Renders the mesh.
+    \a pContext is the rendering context.
+*/
 void CMesh::paint(CRenderContext* pContext)
 {
     if (m_pGeometry != nullptr)
@@ -289,6 +348,9 @@ CComponent* CMesh::createMultiTextureSphere(C3DScene* pScene, int iNumSegments, 
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Dumps this component to \a stream using the indentation value in \a iIdent.
+*/
 void CMesh::dump(QTextStream& stream, int iIdent)
 {
     dumpIdent(stream, iIdent, QString("[CMesh]"));

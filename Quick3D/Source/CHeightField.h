@@ -52,7 +52,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    virtual void flatten(const CGeoloc& gPosition, double dRadius);
+    virtual void flatten(const CGeoloc& gPosition, double dRadius_m);
 
     //-------------------------------------------------------------------------------------------------
     // Properties

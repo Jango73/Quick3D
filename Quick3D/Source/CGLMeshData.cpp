@@ -10,15 +10,29 @@
 
 using namespace Math;
 
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    \class CGLMeshData
+    \brief This class holds geometry data which is transfered to OpenGL.
+    \inmodule Quick3D
+*/
+
+//-------------------------------------------------------------------------------------------------
+
 IMPLEMENT_MEMORY_MONITORED(CGLMeshData, "CGLMeshData")
 
 //-------------------------------------------------------------------------------------------------
-// Properties statiques
+// Static properties
 
 GLuint CGLMeshData::m_iCurrentVBO = 0;
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Constructs a CGLMeshData with its default parameters.
+    \a pScene is the scene containing the component.
+*/
 CGLMeshData::CGLMeshData(C3DScene* pScene)
     : m_pScene(pScene)
     , m_iNumRenderPoints(0)
@@ -37,6 +51,9 @@ CGLMeshData::CGLMeshData(C3DScene* pScene)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Destroys a CGLMeshData.
+*/
 CGLMeshData::~CGLMeshData()
 {
     GL_glDeleteBuffers(2, m_iVBO);
@@ -56,6 +73,13 @@ CGLMeshData::~CGLMeshData()
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Renders the object. \br\br
+    \a pContext is the rendering context. \br
+    \a mModelAbsolute is the world model view matrix. \br
+    \a pProgram is the shader program to use. \br
+    \a iGLType can be one of: GL_POINTS, GL_LINES, GL_TRIANGLES, GL_QUADS
+*/
 void CGLMeshData::paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolute, QGLShaderProgram* pProgram, int iGLType)
 {
     // If at least one point to render

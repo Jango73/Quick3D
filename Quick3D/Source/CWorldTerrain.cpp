@@ -113,7 +113,8 @@ void CWorldTerrain::setTerrainResolution(int value)
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Loads the properties of this terrain from \a xComponent.
+    Loads the properties of this component from \a xComponent. \br\br
+    \a sBaseFile is the file name from which it is loaded.
 */
 void CWorldTerrain::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
@@ -206,6 +207,10 @@ void CWorldTerrain::loadParameters(const QString& sBaseFile, CXMLNode xComponent
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Solves the links in this component after it has been loaded from an object file (XML or JSON). \br\br
+    \a pScene is the scene containing this component.
+*/
 void CWorldTerrain::solveLinks(C3DScene* pScene)
 {
     CComponent::solveLinks(pScene);
@@ -223,6 +228,10 @@ void CWorldTerrain::solveLinks(C3DScene* pScene)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Clears the links in this component and its children. \br\br
+    \a pScene is the scene containing this component.
+*/
 void CWorldTerrain::clearLinks(C3DScene* pScene)
 {
     CComponent::clearLinks(pScene);
@@ -327,6 +336,10 @@ void CWorldTerrain::buildRoot(CRenderContext* pContext)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Returns \c true if the level of detail in \a iLevel is enough for the chunk in \a pChunk. \br\br
+    \a pContext is the rendering context.
+*/
 bool CWorldTerrain::enoughDetail(QSP<CWorldChunk> pChunk, CRenderContext* pContext, int iLevel)
 {
     // double dDistance = (pContext->camera()->getWorldPosition() - pChunk->getWorldBounds().center()).getMagnitude();
@@ -352,7 +365,7 @@ bool CWorldTerrain::enoughDetail(QSP<CWorldChunk> pChunk, CRenderContext* pConte
 /*!
     Called by paint() to build necessary terrain patches given the camera location. \br\br
     \a pChunk is any chunk in the chunk tree of the terrain. \br
-    \a pContext is the rendering context.
+    \a pContext is the rendering context. \br
     \a iLevel is the depth in the chunk tree.
 */
 void CWorldTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pContext, int iLevel)
@@ -728,6 +741,10 @@ void CWorldTerrain::collectGarbageRecurse(QSP<CWorldChunk> pChunk)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Returns the height at the specified \a gPosition. \br\br
+    \a pRigidness, if not nullptr, is filled with the terrain rigidness at the specified location.
+*/
 double CWorldTerrain::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
 {
     if (m_pRoot != nullptr)
@@ -798,19 +815,19 @@ double CWorldTerrain::getHeightAtRecurse(const CGeoloc& gPosition, QSP<CWorldChu
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Flattens terrain at the specified \a gPosition, to the extents of \a dRadius.
+    Flattens terrain at the specified \a gPosition, to the extents of \a dRadius_m in meters.
 */
-void CWorldTerrain::flatten(const CGeoloc& gPosition, double dRadius)
+void CWorldTerrain::flatten(const CGeoloc& gPosition, double dRadius_m)
 {
     if (m_pRoot != nullptr)
     {
-        return flattenRecurse(m_pRoot, gPosition, dRadius);
+        return flattenRecurse(m_pRoot, gPosition, dRadius_m);
     }
 }
 
 //-------------------------------------------------------------------------------------------------
 
-void CWorldTerrain::flattenRecurse(QSP<CWorldChunk> pChunk, const CGeoloc& gPosition, double dRadius)
+void CWorldTerrain::flattenRecurse(QSP<CWorldChunk> pChunk, const CGeoloc& gPosition, double dRadius_m)
 {
     if (pChunk->terrain() != nullptr)
     {
@@ -822,13 +839,16 @@ void CWorldTerrain::flattenRecurse(QSP<CWorldChunk> pChunk, const CGeoloc& gPosi
 
         if (pChild != nullptr)
         {
-            flattenRecurse(pChild, gPosition, dRadius);
+            flattenRecurse(pChild, gPosition, dRadius_m);
         }
     }
 }
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Checks if \a ray intersects this component.
+*/
 RayTracingResult CWorldTerrain::intersect(Math::CRay3 ray)
 {
     if (m_pRoot != nullptr)

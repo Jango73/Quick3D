@@ -10,6 +10,19 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    \class CAircraft
+    \brief The base class for aircraft.
+    \inmodule Quick3D
+    \sa CComponent
+*/
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Instantiates a new CAircraft. \br\br
+    \a pScene is the scene containing the component.
+*/
 CComponent* CAircraft::instantiator(C3DScene* pScene)
 {
     return new CAircraft(pScene);
@@ -17,6 +30,10 @@ CComponent* CAircraft::instantiator(C3DScene* pScene)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Constructs a CAircraft with its default parameters. \br\br
+    \a pScene is the scene containing the component.
+*/
 CAircraft::CAircraft(C3DScene* pScene)
     : CVehicle(pScene)
     , m_bOnGround(true)
@@ -37,12 +54,19 @@ CAircraft::CAircraft(C3DScene* pScene)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Destroys a CAircraft.
+*/
 CAircraft::~CAircraft()
 {
 }
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Loads the properties of this component from \a xComponent. \br\br
+    \a sBaseFile is the file name from which it is loaded.
+*/
 void CAircraft::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
     CVehicle::loadParameters(sBaseFile, xComponent);
@@ -50,7 +74,10 @@ void CAircraft::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 
 //-------------------------------------------------------------------------------------------------
 
-void CAircraft::update(double dDeltaTime)
+/*!
+    Updates this component using \a dDeltaTimeS, which is the elapsed seconds since the last frame.
+*/
+void CAircraft::update(double dDeltaTimeS)
 {
     double dDensity_kgm3 = CAtmosphere::getInstance()->density_kgm3(m_dAltitude_m);
     double dSpeedOfSound_ms = CAtmosphere::getInstance()->soundSpeed_ms(m_dAltitude_m);
@@ -95,5 +122,5 @@ void CAircraft::update(double dDeltaTime)
               .arg(QString::number(totalMass_kg(), 'f', 2))
               );
 
-    CVehicle::update(dDeltaTime);
+    CVehicle::update(dDeltaTimeS);
 }

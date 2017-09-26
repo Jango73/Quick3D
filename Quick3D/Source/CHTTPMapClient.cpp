@@ -6,6 +6,11 @@
 #include "CHTTPMapClient.h"
 
 //-------------------------------------------------------------------------------------------------
+// Constants
+
+#define TILE_URL "http://t0.tiles.virtualearth.net/tiles/%1.jpeg?g=1963&mkt={culture}&token={token}"
+
+//-------------------------------------------------------------------------------------------------
 
 CHTTPMapClient::CHTTPMapClient()
     : m_pReply(nullptr)
@@ -80,7 +85,7 @@ void CHTTPMapClient::loadNextTile()
             }
             else
             {
-                m_uURL = QString("http://t0.tiles.virtualearth.net/tiles/%1.jpeg?g=1963&mkt={culture}&token={token}").arg(m_sCurrentTileName);
+                m_uURL = QString(TILE_URL).arg(m_sCurrentTileName);
 
                 m_pReply = m_tNetMan.get(QNetworkRequest(m_uURL));
 

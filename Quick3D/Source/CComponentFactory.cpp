@@ -10,7 +10,9 @@
 #include "CBuildingGenerator.h"
 #include "CTreeGenerator.h"
 #include "CPerlin.h"
+#include "CAtmosphere.h"
 #include "COBJLoader.h"
+#include "CQ3DLoader.h"
 #include "CComponentFactory.h"
 #include "CPluginLoader.h"
 
@@ -72,7 +74,9 @@ CComponentFactory::~CComponentFactory()
     CWorkerManager::killInstance();
     CComponentLoader::killInstance();
     COBJLoader::killInstance();
+    CQ3DLoader::killInstance();
     CPerlin::killInstance();
+    CAtmosphere::killInstance();
 }
 
 //-------------------------------------------------------------------------------------------------

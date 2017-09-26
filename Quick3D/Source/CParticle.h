@@ -23,8 +23,8 @@ public:
     //! Constructeur avec paramètres
     CParticle(Math::CVector3 NewPosition, Math::CVector3 NewVelocity = Math::CVector3());
 
-    //! Opérateur de copie
-    CParticle& operator=(const CParticle& target);
+    //! Assign operator
+    CParticle& operator = (const CParticle& target);
 
     //-------------------------------------------------------------------------------------------------
     // Getters

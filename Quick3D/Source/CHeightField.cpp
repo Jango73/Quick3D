@@ -90,8 +90,8 @@ bool CHeightField::isGenerated()
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Flattens terrain at the specified \a gPosition, to the extents of \a dRadius.
+    Flattens terrain at the specified \a gPosition, to the extents of \a dRadius_m in meters.
 */
-void CHeightField::flatten(const CGeoloc& gPosition, double dRadius)
+void CHeightField::flatten(const CGeoloc& gPosition, double dRadius_m)
 {
 }

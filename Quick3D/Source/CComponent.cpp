@@ -49,6 +49,7 @@ QMap<QString, int> CComponent::m_mComponentCounter;
 
 /*!
     Instantiates a new CComponent.
+    \a pScene is the scene containing the component.
 */
 CComponent* CComponent::instantiator(C3DScene* pScene)
 {
@@ -59,6 +60,7 @@ CComponent* CComponent::instantiator(C3DScene* pScene)
 
 /*!
     Constructs a CComponent with its default parameters.
+    \a pScene is the scene containing the component.
 */
 CComponent::CComponent(C3DScene* pScene)
     : m_pScene(pScene)
@@ -201,7 +203,8 @@ void CComponent::setParent(QSP<CComponent> pParent)
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Solves the links in this component after it has been loaded from an object file (XML or JSON).
+    Solves the links in this component after it has been loaded from an object file (XML or JSON). \br\br
+    \a pScene is the scene containing this component.
 */
 void CComponent::solveLinks(C3DScene* pScene)
 {
@@ -214,7 +217,8 @@ void CComponent::solveLinks(C3DScene* pScene)
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Clears the links in this component and its children.
+    Clears the links in this component and its children. \br\br
+    \a pScene is the scene containing this component.
 */
 void CComponent::clearLinks(C3DScene* pScene)
 {
@@ -574,7 +578,8 @@ CComponent& CComponent::operator = (const CComponent& target)
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Loads the properties of this component from \a xComponent.
+    Loads the properties of this component from \a xComponent. \br\br
+    \a sBaseFile is the file name from which it is loaded.
 */
 void CComponent::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
 {
@@ -719,7 +724,8 @@ void CComponent::updateItems(C3DScene* pScene)
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Renders the component. Meant to be overridden as the base implementation does nothing.
+    Renders the component. Meant to be overridden as the base implementation does nothing. \br\br
+    \a pContext is the rendering context.
 */
 void CComponent::paint(CRenderContext* pContext)
 {
@@ -808,7 +814,7 @@ void CComponent::transformVertices(const Math::CMatrix4& matrix)
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Updates the component using \a dDeltaTimeS, which is the elapsed seconds since the last frame.
+    Updates this component using \a dDeltaTimeS, which is the elapsed seconds since the last frame.
 */
 void CComponent::update(double dDeltaTimeS)
 {

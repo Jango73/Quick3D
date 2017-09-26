@@ -15,12 +15,29 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    \class CQ3DLoader
+    \brief A class that loads a .q3d file.
+    \inmodule Quick3D
+*/
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Constructs a CQ3DLoader with its default parameters.
+*/
 CQ3DLoader::CQ3DLoader()
 {
 }
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Loads a .q3d file. \br\br
+    \a sBaseFile is the name of the file containing data.
+    \a pContainer is the component that will contain the loaded data.
+    \a sText is the q3d data.
+*/
 QSP<CMeshGeometry> CQ3DLoader::load(const QString& sBaseFile, CComponent* pContainer, QString sText)
 {
     CXMLNode xNode = CXMLNode::parseXML(sText);

@@ -313,7 +313,7 @@ void CPhysicalComponent::addTorque_kg(CVector3 vTorque_kg)
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Updates the component using \a dDeltaTimeS, which is the elapsed seconds since the last frame. \br\br
+    Updates this component using \a dDeltaTimeS, which is the elapsed seconds since the last frame. \br\br
     If the component is not asleep, all physics are computed here, except collisions.
 */
 void CPhysicalComponent::update(double dDeltaTimeS)

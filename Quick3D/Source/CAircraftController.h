@@ -69,7 +69,7 @@ public:
     virtual void clearLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
 
     //!
-    virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
+    virtual void update(double dDeltaTimeS) Q_DECL_OVERRIDE;
 
     //!
     virtual void keyPressEvent(QKeyEvent* event) Q_DECL_OVERRIDE;

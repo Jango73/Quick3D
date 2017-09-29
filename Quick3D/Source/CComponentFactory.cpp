@@ -59,10 +59,6 @@
 
 //-------------------------------------------------------------------------------------------------
 
-QMap<QString, MComponentInstantiator> CComponentFactory::s_vComponentInstantiators;
-
-//-------------------------------------------------------------------------------------------------
-
 CComponentFactory::CComponentFactory()
 {
 }
@@ -134,16 +130,16 @@ void CComponentFactory::registerCoreComponents()
 
 void CComponentFactory::registerComponent(QString sClassName, MComponentInstantiator pInstantiator)
 {
-    s_vComponentInstantiators[sClassName] = pInstantiator;
+    m_vComponentInstantiators[sClassName] = pInstantiator;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 CComponent* CComponentFactory::instantiateComponent(QString sClassName, C3DScene* pScene)
 {
-    if (s_vComponentInstantiators.contains(sClassName))
+    if (m_vComponentInstantiators.contains(sClassName))
     {
-        return s_vComponentInstantiators[sClassName](pScene);
+        return m_vComponentInstantiators[sClassName](pScene);
     }
 
     return nullptr;

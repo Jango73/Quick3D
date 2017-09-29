@@ -49,5 +49,5 @@ public:
 
 protected:
 
-    static QMap<QString, MComponentInstantiator>    s_vComponentInstantiators;
+    QMap<QString, MComponentInstantiator>    m_vComponentInstantiators;
 };

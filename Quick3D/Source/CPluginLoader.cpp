@@ -1,4 +1,7 @@
 
+// qt-plus
+#include "CLogger.h"
+
 // Application
 #include "CPluginLoader.h"
 
@@ -7,6 +10,13 @@
 CPluginLoader::CPluginLoader()
 {
     m_sPluginPath = QCoreApplication::applicationDirPath() + "/Plugins";
+}
+
+//-------------------------------------------------------------------------------------------------
+
+QString CPluginLoader::pluginPath() const
+{
+    return m_sPluginPath;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -25,16 +35,28 @@ void CPluginLoader::loadPlugins()
 
     foreach (QString sFile, lFiles)
     {
-        QLibrary library(m_sPluginPath + "/" + sFile);
+        loadPlugin(m_sPluginPath + "/" + sFile);
+    }
+}
 
-        if (library.load())
+//-------------------------------------------------------------------------------------------------
+
+void CPluginLoader::loadPlugin(const QString& sName)
+{
+    QLibrary library(sName);
+
+    if (library.load())
+    {
+        PluginEntry pEntry = (PluginEntry) library.resolve(STR(PLUGIN_ENTRY_NAME));
+
+        if (pEntry != nullptr)
         {
-            PluginEntry pEntry = (PluginEntry) library.resolve(STR(PLUGIN_ENTRY_NAME));
-
-            if (pEntry != nullptr)
-            {
-                pEntry(CPluginInterface::getInstance());
-            }
+            pEntry(CPluginInterface::getInstance());
         }
+    }
+    else
+    {
+        LOG_METHOD_CRITICAL(QString("Unable to load %1").arg(library.fileName()));
+        LOG_METHOD_CRITICAL(library.errorString());
     }
 }

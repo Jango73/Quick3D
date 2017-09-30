@@ -37,7 +37,7 @@ CTankController::~CTankController()
 
 //-------------------------------------------------------------------------------------------------
 
-void CTankController::loadParameters(const QString& sBaseFile, CXMLNode xNode)
+void CTankController::loadParameters(const QString& sBaseFile, const CXMLNode& xNode)
 {
     CForceController::loadParameters(sBaseFile, xNode);
 

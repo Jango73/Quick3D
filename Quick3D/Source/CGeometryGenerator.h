@@ -50,7 +50,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Loads this object's parameters
-    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent, CXMLNode xFunctions);
+    virtual void loadParameters(const QString& sBaseFile, const CXMLNode& xComponent, CXMLNode xFunctions);
 
     //! Generates the geometry for the given world chunk
     virtual void generate(QSP<CWorldChunk> pChunk) = 0;

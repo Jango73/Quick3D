@@ -279,7 +279,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Loads this object's parameters
-    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
+    virtual void loadParameters(const QString& sBaseFile, const CXMLNode& xComponent);
 
     //! Solves the links of this object
     virtual void solveLinks(C3DScene* pScene);

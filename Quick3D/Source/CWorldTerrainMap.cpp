@@ -80,7 +80,7 @@ const QImage& CWorldTerrainMap::image() const
 
 //-------------------------------------------------------------------------------------------------
 
-void CWorldTerrainMap::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
+void CWorldTerrainMap::loadParameters(const QString& sBaseFile, const CXMLNode& xComponent)
 {
     CComponent::loadParameters(sBaseFile, xComponent);
 }

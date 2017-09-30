@@ -21,6 +21,6 @@ CGeometryGenerator::~CGeometryGenerator()
 
 //-------------------------------------------------------------------------------------------------
 
-void CGeometryGenerator::loadParameters(const QString& sBaseFile, CXMLNode xComponent, CXMLNode xFunctions)
+void CGeometryGenerator::loadParameters(const QString& sBaseFile, const CXMLNode& xComponent, CXMLNode xFunctions)
 {
 }

@@ -32,7 +32,7 @@ CVegetationGenerator::~CVegetationGenerator()
 
 //-------------------------------------------------------------------------------------------------
 
-void CVegetationGenerator::loadParameters(const QString& sBaseFile, CXMLNode xVegetationNode, CXMLNode xFunctions)
+void CVegetationGenerator::loadParameters(const QString& sBaseFile, const CXMLNode& xVegetationNode, CXMLNode xFunctions)
 {
     CGeometryGenerator::loadParameters(sBaseFile, xVegetationNode, xFunctions);
 

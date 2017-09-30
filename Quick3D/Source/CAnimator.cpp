@@ -71,7 +71,7 @@ void CAnimator::stop()
     Loads the properties of this component from \a xComponent. \br\br
     \a sBaseFile is the file name from which it is loaded.
 */
-void CAnimator::loadParameters(const QString& sBaseFile, CXMLNode xNode)
+void CAnimator::loadParameters(const QString& sBaseFile, const CXMLNode& xNode)
 {
     CController::loadParameters(sBaseFile, xNode);
 

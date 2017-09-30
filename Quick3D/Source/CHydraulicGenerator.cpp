@@ -32,7 +32,7 @@ CHydraulicGenerator::~CHydraulicGenerator()
 
 //-------------------------------------------------------------------------------------------------
 
-void CHydraulicGenerator::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
+void CHydraulicGenerator::loadParameters(const QString& sBaseFile, const CXMLNode& xComponent)
 {
     CGenerator::loadParameters(sBaseFile, xComponent);
 

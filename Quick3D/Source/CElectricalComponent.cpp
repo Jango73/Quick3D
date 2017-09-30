@@ -31,7 +31,7 @@ CElectricalComponent::~CElectricalComponent()
 
 //-------------------------------------------------------------------------------------------------
 
-void CElectricalComponent::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
+void CElectricalComponent::loadParameters(const QString& sBaseFile, const CXMLNode& xComponent)
 {
     CComponent::loadParameters(sBaseFile, xComponent);
 

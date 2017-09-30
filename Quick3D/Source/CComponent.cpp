@@ -581,7 +581,7 @@ CComponent& CComponent::operator = (const CComponent& target)
     Loads the properties of this component from \a xComponent. \br\br
     \a sBaseFile is the file name from which it is loaded.
 */
-void CComponent::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
+void CComponent::loadParameters(const QString& sBaseFile, const CXMLNode& xComponent)
 {
     Q_UNUSED(sBaseFile);
 

@@ -36,7 +36,7 @@ CVehicle::~CVehicle()
 
 //-------------------------------------------------------------------------------------------------
 
-void CVehicle::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
+void CVehicle::loadParameters(const QString& sBaseFile, const CXMLNode& xComponent)
 {
     CTrajectorable::loadParameters(sBaseFile, xComponent);
 

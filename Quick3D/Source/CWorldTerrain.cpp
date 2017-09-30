@@ -116,7 +116,7 @@ void CWorldTerrain::setTerrainResolution(int value)
     Loads the properties of this component from \a xComponent. \br\br
     \a sBaseFile is the file name from which it is loaded.
 */
-void CWorldTerrain::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
+void CWorldTerrain::loadParameters(const QString& sBaseFile, const CXMLNode& xComponent)
 {
     CComponent::loadParameters(sBaseFile, xComponent);
 

@@ -70,7 +70,7 @@ void CWing::setFlapsPosition_norm(double dValue)
 
 //-------------------------------------------------------------------------------------------------
 
-void CWing::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
+void CWing::loadParameters(const QString& sBaseFile, const CXMLNode& xComponent)
 {
     CPhysicalComponent::loadParameters(sBaseFile, xComponent);
 

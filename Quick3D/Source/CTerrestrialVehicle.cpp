@@ -25,7 +25,7 @@ CTerrestrialVehicle::~CTerrestrialVehicle()
 
 //-------------------------------------------------------------------------------------------------
 
-void CTerrestrialVehicle::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
+void CTerrestrialVehicle::loadParameters(const QString& sBaseFile, const CXMLNode& xComponent)
 {
     CVehicle::loadParameters(sBaseFile, xComponent);
 }

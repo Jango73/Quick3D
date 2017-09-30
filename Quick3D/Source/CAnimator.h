@@ -63,7 +63,7 @@ public:
     virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CAnimator; }
 
     //! Loads this object's parameters d'après le noeud XML fourni
-    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) Q_DECL_OVERRIDE;
+    virtual void loadParameters(const QString& sBaseFile, const CXMLNode& xComponent) Q_DECL_OVERRIDE;
 
     //!
     virtual void update(double dDeltaTimeS) Q_DECL_OVERRIDE;

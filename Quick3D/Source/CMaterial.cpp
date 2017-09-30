@@ -75,7 +75,7 @@ bool CMaterial::hasAlpha() const
 
 //-------------------------------------------------------------------------------------------------
 
-void CMaterial::loadParameters(const QString& sBaseFile, CXMLNode xMaterial)
+void CMaterial::loadParameters(const QString& sBaseFile, const CXMLNode& xMaterial)
 {
     m_sName = xMaterial.attributes()[ParamName_Name];
 

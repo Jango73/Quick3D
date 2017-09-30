@@ -106,7 +106,7 @@ bool CEngine::alternatorActive() const
     Loads the properties of this component from \a xComponent. \br\br
     \a sBaseFile is the file name from which it is loaded.
 */
-void CEngine::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
+void CEngine::loadParameters(const QString& sBaseFile, const CXMLNode& xComponent)
 {
     CPhysicalComponent::loadParameters(sBaseFile, xComponent);
 

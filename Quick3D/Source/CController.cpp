@@ -49,7 +49,7 @@ CController::~CController()
 
 //-------------------------------------------------------------------------------------------------
 
-void CController::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
+void CController::loadParameters(const QString& sBaseFile, const CXMLNode& xComponent)
 {
     CComponent::loadParameters(sBaseFile, xComponent);
 

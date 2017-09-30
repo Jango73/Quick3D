@@ -32,7 +32,7 @@ CWheel::~CWheel()
 
 //-------------------------------------------------------------------------------------------------
 
-void CWheel::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
+void CWheel::loadParameters(const QString& sBaseFile, const CXMLNode& xComponent)
 {
     CPhysicalComponent::loadParameters(sBaseFile, xComponent);
 }

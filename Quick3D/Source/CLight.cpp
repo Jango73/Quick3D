@@ -64,7 +64,7 @@ CLight& CLight::operator = (const CLight& target)
 /*!
     Loads the properties of this light from \a xComponent.
 */
-void CLight::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
+void CLight::loadParameters(const QString& sBaseFile, const CXMLNode& xComponent)
 {
     CCamera::loadParameters(sBaseFile, xComponent);
 

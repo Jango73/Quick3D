@@ -87,7 +87,7 @@ CPhysicalComponent& CPhysicalComponent::operator = (const CPhysicalComponent& ta
 /*!
     Loads the properties of this component from \a xComponent.
 */
-void CPhysicalComponent::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
+void CPhysicalComponent::loadParameters(const QString& sBaseFile, const CXMLNode& xComponent)
 {
     CComponent::loadParameters(sBaseFile, xComponent);
 

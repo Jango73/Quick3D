@@ -132,7 +132,7 @@ public:
 
     //! Charge les propriétés de l'objet depuis un CXMLNode
     //! Loads the object's properties from a CXMLNode
-    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent);
+    virtual void loadParameters(const QString& sBaseFile, const CXMLNode& xComponent);
 
     //! Solves the links of this object
     virtual void solveLinks(C3DScene* pScene) Q_DECL_OVERRIDE;

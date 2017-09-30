@@ -16,7 +16,7 @@ class ILoadable
 public:
 
     //! Loads the object's properties from a CXMLNode
-    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent) = 0;
+    virtual void loadParameters(const QString& sBaseFile, const CXMLNode& xComponent) = 0;
 
     //! Solves the links of this object
     virtual void solveLinks(C3DScene* pScene) = 0;

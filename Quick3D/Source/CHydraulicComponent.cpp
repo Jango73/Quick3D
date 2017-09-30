@@ -37,7 +37,7 @@ double CHydraulicComponent::pressure_norm() const
 
 //-------------------------------------------------------------------------------------------------
 
-void CHydraulicComponent::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
+void CHydraulicComponent::loadParameters(const QString& sBaseFile, const CXMLNode& xComponent)
 {
     CComponent::loadParameters(sBaseFile, xComponent);
 

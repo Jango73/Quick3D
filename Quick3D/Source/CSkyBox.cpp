@@ -57,7 +57,7 @@ void CSkyBox::paint(CRenderContext* pContext)
 
 //-------------------------------------------------------------------------------------------------
 
-void CSkyBox::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
+void CSkyBox::loadParameters(const QString& sBaseFile, const CXMLNode& xComponent)
 {
     CMesh::loadParameters(sBaseFile, xComponent);
 }

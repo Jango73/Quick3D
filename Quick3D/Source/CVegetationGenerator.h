@@ -100,7 +100,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Loads this object's parameters
-    virtual void loadParameters(const QString& sBaseFile, CXMLNode xComponent, CXMLNode xFunctions) Q_DECL_OVERRIDE;
+    virtual void loadParameters(const QString& sBaseFile, const CXMLNode& xComponent, CXMLNode xFunctions) Q_DECL_OVERRIDE;
 
     //!
     virtual void generate(QSP<CWorldChunk> pChunk) Q_DECL_OVERRIDE;

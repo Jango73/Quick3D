@@ -64,7 +64,7 @@ CAircraftController::~CAircraftController()
     Loads the properties of this component from \a xComponent. \br\br
     \a sBaseFile is the file name from which it is loaded.
 */
-void CAircraftController::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
+void CAircraftController::loadParameters(const QString& sBaseFile, const CXMLNode& xComponent)
 {
     CStandardController::loadParameters(sBaseFile, xComponent);
 

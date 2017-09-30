@@ -32,7 +32,7 @@ CEngineGenerator::~CEngineGenerator()
 
 //-------------------------------------------------------------------------------------------------
 
-void CEngineGenerator::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
+void CEngineGenerator::loadParameters(const QString& sBaseFile, const CXMLNode& xComponent)
 {
     CGenerator::loadParameters(sBaseFile, xComponent);
 

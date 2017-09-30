@@ -34,7 +34,7 @@ CArmature::~CArmature()
 
 //-------------------------------------------------------------------------------------------------
 
-void CArmature::loadParameters(const QString& sBaseFile, CXMLNode xComponent)
+void CArmature::loadParameters(const QString& sBaseFile, const CXMLNode& xComponent)
 {
     CPhysicalComponent::loadParameters(sBaseFile, xComponent);
 }

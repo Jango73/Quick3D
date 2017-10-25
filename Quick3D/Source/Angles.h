@@ -10,14 +10,14 @@
 
 namespace Math
 {
-//! Constante de PI sur 21 chiffres
+//! PI constant on 21 digits
 const double Pi		= 3.14159265358979323846;
 
-//! Constante de racine carrée de 2 sur 21 chiffres
-const double Sqrt2	= 1.41421356237309504880;
-
-//! Constante de PI x 2
+//! PI x 2 constant
 const double _2Pi	= Pi * 2.0;
+
+//! Square root of 2
+const double Sqrt2	= 1.41421356237309504880;
 
 const double DegreeFull = 360.0;
 const double DegreeHalf = 180.0;
@@ -27,13 +27,13 @@ class Angles
 {
 public:
 
-    //! Retourne le signe d'un nombre
+    //! Returns the sign of a double
     static inline int sign(double dValue)
     {
         return dValue < 0.0 ? -1.0 : 1.0;
     }
 
-    //! Limite un int dans la zone dMin -> dMax
+    //! Bounds an int between iMin an iMax
     static int clipInt(int iValue, int iMin, int iMax)
     {
         if (iValue < iMin) iValue = iMin;
@@ -42,7 +42,7 @@ public:
         return iValue;
     }
 
-    //! Limite un double dans la zone dMin -> dMax
+    //! Bounds a double between dMin an dMax
     static double clipDouble(double dValue, double dMin, double dMax)
     {
         if (dValue < dMin) dValue = dMin;
@@ -51,7 +51,7 @@ public:
         return dValue;
     }
 
-    //! Limite un angle en degrés dans la zone 0 -> 360
+    //! Bounds an angle in degrees between 0 and 360
     static double clipAngleDegree(double dAngle)
     {
         while (dAngle <   0.0) dAngle += 360.0;
@@ -60,7 +60,7 @@ public:
         return dAngle;
     }
 
-    //! Limite un angle en radians dans la zone 0 -> 2 PI
+    //! Bounds an angle in radians between 0 and 2xPI
     static double clipAngleRadian(double dAngle)
     {
         while (dAngle <   0.0) dAngle += _2Pi;
@@ -69,7 +69,7 @@ public:
         return dAngle;
     }
 
-    //! Limite un angle en degrés dans la zone -180 -> +180
+    //! Bounds an angle in degrees between -180 and +180
     static double clipAngleDegreePIMinusPI(double dAngle)
     {
         while (dAngle < -180.0) dAngle += 360.0;
@@ -78,7 +78,7 @@ public:
         return dAngle;
     }
 
-    //! Limite un angle en radians dans la zone -PI -> +PI
+    //! Bounds an angle in radians between -PI and +PI
     static double clipAngleRadianPIMinusPI(double dAngle)
     {
         while (dAngle < -Pi) dAngle += _2Pi;
@@ -87,7 +87,7 @@ public:
         return dAngle;
     }
 
-    //! Limite un angle en degrés dans la zone dLow -> dHigh
+    //! Bounds an angle in degrees between dLow and dHigh
     static double limitAngleDegree(double dAngle, double dLow, double dHigh)
     {
         if (dAngle < dLow) dAngle = dLow;
@@ -96,7 +96,7 @@ public:
         return dAngle;
     }
 
-    //! Limite un angle en degrés dans la zone dLow -> dHigh
+    //! Bounds an angle in degrees between dLow and dHigh
     static double limitAngleDegreeClosest(double dAngle, double dLow, double dHigh)
     {
         if (dAngle < dLow || dAngle > dHigh)
@@ -143,43 +143,43 @@ public:
         return (angleRad / _2Pi) * 360.;
     }
 
-    //! Convertit un angle radians en millièmes sens horaire
+    //! Converts radians to mil
     static double toMil(const double angleRad)
     {
-        return (clipAngleRadian(angleRad) / _2Pi) * 6400;
+        return (clipAngleRadian(angleRad) / _2Pi) * 6400.0;
     }
 
-    //! Convertit un angle millièmes en radians sens horaire
+    //! Converts mil to radians
     static double miltoRad(const double angleMil)
     {
-        return (angleMil / 6400.) * _2Pi;
+        return (angleMil / 6400.0) * _2Pi;
     }
 
-    //! Convertit un angle degrés en millièmes
+    //! Converts degrees to mil
     static int degToMil(const double angleDeg)
     {
         return (int) ((clipAngleDegree(angleDeg) / 360.0) * 6400.0);
     }
 
-    //! Convertit un angle millièmes en degrés
+    //! Converts mil to degrees
     static double milToDeg(const int angleMil)
     {
         return ((double) angleMil / 6400.0) * 360.0;
     }
 
-    //! Convertit un angle radians en grades
+    //! Converts radians to grads
     static double radToGrad(double dRad)
     {
         return (dRad * 180.0) / Pi;
     }
 
-    //! Convertit un angle grades en radians
+    //! Converts grads to radians
     static double gradToRad(double dGrad)
     {
         return (dGrad / 180.0) * Pi;
     }
 
-    //! Retourne la plus petite valeur
+    //! Returns the smallest of value1 and value2
     static double _min(double value1, double value2)
     {
         if (value1 < value2)
@@ -188,7 +188,7 @@ public:
         return value2;
     }
 
-    //! Retourne la plus grande valeur
+    //! Returns the greatest of value1 and value2
     static double _max(double value1, double value2)
     {
         if (value1 > value2)
@@ -197,6 +197,7 @@ public:
         return value2;
     }
 
+    //! Returns true if dValue1 is almost equal to dValue2 (using an epsilon of 0.0001)
     static bool isEqual(double dValue1, double dValue2)
     {
         return fabs(dValue1 - dValue2) < 0.0001;

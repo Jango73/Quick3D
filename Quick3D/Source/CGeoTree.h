@@ -299,7 +299,7 @@ protected:
         if (m_pRoot == nullptr)
         {
             double startLat = 0.0;
-            double startLon = 180.0;
+            double startLon = 0.0;
 
             CGeoloc gGeoloc(startLat, startLon, 0.0);
             CGeoloc gSize(CGeoloc(180.0, 360.0, 0.0));

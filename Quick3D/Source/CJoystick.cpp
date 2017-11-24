@@ -37,5 +37,10 @@ void CJoystick::update(double dDeltaTime)
 		sf::Joystick::Axis theAxis = (sf::Joystick::Axis) iAxisIndex;
 
 		m_dAxisStates[iAxisIndex] = (sf::Joystick::GetAxisPosition(m_iJoystickIndex, theAxis) / 100.0f);
+
+        if (fabs(m_dAxisStates[iAxisIndex]) < 0.1)
+        {
+            m_dAxisStates[iAxisIndex] = 0.0;
+        }
 	}
 }

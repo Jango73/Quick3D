@@ -159,8 +159,8 @@ void C3DScene::init(QVector<QSP<CComponent> > vComponents)
 
     m_iSunColor.clear();
     m_iSunColor.addValue( 0.00, CVector4(0.0, 0.0, 0.0, 1.0));
-    m_iSunColor.addValue( 0.50, CVector4(1.1, 0.7, 0.2, 1.0));
-    m_iSunColor.addValue( 0.60, CVector4(1.1, 0.7, 0.2, 1.0));
+    m_iSunColor.addValue( 0.50, CVector4(1.1, 0.5, 0.4, 1.0));
+    m_iSunColor.addValue( 0.60, CVector4(1.1, 0.5, 0.4, 1.0));
     m_iSunColor.addValue( 0.75, CVector4(1.4, 1.4, 1.2, 1.0));
     m_iSunColor.addValue( 1.00, CVector4(1.4, 1.4, 1.2, 1.0));
 

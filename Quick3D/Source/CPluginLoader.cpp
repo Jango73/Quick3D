@@ -28,7 +28,7 @@ void CPluginLoader::loadPlugins()
 {
     QStringList slNameFilter;
 
-    slNameFilter.append(QString("*.dll"));
+    slNameFilter.append(QString(LIBRARY_FILTER));
 
     QDir dDirectory(m_sPluginPath);
     QStringList lFiles = dDirectory.entryList(slNameFilter);

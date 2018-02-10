@@ -9,6 +9,15 @@
 #include "CPluginInterface.h"
 
 //-------------------------------------------------------------------------------------------------
+// OS defines
+
+#ifdef WIN32
+    #define LIBRARY_FILTER  "*.dll"
+#else
+    #define LIBRARY_FILTER  "*.so"
+#endif
+
+//-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CPluginLoader : public CSingleton<CPluginLoader>
 {

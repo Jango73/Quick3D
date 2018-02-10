@@ -30,7 +30,7 @@ public:
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Constructeur
+    //! Constructor
     CGLWidgetScene(bool bForDisplay = true);
 
     //! Destructor
@@ -40,7 +40,7 @@ public:
     // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Rendu
+    //! Render
     virtual void paintGL();
 
     //!
@@ -60,6 +60,16 @@ public:
 
     //!
     virtual void makeCurrentRenderingContext();
+
+    //-------------------------------------------------------------------------------------------------
+    // Control methods
+    //-------------------------------------------------------------------------------------------------
+
+    //! Try to add a shader program composed of vertex, geometry and fragment shading code
+    bool tryAddShaderProgram_VGF(const QString& sName, const QString& sVertexPath, const QString& sGeometryPath, const QString& sFragmentPath);
+
+    //! Try to add a shader program composed of vertex and fragment shading code
+    bool tryAddShaderProgram_VF(const QString& sName, const QString& sVertexPath, const QString& sFragmentPath);
 
     //-------------------------------------------------------------------------------------------------
     // Properties

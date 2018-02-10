@@ -2,7 +2,7 @@
 #pragma once
 
 // Std
-#ifdef linux
+#ifndef WIN32
 #include <stdio.h>
 #endif
 

@@ -135,6 +135,7 @@ void CGLWidgetScene::init(QVector<QSP<CComponent> > vComponents)
 
 void CGLWidgetScene::initShaders()
 {
+    bool bResult = false;
     LOG_METHOD_DEBUG("");
 
     m_vShaders->clear();
@@ -143,62 +144,57 @@ void CGLWidgetScene::initShaders()
     {
         makeCurrentRenderingContext();
 
-        QGLShaderProgram* pProgram;
-
         setlocale(LC_NUMERIC, "C");
 
         //-----------------------------------------------
         // Standard mesh
 
-        pProgram = new QGLShaderProgram();
+        bResult = tryAddShaderProgram_VGF(SP_Standard_Mesh,
+                                ":/Resources/Shaders/GLSL4/VS_Standard.c",
+                                ":/Resources/Shaders/GLSL4/GS_Standard_Triangle.c",
+                                ":/Resources/Shaders/GLSL4/FS_Standard.c"
+                                );
 
-        pProgram->addShaderFromSourceCode(QGLShader::Vertex, ressourcesManager()->getShaderByFilePathName(":/Resources/Shaders/VS_Standard.c"));
-        pProgram->addShaderFromSourceCode(QGLShader::Geometry, ressourcesManager()->getShaderByFilePathName(":/Resources/Shaders/GS_Standard_Triangle.c"));
-        pProgram->addShaderFromSourceCode(QGLShader::Fragment, ressourcesManager()->getShaderByFilePathName(":/Resources/Shaders/FS_Standard.c"));
-
-        if (pProgram->link())
+        if (bResult == false)
         {
-            m_vShaders->addShader(SP_Standard_Mesh, pProgram);
-        }
-        else
-        {
-            delete pProgram;
+            tryAddShaderProgram_VF(SP_Standard_Mesh,
+                                    ":/Resources/Shaders/GLSL1/VS_Standard.c",
+                                    ":/Resources/Shaders/GLSL1/FS_Standard.c"
+                                    );
         }
 
         //-----------------------------------------------
         // Standard billboard
 
-        pProgram = new QGLShaderProgram();
+        bResult = tryAddShaderProgram_VGF(SP_Standard_Billboard,
+                                ":/Resources/Shaders/GLSL4/VS_Standard.c",
+                                ":/Resources/Shaders/GLSL4/GS_Standard_Billboard.c",
+                                ":/Resources/Shaders/GLSL4/FS_Standard.c"
+                                );
 
-        pProgram->addShaderFromSourceCode(QGLShader::Vertex, ressourcesManager()->getShaderByFilePathName(":/Resources/Shaders/VS_Standard.c"));
-        pProgram->addShaderFromSourceCode(QGLShader::Geometry, ressourcesManager()->getShaderByFilePathName(":/Resources/Shaders/GS_Standard_Billboard.c"));
-        pProgram->addShaderFromSourceCode(QGLShader::Fragment, ressourcesManager()->getShaderByFilePathName(":/Resources/Shaders/FS_Standard.c"));
-
-        if (pProgram->link())
+        if (bResult == false)
         {
-            m_vShaders->addShader(SP_Standard_Billboard, pProgram);
-        }
-        else
-        {
-            delete pProgram;
+            tryAddShaderProgram_VF(SP_Standard_Billboard,
+                                    ":/Resources/Shaders/GLSL1/VS_Standard.c",
+                                    ":/Resources/Shaders/GLSL1/FS_Standard.c"
+                                    );
         }
 
         //-----------------------------------------------
         // Standard lines
 
-        pProgram = new QGLShaderProgram();
+        bResult = tryAddShaderProgram_VGF(SP_Special_Lines,
+                                ":/Resources/Shaders/GLSL4/VS_Standard.c",
+                                ":/Resources/Shaders/GLSL4/GS_Standard_Line.c",
+                                ":/Resources/Shaders/GLSL4/FS_Special_Line.c"
+                                );
 
-        pProgram->addShaderFromSourceCode(QGLShader::Vertex, ressourcesManager()->getShaderByFilePathName(":/Resources/Shaders/VS_Standard.c"));
-        pProgram->addShaderFromSourceCode(QGLShader::Geometry, ressourcesManager()->getShaderByFilePathName(":/Resources/Shaders/GS_Standard_Line.c"));
-        pProgram->addShaderFromSourceCode(QGLShader::Fragment, ressourcesManager()->getShaderByFilePathName(":/Resources/Shaders/FS_Special_Line.c"));
-
-        if (pProgram->link())
+        if (bResult == false)
         {
-            m_vShaders->addShader(SP_Special_Lines, pProgram);
-        }
-        else
-        {
-            delete pProgram;
+            tryAddShaderProgram_VF(SP_Special_Lines,
+                                    ":/Resources/Shaders/GLSL1/VS_Standard.c",
+                                    ":/Resources/Shaders/GLSL1/FS_Special_Line.c"
+                                    );
         }
 
         //-----------------------------------------------
@@ -436,4 +432,43 @@ void CGLWidgetScene::computeLightsOcclusion(CRenderContext* pContext)
 void CGLWidgetScene::makeCurrentRenderingContext()
 {
     makeCurrent();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool CGLWidgetScene::tryAddShaderProgram_VF(const QString& sName, const QString& sVertexPath, const QString& sFragmentPath)
+{
+    QGLShaderProgram* pProgram = new QGLShaderProgram();
+
+    pProgram->addShaderFromSourceCode(QGLShader::Vertex, ressourcesManager()->getShaderByFilePathName(sVertexPath));
+    pProgram->addShaderFromSourceCode(QGLShader::Fragment, ressourcesManager()->getShaderByFilePathName(sFragmentPath));
+
+    if (pProgram->link())
+    {
+        m_vShaders->addShader(sName, pProgram);
+        return true;
+    }
+
+    delete pProgram;
+    return false;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool CGLWidgetScene::tryAddShaderProgram_VGF(const QString& sName, const QString& sVertexPath, const QString& sGeometryPath, const QString& sFragmentPath)
+{
+    QGLShaderProgram* pProgram = new QGLShaderProgram();
+
+    pProgram->addShaderFromSourceCode(QGLShader::Vertex, ressourcesManager()->getShaderByFilePathName(sVertexPath));
+    pProgram->addShaderFromSourceCode(QGLShader::Geometry, ressourcesManager()->getShaderByFilePathName(sGeometryPath));
+    pProgram->addShaderFromSourceCode(QGLShader::Fragment, ressourcesManager()->getShaderByFilePathName(sFragmentPath));
+
+    if (pProgram->link())
+    {
+        m_vShaders->addShader(sName, pProgram);
+        return true;
+    }
+
+    delete pProgram;
+    return false;
 }

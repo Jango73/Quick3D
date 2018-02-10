@@ -1,10 +1,14 @@
 <RCC>
     <qresource prefix="/">
-        <file>Resources/Shaders/VS_Standard.c</file>
-        <file>Resources/Shaders/GS_Standard_Triangle.c</file>
-        <file>Resources/Shaders/GS_Standard_Billboard.c</file>
-        <file>Resources/Shaders/GS_Standard_Line.c</file>
-        <file>Resources/Shaders/FS_Standard.c</file>
-        <file>Resources/Shaders/FS_Special_Line.c</file>
+        <file>Resources/Shaders/GLSL1/VS_Standard.c</file>
+        <file>Resources/Shaders/GLSL1/FS_Standard.c</file>
+        <file>Resources/Shaders/GLSL1/FS_Special_Line.c</file>
+
+        <file>Resources/Shaders/GLSL4/VS_Standard.c</file>
+        <file>Resources/Shaders/GLSL4/GS_Standard_Triangle.c</file>
+        <file>Resources/Shaders/GLSL4/GS_Standard_Billboard.c</file>
+        <file>Resources/Shaders/GLSL4/GS_Standard_Line.c</file>
+        <file>Resources/Shaders/GLSL4/FS_Standard.c</file>
+        <file>Resources/Shaders/GLSL4/FS_Special_Line.c</file>
     </qresource>
 </RCC>

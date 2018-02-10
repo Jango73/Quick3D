@@ -46,16 +46,6 @@ CONFIG(debug, debug|release) {
     LIBS += -L$$PWD/../qt-plus/bin -lqt-plus
 }
 
-# Copy qt-plus to bin
-copyfile = $$PWD/../qt-plus/bin/*.dll
-copydest = $$PWD/bin
-QMAKE_PRE_LINK += $$QMAKE_COPY /y $$quote($$shell_path($$copyfile)) $$quote($$shell_path($$copydest)) $$escape_expand(\\n\\t)
-
-# Copy Quick3D to bin
-copyfile = $$PWD/../Quick3D/bin/*.dll
-copydest = $$PWD/bin
-QMAKE_PRE_LINK += $$QMAKE_COPY /y $$quote($$shell_path($$copyfile)) $$quote($$shell_path($$copydest)) $$escape_expand(\\n\\t)
-
 # Code
 SOURCES += \
     Quick3DTest.cpp \
@@ -72,3 +62,25 @@ RESOURCES += \
 FORMS += \
     ExportDialog.ui \
     Quick3DTest.ui
+
+# Copy qt-plus to bin
+win32 {
+    copyfile = $$PWD/../qt-plus/bin/*.dll
+    copydest = $$PWD/bin
+} else {
+    copyfile = $$PWD/../qt-plus/bin/*.so
+    copydest = $$PWD/bin
+}
+
+QMAKE_PRE_LINK += $$QMAKE_COPY $$quote($$shell_path($$copyfile)) $$quote($$shell_path($$copydest)) $$escape_expand(\\n\\t)
+
+# Copy Quick3D to bin
+win32 {
+    copyfile = $$PWD/../Quick3D/bin/*.dll
+    copydest = $$PWD/bin
+} else {
+    copyfile = $$PWD/../Quick3D/bin/*.so
+    copydest = $$PWD/bin
+}
+
+QMAKE_PRE_LINK += $$QMAKE_COPY $$quote($$shell_path($$copyfile)) $$quote($$shell_path($$copydest)) $$escape_expand(\\n\\t)

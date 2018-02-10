@@ -84,7 +84,10 @@ CComponent::CComponent(C3DScene* pScene)
     , m_dStatus(1.0)
 {
     Q_UNUSED(pScene);
+
+#ifdef WIN32
     LOG_METHOD_DEBUG(QString::number((quint32) this, 16));
+#endif
 
     m_iNumComponents++;
 }
@@ -96,7 +99,9 @@ CComponent::CComponent(C3DScene* pScene)
 */
 CComponent::~CComponent()
 {
+#ifdef WIN32
     LOG_METHOD_DEBUG(QString::number((quint32) this, 16));
+#endif
 
     m_iNumComponents--;
 

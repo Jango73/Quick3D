@@ -25,6 +25,7 @@ CController::CController(C3DScene* pScene)
     , m_dMoveSpeed(0.0)
     , m_dForceFactor(1.0)
 {
+#ifdef WIN32
     sf::Joystick::Update();
 
     for (int iJoystickIndex = 0; iJoystickIndex < sf::Joystick::Count; iJoystickIndex++)
@@ -35,6 +36,7 @@ CController::CController(C3DScene* pScene)
             break;
         }
     }
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -106,11 +108,13 @@ void CController::update(double dDeltaTime)
 {
     CComponent::update(dDeltaTime);
 
+#ifdef WIN32
     if (m_pJoystick != nullptr)
     {
         sf::Joystick::Update();
         m_pJoystick->update(dDeltaTime);
     }
+#endif
 
     // For debug
     m_pScene->addSegment(m_rLastRay.vOrigin, m_rLastRay.vOrigin + m_rLastRay.vNormal * 2.0);

@@ -9,8 +9,11 @@
 
 // Application
 #include "Angles.h"
-#include "CZip.h"
 #include "CBILData.h"
+
+#ifdef WIN32
+#include "CZip.h"
+#endif
 
 using namespace Math;
 
@@ -278,6 +281,7 @@ QStringList CBILData::readHeader()
 {
     LOG_METHOD_DEBUG(m_sFileName);
 
+#ifdef WIN32
     QStringList lReturnValue;
 
     CZip zFile(m_sFileName);
@@ -308,6 +312,9 @@ QStringList CBILData::readHeader()
     }
 
     return lReturnValue;
+#else
+    return QStringList();
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -316,6 +323,7 @@ void CBILData::readData()
 {
     LOG_METHOD_DEBUG(m_sFileName);
 
+#ifdef WIN32
     m_vData = new qint16[m_iNumCellsWidth * m_iNumCellsHeight];
 
     if (m_sBILFileName.isEmpty() == false)
@@ -338,6 +346,7 @@ void CBILData::readData()
             }
         }
     }
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------

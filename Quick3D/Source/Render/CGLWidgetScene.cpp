@@ -440,8 +440,11 @@ bool CGLWidgetScene::tryAddShaderProgram_VF(const QString& sName, const QString&
 {
     QGLShaderProgram* pProgram = new QGLShaderProgram();
 
-    pProgram->addShaderFromSourceCode(QGLShader::Vertex, ressourcesManager()->getShaderByFilePathName(sVertexPath));
-    pProgram->addShaderFromSourceCode(QGLShader::Fragment, ressourcesManager()->getShaderByFilePathName(sFragmentPath));
+    if (pProgram->addShaderFromSourceCode(QGLShader::Vertex, ressourcesManager()->getShaderByFilePathName(sVertexPath)) == false)
+        return false;
+
+    if (pProgram->addShaderFromSourceCode(QGLShader::Fragment, ressourcesManager()->getShaderByFilePathName(sFragmentPath)) == false)
+        return false;
 
     if (pProgram->link())
     {
@@ -459,9 +462,14 @@ bool CGLWidgetScene::tryAddShaderProgram_VGF(const QString& sName, const QString
 {
     QGLShaderProgram* pProgram = new QGLShaderProgram();
 
-    pProgram->addShaderFromSourceCode(QGLShader::Vertex, ressourcesManager()->getShaderByFilePathName(sVertexPath));
-    pProgram->addShaderFromSourceCode(QGLShader::Geometry, ressourcesManager()->getShaderByFilePathName(sGeometryPath));
-    pProgram->addShaderFromSourceCode(QGLShader::Fragment, ressourcesManager()->getShaderByFilePathName(sFragmentPath));
+    if (pProgram->addShaderFromSourceCode(QGLShader::Vertex, ressourcesManager()->getShaderByFilePathName(sVertexPath)) == false)
+        return false;
+
+    if (pProgram->addShaderFromSourceCode(QGLShader::Geometry, ressourcesManager()->getShaderByFilePathName(sGeometryPath)) == false)
+        return false;
+
+    if (pProgram->addShaderFromSourceCode(QGLShader::Fragment, ressourcesManager()->getShaderByFilePathName(sFragmentPath)) == false)
+        return false;
 
     if (pProgram->link())
     {

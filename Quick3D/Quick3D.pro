@@ -25,6 +25,7 @@ INCLUDEPATH += $$PWD/Source/Mesh
 INCLUDEPATH += $$PWD/Source/Render
 INCLUDEPATH += $$PWD/Source/Terrain
 INCLUDEPATH += $$PWD/Source/Utils
+INCLUDEPATH += $$PWD/Source/Zip
 
 LIBS += -lopengl32 -luser32 -lgdi32 -lwinmm
 DESTDIR = $$PWD/bin

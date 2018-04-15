@@ -353,7 +353,7 @@ CComponent* CMesh::createMultiTextureSphere(C3DScene* pScene, int iNumSegments, 
 */
 void CMesh::dump(QTextStream& stream, int iIdent)
 {
-    dumpIdent(stream, iIdent, QString("[CMesh]"));
+    dumpIndented(stream, iIdent, QString("[CMesh]"));
 
     if (m_pGeometry != nullptr)
     {

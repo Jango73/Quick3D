@@ -620,14 +620,14 @@ void CTerrain::buildVerticesToFaceMap()
 
 void CTerrain::dump(QTextStream& stream, int iIdent)
 {
-    dumpIdent(stream, iIdent, QString("[CTerrain]"));
-    dumpIdent(stream, iIdent, QString("Original geoloc : %1").arg(m_gOriginalGeoloc.toString()));
-    dumpIdent(stream, iIdent, QString("Original size : %1").arg(m_gOriginalSize.toString()));
-    dumpIdent(stream, iIdent, QString("Size : %1").arg(m_gSize.toString()));
-    dumpIdent(stream, iIdent, QString("Num. points : %1").arg(m_iNumPoints));
-    dumpIdent(stream, iIdent, QString("Level : %1").arg(m_iLevel));
-    dumpIdent(stream, iIdent, QString("Max level : %1").arg(m_iMaxLevel));
-    dumpIdent(stream, iIdent, QString("Mesh :"));
+    dumpIndented(stream, iIdent, QString("[CTerrain]"));
+    dumpIndented(stream, iIdent, QString("Original geoloc : %1").arg(m_gOriginalGeoloc.toString()));
+    dumpIndented(stream, iIdent, QString("Original size : %1").arg(m_gOriginalSize.toString()));
+    dumpIndented(stream, iIdent, QString("Size : %1").arg(m_gSize.toString()));
+    dumpIndented(stream, iIdent, QString("Num. points : %1").arg(m_iNumPoints));
+    dumpIndented(stream, iIdent, QString("Level : %1").arg(m_iLevel));
+    dumpIndented(stream, iIdent, QString("Max level : %1").arg(m_iMaxLevel));
+    dumpIndented(stream, iIdent, QString("Mesh :"));
 
     dumpOpenBlock(stream, iIdent); iIdent++;
     if (m_pMesh != nullptr) m_pMesh->dump(stream, iIdent);

@@ -1579,21 +1579,21 @@ void CMeshGeometry::paint(CRenderContext* pContext, CComponent* pContainer)
 
 void CMeshGeometry::dump(QTextStream& stream, int iIdent)
 {
-    dumpIdent(stream, iIdent, QString("[CMeshGeometry]"));
-    dumpIdent(stream, iIdent, QString("Num vertices : %1").arg(m_vVertices.count()));
-    dumpIdent(stream, iIdent, QString("Num faces : %1").arg(m_vFaces.count()));
-    dumpIdent(stream, iIdent, QString("Max distance : %1").arg(m_dMaxDistance));
-    dumpIdent(stream, iIdent, QString("GL type : %1").arg(m_iGLType));
-    dumpIdent(stream, iIdent, QString("Use partitioning : %1").arg(m_bUseSpacePartitionning));
-    dumpIdent(stream, iIdent, QString("Bounds min : %1").arg(m_bBounds.minimum().toString()));
-    dumpIdent(stream, iIdent, QString("Bounds max : %1").arg(m_bBounds.maximum().toString()));
+    dumpIndented(stream, iIdent, QString("[CMeshGeometry]"));
+    dumpIndented(stream, iIdent, QString("Num vertices : %1").arg(m_vVertices.count()));
+    dumpIndented(stream, iIdent, QString("Num faces : %1").arg(m_vFaces.count()));
+    dumpIndented(stream, iIdent, QString("Max distance : %1").arg(m_dMaxDistance));
+    dumpIndented(stream, iIdent, QString("GL type : %1").arg(m_iGLType));
+    dumpIndented(stream, iIdent, QString("Use partitioning : %1").arg(m_bUseSpacePartitionning));
+    dumpIndented(stream, iIdent, QString("Bounds min : %1").arg(m_bBounds.minimum().toString()));
+    dumpIndented(stream, iIdent, QString("Bounds max : %1").arg(m_bBounds.maximum().toString()));
 
     /*
-    dumpIdent(stream, iIdent, QString("Vertices :"));
+    dumpIndented(stream, iIdent, QString("Vertices :"));
     dumpOpenBlock(stream, iIdent); iIdent++;
     for (int iIndex = 0; iIndex < m_vVertices.count(); iIndex++)
     {
-        dumpIdent(stream, iIdent, QString("Vertex %1 : %2").arg(iIndex).arg(m_vVertices[iIndex].position().toString()));
+        dumpIndented(stream, iIdent, QString("Vertex %1 : %2").arg(iIndex).arg(m_vVertices[iIndex].position().toString()));
     }
     iIdent--; dumpCloseBlock(stream, iIdent);
     */

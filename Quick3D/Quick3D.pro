@@ -7,12 +7,25 @@ TEMPLATE = lib
 DEFINES += QUICK3D_LIB
 DEFINES += SFML_SYSTEM_EXPORTS
 DEFINES += SFML_WINDOW_EXPORTS
+
 INCLUDEPATH += $$PWD/../qt-plus/source/cpp
 INCLUDEPATH += $$PWD/../qt-plus/source/cpp/Web
 INCLUDEPATH += $$PWD/../qt-plus/source/cpp/GeoTools
 INCLUDEPATH += $$PWD/../COTS/SFML-1.6/include
 INCLUDEPATH += $$PWD/../COTS/unzip11
 INCLUDEPATH += $$PWD/../COTS/SFML-1.6/src
+
+INCLUDEPATH += $$PWD/Source
+INCLUDEPATH += $$PWD/Source/Animation
+INCLUDEPATH += $$PWD/Source/Base
+INCLUDEPATH += $$PWD/Source/Components
+INCLUDEPATH += $$PWD/Source/Input
+INCLUDEPATH += $$PWD/Source/Math
+INCLUDEPATH += $$PWD/Source/Mesh
+INCLUDEPATH += $$PWD/Source/Render
+INCLUDEPATH += $$PWD/Source/Terrain
+INCLUDEPATH += $$PWD/Source/Utils
+
 LIBS += -lopengl32 -luser32 -lgdi32 -lwinmm
 DESTDIR = $$PWD/bin
 MOC_DIR = $$PWD/moc

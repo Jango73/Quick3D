@@ -77,7 +77,7 @@ RayTracingResult CArmature::intersect(Math::CRay3 ray)
 
 void CArmature::dump(QTextStream& stream, int iIdent)
 {
-    dumpIdent(stream, iIdent, QString("[CArmature]"));
+    dumpIndented(stream, iIdent, QString("[CArmature]"));
 
     CPhysicalComponent::dump(stream, iIdent);
 }

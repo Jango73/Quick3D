@@ -90,8 +90,8 @@ void CBoundedMeshInstances::add(CMeshInstance* pMeshInstance)
 
 void CBoundedMeshInstances::dump(QTextStream& stream, int iIdent)
 {
-    dumpIdent(stream, iIdent, QString("[CBoundedMeshInstances]"));
-    dumpIdent(stream, iIdent, QString("Meshes :"));
+    dumpIndented(stream, iIdent, QString("[CBoundedMeshInstances]"));
+    dumpIndented(stream, iIdent, QString("Meshes :"));
 
     dumpOpenBlock(stream, iIdent); iIdent++;
     foreach (CMeshInstance* pMesh, m_vMeshes)

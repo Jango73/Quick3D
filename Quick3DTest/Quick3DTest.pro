@@ -12,9 +12,19 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TEMPLATE = app
 
-INCLUDEPATH += $$PWD/../Quick3D/Source
 INCLUDEPATH += $$PWD/../qt-plus/source/cpp
 INCLUDEPATH += $$PWD/../qt-plus/source/cpp/Web
+INCLUDEPATH += $$PWD/../Quick3D/Source
+INCLUDEPATH += $$PWD/../Quick3D/Source/Animation
+INCLUDEPATH += $$PWD/../Quick3D/Source/Base
+INCLUDEPATH += $$PWD/../Quick3D/Source/Components
+INCLUDEPATH += $$PWD/../Quick3D/Source/Input
+INCLUDEPATH += $$PWD/../Quick3D/Source/Math
+INCLUDEPATH += $$PWD/../Quick3D/Source/Mesh
+INCLUDEPATH += $$PWD/../Quick3D/Source/Render
+INCLUDEPATH += $$PWD/../Quick3D/Source/Terrain
+INCLUDEPATH += $$PWD/../Quick3D/Source/Utils
+
 DEPENDPATH += $$PWD/../Quick3D
 
 DESTDIR = $$PWD/bin

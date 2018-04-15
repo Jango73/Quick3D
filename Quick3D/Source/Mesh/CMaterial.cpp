@@ -430,21 +430,21 @@ CGeoloc CMaterial::transformGeoloc(const CGeoloc& gPosition)
 */
 void CMaterial::dump(QTextStream& stream, int iIdent)
 {
-    dumpIdent(stream, iIdent, QString("[CMaterial]"));
-    dumpIdent(stream, iIdent, QString("Name : %1").arg(m_sName));
-    dumpIdent(stream, iIdent, QString("Ambient color : %1").arg(m_cAmbient.toString()));
-    dumpIdent(stream, iIdent, QString("Diffuse color : %1").arg(m_cDiffuse.toString()));
-    dumpIdent(stream, iIdent, QString("Specular color : %1").arg(m_cSpecular.toString()));
-    dumpIdent(stream, iIdent, QString("Subdermal color : %1").arg(m_cSubdermal.toString()));
-    dumpIdent(stream, iIdent, QString("Self illumination : %1").arg(m_dSelfIllumination));
-    dumpIdent(stream, iIdent, QString("Shininess : %1").arg(m_dShininess));
-    dumpIdent(stream, iIdent, QString("Metalness : %1").arg(m_dMetalness));
-    dumpIdent(stream, iIdent, QString("SSS Factor : %1").arg(m_dSSSFactor));
-    dumpIdent(stream, iIdent, QString("SSS Radius : %1").arg(m_dSSSRadius));
-    dumpIdent(stream, iIdent, QString("IR Factor : %1").arg(m_dIRFactor));
-    dumpIdent(stream, iIdent, QString("Has alpha : %1").arg(m_bHasAlpha));
-    dumpIdent(stream, iIdent, QString("Use sky : %1").arg(m_bUseSky));
-    dumpIdent(stream, iIdent, QString("Use waves : %1").arg(m_bUseWaves));
-    dumpIdent(stream, iIdent, QString("Bill board : %1").arg(m_bBillBoard));
-    dumpIdent(stream, iIdent, QString("Lines : %1").arg(m_bLines));
+    dumpIndented(stream, iIdent, QString("[CMaterial]"));
+    dumpIndented(stream, iIdent, QString("Name : %1").arg(m_sName));
+    dumpIndented(stream, iIdent, QString("Ambient color : %1").arg(m_cAmbient.toString()));
+    dumpIndented(stream, iIdent, QString("Diffuse color : %1").arg(m_cDiffuse.toString()));
+    dumpIndented(stream, iIdent, QString("Specular color : %1").arg(m_cSpecular.toString()));
+    dumpIndented(stream, iIdent, QString("Subdermal color : %1").arg(m_cSubdermal.toString()));
+    dumpIndented(stream, iIdent, QString("Self illumination : %1").arg(m_dSelfIllumination));
+    dumpIndented(stream, iIdent, QString("Shininess : %1").arg(m_dShininess));
+    dumpIndented(stream, iIdent, QString("Metalness : %1").arg(m_dMetalness));
+    dumpIndented(stream, iIdent, QString("SSS Factor : %1").arg(m_dSSSFactor));
+    dumpIndented(stream, iIdent, QString("SSS Radius : %1").arg(m_dSSSRadius));
+    dumpIndented(stream, iIdent, QString("IR Factor : %1").arg(m_dIRFactor));
+    dumpIndented(stream, iIdent, QString("Has alpha : %1").arg(m_bHasAlpha));
+    dumpIndented(stream, iIdent, QString("Use sky : %1").arg(m_bUseSky));
+    dumpIndented(stream, iIdent, QString("Use waves : %1").arg(m_bUseWaves));
+    dumpIndented(stream, iIdent, QString("Bill board : %1").arg(m_bBillBoard));
+    dumpIndented(stream, iIdent, QString("Lines : %1").arg(m_bLines));
 }

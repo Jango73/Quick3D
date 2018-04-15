@@ -743,26 +743,26 @@ QString C3DScene::debugInfo()
 */
 void C3DScene::dump(QTextStream& stream, int iIdent)
 {
-    dumpIdent(stream, iIdent, QString("[C3DScene]"));
-    dumpIdent(stream, iIdent, QString("CComponent::getNumComponents() : %1").arg(CComponent::getNumComponents()));
+    dumpIndented(stream, iIdent, QString("[C3DScene]"));
+    dumpIndented(stream, iIdent, QString("CComponent::getNumComponents() : %1").arg(CComponent::getNumComponents()));
 
     foreach (QString sName, CComponent::componentCounter().keys())
     {
-        dumpIdent(stream, iIdent, QString("CComponent::componentCounter(%1) : %2")
+        dumpIndented(stream, iIdent, QString("CComponent::componentCounter(%1) : %2")
                   .arg(sName)
                   .arg(CComponent::componentCounter()[sName]));
     }
 
-    dumpIdent(stream, iIdent, QString("CMemoryMonitor::allocatedBytes() : %1").arg(CMemoryMonitor::getInstance()->allocatedBytes()));
+    dumpIndented(stream, iIdent, QString("CMemoryMonitor::allocatedBytes() : %1").arg(CMemoryMonitor::getInstance()->allocatedBytes()));
 
     foreach (QString sName, CMemoryMonitor::getInstance()->allocationMap().keys())
     {
-        dumpIdent(stream, iIdent, QString("Allocated bytes for %1 : %2")
+        dumpIndented(stream, iIdent, QString("Allocated bytes for %1 : %2")
                   .arg(sName)
                   .arg(CMemoryMonitor::getInstance()->allocationMap()[sName]));
     }
 
-    dumpIdent(stream, iIdent, QString("Components :"));
+    dumpIndented(stream, iIdent, QString("Components :"));
 
     foreach (QSP<CComponent> pComponent, m_vComponents)
     {

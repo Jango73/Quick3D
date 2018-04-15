@@ -1141,19 +1141,19 @@ void CComponent::copyTransform(const CComponent* pTarget)
 */
 void CComponent::dump(QTextStream& stream, int iIdent)
 {
-    dumpIdent(stream, iIdent, QString("[CComponent]"));
-    dumpIdent(stream, iIdent, QString("Name : %1").arg(m_sName));
-    dumpIdent(stream, iIdent, QString("Parent name : %1").arg(m_sParentName));
-    dumpIdent(stream, iIdent, QString("Geoloc : %1").arg(m_gGeoloc.toString()));
-    dumpIdent(stream, iIdent, QString("ECEF rotation : %1").arg(m_vECEFRotation.toString()));
-    dumpIdent(stream, iIdent, QString("Position : %1").arg(m_vPosition.toString()));
-    dumpIdent(stream, iIdent, QString("Rotation : %1").arg(m_vRotation.toString()));
-    dumpIdent(stream, iIdent, QString("Scale : %1").arg(m_vScale.toString()));
-    dumpIdent(stream, iIdent, QString("Animated position : %1").arg(m_vAnimPosition.toString()));
-    dumpIdent(stream, iIdent, QString("Animated rotation : %1").arg(m_vAnimRotation.toString()));
-    dumpIdent(stream, iIdent, QString("Animated scale : %1").arg(m_vAnimScale.toString()));
-    dumpIdent(stream, iIdent, QString("World transform : %1").arg(m_mWorldTransform.toString()));
-    dumpIdent(stream, iIdent, QString("Children :"));
+    dumpIndented(stream, iIdent, QString("[CComponent]"));
+    dumpIndented(stream, iIdent, QString("Name : %1").arg(m_sName));
+    dumpIndented(stream, iIdent, QString("Parent name : %1").arg(m_sParentName));
+    dumpIndented(stream, iIdent, QString("Geoloc : %1").arg(m_gGeoloc.toString()));
+    dumpIndented(stream, iIdent, QString("ECEF rotation : %1").arg(m_vECEFRotation.toString()));
+    dumpIndented(stream, iIdent, QString("Position : %1").arg(m_vPosition.toString()));
+    dumpIndented(stream, iIdent, QString("Rotation : %1").arg(m_vRotation.toString()));
+    dumpIndented(stream, iIdent, QString("Scale : %1").arg(m_vScale.toString()));
+    dumpIndented(stream, iIdent, QString("Animated position : %1").arg(m_vAnimPosition.toString()));
+    dumpIndented(stream, iIdent, QString("Animated rotation : %1").arg(m_vAnimRotation.toString()));
+    dumpIndented(stream, iIdent, QString("Animated scale : %1").arg(m_vAnimScale.toString()));
+    dumpIndented(stream, iIdent, QString("World transform : %1").arg(m_mWorldTransform.toString()));
+    dumpIndented(stream, iIdent, QString("Children :"));
 
     dumpOpenBlock(stream, iIdent);
     foreach (QSP<CComponent> pChild, m_vChildren)

@@ -528,19 +528,19 @@ bool CWorldChunk::isReallyExpendable() const
 
 void CWorldChunk::dump(QTextStream& stream, int iIdent)
 {
-    dumpIdent(stream, iIdent, QString("[CWorldChunk]"));
-    dumpIdent(stream, iIdent, QString("Original geoloc : %1").arg(m_gOriginalGeoloc.toString()));
-    dumpIdent(stream, iIdent, QString("Original size : %1").arg(m_gOriginalSize.toString()));
-    dumpIdent(stream, iIdent, QString("Size : %1").arg(m_gSize.toString()));
-    dumpIdent(stream, iIdent, QString("Last used seconds : %1").arg(m_tLastUsed.secsTo(QDateTime::currentDateTime())));
-    dumpIdent(stream, iIdent, QString("Distance : %1").arg(m_dDistance));
-    dumpIdent(stream, iIdent, QString("Terrain :"));
+    dumpIndented(stream, iIdent, QString("[CWorldChunk]"));
+    dumpIndented(stream, iIdent, QString("Original geoloc : %1").arg(m_gOriginalGeoloc.toString()));
+    dumpIndented(stream, iIdent, QString("Original size : %1").arg(m_gOriginalSize.toString()));
+    dumpIndented(stream, iIdent, QString("Size : %1").arg(m_gSize.toString()));
+    dumpIndented(stream, iIdent, QString("Last used seconds : %1").arg(m_tLastUsed.secsTo(QDateTime::currentDateTime())));
+    dumpIndented(stream, iIdent, QString("Distance : %1").arg(m_dDistance));
+    dumpIndented(stream, iIdent, QString("Terrain :"));
 
     dumpOpenBlock(stream, iIdent); iIdent++;
     if (m_pTerrain != nullptr) m_pTerrain->dump(stream, iIdent);
     iIdent--; dumpCloseBlock(stream, iIdent);
 
-    dumpIdent(stream, iIdent, QString("Bounded meshes :"));
+    dumpIndented(stream, iIdent, QString("Bounded meshes :"));
 
     dumpOpenBlock(stream, iIdent); iIdent++;
     foreach (CBoundedMeshInstances* pBounded, m_vBoundedMeshes)

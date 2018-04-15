@@ -103,8 +103,8 @@ void CMeshInstance::paint(CRenderContext* pContext)
 
 void CMeshInstance::dump(QTextStream& stream, int iIdent)
 {
-    dumpIdent(stream, iIdent, QString("[CMeshInstance]"));
-    dumpIdent(stream, iIdent, QString("Meshes :"));
+    dumpIndented(stream, iIdent, QString("[CMeshInstance]"));
+    dumpIndented(stream, iIdent, QString("Meshes :"));
 
     dumpOpenBlock(stream, iIdent); iIdent++;
     foreach (QSP<CMesh> pMesh, m_vMeshes)

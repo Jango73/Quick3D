@@ -919,12 +919,12 @@ CRay3 CCamera::screenPointToWorldRay(CViewport* pViewport, CVector2 vPoint)
 
 void CCamera::dump(QTextStream& stream, int iIdent)
 {
-    dumpIdent(stream, iIdent, QString("[CCamera]"));
-    dumpIdent(stream, iIdent, QString("FOV : %1").arg(m_dFOV));
-    dumpIdent(stream, iIdent, QString("Focus : %1").arg(m_dFocus));
-    dumpIdent(stream, iIdent, QString("Gain : %1").arg(m_dGain));
-    dumpIdent(stream, iIdent, QString("Min distance : %1").arg(m_dMinDistance));
-    dumpIdent(stream, iIdent, QString("Max distance : %1").arg(m_dMaxDistance));
+    dumpIndented(stream, iIdent, QString("[CCamera]"));
+    dumpIndented(stream, iIdent, QString("FOV : %1").arg(m_dFOV));
+    dumpIndented(stream, iIdent, QString("Focus : %1").arg(m_dFocus));
+    dumpIndented(stream, iIdent, QString("Gain : %1").arg(m_dGain));
+    dumpIndented(stream, iIdent, QString("Min distance : %1").arg(m_dMinDistance));
+    dumpIndented(stream, iIdent, QString("Max distance : %1").arg(m_dMaxDistance));
 
     CPhysicalComponent::dump(stream, iIdent);
 }

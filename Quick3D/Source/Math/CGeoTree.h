@@ -76,12 +76,12 @@ public:
     //! Dumps contents of this object to \a stream using indent value in \a iIdent
     virtual void dump(QTextStream& stream, int iIdent) Q_DECL_OVERRIDE
     {
-        dumpIdent(stream, iIdent, QString("[CGeoTreeItem]"));
-        dumpIdent(stream, iIdent, QString("Level : %1").arg(m_iLevel));
-        dumpIdent(stream, iIdent, QString("Geoloc : %1").arg(m_gGeoloc.toString()));
-        dumpIdent(stream, iIdent, QString("Size : %1").arg(m_gSize.toString()));
-        dumpIdent(stream, iIdent, QString("Data count : %1").arg(m_vData.count()));
-        dumpIdent(stream, iIdent, QString("Children :"));
+        dumpIndented(stream, iIdent, QString("[CGeoTreeItem]"));
+        dumpIndented(stream, iIdent, QString("Level : %1").arg(m_iLevel));
+        dumpIndented(stream, iIdent, QString("Geoloc : %1").arg(m_gGeoloc.toString()));
+        dumpIndented(stream, iIdent, QString("Size : %1").arg(m_gSize.toString()));
+        dumpIndented(stream, iIdent, QString("Data count : %1").arg(m_vData.count()));
+        dumpIndented(stream, iIdent, QString("Children :"));
 
         dumpOpenBlock(stream, iIdent);
         for (auto pChild : m_vChildren)
@@ -239,9 +239,9 @@ public:
     //! Dumps contents of this object to \a stream using indentation value in \a iIdent
     virtual void dump(QTextStream& stream, int iIdent) Q_DECL_OVERRIDE
     {
-        dumpIdent(stream, iIdent, QString("[CGeoTree]"));
-        dumpIdent(stream, iIdent, QString("Levels : %1").arg(m_iLevels));
-        dumpIdent(stream, iIdent, QString("Root :"));
+        dumpIndented(stream, iIdent, QString("[CGeoTree]"));
+        dumpIndented(stream, iIdent, QString("Levels : %1").arg(m_iLevels));
+        dumpIndented(stream, iIdent, QString("Root :"));
 
         if (m_pRoot != nullptr)
         {

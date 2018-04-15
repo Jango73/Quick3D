@@ -643,14 +643,14 @@ void CPhysicalComponent::addField(CHeightField* value)
 */
 void CPhysicalComponent::dump(QTextStream& stream, int iIdent)
 {
-    dumpIdent(stream, iIdent, QString("[CPhysicalComponent]"));
-    dumpIdent(stream, iIdent, QString("Physics active : %1").arg(m_bPhysicsActive));
-    dumpIdent(stream, iIdent, QString("Stick to NOLL : %1").arg(m_dStickToNOLL));
-    dumpIdent(stream, iIdent, QString("Drag : %1").arg(m_dDrag_norm));
-    dumpIdent(stream, iIdent, QString("Angular drag : %1").arg(m_dAngularDrag_norm));
-    dumpIdent(stream, iIdent, QString("Mass : %1").arg(m_dMass_kg));
-    dumpIdent(stream, iIdent, QString("Velocity : %1").arg(m_vVelocity_ms.toString()));
-    dumpIdent(stream, iIdent, QString("Angular velocity : %1").arg(m_vAngularVelocity_rs.toString()));
+    dumpIndented(stream, iIdent, QString("[CPhysicalComponent]"));
+    dumpIndented(stream, iIdent, QString("Physics active : %1").arg(m_bPhysicsActive));
+    dumpIndented(stream, iIdent, QString("Stick to NOLL : %1").arg(m_dStickToNOLL));
+    dumpIndented(stream, iIdent, QString("Drag : %1").arg(m_dDrag_norm));
+    dumpIndented(stream, iIdent, QString("Angular drag : %1").arg(m_dAngularDrag_norm));
+    dumpIndented(stream, iIdent, QString("Mass : %1").arg(m_dMass_kg));
+    dumpIndented(stream, iIdent, QString("Velocity : %1").arg(m_vVelocity_ms.toString()));
+    dumpIndented(stream, iIdent, QString("Angular velocity : %1").arg(m_vAngularVelocity_rs.toString()));
 
     CComponent::dump(stream, iIdent);
 }

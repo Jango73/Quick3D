@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scene>
-    <!--
     <Camera1 Name="Man1.Head" />
     <Camera2 Name="VBCI.Pilot" />
     <Camera3 Name="Drone01.Pilot" />
     <ControlledComponent Name="Man1" />
-    -->
 
+    <!--
     <Camera1 Name="Drone01.Pilot" />
     <ControlledComponent Name="Drone01" />
+    -->
 
     <!--
     <Camera1 Name="Plascoa01Pilot"/>

@@ -663,14 +663,14 @@ vec3 flareDisc(vec3 light, float where)
     return center - ray * where;
 }
 
-float flareType1(float input)
+float flareType1(float value)
 {
-    return clamp(impulse(8.0, input), 0.0, 1.0);
+    return clamp(impulse(8.0, value), 0.0, 1.0);
 }
 
-float flareType2(float input)
+float flareType2(float value)
 {
-    return clamp(cubicPulse(0.5, 0.5, input), 0.0, 1.0);
+    return clamp(cubicPulse(0.5, 0.5, value), 0.0, 1.0);
 }
 
 vec4 lightFlares(vec3 lightPosition, vec3 pixelPosition, vec4 lightColor, float lightFlareIntensity)

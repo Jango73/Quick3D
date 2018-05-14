@@ -1,5 +1,9 @@
 
-QT += core gui network opengl xml positioning
+win32 {
+    QT += core gui network opengl xml positioning
+} else {
+    QT += core gui network opengl xml
+}
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -11,9 +15,12 @@ DEFINES += SFML_WINDOW_EXPORTS
 INCLUDEPATH += $$PWD/../qt-plus/source/cpp
 INCLUDEPATH += $$PWD/../qt-plus/source/cpp/Web
 INCLUDEPATH += $$PWD/../qt-plus/source/cpp/GeoTools
-INCLUDEPATH += $$PWD/../COTS/SFML-1.6/include
 INCLUDEPATH += $$PWD/../COTS/unzip11
-INCLUDEPATH += $$PWD/../COTS/SFML-1.6/src
+
+win32 {
+    INCLUDEPATH += $$PWD/../COTS/SFML-1.6/include
+    INCLUDEPATH += $$PWD/../COTS/SFML-1.6/src
+}
 
 INCLUDEPATH += $$PWD/Source
 INCLUDEPATH += $$PWD/Source/Animation
@@ -27,7 +34,10 @@ INCLUDEPATH += $$PWD/Source/Terrain
 INCLUDEPATH += $$PWD/Source/Utils
 INCLUDEPATH += $$PWD/Source/Zip
 
-LIBS += -lopengl32 -luser32 -lgdi32 -lwinmm
+win32 {
+    LIBS += -lopengl32 -luser32 -lgdi32 -lwinmm
+}
+
 DESTDIR = $$PWD/bin
 MOC_DIR = $$PWD/moc
 OBJECTS_DIR = $$PWD/obj

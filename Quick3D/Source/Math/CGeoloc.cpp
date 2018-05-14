@@ -1,6 +1,8 @@
 
 // Qt
+#ifdef WIN32
 #include <QGeoCoordinate>
+#endif
 
 // Foundations
 #include "geotrans.h"
@@ -209,10 +211,14 @@ CVector3 CGeoloc::toVector3(const CGeoloc& gReference) const
 */
 double CGeoloc::headingTo(const CGeoloc& other)
 {
+#ifdef WIN32
     QGeoCoordinate coord1(Latitude, Longitude, Altitude);
     QGeoCoordinate coord2(other.Latitude, other.Longitude, other.Altitude);
 
     return coord1.azimuthTo(coord2);
+#else
+    return 0.0;
+#endif
 }
 
 //---------------------------------------------------------------------------------------------
@@ -222,10 +228,14 @@ double CGeoloc::headingTo(const CGeoloc& other)
 */
 double CGeoloc::distanceTo(const CGeoloc& other)
 {
+#ifdef WIN32
     QGeoCoordinate coord1(Latitude, Longitude, Altitude);
     QGeoCoordinate coord2(other.Latitude, other.Longitude, other.Altitude);
 
     return coord1.distanceTo(coord2);
+#else
+    return 0.0;
+#endif
 }
 
 //---------------------------------------------------------------------------------------------

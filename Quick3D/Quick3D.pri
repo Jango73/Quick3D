@@ -3,6 +3,7 @@ HEADERS += \
     Source/Animation/*.h \
     Source/Base/*.h \
     Source/Components/*.h \
+    Source/Input/*.h \
     Source/Math/*.h \
     Source/Mesh/*.h \
     Source/Render/*.h \
@@ -13,6 +14,7 @@ SOURCES += \
     Source/Animation/*.cpp \
     Source/Base/*.cpp \
     Source/Components/*.cpp \
+    Source/Input/*.cpp \
     Source/Math/*.cpp \
     Source/Mesh/*.cpp \
     Source/Render/*.cpp \
@@ -24,7 +26,6 @@ RESOURCES += \
 
 win32 {
     HEADERS += \
-        Source/Input/*.h \
         Source/Zip/*.h \
         ../COTS/zlib/crc32.h \
         ../COTS/zlib/deflate.h \
@@ -60,7 +61,6 @@ win32 {
         ../COTS/SFML-1.6/src/SFML/System/Win32/ThreadLocalImpl.hpp
 
     SOURCES += \
-        Source/Input/*.cpp \
         Source/Zip/*.cpp \
         ../COTS/zlib/adler32.c \
         ../COTS/zlib/compress.c \

@@ -1,6 +1,8 @@
 
 // COTS
+#ifdef WIN32
 #include <SFML/Window/Joystick.hpp>
+#endif
 
 // Application
 #include "CJoystick.h"
@@ -25,7 +27,9 @@ CJoystick::~CJoystick()
 
 void CJoystick::update(double dDeltaTime)
 {
-	m_bConnected = sf::Joystick::IsConnected(m_iJoystickIndex);
+#ifdef WIN32
+
+    m_bConnected = sf::Joystick::IsConnected(m_iJoystickIndex);
 
 	for (int iButtonIndex = 0; iButtonIndex < m_iNumButtons; iButtonIndex++)
 	{
@@ -43,4 +47,6 @@ void CJoystick::update(double dDeltaTime)
             m_dAxisStates[iAxisIndex] = 0.0;
         }
 	}
+
+#endif
 }

@@ -1,6 +1,8 @@
 
 // COTS
+#ifdef WIN32
 #include <SFML/Window/Joystick.hpp>
+#endif
 
 // Application
 #include "CVector2.h"

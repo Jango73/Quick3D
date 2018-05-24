@@ -15,7 +15,7 @@
 /*-------------------------------------------------------------------------------------------------
     Axis conventions
 
-    The conventions used throughout the vector/matrix classes in this library are those of the painter.
+    The conventions used throughout the vector/matrix/geoloc classes in this library are those of the painter.
 
     X axis is positive right (width)
     Y axis is positive up (height)

@@ -50,13 +50,12 @@ public:
     //! Copy constructor
     CGeoloc (const CGeoloc& gTarget);
 
-    //! Constructeur par vecteur
-    //! Le vecteur représente une position géocentrique ECEF (Earth-centered Earth-Fixed)
+    //! Constructor using a vector
+    //! The vector is a ECEF geocentric position (Earth-centered Earth-Fixed)
     CGeoloc (const Math::CVector3& vPosition);
 
-    //! Constructeur par vecteur
-    //! gReference représente une géolocalisation de référence et vPosition une position xyz relative
-    //! Le repère de vPosition est l'axe NOLL (North-Oriented Local-level) au niveau de gReference
+    //! Constructor using a vector and a reference point
+    //! gReference is a geoloc and vPosition is an offset in the the reference tangent plane
     CGeoloc (const CGeoloc& gReference, const Math::CVector3& vPosition);
 
     //! Destructor
@@ -76,10 +75,13 @@ public:
     // Control methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Transforme la géolocalisation dans le repère NOLL de gReference
+    //! Transforms this geoloc to a vector offset in the tangent plane of gReference
+    //! Ex: this geoloc is the position of an object, gReference is the position of a camera
+    //! Result is a the position in 3D space of the object, relative to the camera's position
+    //! but not its rotation
     Math::CVector3 toVector3(const CGeoloc& gReference) const;
 
-    //! Transforme la géolocalisation en coordonnée géocentrique ECEF (Earth-centered Earth-Fixed)
+    //! Transforms this geoloc to a ECEF geocentric position
     Math::CVector3 toVector3() const;
 
     //! Returns true heading in degrees of this geoloc to \a other
@@ -104,7 +106,7 @@ public:
     //! Returns true if this geo loc is not 0.0
     bool valid() const { return !(Latitude == 0.0 && Longitude == 0.0); }
 
-    //! Transforme en chaine de caractères
+    //! Converts this object to a string
     virtual QString toString() const;
 
     //!
@@ -116,28 +118,28 @@ public:
 
 protected:
 
-    //! Transforme la géolocalisation en coordonnée géocentrique ECEF (Earth-centered Earth-Fixed) via un modèle sphérique
+    //! Transforms this geoloc to a ECEF geocentric position, using a perfect sphere model
     Math::CVector3 toVector3_Sphere() const;
 
-    //! Transforme la géolocalisation dans le repère cartésien de gReference via un modèle sphérique
+    //! Transforms this geoloc to a vector offset in the tangent plane of gReference, using a perfect sphere model
     Math::CVector3 toVector3_Sphere(const CGeoloc& gReference) const;
 
-    //! Transforme la géolocalisation en coordonnée géocentrique ECEF (Earth-centered Earth-Fixed) via le modèle UTM
+    //! Transforms this geoloc to a ECEF geocentric position, using the UTM model
     Math::CVector3 toVector3_UTM() const;
 
-    //! Transforme la géolocalisation dans le repère cartésien de gReference via le modèle UTM
+    //! Transforms this geoloc to a vector offset in the tangent plane of gReference, using the UTM model
     Math::CVector3 toVector3_UTM(const CGeoloc& gReference) const;
 
-    //! Transforme la géolocalisation en coordonnée géocentrique ECEF (Earth-centered Earth-Fixed) via le modèle WGS84
+    //! Transforms this geoloc to a ECEF geocentric position, using the WGS84 model
     Math::CVector3 toVector3_WGS84() const;
 
-    //! Transforme la géolocalisation dans le repère cartésien de gReference via le modèle WGS84
+    //! Transforms this geoloc to a vector offset in the tangent plane of gReference, using the WGS84 model
     Math::CVector3 toVector3_WGS84(const CGeoloc& gReference) const;
 
-    //! Crée l'objet depuis une position ECEF (Earth-centered Earth-Fixed) via le modèle WGS84
+    //! Returns a geoloc from a ECEF geocentric position
     static CGeoloc fromVector3_WGS84(const Math::CVector3& vPosition3D);
 
-    //! Crée l'objet depuis une position dans le repère cartésien gReference via le modèle WGS84
+    //! Returns a geoloc from a vPosition3D offset in the tangent plane of gReference
     static CGeoloc fromVector3_WGS84(const CGeoloc& gReference, const Math::CVector3& vPosition3D);
 
     //!

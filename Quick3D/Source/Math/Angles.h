@@ -23,6 +23,8 @@ const double DegreeFull = 360.0;
 const double DegreeHalf = 180.0;
 const double DegreeQuarter = 90.0;
 
+#define SWAP_DOUBLE(a,b) { double dTemp = a; a = b; b = dTemp; }
+
 class Angles
 {
 public:
@@ -30,7 +32,7 @@ public:
     //! Returns the sign of a double
     static inline int sign(double dValue)
     {
-        return dValue < 0.0 ? -1.0 : 1.0;
+        return dValue < 0.0 ? -1 : 1;
     }
 
     //! Bounds an int between iMin an iMax

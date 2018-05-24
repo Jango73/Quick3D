@@ -460,16 +460,19 @@ CGeoloc CGeoloc::fromVector3_WGS84(const CVector3& vPosition)
 {
     CVector3 vPosition3D = vPosition;
     CGeoloc gReturnValue;
-    double dTemp;
 
     //-----------------------------------------------
+    // Adust Y angle of position
 
     CMatrix4 mRotationAdjustY = Math::CMatrix4::makeRotation(Math::CVector3(0.0, Math::Pi / -2.0, 0.0));
     vPosition3D = mRotationAdjustY * vPosition3D;
 
     //-----------------------------------------------
+    // Adjust axis conventions
 
-    dTemp = vPosition3D.Y; vPosition3D.Y = vPosition3D.Z; vPosition3D.Z = dTemp;
+    SWAP_DOUBLE(vPosition3D.Y, vPosition3D.Z);
+
+    //-----------------------------------------------
 
     Convert_Geocentric_To_Geodetic(
                 vPosition3D.X, vPosition3D.Y, vPosition3D.Z,
@@ -493,10 +496,9 @@ CVector3 CGeoloc::toVector3_WGS84(const CGeoloc& gReference) const
 {
     CVector3 vReference3D;
     CVector3 vPosition3D;
-    double dTemp;
 
     //-----------------------------------------------
-    // Récupération des coordonnées géocentriques
+    // Get geocentric coordinates of reference point and this point
 
     Convert_Geodetic_To_Geocentric(
                 gReference.Latitude * GeoTrans::fDeg2Rad,
@@ -512,8 +514,11 @@ CVector3 CGeoloc::toVector3_WGS84(const CGeoloc& gReference) const
                 &(vPosition3D.X), &(vPosition3D.Y), &(vPosition3D.Z)
                 );
 
-    dTemp = vReference3D.Y; vReference3D.Y = vReference3D.Z; vReference3D.Z = dTemp;
-    dTemp = vPosition3D.Y; vPosition3D.Y = vPosition3D.Z;vPosition3D.Z = dTemp;
+    //-----------------------------------------------
+    // Adjust axis conventions
+
+    SWAP_DOUBLE(vReference3D.Y, vReference3D.Z);
+    SWAP_DOUBLE(vPosition3D.Y, vPosition3D.Z);
     vReference3D.Y *= -1.0; vReference3D.Z *= -1.0;
     vPosition3D.Y *= -1.0; vPosition3D.Z *= -1.0;
 
@@ -553,10 +558,9 @@ CGeoloc CGeoloc::fromVector3_WGS84(const CGeoloc& gReference, const CVector3& vP
     CVector3 vReference3D;
     CVector3 vPosition3D = vPosition;
     CGeoloc gReturnValue;
-    double dTemp;
 
     //-----------------------------------------------
-    // Récupération des coordonnées géocentriques de la référence
+    // Get geocentric coordinates of reference point
 
     Convert_Geodetic_To_Geocentric(
                 gReference.Latitude * GeoTrans::fDeg2Rad,
@@ -565,7 +569,10 @@ CGeoloc CGeoloc::fromVector3_WGS84(const CGeoloc& gReference, const CVector3& vP
                 &(vReference3D.X), &(vReference3D.Y), &(vReference3D.Z)
                 );
 
-    dTemp = vReference3D.Y; vReference3D.Y = vReference3D.Z; vReference3D.Z = dTemp;
+    //-----------------------------------------------
+    // Adjust axis conventions
+
+    SWAP_DOUBLE(vReference3D.Y, vReference3D.Z);
     vReference3D.Y *= -1.0; vReference3D.Z *= -1.0;
 
     //-----------------------------------------------
@@ -579,7 +586,7 @@ CGeoloc CGeoloc::fromVector3_WGS84(const CGeoloc& gReference, const CVector3& vP
     CMatrix4 mRotationInverseX = Math::CMatrix4::makeRotation(Math::CVector3(dAngleX * -1.0, 0.0, 0.0));
 
     //-----------------------------------------------
-    // On applique les angles inverses de la référence à la référence
+    // Apply inverse angles to reference point
 
     vReference3D = mRotationInverseY * vReference3D;
     vReference3D = mRotationInverseX * vReference3D;
@@ -599,7 +606,10 @@ CGeoloc CGeoloc::fromVector3_WGS84(const CGeoloc& gReference, const CVector3& vP
     vPosition3D = mRotationX * vPosition3D;
     vPosition3D = mRotationY * vPosition3D;
 
-    dTemp = vPosition3D.Y; vPosition3D.Y = vPosition3D.Z; vPosition3D.Z = dTemp;
+    //-----------------------------------------------
+    // Adjust axis conventions
+
+    SWAP_DOUBLE(vPosition3D.Y, vPosition3D.Z);
     vPosition3D.Y *= -1.0; vPosition3D.Z *= -1.0;
 
     //-----------------------------------------------

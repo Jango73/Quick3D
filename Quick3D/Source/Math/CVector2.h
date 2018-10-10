@@ -139,56 +139,58 @@ namespace Math
 			return (X > V2.X) || (Y > V2.Y);
 		}
 
-		//! Opérateur d'addition
-		inline CVector2 operator + (const CVector2& V2)
+        //! Returns sum of this vector and \a V2
+        inline CVector2 operator + (const CVector2& V2)
 		{
 			return CVector2(X + V2.X, Y + V2.Y);
 		}
 
-		//! Opérateur de soustraction
-		inline CVector2 operator - (const CVector2& V2)
+        //! Returns subtraction of this vector and \a V2
+        inline CVector2 operator - (const CVector2& V2)
 		{
 			return CVector2(X - V2.X, Y - V2.Y);
 		}
 
-		//! Opérateur de multiplication
-		inline CVector2 operator * (const CVector2& V2)
+        //! Returns multiplication of this vector and \a V2
+        inline CVector2 operator * (const CVector2& V2)
 		{
 			return CVector2(X * V2.X, Y * V2.Y);
 		}
 
-		//! Opérateur de multiplication
-		inline CVector2 operator * (double s2)
+        //! Returns multiplication of this vector and the scalar \a s2
+        inline CVector2 operator * (double s2)
 		{
 			return CVector2(X * s2, Y * s2);
 		}
 
-		//! Opérateur de division
-		inline CVector2 operator / (const CVector2& V2)
+        //! Returns division of this vector and \a V2
+        inline CVector2 operator / (const CVector2& V2)
 		{
 			return CVector2(X / V2.X, Y / V2.Y);
 		}
 
-		//! Opérateur de division
-		inline CVector2 operator / (double s2)
+        //! Returns division of this vector and the scalar \a s2
+        inline CVector2 operator / (double s2)
 		{
 			return CVector2(X / s2, Y / s2);
 		}
 
-		//! Opérateur d'addition
-		CVector2& operator += (const CVector2& V2)
+        //! Returns sum of this vector and \a V2
+        CVector2& operator += (const CVector2& V2)
 		{
 			X += V2.X;
 			Y += V2.Y;
 			return *this;
 		}
 
+        // Index operator
 		inline double& operator[](unsigned int index)
 		{
 			return (&X)[index];
 		}
 
-		inline const double& operator[](unsigned int index) const
+        // Constant index operator
+        inline const double& operator[](unsigned int index) const
 		{
 			return (&X)[index];
 		}
@@ -216,23 +218,25 @@ namespace Math
 			return atan2(Y, X);
 		}
 
-		//
+        //! Transforms this vector to a QSize
 		inline QSize toQSize() const
 		{
 			return QSize(X, Y);
 		}
 
-		//
+        //! Transforms this vector to a QPointF
 		inline QPointF toQPointF() const
 		{
 			return QPointF(X, Y);
 		}
 
+        //! Returns a vertical FOV given an image size and a horizontal FOV
 		static double computeVerticalFOV(const CVector2& imageSize, double dCameraHorizontalFOVDegrees)
 		{
 			return dCameraHorizontalFOVDegrees * (imageSize.Y / imageSize.X);
 		}
 
+        //! Returns a horizontal FOV given an image size and a vertical FOV
         static double computeHorizontalFOV(const CVector2& imageSize, double dCameraVerticalFOVDegrees)
         {
             return dCameraVerticalFOVDegrees * (imageSize.X / imageSize.Y);

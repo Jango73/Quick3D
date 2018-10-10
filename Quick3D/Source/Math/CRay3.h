@@ -63,25 +63,25 @@ public:
         vNormal = vNewNormal;
     }
 
-    //! Constructeur de copie
+    //! Copy constructor
     inline CRay3 (const CRay3& Target)
     {
         *this = Target;
     }
 
-    //! Opérateur d'égalité
+    //! Equality operator
     inline bool operator == (const CRay3& V2) const
     {
         return (vOrigin == V2.vOrigin) && (vNormal == V2.vNormal);
     }
 
-    //! Opérateur d'inégalité
+    //! Inverse of equality operator
     inline bool operator != (const CRay3& V2) const
     {
         return !(*this == V2);
     }
 
-    //! Opérateur d'assignation
+    //! Assign operator
     inline CRay3& operator = (const CRay3& Target)
     {
         vOrigin = Target.vOrigin;

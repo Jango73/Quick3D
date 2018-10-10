@@ -166,7 +166,7 @@ public:
         return (X + Y + Z);
     }
 
-    //! Calcule la racine carrée des composants
+    //! Returns this vector after computing the square root of each component
     inline CVector3 sqrtComponents() const
     {
         return CVector3
@@ -287,7 +287,7 @@ public:
         return *this;
     }
 
-    //! Opérateur de division
+    //! Divide operator
     CVector3& operator /= (const CVector3& V2)
     {
         X /= V2.X;
@@ -296,7 +296,7 @@ public:
         return *this;
     }
 
-    //! Opérateur de multiplication avec un double
+    //! Scalar multiply operator
     inline CVector3 operator * (double s2) const
     {
         return CVector3
@@ -307,7 +307,7 @@ public:
                     );
     }
 
-    //! Opérateur de division avec un double
+    //! Scalar divide operator
     inline CVector3 operator / (double s2) const
     {
         return CVector3
@@ -318,7 +318,7 @@ public:
                     );
     }
 
-    //! Opérateur de division avec un int
+    //! Scalar divide operator
     inline CVector3 operator / (int s2) const
     {
         return CVector3
@@ -329,11 +329,13 @@ public:
                     );
     }
 
+    // Index operator
     inline double &operator[](unsigned int index)
     {
         return (&X)[index];
     }
 
+    // Constant index operator
     inline const double &operator[](unsigned int index) const
     {
         return (&X)[index];

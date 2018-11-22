@@ -55,7 +55,7 @@ public:
     //! Deletes this object's links
     virtual void clearLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
 
-    //! Met l'objet à jour d'après le temps écoulé depuis la dernière image
+    //! Updates this object using the elapsed time since last update
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //!

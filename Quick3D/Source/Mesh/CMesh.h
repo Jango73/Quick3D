@@ -64,7 +64,7 @@ public:
     //!
     virtual CBoundingBox worldBounds();
 
-    //!
+    //! Updates this object using the elapsed time since last update
     virtual void update(double dDeltaTimeS) Q_DECL_OVERRIDE;
 
     //! Charge les paramètres de l'objet

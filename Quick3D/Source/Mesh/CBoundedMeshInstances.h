@@ -52,7 +52,7 @@ public:
     //!
     virtual CBoundingBox worldBounds();
 
-    //!
+    //! Updates this object using the elapsed time since last update
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //! Renders the mesh

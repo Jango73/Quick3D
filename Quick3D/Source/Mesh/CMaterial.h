@@ -144,7 +144,7 @@ public:
     // Control methods
     //-------------------------------------------------------------------------------------------------
 
-    //!
+    //! Updates this object using the elapsed time since last update
     virtual void update(double dDeltaTime);
 
     //! Ajoute l'image spécifiée en texture diffuse

@@ -30,7 +30,7 @@ public:
     // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Met l'objet à jour d'après le temps écoulé depuis la dernière image
+    //! Updates this object using the elapsed time since last update
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //!

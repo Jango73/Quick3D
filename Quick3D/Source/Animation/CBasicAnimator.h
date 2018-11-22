@@ -13,7 +13,7 @@
 #include "CAnimatorFrame.h"
 
 //-------------------------------------------------------------------------------------------------
-// Déclarations avancées
+// Forward declarations
 
 class C3DScene;
 

@@ -34,7 +34,7 @@ public:
     //! Returns a new instance of this class
     static CComponent* instantiator(C3DScene* pScene);
 
-    //!
+    //! Constructor using a scene
     CAircraftController(C3DScene* pScene);
 
     //!
@@ -68,7 +68,7 @@ public:
     //! Deletes this object's links
     virtual void clearLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
 
-    //!
+    //! Updates this object using the elapsed time since last update
     virtual void update(double dDeltaTimeS) Q_DECL_OVERRIDE;
 
     //!

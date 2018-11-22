@@ -112,7 +112,7 @@ public:
     // Control methods
     //-------------------------------------------------------------------------------------------------
 
-    //!
+    //! Updates this object using the elapsed time since last update
     virtual void update(double dDeltaTime);
 
     //!

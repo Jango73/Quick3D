@@ -51,7 +51,7 @@ public:
     //! Returns this object's class name
     virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CEngineGenerator; }
 
-    //!
+    //! Updates this object using the elapsed time since last update
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------

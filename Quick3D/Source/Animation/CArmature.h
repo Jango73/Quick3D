@@ -25,10 +25,10 @@ public:
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //!
+    //! Returns a new instance of this class
     static CComponent* instantiator(C3DScene* pScene);
 
-    //!
+    //! Constructor using a scene
     CArmature(C3DScene* pScene);
 
     //!

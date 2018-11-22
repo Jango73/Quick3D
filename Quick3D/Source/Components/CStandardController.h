@@ -49,7 +49,7 @@ public:
     //! Returns this object's class name
     virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CStandardController; }
 
-    //! Met l'objet à jour d'après le temps écoulé depuis la dernière image
+    //! Updates this object using the elapsed time since last update
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //!
@@ -70,16 +70,16 @@ public:
 
 protected:
 
-    bool		m_bLookUp;
-    bool		m_bLookDown;
-    bool		m_bGoForward;
-    bool		m_bGoBackward;
-    bool		m_bGoUp;
-    bool		m_bGoDown;
-    bool		m_bTurnRight;
-    bool		m_bTurnLeft;
-    bool		m_bStrafeRight;
-    bool		m_bStrafeLeft;
-    bool		m_bAltitudeFastUp;
-    bool		m_bAltitudeFastDown;
+    bool    m_bLookUp;
+    bool    m_bLookDown;
+    bool    m_bGoForward;
+    bool    m_bGoBackward;
+    bool    m_bGoUp;
+    bool    m_bGoDown;
+    bool    m_bTurnRight;
+    bool    m_bTurnLeft;
+    bool    m_bStrafeRight;
+    bool    m_bStrafeLeft;
+    bool    m_bAltitudeFastUp;
+    bool    m_bAltitudeFastDown;
 };

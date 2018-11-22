@@ -18,7 +18,7 @@ public:
     //! Default constructor
     CBasicAnimationStep();
 
-    //! Constructeur avec paramètres
+    //! Constructor with parameters
     CBasicAnimationStep(Math::CVector3 vTarget, Math::CVector3 vSpeed, Math::CVector3 vAcceleration, double dDuration);
 
     //! Destructor

@@ -31,7 +31,7 @@ public:
     //! Destructor
     virtual ~CParticleSystem();
 
-    //!
+    //! Updates this object using the elapsed time since last update
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //!

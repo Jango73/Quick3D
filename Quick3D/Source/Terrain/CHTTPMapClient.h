@@ -9,6 +9,11 @@
 
 //-------------------------------------------------------------------------------------------------
 
+#define TILES_PARAM             "Tiles"
+#define TILES_PARAM_SERVER_URL  "ServerURL"
+
+//-------------------------------------------------------------------------------------------------
+
 class CHTTPMapClient : public QObject
 {
     Q_OBJECT
@@ -52,6 +57,7 @@ signals:
 protected:
 
     QString                 m_sTilePath;
+    QString                 m_sTileServerURL;
     QUrl                    m_uURL;
     QNetworkAccessManager   m_tNetMan;
     QNetworkReply*          m_pReply;

@@ -27,7 +27,7 @@ public:
 	//-------------------------------------------------------------------------------------------------
 
 	//! Retourne une chaine de caractère correspondant à l'ID donné
-	CXMLNode& getPreferences() { return xPreferences; }
+    CXMLNode& preferences() { return xPreferences; }
 
 protected:
 

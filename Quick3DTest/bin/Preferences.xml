@@ -6,4 +6,8 @@
 		<Backup Active="0"/>
 	</Logger>
 
+        <Tiles>
+            <ServerURL Value="http://t0.tiles.virtualearth.net/tiles/%1.jpeg?g=1963&amp;mkt={culture}&amp;token={token}"/>
+        </Tiles>
+
 </Preferences>

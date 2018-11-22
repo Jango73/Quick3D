@@ -4,11 +4,7 @@
 
 // Application
 #include "CHTTPMapClient.h"
-
-//-------------------------------------------------------------------------------------------------
-// Constants
-
-#define TILE_URL "http://t0.tiles.virtualearth.net/tiles/%1.jpeg?g=1963&mkt={culture}&token={token}"
+#include "CPreferencesManager.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -20,6 +16,15 @@ CHTTPMapClient::CHTTPMapClient()
     if (!QDir().exists(m_sTilePath))
     {
         QDir().mkpath(m_sTilePath);
+    }
+
+    CXMLNode xParameters = CPreferencesManager::getInstance()->preferences();
+    CXMLNode xTiles = xParameters.getNodeByTagName(TILES_PARAM);
+    CXMLNode xServerURL = xTiles.getNodeByTagName(TILES_PARAM_SERVER_URL);
+
+    if (xServerURL.isEmpty() == false)
+    {
+        m_sTileServerURL = xServerURL.attributes()["Value"];
     }
 }
 
@@ -85,15 +90,22 @@ void CHTTPMapClient::loadNextTile()
             }
             else
             {
-                m_uURL = QString(TILE_URL).arg(m_sCurrentTileName);
+                if (m_sTileServerURL.isEmpty() == false)
+                {
+                    m_uURL = QString(m_sTileServerURL).arg(m_sCurrentTileName);
 
-                m_pReply = m_tNetMan.get(QNetworkRequest(m_uURL));
+                    m_pReply = m_tNetMan.get(QNetworkRequest(m_uURL));
 
-                LOG_METHOD_DEBUG(QString("Requesting tile %1").arg(m_sCurrentTileName));
+                    LOG_METHOD_DEBUG(QString("Requesting tile %1").arg(m_sCurrentTileName));
 
-                connect(m_pReply, SIGNAL(finished()), this, SLOT(httpFinished()));
-                connect(m_pReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(httpError(QNetworkReply::NetworkError)));
-                connect(m_pReply, SIGNAL(readyRead()), this, SLOT(httpReadyRead()));
+                    connect(m_pReply, SIGNAL(finished()), this, SLOT(httpFinished()));
+                    connect(m_pReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(httpError(QNetworkReply::NetworkError)));
+                    connect(m_pReply, SIGNAL(readyRead()), this, SLOT(httpReadyRead()));
+                }
+                else
+                {
+                    LOG_METHOD_ERROR(QString("Tile server URL undefined"));
+                }
             }
         }
     }

@@ -24,13 +24,13 @@ public:
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //!
+    //! Returns a new instance of this class
     static CComponent* instantiator(C3DScene* pScene);
 
-    //!
+    //! Constructor using a scene
     CTerrestrialVehicle(C3DScene* pScene);
 
-    //!
+    //! Destructor
     virtual ~CTerrestrialVehicle();
 
     //-------------------------------------------------------------------------------------------------

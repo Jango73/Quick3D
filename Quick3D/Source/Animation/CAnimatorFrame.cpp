@@ -57,6 +57,9 @@ Math::CVector3 CAnimatorFrame::compute(double dDeltaTime, Math::CVector3 vCurren
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Returns the current value.
+*/
 CVector3 CAnimatorFrame::currentValue() const
 {
     return CVector3();

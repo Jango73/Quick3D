@@ -10,6 +10,7 @@
 #include "CQ3DConstants.h"
 #include "CBasicAnimationStep.h"
 
+//! Defines a frame for an animator
 class QUICK3D_EXPORT CAnimatorFrame
 {
 

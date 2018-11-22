@@ -15,7 +15,7 @@ public:
     //! Default constructor
     CServoPosition();
 
-    //! Constructeur avec paramètres
+    //! Constructor with parameters
     CServoPosition(double dMaximumAcceleration, double dMaximumVelocity, double dAccelerationFactor = 10.0, double dVelocityFactor = 2.0);
 
     //! Destructor
@@ -25,35 +25,35 @@ public:
     // Setters
     //-------------------------------------------------------------------------------------------------
 
-    //! Règle la position courante
+    //! Sets the current position
     void setPosition(double value) { m_dPosition = value; }
 
-    //! Règle la position cible
+    //! Sets the target position
     void setTargetPosition(double value) { m_dTargetPosition = value; }
 
-    //! Règle l'accélération maximum
+    //! Sets the maximum acceleration
     void setMaximumAcceleration(double value) { m_dMaximumAcceleration = value; }
 
-    //! Règle la vitesse maximum
+    //! Sets the maximum speed
     void setMaximumVelocity(double value) { m_dMaximumVelocity = value; }
 
-    //! Règle le facteur d'accélération
+    //! Sets the acceleratio factor
     void setAccelerationFactor(double value) { m_dAccelerationFactor = value; }
 
-    //! Règle le facteur de vitesse
+    //! Sets the speed factor
     void setVelocityFactor(double value) { m_dVelocityFactor = value; }
 
     //-------------------------------------------------------------------------------------------------
     // Getters
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne la position
+    //! Returns the position
     double position() const { return m_dPosition; }
 
-    //! Retourne l'acceleration
+    //! Returns the acceleration
     double acceleration() const { return m_dAcceleration; }
 
-    //! Retourne la vitesse
+    //! Returns the speed
     double velocity() const { return m_dVelocity; }
 
     //-------------------------------------------------------------------------------------------------

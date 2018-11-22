@@ -66,7 +66,7 @@ void CQuadDroneController::update(double dDeltaTimeS)
     {
         double dForwardDemand = 0.0;
         double dLateralDemand = 0.0;
-        double dVertSpeedDemand = 0.0;
+        // double dVertSpeedDemand = 0.0;
         double dYawDemand = 0.0;
 
         if (m_pJoystick != nullptr && m_pJoystick->connected())
@@ -82,7 +82,7 @@ void CQuadDroneController::update(double dDeltaTimeS)
             dLateralDemand = m_pJoystick->axisStates()[0];
             dForwardDemand = m_pJoystick->axisStates()[1];
             dYawDemand = m_pJoystick->axisStates()[3];
-            dVertSpeedDemand = 1.0 - ((m_pJoystick->axisStates()[2] + 1.0) * 0.5);
+            // dVertSpeedDemand = 1.0 - ((m_pJoystick->axisStates()[2] + 1.0) * 0.5);
         }
         else
         {

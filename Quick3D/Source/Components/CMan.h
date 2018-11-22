@@ -24,7 +24,7 @@ public:
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //!
+    //! Returns a new instance of this class
     static CComponent* instantiator(C3DScene* pScene);
 
     //!

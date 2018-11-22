@@ -20,23 +20,23 @@ class QUICK3D_EXPORT CSeaVehicle : public CVehicle
 {
 public:
 
-	//-------------------------------------------------------------------------------------------------
-	// Constructors and destructor
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Constructors and destructor
+    //-------------------------------------------------------------------------------------------------
 
-	//!
-	static CComponent* instantiator(C3DScene* pScene);
+    //! Returns a new instance of this class
+    static CComponent* instantiator(C3DScene* pScene);
 
-	//!
-	CSeaVehicle(C3DScene* pScene);
+    //!
+    CSeaVehicle(C3DScene* pScene);
 
-	//!
-	virtual ~CSeaVehicle();
+    //!
+    virtual ~CSeaVehicle();
 
-	//-------------------------------------------------------------------------------------------------
-	// Inherited methods
-	//-------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------
+    // Inherited methods
+    //-------------------------------------------------------------------------------------------------
 
-	//!
+    //!
     virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CSeaVehicle; }
 };

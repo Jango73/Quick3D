@@ -32,19 +32,19 @@ public:
     // Getters
     //-------------------------------------------------------------------------------------------------
 
-    //!
+    //! Returns the altitude at the specified geolocation
     virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = nullptr);
 
-    //!
+    //! Returns the altitude at the specified geolocation
     virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, double* pRigidness = nullptr);
 
-    //!
+    //! Returns the altitude at the specified geolocation
     virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, bool bForPhysics = true);
 
-    //!
+    //! Returns the terrain rigidness at the specified geolocation
     double getRigidness() const { return m_dRigidness; }
 
-    //!
+    //! Returns \c true if the field is ready for use
     virtual bool isGenerated();
 
     //-------------------------------------------------------------------------------------------------

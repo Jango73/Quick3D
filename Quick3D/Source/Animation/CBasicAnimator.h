@@ -19,6 +19,7 @@ class C3DScene;
 
 //-------------------------------------------------------------------------------------------------
 
+//! Defines a basic animator
 class QUICK3D_EXPORT CBasicAnimator : public CAnimator
 {
 
@@ -45,20 +46,20 @@ public:
     // Getters
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne une référence sur les pas de translations
+    //! Returns a pointer to the translation frame
     CAnimatorFrame* translationFrame() { return m_pTranslationFrame; }
 
-    //! Retourne une référence sur les pas de rotations
+    //! Returns a pointer to the rotation frame
     CAnimatorFrame* rotationFrame() { return m_pRotationFrame; }
 
     //-------------------------------------------------------------------------------------------------
     // Control methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Ajoute un pas de translation
+    //! Adds a translation step
     void addTranslationStep(CBasicAnimationStep value);
 
-    //! Ajoute un pas de rotation
+    //! Adds a rotation step
     void addRotationStep(CBasicAnimationStep value);
 
     //-------------------------------------------------------------------------------------------------
@@ -71,7 +72,7 @@ public:
     //! Loads this object's parameters d'après le noeud XML fourni
     virtual void loadParameters(const QString& sBaseFile, const CXMLNode& xComponent) Q_DECL_OVERRIDE;
 
-    //! Met l'objet à jour d'après le temps écoulé depuis la dernière image
+    //! Updates this object using the elapsed time since last update
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------

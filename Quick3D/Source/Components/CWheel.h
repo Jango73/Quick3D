@@ -21,13 +21,13 @@ public:
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //!
+    //! Returns a new instance of this class
     static CComponent* instantiator(C3DScene* pScene);
 
-    //! Constructeur
+    //! Constructor using a scene
     CWheel(C3DScene* pScene);
 
-    //!
+    //! Destructor
     virtual ~CWheel();
 
     //-------------------------------------------------------------------------------------------------

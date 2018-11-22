@@ -103,45 +103,48 @@ void CHTTPMapClient::loadNextTile()
 
 void CHTTPMapClient::httpFinished()
 {
-    if (m_pReply->error() == QNetworkReply::NoError)
+    if (m_pReply != nullptr)
     {
-        if (m_baIncomingData.count() > 0)
+        if (m_pReply->error() == QNetworkReply::NoError)
         {
-            QString sFileName = m_sTilePath + "/" + m_sCurrentTileName + ".jpg";
-
-            QFile fImageFile(sFileName);
-
-            if (fImageFile.open(QIODevice::WriteOnly))
+            if (m_baIncomingData.count() > 0)
             {
-                fImageFile.write(m_baIncomingData);
-                fImageFile.close();
+                QString sFileName = m_sTilePath + "/" + m_sCurrentTileName + ".jpg";
+
+                QFile fImageFile(sFileName);
+
+                if (fImageFile.open(QIODevice::WriteOnly))
+                {
+                    fImageFile.write(m_baIncomingData);
+                    fImageFile.close();
+                }
+
+                LOG_METHOD_DEBUG(QString("Downloaded tile %1").arg(m_sCurrentTileName));
+
+                QImage image;
+
+                if (image.loadFromData(m_baIncomingData, "JPG"))
+                {
+                    m_vLoadedTiles[m_sCurrentTileName] = image.convertToFormat(QImage::Format_RGB888);
+                }
+
+                emit tileReady(m_sCurrentTileName);
             }
-
-            LOG_METHOD_DEBUG(QString("Downloaded tile %1").arg(m_sCurrentTileName));
-
-            QImage image;
-
-            if (image.loadFromData(m_baIncomingData, "JPG"))
-            {
-                m_vLoadedTiles[m_sCurrentTileName] = image.convertToFormat(QImage::Format_RGB888);
-            }
-
-            emit tileReady(m_sCurrentTileName);
         }
+        else
+        {
+            QNetworkReply::NetworkError err = m_pReply->error();
+
+            Q_UNUSED(err);
+        }
+
+        m_baIncomingData.clear();
+
+        m_pReply->deleteLater();
+        m_pReply = nullptr;
+
+        loadNextTile();
     }
-    else
-    {
-        QNetworkReply::NetworkError err = m_pReply->error();
-
-        Q_UNUSED(err);
-    }
-
-    m_baIncomingData.clear();
-
-    m_pReply->deleteLater();
-    m_pReply = nullptr;
-
-    loadNextTile();
 }
 
 //-------------------------------------------------------------------------------------------------

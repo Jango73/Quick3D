@@ -1,19 +1,37 @@
-# C++ objects and libs
-
+# Compiled Object files
 *.slo
 *.lo
 *.o
-*.a
-*.la
-*.lai
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
 *.so
-*.dll
+*.so.1
+*.so.1.0
+*.so.1.0.0
 *.dylib
-*.directory
-*.stash
+*.dll
 
-# Qt-es
+# Fortran module files
+*.mod
+*.smod
 
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Qt
 /.qmake.cache
 /.qmake.stash
 *.pro.user
@@ -25,26 +43,51 @@ moc_*.cpp
 moc_*.h
 qrc_*.cpp
 ui_*.h
-Makefile*
 *build-*
-*.Debug
-*.Release
 
-# QtCreator
+# Make
+Makefile
+Makefile*
+Makefile.*
 
-*.autosave
+# Git
+*.directory
+*.stash
 
-#QtCtreator Qml
-*.qmlproject.user
-*.qmlproject.user.*
+# Log
+*.log
+*.0
+*.1
+*.2
+*.3
+*.4
+*.5
+*.6
+*.7
+*.8
+*.9
+
+# Blender
+*.blend1
 
 # Project specific
+/bin/*.xml
+/bin/*.qml
+/help
+/moc
+/obj
+/_trash
+/debug/*
+/release/*
+*.Debug
+*.Release
+*.output
+*.dot
+*.user
+*.bak
+
 Quick3D/help
 Quick3DTest/bin/*.txt
 Quick3DTest/bin/Logs
 Quick3DTest/bin/Tiles
-*.log
-*.exe
-*.blend1
-*.0
-*.1
+Quick3DTest/bin/Quick3DTest

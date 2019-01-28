@@ -18,18 +18,22 @@ Open .pro file in Qt Creator and build **without** shadow build option.
 
 ## Things to code or to fix
 
+### Optimize
+* Frame rate drops too fast when scene goes up in complexity. Probably too much overhead on object/material setup.
+
 ### Terrain
-* Tile seams : for now, seams between terrain tiles are visible
-* Z-fighting : should use an adaptive z-buffer depth to avoid this
-* Loading : sometimes tiles simply don't show up
-* Vegetation rendering : vegetation objects (and all alpha containing objects) should be rendered last to avoid alpha problems
-* Vegetation spawning : still some bug in this algorithm
+* Tile seams : for now, seams between terrain tiles are visible. Should create small patches on edges to match tiles.
+* Z-fighting : should use an adaptive z-buffer depth to avoid this.
+* Loading : sometimes tiles simply don't show up.
+* Vegetation rendering : vegetation objects (and all alpha containing objects) should be rendered last to avoid alpha problems.
+* Vegetation spawning : still some bug in this algorithm.
 
 ### Animation
-* Skinning : nothing done yet
+* Skinning : nothing done yet.
 
 ### Camera
-* Frustum : sometimes objects disappear because they not considered inside the viewing frustum (although we know they are)
+* Frustum : sometimes objects disappear because they are not considered inside the viewing frustum (although we know they are).
 
 ### Materials
-* PBR rendering : allow scripting of PBR methods for realistic shading
+* PBR rendering : allow scripting of PBR methods for realistic shading.
+* Shaders: there are some artefacts due to bad looping when using perlin noise.

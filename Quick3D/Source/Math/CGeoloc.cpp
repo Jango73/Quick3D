@@ -1,6 +1,6 @@
 
 // Qt
-#ifdef WIN32
+#ifdef QT_POSITIONING_LIB
 #include <QGeoCoordinate>
 #endif
 
@@ -208,10 +208,11 @@ CVector3 CGeoloc::toVector3(const CGeoloc& gReference) const
 
 /*!
     Returns the great circle true heading from this to geo loc to \a other.
+    Does NOT use the WGS84 model.
 */
 double CGeoloc::headingTo(const CGeoloc& other)
 {
-#ifdef WIN32
+#ifdef QT_POSITIONING_LIB
     QGeoCoordinate coord1(Latitude, Longitude, Altitude);
     QGeoCoordinate coord2(other.Latitude, other.Longitude, other.Altitude);
 
@@ -225,10 +226,11 @@ double CGeoloc::headingTo(const CGeoloc& other)
 
 /*!
     Returns the great circle distance from this to geo loc to \a other.
+    Does NOT use the WGS84 model.
 */
 double CGeoloc::distanceTo(const CGeoloc& other)
 {
-#ifdef WIN32
+#ifdef QT_POSITIONING_LIB
     QGeoCoordinate coord1(Latitude, Longitude, Altitude);
     QGeoCoordinate coord2(other.Latitude, other.Longitude, other.Altitude);
 

@@ -12,6 +12,7 @@ DEFINES += QUICK3D_LIB
 DEFINES += SFML_SYSTEM_EXPORTS
 DEFINES += SFML_WINDOW_EXPORTS
 
+# Dependencies
 INCLUDEPATH += $$PWD/../qt-plus/source/cpp
 INCLUDEPATH += $$PWD/../qt-plus/source/cpp/Web
 INCLUDEPATH += $$PWD/../qt-plus/source/cpp/GeoTools
@@ -38,9 +39,13 @@ win32 {
     LIBS += -lopengl32 -luser32 -lgdi32 -lwinmm
 }
 
+# Directories
 DESTDIR = $$PWD/bin
-MOC_DIR = $$PWD/moc
 OBJECTS_DIR = $$PWD/obj
+MOC_DIR = $$PWD/moc
+RCC_DIR = $$PWD/rcc
+UI_DIR = $$PWD/ui
+MAKEFILE = $$PWD/make
 
 # C++ Flags
 QMAKE_CXXFLAGS += -Wno-invalid-offsetof

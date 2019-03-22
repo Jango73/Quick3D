@@ -12,6 +12,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TEMPLATE = app
 
+# Dependencies
 INCLUDEPATH += $$PWD/../qt-plus/source/cpp
 INCLUDEPATH += $$PWD/../qt-plus/source/cpp/Web
 INCLUDEPATH += $$PWD/../Quick3D/Source
@@ -27,9 +28,13 @@ INCLUDEPATH += $$PWD/../Quick3D/Source/Utils
 
 DEPENDPATH += $$PWD/../Quick3D
 
+# Directories
 DESTDIR = $$PWD/bin
-MOC_DIR = $$PWD/moc
 OBJECTS_DIR = $$PWD/obj
+MOC_DIR = $$PWD/moc
+RCC_DIR = $$PWD/rcc
+UI_DIR = $$PWD/ui
+MAKEFILE = $$PWD/make
 
 # C++ Flags
 QMAKE_CXXFLAGS += -Wno-invalid-offsetof

@@ -125,7 +125,7 @@ void CUnitTests::run()
         qDebug() << "Angles =" << Angles::toDeg(angles.X) << "," << Angles::toDeg(angles.Y) << "," << Angles::toDeg(angles.Z);
     }
 
-    delete pScene;
+    // delete pScene;
 
     qDebug() << "--------------------------------------------------";
     qDebug() << "Testing CGeoTree";
@@ -157,4 +157,33 @@ void CUnitTests::run()
     delete wp2;
     delete wp3;
     delete wp4;
+
+    qDebug() << "--------------------------------------------------";
+    qDebug() << "Find origin geoloc using a point geoloc its local vector";
+
+    CGeoloc gRef;
+    CGeoloc gGeoloc;
+    CVector3 vPoint;
+    double dFactor = FAC_NM_TO_M;
+
+//    vPoint.X = -0.55125231;
+//    vPoint.Y = 0;
+//    vPoint.Z = -0.25597778;
+    vPoint.X = 0;
+    vPoint.Y = 0;
+    vPoint.Z = -23;
+
+    gRef = CGeoloc(48.723333, 2.379444, 0);
+    gGeoloc = CGeoloc(gRef, CVector3(vPoint.X * dFactor, vPoint.Y * dFactor, vPoint.Z * dFactor));
+
+    qDebug() << "For " << gRef.toString() << " and " << vPoint.toString() << " : " << gGeoloc.toString();
+
+    vPoint.X = -6.93622541;
+    vPoint.Y = 0;
+    vPoint.Z = -32.35388565;
+
+    gRef = CGeoloc(48.188611, 2.538333, 0);
+    gGeoloc = CGeoloc(gRef, CVector3(vPoint.X * dFactor, vPoint.Y * dFactor, vPoint.Z * dFactor));
+
+    qDebug() << "For " << gRef.toString() << " and " << vPoint.toString() << " : " << gGeoloc.toString();
 }

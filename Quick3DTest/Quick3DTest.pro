@@ -34,7 +34,6 @@ OBJECTS_DIR = $$PWD/obj
 MOC_DIR = $$PWD/moc
 RCC_DIR = $$PWD/rcc
 UI_DIR = $$PWD/ui
-MAKEFILE = $$PWD/make
 
 # C++ Flags
 QMAKE_CXXFLAGS += -Wno-invalid-offsetof

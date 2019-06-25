@@ -90,9 +90,9 @@ public:
     //! Returns distance in meters of this geoloc to \a other
     double distanceTo(const CGeoloc& other);
 
-    //! Returns the NOLL (North-Oriented Local-Level) axis of this geoloc.
-    //! See CComponent for details on the NOLL frame.
-    Math::CAxis getNOLLAxis() const;
+    //! Returns the topocentric axis of this geoloc.
+    //! See CComponent for details on the topocentric frame.
+    Math::CAxis getTopocentricAxis() const;
 
     //! Converts dHeading which is expressed in magnetic degrees to true heading degrees.
     double magneticHeadingtoTrueHeading(double dHeading) const;
@@ -145,7 +145,7 @@ protected:
     //!
     QString TileXYToQuadKey(int tileX, int tileY, int levelOfDetail) const;
 
-    //! Calcule la déclinaison magnétique pour cette géolocalisation
+    //! Computes the magnetic variation for this location
     double computeMagneticDeclination() const;
 
     friend QUICK3D_EXPORT QDataStream& operator << (QDataStream& out, const CGeoloc&);

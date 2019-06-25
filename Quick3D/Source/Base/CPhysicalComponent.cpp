@@ -42,7 +42,7 @@ CPhysicalComponent::CPhysicalComponent(C3DScene* pScene)
     , m_dAngularDrag_norm(0.1)
     , m_dFriction_norm(0.1)
     , m_dMass_kg(1.0)
-    , m_dStickToNOLL(0.0)
+    , m_dStickToTopocentric(0.0)
     , m_dRotationLatency(0.0)
     , m_eCollisionType(ctSphere)
 {
@@ -71,7 +71,7 @@ CPhysicalComponent& CPhysicalComponent::operator = (const CPhysicalComponent& ta
     m_dDrag_norm                    = target.m_dDrag_norm;
     m_dAngularDrag_norm             = target.m_dAngularDrag_norm;
     m_dMass_kg                      = target.m_dMass_kg;
-    m_dStickToNOLL                  = target.m_dStickToNOLL;
+    m_dStickToTopocentric           = target.m_dStickToTopocentric;
     m_dRotationLatency              = target.m_dRotationLatency;
     m_vVelocity_ms                  = target.m_vVelocity_ms;
     m_vAngularVelocity_rs           = target.m_vAngularVelocity_rs;
@@ -120,7 +120,7 @@ void CPhysicalComponent::loadParameters(const QString& sBaseFile, const CXMLNode
 
         if (xPhysicsNode.attributes()["StickToNOLL"].isEmpty() == false)
         {
-            m_dStickToNOLL = xPhysicsNode.attributes()["StickToNOLL"].toDouble();
+            m_dStickToTopocentric = xPhysicsNode.attributes()["StickToNOLL"].toDouble();
         }
 
         if (xPhysicsNode.attributes()["RotationLatency"].isEmpty() == false)
@@ -130,12 +130,12 @@ void CPhysicalComponent::loadParameters(const QString& sBaseFile, const CXMLNode
 
         if (xPhysicsNode.attributes()[ParamName_PhysicsActive].isEmpty() == false)
         {
-            m_bPhysicsActive = (bool) xPhysicsNode.attributes()[ParamName_PhysicsActive].toInt();
+            m_bPhysicsActive = bool(xPhysicsNode.attributes()[ParamName_PhysicsActive].toInt());
         }
 
         if (xPhysicsNode.attributes()[ParamName_CollisionsActive].isEmpty() == false)
         {
-            m_bCollisionsActive = (bool) xPhysicsNode.attributes()[ParamName_CollisionsActive].toInt();
+            m_bCollisionsActive = bool(xPhysicsNode.attributes()[ParamName_CollisionsActive].toInt());
         }
     }
 
@@ -373,9 +373,9 @@ void CPhysicalComponent::update(double dDeltaTimeS)
                         m_vAngularVelocity_rs = m_vAngularVelocity_rs - (m_vAngularVelocity_rs * (m_dFriction_norm * dDeltaTimeS));
                     }
 
-                    // Get the NOLL reference (North-Oriented Local Level)
+                    // Get the topocentric frame
 
-                    CAxis aLocalAxis(geoloc().getNOLLAxis());
+                    CAxis aLocalAxis(geoloc().getTopocentricAxis());
 
                     // Rotate the body around its local axis
 
@@ -454,7 +454,7 @@ void CPhysicalComponent::update(double dDeltaTimeS)
     }
     else
     {
-        if (m_dStickToNOLL > 0.0)
+        if (m_dStickToTopocentric > 0.0)
         {
             if (m_pParent != nullptr)
             {
@@ -468,7 +468,7 @@ void CPhysicalComponent::update(double dDeltaTimeS)
                     setRotation(anAxis.eulerAngles());
 
                     // Vector3 vNewAngles = anAxis.euleurAngles();
-                    // setRotation(interpolate(vNewAngles, m_vRotation, m_dStickToNOLL * dDeltaTime));
+                    // setRotation(interpolate(vNewAngles, m_vRotation, m_dStickToTopocentric * dDeltaTime));
                 }
             }
         }
@@ -514,7 +514,7 @@ void CPhysicalComponent::update(double dDeltaTimeS)
     // Show axis
 
     /*
-    CAxis axis = geoloc().getNOLLAxis();
+    CAxis axis = geoloc().getTopocentricAxis();
     CVector3 vStart = getWorldPosition();
     CVector3 vEnd = vStart + axis.Front * 2.0;
     m_pScene->addSegment(vStart, vEnd);
@@ -645,7 +645,7 @@ void CPhysicalComponent::dump(QTextStream& stream, int iIdent)
 {
     dumpIndented(stream, iIdent, QString("[CPhysicalComponent]"));
     dumpIndented(stream, iIdent, QString("Physics active : %1").arg(m_bPhysicsActive));
-    dumpIndented(stream, iIdent, QString("Stick to NOLL : %1").arg(m_dStickToNOLL));
+    dumpIndented(stream, iIdent, QString("Stick to topocentric : %1").arg(m_dStickToTopocentric));
     dumpIndented(stream, iIdent, QString("Drag : %1").arg(m_dDrag_norm));
     dumpIndented(stream, iIdent, QString("Angular drag : %1").arg(m_dAngularDrag_norm));
     dumpIndented(stream, iIdent, QString("Mass : %1").arg(m_dMass_kg));

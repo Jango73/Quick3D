@@ -24,7 +24,7 @@
     In this frame, the origin is the center of the earth. Coordinates are expressed as x, y and z. \br
     In order to visualize the axis conventions, imagine you are in orbit, at the latitude 0 and longitude 0 point, looking at the earth. \br
     The positive Z axis points in front of you, the positive X axis points right of you, and the positive Y axis points upwards.
-    \section2 The NOLL frame (North-Oriented Local-Level)
+    \section2 The topocentric frame, or NOLL (North-Oriented Local-Level)
     In this frame, the origin is a point on earth. Coordinates are expressed as x, y and z. \br
     In order to visualize the axis conventions, imagine you are somewhere on earth, looking at true north. \br
     The positive Z axis points in front of you, the positive X axis points right of you, and the positive Y axis points upwards.
@@ -86,7 +86,7 @@ CComponent::CComponent(C3DScene* pScene)
     Q_UNUSED(pScene);
 
 #ifdef WIN32
-    LOG_METHOD_DEBUG(QString::number((quint32) this, 16));
+    LOG_METHOD_DEBUG(QString::number(qulonglong(this), 16));
 #endif
 
     m_iNumComponents++;
@@ -100,7 +100,7 @@ CComponent::CComponent(C3DScene* pScene)
 CComponent::~CComponent()
 {
 #ifdef WIN32
-    LOG_METHOD_DEBUG(QString::number((quint32) this, 16));
+    LOG_METHOD_DEBUG(QString::number(qulonglong(this), 16));
 #endif
 
     m_iNumComponents--;
@@ -189,7 +189,7 @@ void CComponent::setSelected(bool bValue)
 */
 void CComponent::setParent(QSP<CComponent> pParent)
 {
-    // Si l'objet a déjà un parent, on le supprime de la liste d'enfants du parent
+    // If the object already has a parent, delete it in the parent's child list
     if (m_pParent != nullptr)
     {
         m_pParent->m_vChildren.remove(m_pParent->m_vChildren.indexOf(QSP<CComponent>(this)));
@@ -540,7 +540,7 @@ void CComponent::setStatus(double dValue)
 
 CVector3 CComponent::toECEFRotation(CVector3 vRotation) const
 {
-    return CAxis(vRotation).transferTo(m_gGeoloc.getNOLLAxis()).eulerAngles();
+    return CAxis(vRotation).transferTo(m_gGeoloc.getTopocentricAxis()).eulerAngles();
 }
 
 //-------------------------------------------------------------------------------------------------

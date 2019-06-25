@@ -243,9 +243,9 @@ double CGeoloc::distanceTo(const CGeoloc& other)
 //---------------------------------------------------------------------------------------------
 
 /*!
-    Returns the NOLL (North-Oriented Local-Level) axis of this geoloc. See CComponent for details on the NOLL frame.
+    Returns the topocentric axis of this geoloc. See CComponent for details on the topocentric frame.
 */
-CAxis CGeoloc::getNOLLAxis() const
+CAxis CGeoloc::getTopocentricAxis() const
 {
     CAxis aReturnValue;
 

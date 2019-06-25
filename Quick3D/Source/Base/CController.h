@@ -101,7 +101,7 @@ public:
     CController(C3DScene* pScene);
 
     //! Destructor
-    virtual ~CController();
+    virtual ~CController() Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Setters

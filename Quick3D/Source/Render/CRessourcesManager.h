@@ -45,16 +45,16 @@ public:
     //!
     QSP<CMeshGeometry> loadMesh(const QString& sBaseFile, const QString& sMeshFileName, CComponent* pContainer);
 
-    //! Recupere un shader par son nom
+    //! Returns a shader by its name
     QString getShaderByFilePathName(const QString& filePathName);
 
-    //! Recupere un .obj par son nom
+    //! Returns an object file (.obj) by its name
     QString getObjByFilePathName(const QString& filePathName);
 
-    //! Recupere un îcone par son nom
+    //! Returns an icon by its name
     QIcon* getIconByFilePathName(const QString& filePathName);
 
-    //! Recupere un pixmap par son nom
+    //! Returns a pixmap by its name
     QPixmap* getPixmapByFilePathName(const QString& filePathName);
 
     //!
@@ -77,16 +77,16 @@ protected:
     QMutex      m_mMutex;
     C3DScene*   m_pScene;
 
-    //! Table de hachage ou sont stockees les shaders
+    //! Hash table used to store shaders
     QHash<QString, QString> m_Shaders;
 
-    //! Table de hachage ou sont stockees les obj
+    //! Hash table used to store .obj files
     QHash<QString, QString> m_Objs;
 
-    //! Table de hachage ou sont stockees les icones
+    //! Hash table used to store icons
     QHash<QString, QIcon*> m_Icons;
 
-    //! Table des mesh
+    //! Mesh table
     QVector<QSP<CMeshGeometry> > m_vGeometry;
 
     //! Material table

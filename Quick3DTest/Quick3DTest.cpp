@@ -48,7 +48,7 @@ Quick3DTest::Quick3DTest(QString sSceneFileName, QWidget *parent, Qt::WFlags fla
     m_pScene = new CGLWidgetScene();
     m_pView = new CView(m_pScene, ui.Render1);
 
-    // Gestion des évènements
+    // Event handlers
     connect(&m_tTimer, SIGNAL(timeout()), this, SLOT(onTimer()));
 
     connect(ui.actionLoad_scene, SIGNAL(triggered()), this, SLOT(onLoadSceneClicked()));
@@ -149,7 +149,7 @@ void Quick3DTest::onResize()
         m_pView->setGeometry(0, 0, ui.Render1->width(), ui.Render1->height());
         m_pScene->setGeometry(0, 0, m_pView->width(), m_pView->height());
         m_pScene->viewports()[0]->setPosition(CVector2(0.0, 0.0));
-        m_pScene->viewports()[0]->setSize(CVector2((double) ui.Render1->width(), (double) ui.Render1->height()));
+        m_pScene->viewports()[0]->setSize(CVector2(double(ui.Render1->width()), double(ui.Render1->height())));
     }
 }
 
@@ -244,7 +244,7 @@ void Quick3DTest::onTimer()
     if (m_pScene != nullptr && m_bRun == true)
     {
         QDateTime tCurrentTime = QDateTime::currentDateTime();
-        double dDeltaTime = (double) m_tPreviousTime.msecsTo(tCurrentTime) / 1000.0;
+        double dDeltaTime = double(m_tPreviousTime.msecsTo(tCurrentTime)) / 1000.0;
         m_tPreviousTime = tCurrentTime;
 
         m_pScene->updateScene(dDeltaTime);
@@ -314,7 +314,7 @@ void Quick3DTest::onExportTerrainClicked()
             int iPointsPerTile = ExportDialog.m_tbPointsPerTile->displayText().toInt();
             double dHeightOffset = ExportDialog.m_tbHeightOffset->displayText().toDouble();
 
-            double dPointSpacing = dTileSizeM / (double) iPointsPerTile;
+            double dPointSpacing = dTileSizeM / double(iPointsPerTile);
 
             CGeoloc gStart(dStartLat, dStartLon, 0.0);
 
@@ -327,8 +327,8 @@ void Quick3DTest::onExportTerrainClicked()
                 {
                     QString sFilename = m_sExportPath + "/" +
                             QString("Terrain_Z%1_X%2.raw")
-                            .arg((long) dCurrentZ, (int) 6, (int) 10, QChar('0'))
-                            .arg((long) dCurrentX, (int) 6, (int) 10, QChar('0'));
+                            .arg(long(dCurrentZ), int(6), int(10), QChar('0'))
+                            .arg(long(dCurrentX), int(6), int(10), QChar('0'));
 
                     QFile outputFile(sFilename);
 
@@ -340,8 +340,8 @@ void Quick3DTest::onExportTerrainClicked()
                         {
                             for (int iX = 0; iX < iPointsPerTile; iX++)
                             {
-                                double dPointX = dCurrentX + dPointSpacing * (double) iX;
-                                double dPointZ = dCurrentZ + dPointSpacing * (double) iZ;
+                                double dPointX = dCurrentX + dPointSpacing * double(iX);
+                                double dPointZ = dCurrentZ + dPointSpacing * double(iZ);
 
                                 CGeoloc gPoint(gStart, Math::CVector3(dPointX, 0.0, dPointZ));
 
@@ -350,9 +350,9 @@ void Quick3DTest::onExportTerrainClicked()
 
                                 if (dAltitude > dMaxAltitude) dMaxAltitude = dAltitude;
 
-                                short sAltitude = (short) dAltitude;
+                                short sAltitude = short(dAltitude);
 
-                                outputFile.write((const char*) &sAltitude, sizeof(short));
+                                outputFile.write(reinterpret_cast<const char*>(&sAltitude), sizeof(short));
                             }
                         }
 
@@ -391,7 +391,7 @@ void Quick3DTest::onGenerateMatrixClicked()
 
     if (pCamera != nullptr)
     {
-        // Dump de la scène
+        // Dump the scene
 
         QFile dump(QCoreApplication::applicationDirPath() + "/Scene.dump.txt");
         if (dump.open(QIODevice::WriteOnly))
@@ -413,12 +413,12 @@ void Quick3DTest::onGenerateMatrixClicked()
 
         CPanoramicMatrixParams tParams(vZones, vDepth, vDetection, vEdges, imgDepthImage, imgDetectionImage, imgContourImage);
 
-        tParams.m_sResolution				= QSize(600, 200);				// Resolution
-        tParams.m_gCameraPosition			= pCamera->geoloc();			// Camera position
-        tParams.m_dCameraTrueHeadingDegrees	= 0.0;							// True heading
-        tParams.m_vStartPanTiltDegrees		= CVector2(-60.0, -180.0);		// Start tilt and pan
-        tParams.m_vEndPanTiltDegrees		= CVector2(60.0, 180.0);			// End tilt and pan
-        tParams.m_vPanTiltOffsetDegrees		= CVector2(0.0, 0.0); 			// Tilt and pan offset
+        tParams.m_sResolution               = QSize(600, 200);              // Resolution
+        tParams.m_gCameraPosition           = pCamera->geoloc();            // Camera position
+        tParams.m_dCameraTrueHeadingDegrees = 0.0;                          // True heading
+        tParams.m_vStartPanTiltDegrees      = CVector2(-60.0, -180.0);      // Start tilt and pan
+        tParams.m_vEndPanTiltDegrees        = CVector2(60.0, 180.0);        // End tilt and pan
+        tParams.m_vPanTiltOffsetDegrees     = CVector2(0.0, 0.0);           // Tilt and pan offset
 
         pCamera->renderDepth_RayTraced(m_pScene, 10000.0, tParams, nullptr);
 
@@ -436,9 +436,9 @@ void Quick3DTest::onGenerateMatrixClicked()
                     double dNormValue = dValue / 20.0;
                     if (dNormValue < 0.0) dNormValue = 255.0;
                     if (dNormValue > 255.0) dNormValue = 255.0;
-                    int iIntValue = (int) dNormValue;
+                    int iIntValue = int(dNormValue);
 
-                    uiRGB = iIntValue;
+                    uiRGB = uint(iIntValue);
 
                     img.setPixel(x, y, uiRGB);
                 }
@@ -476,21 +476,21 @@ void Quick3DTest::onTimeChanged(int iValue)
 
 void Quick3DTest::onFogLevelChanged(int iValue)
 {
-    m_pScene->setFogLevel((double) iValue / 100.0);
+    m_pScene->setFogLevel(double(iValue) / 100.0);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void Quick3DTest::onWindLevelChanged(int iValue)
 {
-    m_pScene->setWindLevel((double) iValue / 100.0);
+    m_pScene->setWindLevel(double(iValue) / 100.0);
 }
 
 //-------------------------------------------------------------------------------------------------
 
 void Quick3DTest::onShaderQualityChanged(int iValue)
 {
-    m_pScene->setShaderQuality((double) iValue / 100.0);
+    m_pScene->setShaderQuality(double(iValue) / 100.0);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -517,7 +517,7 @@ void Quick3DTest::onMoveSpeedChanged(int iValue)
 {
     if (m_pScene->controller() != nullptr)
     {
-        m_pScene->controller()->setMoveSpeed((double) iValue / 100.0);
+        m_pScene->controller()->setMoveSpeed(double(iValue) / 100.0);
     }
 }
 
@@ -525,7 +525,7 @@ void Quick3DTest::onMoveSpeedChanged(int iValue)
 
 void Quick3DTest::onOverlookFOVChanged(int iValue)
 {
-    m_pScene->setOverlookFOV((double) iValue);
+    m_pScene->setOverlookFOV(double(iValue));
 }
 
 //-------------------------------------------------------------------------------------------------

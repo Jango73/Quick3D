@@ -34,13 +34,13 @@ public:
     // Control methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Enregistre les composants du noyau
+    //! Registers all core components
     void registerCoreComponents();
 
-    //! Enregistre un composant
+    //! Registers a single component
     void registerComponent(QString sClassName, MComponentInstantiator pInstantiator);
 
-    //! Instancie un composant selon son nom de classe pour la scène donnée
+    //! Instantiates a component with the given class name, for the given scene
     CComponent* instantiateComponent(QString sClassName, C3DScene* pScene);
 
     //-------------------------------------------------------------------------------------------------

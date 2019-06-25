@@ -90,7 +90,7 @@ public:
     CCamera(const CCamera& target);
 
     //! Destructor
-    virtual ~CCamera();
+    virtual ~CCamera() Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Setters
@@ -138,7 +138,7 @@ public:
     virtual QString getClassName() const Q_DECL_OVERRIDE { return ClassName_CCamera; }
 
     //! Returns \c true if this object is a camera
-    virtual bool isCamera() const { return true; }
+    virtual bool isCamera() const Q_DECL_OVERRIDE { return true; }
 
     //! Loads this object's parameters using the provided XML node
     virtual void loadParameters(const QString& sBaseFile, const CXMLNode& xComponent) Q_DECL_OVERRIDE;

@@ -106,19 +106,19 @@ public:
     // Getters
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne la liste des indice de sommets
+    //! Returns the list of vertex indices
     QVector<int>& indices() { return m_vIndices; }
 
-    //! Retourne la liste des indice de sommets
+    //! Returns the list of vertex indices
     const QVector<int>& indices() const { return m_vIndices; }
 
-    //! Retourne le vecteur normal de la facette
+    //! Returns the face's normal vector
     Math::CVector3& normal() { return m_vNormal; }
 
-    //! Retourne le vecteur normal de la facette
+    //! Returns the face's normal vector
     Math::CVector3 normal() const { return m_vNormal; }
 
-    //! Retourne le vecteur tangent de la facette
+    //! Returns the face's tangent vector
     Math::CVector3 tangent() const { return m_vTangent; }
 
     //!
@@ -131,16 +131,16 @@ public:
     // Control methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Opérateur de copie
+    //! Copy operator
     CFace& operator = (const CFace& target);
 
-    //! Opérateur de tri
+    //! Less than operator
     bool operator < (const CFace& target) const;
 
-    //! Calcule le vecteur normal de la facette
+    //! Computes the face's normal vector
     void computeNormal();
 
-    //! Calcul l'intersection entre le rayon fourni et la facette formée par les trois points fournis
+    //! Computes the instersection distance from ray's origin to the triangle described by v0, v1 and v2
     static Math::RayTracingResult intersectTriangle(
             const Math::CRay3& ray,
             Math::CVector3 v0,
@@ -148,8 +148,8 @@ public:
             Math::CVector3 v2
             );
 
-    //! Calcul l'intersection entre le rayon fourni et cette facette
-    //! Retourne systématiquement l'infini pour l'instant
+    //! Computes the intersection distance from ray's origin to this face
+    //! Actually just returns infinity
     Math::RayTracingResult intersect(Math::CRay3 ray);
 
     //-------------------------------------------------------------------------------------------------

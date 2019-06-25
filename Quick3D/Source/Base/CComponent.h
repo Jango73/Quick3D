@@ -95,7 +95,7 @@ public:
     CComponent(C3DScene* pScene);
 
     //! Destructor
-    virtual ~CComponent();
+    virtual ~CComponent() Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Setters
@@ -107,46 +107,46 @@ public:
     //! Sets the object's controller
     void setController(CController* pController);
 
-    //! Définit si l'objet est visible à la caméra
+    //! Sets whether the object is visible to the camera
     void setVisible(bool bValue);
 
-    //! Définit si l'objet produit des ombres portées
+    //! Sets whether the object casts shadows
     void setCastShadows(bool bValue);
 
-    //! Définit si l'objet est affecté par les ombres portées
+    //! Sets whether the object is affected by shadows
     void setReceiveShadows(bool bValue);
 
-    //! Définit si l'objet est inclut dans le ray-tracing
+    //! Sets whether the object is included in ray-tracing functions
     void setRaytracable(bool bValue);
 
-    //! Définit si l'objet est sélectionné
+    //! Sets whether the object is selected
     void setSelected(bool bValue);
 
-    //! Définit le parent
+    //! Sets the object's parent
     void setParent(QSP<CComponent> pParent);
 
-    //! Définit la géolocalisation
+    //! Sets the geo-location of the object
     virtual void setGeoloc(CGeoloc gGeoloc) Q_DECL_OVERRIDE;
 
-    //! Définit la position d'origine
+    //! Sets the original position
     void setPosition(Math::CVector3 vPosition);
 
-    //! Définit la rotation d'origine
+    //! Sets the original rotation as euler angles
     void setRotation(Math::CVector3 vRotation);
 
-    //! Définit l'échelle d'origine
+    //! Sets the original scale
     void setScale(Math::CVector3 vScale);
 
-    //! Définit la position animée
+    //! Sets the animated position
     void setAnimPosition(Math::CVector3 vPosition);
 
-    //! Définit la rotation animée
+    //! Sets the animated rotation as euler angles
     void setAnimRotation(Math::CVector3 vRotation);
 
-    //! Définit l'échelle animée
+    //! Sets the animated scale
     void setAnimScale(Math::CVector3 vScale);
 
-    //! Définit si l'objet hérite des transformations de son parent
+    //! Sets whether the object inherits transforms of its parent
     void setInheritTransform(bool bValue);
 
     //!
@@ -174,16 +174,16 @@ public:
     //! Is the object visible to the camera?
     bool isVisible() const;
 
-    //! Est-ce que l'objet projette des ombres?
+    //! Does the object cast shadow?
     bool castsShadows() const;
 
-    //! Est-ce que l'objet peut recevoir des ombres portées?
+    //! Is the object affected by shadows?
     bool receivesShadows() const;
 
-    //! Est-ce que l'objet est visible au ray-tracing?
+    //! Is the object included in ray-tracing computations?
     bool isRaytracable() const { return m_bRaytracable; }
 
-    //! Est-ce que l'objet est sélectionné?
+    //! Is the object selected?
     bool isSelected() const { return m_bSelected; }
 
     //! Returns the scene to which this object belongs
@@ -204,7 +204,7 @@ public:
     //! Returns this object's parent
     virtual QSP<CComponent> parentComponent() const { return m_pParent; }
 
-    //! Retourne les enfants
+    //! Returns the child objects
     QVector<QSP<CComponent> >& childComponents() { return m_vChildren; }
 
     //! Returns the object's root object
@@ -234,25 +234,25 @@ public:
     //! Returns the animated scale
     virtual Math::CVector3 animScale() const { return m_vAnimScale; }
 
-    //! Retourne la matrice de transformation monde
+    //! Returns the world tranforms matrix of this object
     Math::CMatrix4 worldTransform() const;
 
-    //! Retourne l'inverse de la matrice de transformation monde
+    //! Returns the inverted world tranforms matrix of this object
     Math::CMatrix4 worldTransformInverse() const;
 
     //!
     Math::CMatrix4 previousWorldTransform() const;
 
-    //! Retourne la position monde
+    //! Returns the world position of this object
     Math::CVector3 worldPosition() const;
 
-    //! Retourne la rotation monde
+    //! Returns the world rotation of this object as euler angles
     Math::CVector3 worldRotation() const;
 
-    //! Retourne la direction monde (vers où l'objet pointe)
+    //! Returns the world direction of this object, where the local +z axis of the object points
     Math::CVector3 worldDirection() const;
 
-    //! Retourne le facteur d'échelle monde
+    //! Returns the world scale of this object
     Math::CVector3 worldScale() const;
 
     //!
@@ -264,7 +264,7 @@ public:
     //!
     static void decComponentCounter(QString sClassName);
 
-    //! Retourne le nombre d'instances de cette classe dans l'application
+    //! Returns the number of instances of this class
     static int getNumComponents() { return m_iNumComponents; }
 
     //-------------------------------------------------------------------------------------------------
@@ -279,30 +279,30 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Loads this object's parameters
-    virtual void loadParameters(const QString& sBaseFile, const CXMLNode& xComponent);
+    virtual void loadParameters(const QString& sBaseFile, const CXMLNode& xComponent) Q_DECL_OVERRIDE;
 
     //! Solves the links of this object
-    virtual void solveLinks(C3DScene* pScene);
+    virtual void solveLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
 
     //! Deletes this object's links
-    virtual void clearLinks(C3DScene* pScene);
+    virtual void clearLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
 
-    //! Recherche un composant dans la hiérarchie de cet objet
+    //! Looks for a component in the parent/child tree of this object
     virtual QSP<CComponent> findComponent(QString sName, QSP<CComponent> pCaller = QSP<CComponent>(nullptr));
 
-    //! Cette méthode permet à l'objet de rajouter des items dans la scène qui le contient
+    //! Enables this component to add items to its parent scene
     virtual void addItems(C3DScene* pScene);
 
-    //! Permet à l'objet de mettre à jour le contexte de rendu
+    //! Enables this component to update the render context
     virtual void updateContext(CRenderContext* pContext);
 
-    //! Permet à l'objet de mettre à jour les items qu'il a crée dans la scène qui le contient
+    //! Enables this component to update items it has created in its parent scene
     virtual void updateItems(C3DScene* pScene);
 
-    //! Dans cette méthode, l'objet doit faire son rendu
+    //! The component must render itself here
     virtual void paint(CRenderContext* pContext);
 
-    //! Appel de la méthode paint des enfants
+    //! Calls the child components paint method
     virtual void postPaint(CRenderContext* pContext);
 
     //! Updates this object using the elapsed time since last update
@@ -320,7 +320,7 @@ public:
     //! Returns the world bounding box
     virtual CBoundingBox worldBounds();
 
-    //! Ray intersection
+    //! Computes ray intersection
     virtual Math::RayTracingResult intersect(Math::CRay3 ray);
 
     //! Flips all normals of this component (does something if component is a mesh)
@@ -350,7 +350,7 @@ public:
     //! Makes this component look at a target, using Z axis as forward axis
     void lookAt(CComponent* pTarget);
 
-    //! Copie la matrice de l'objet cible dans la matrice de cet objet
+    //! Copies the target's transform matrix into this component's transfomr matrix
     void copyTransform(const CComponent* pTarget);
 
     //! Dumps contents to a stream
@@ -369,9 +369,9 @@ public:
 private:
 
     Math::CVector3              m_vECEFRotation;                // Object's rotation in the ECEF frame (Earth-centered earth-fixed)
-    Math::CVector3              m_vPosition;                    // Object's position in the NOLL frame (North-oriented local-level)
-    Math::CVector3              m_vRotation;                    // Object's rotation (euler) in the NOLL frame
-    Math::CVector3              m_vScale;                       // Object's scale in the NOLL frame
+    Math::CVector3              m_vPosition;                    // Object's position in the topocentric frame
+    Math::CVector3              m_vRotation;                    // Object's rotation (euler) in the topocentric frame
+    Math::CVector3              m_vScale;                       // Object's scale in the topocentric frame
     Math::CVector3              m_vAnimPosition;                // Object's animated position in the local frame
     Math::CVector3              m_vAnimRotation;                // Object's animated rotation (euler) in the local frame
     Math::CVector3              m_vAnimScale;                   // Object's animated scale in the local frame

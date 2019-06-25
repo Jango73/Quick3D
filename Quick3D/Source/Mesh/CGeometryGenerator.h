@@ -28,7 +28,7 @@ public:
     CGeometryGenerator(C3DScene* pScene);
 
     //!
-    virtual ~CGeometryGenerator();
+    virtual ~CGeometryGenerator() Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Setters

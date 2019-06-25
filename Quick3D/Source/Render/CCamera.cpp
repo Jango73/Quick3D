@@ -272,7 +272,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
                         geoloc().Longitude,
                         geoloc().getPlanetRadius() * 0.5
                         ).toVector3() - pScene->worldOrigin(),
-                    CAxis(CVector3(Math::Pi * 0.5, 0.0, 0.0)).transferTo(geoloc().getNOLLAxis()).eulerAngles()
+                    CAxis(CVector3(Math::Pi * 0.5, 0.0, 0.0)).transferTo(geoloc().getTopocentricAxis()).eulerAngles()
                     );
 
         mCameraProjection = CCamera::getQtProjectionMatrix(
@@ -410,12 +410,12 @@ void CCamera::renderDepth_RayTraced
 
             foreach (QSP<CComponent> pComponent, pScene->components())
             {
-                // Est-ce que le composant doit être pris en compte par le ray-tracing?
+                // Is the component subject to ray-tracing?
                 if (pComponent->isVisible() && pComponent->isRaytracable())
                 {
                     RayTracingResult dNewResult = pComponent->intersect(rCameraRay);
 
-                    // On garde la distance remontée si elle est inférieure à elle déjà calculée
+                    // Keep the returned distance if less than the one already computed
                     if (dNewResult.m_dDistance < dResult.m_dDistance)
                     {
                         dResult = dNewResult;
@@ -470,7 +470,7 @@ QImage getFrameBuffer(CGLWidgetScene* pScene, QSize sSize)
 #define RENDER_MAP_SIZE_WIDTH_MIN		32
 #define RENDER_MAP_SIZE_WIDTH_MAX		512
 
-// Les deux chiffres suivants ne doivent pas être diminués sous peine d'avoir une matrice déformée
+// Do not lower the following numbers, resulting matrix will be deformed otherwise
 #define RENDER_SUBDIVISIONS_PAN			32
 #define RENDER_SUBDIVISIONS_TILT		16
 
@@ -648,7 +648,7 @@ void CCamera::renderDepth_CubeMapped
 
                 CVector2 vCoords(dCurrentPan, dCurrentTilt);
 
-                // Initialisation des données de sortie
+                // Initialize output data
                 double dDistance = -1.0;
                 CGeoZone::EGeoZoneFlag eDetectionFlag = CGeoZone::gzfUnknown;
                 int iDotRayNormal = -127;
@@ -658,7 +658,7 @@ void CCamera::renderDepth_CubeMapped
                         vCoords.Y >= 0.0 && vCoords.Y < (double) imgImage.height()
                         )
                 {
-                    // Récupération du pixel, contient la distance et l'angle d'incidence
+                    // Get the pixel, contains the distance and viewing angle
                     QRgb rgbPixel = imgImage.pixel((int) vCoords.X, (int) vCoords.Y);
 
                     // 0xFF = infini
@@ -668,37 +668,37 @@ void CCamera::renderDepth_CubeMapped
                     }
                     else
                     {
-                        // Récupération de la distance
+                        // Get the distance
                         dDistance = ((double) ((rgbPixel >> 16) & 0xFF) / 255.0) * 10000.0;
 
                         // Produit scalaire entre vecteur "vue" et vecteur normal du terrain
                         // Autrement dit, angle d'incidence du terrain
                         iDotRayNormal = (rgbPixel >> 8) & 0xFF;
 
-                        // Ici on travaille dans le repère NOLL (North-oriented local-level)
+                        // Here we work in the topocentric frame
 
-                        // Calcul du pan et tilt courant dans l'espace caméra
+                        // Compute current pan and tilt in camera space
                         dCurrentPan = Math::Angles::toRad(tParams.m_vStartPanTiltDegrees.Y + (dPanNormalized * (tParams.m_vEndPanTiltDegrees.Y - tParams.m_vStartPanTiltDegrees.Y)));
                         dCurrentTilt = Math::Angles::toRad(tParams.m_vStartPanTiltDegrees.X + (dTiltNormalized * (tParams.m_vEndPanTiltDegrees.X - tParams.m_vStartPanTiltDegrees.X)));
 
-                        // Création du rayon correspondant au point actuel
+                        // Create the ray for the current point
                         CRay3 rCameraRay;
 
-                        // Le rayon pointe vers +Z
+                        // The ray points to +Z
                         rCameraRay.vOrigin = CVector3(0.0, 0.0, 0.0);
                         rCameraRay.vNormal = CVector3(0.0, 0.0, 1.0);
 
-                        // Application des angles courants au rayon
+                        // Apply the current euler angles to the ray
                         rCameraRay = CMatrix4().makeRotation(CVector3(dCurrentTilt, 0.0, 0.0)) * rCameraRay;
                         rCameraRay = CMatrix4().makeRotation(CVector3(0.0, dCurrentPan, 0.0)) * rCameraRay;
 
-                        // Application du cap caméra au rayon
+                        // Apply the camera's heading to the ray
                         rCameraRay = CMatrix4().makeRotation(vCameraHeading) * rCameraRay;
 
-                        // Calcul du point d'intersection
+                        // Compute the intersection point
                         CVector3 vIntersectionPoint3D = rCameraRay.vOrigin + rCameraRay.vNormal * dDistance;
 
-                        // On récupère le flag correspondant aux zones de détection
+                        // Get the flag related to detection zones
                         eDetectionFlag = categorizePointFromZones(
                                     tParams.m_vZones,
                                     CVector2(vIntersectionPoint3D.X, vIntersectionPoint3D.Z)
@@ -706,7 +706,7 @@ void CCamera::renderDepth_CubeMapped
                     }
                 }
 
-                // Remplissage des matrices
+                // Fill the matrices
                 tParams.m_vDetection.append((char) eDetectionFlag);
                 tParams.m_vEdges.append((char) iDotRayNormal);
                 tParams.m_vDepth.append(dDistance);
@@ -717,17 +717,17 @@ void CCamera::renderDepth_CubeMapped
 
         START_SAMPLE("CCamera::renderDepth_CubeMapped:cleanup");
 
-        // Restauration des réglages de la scène
+        // Get the scene settings
         pGLWidgetScene->setGeometry(rOldGeometry);
         pGLWidgetScene->viewports()[0] = pOldViewport;
         pGLWidgetScene->setDepthComputing(false);
         pGLWidgetScene->setShaderQuality(0.5);
 
-        // Restauration des paramètres de la caméra
+        // Restore camera settings
         setRotation(vCameraInitialRotation);
         m_dFOV = dOldFOV;
 
-        // Destruction du viewport temporaire
+        // Destroy the temporary viewport
         delete pNewViewport;
 
         STOP_SAMPLE("CCamera::renderDepth_CubeMapped:cleanup");
@@ -738,6 +738,8 @@ void CCamera::renderDepth_CubeMapped
 
 void CCamera::computeFrustum(double dVerticalFOV, double dAspectRatio, double dMinDistance, double dMaxDistance)
 {
+    Q_UNUSED(dAspectRatio);
+
     // Remise à zéro des plans du frustum (pyramide de visualisation)
     m_pFrustumPlanes.clear();
 

@@ -369,11 +369,11 @@ void CTerrain::work()
         }
         */
 
-        CAxis aNOLLAxis = gPosition.getNOLLAxis();
+        CAxis aTopocentricAxis = gPosition.getTopocentricAxis();
 
         m_pMesh->vertices()[iIndex].position() = gPosition.toVector3();
         m_pMesh->vertices()[iIndex].normal() = m_pMesh->vertices()[iIndex].position().normalized();
-        m_pMesh->vertices()[iIndex].tangent() = aNOLLAxis.Front;
+        m_pMesh->vertices()[iIndex].tangent() = aTopocentricAxis.Front;
         m_pMesh->vertices()[iIndex].gravity() = m_pMesh->vertices()[iIndex].normal() * -1.0;
 
         if (pMaterial != nullptr && pTiledMaterial == nullptr)

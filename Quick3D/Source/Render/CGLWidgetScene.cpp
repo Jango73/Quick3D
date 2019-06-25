@@ -211,7 +211,7 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram
 {
     if (m_bForDisplay)
     {
-        // Ici on transfère tous les paramètres de rendu au shader actif
+        // Transfer all render parameters to active shader
 
         pProgram->setUniformValue("u_resolution", QVector2D(width(), height()));
         pProgram->setUniformValue("u_time", (GLfloat) m_dTime);
@@ -449,6 +449,8 @@ bool CGLWidgetScene::tryAddShaderProgram_VF(const QString& sName, const QString&
     if (pProgram->link())
     {
         m_vShaders->addShader(sName, pProgram);
+        qDebug() << QString("Using %1 for vertex shading").arg(sVertexPath);
+        qDebug() << QString("Using %1 for fragment shading").arg(sFragmentPath);
         return true;
     }
 
@@ -474,6 +476,8 @@ bool CGLWidgetScene::tryAddShaderProgram_VGF(const QString& sName, const QString
     if (pProgram->link())
     {
         m_vShaders->addShader(sName, pProgram);
+        qDebug() << QString("Using %1 for vertex shading").arg(sVertexPath);
+        qDebug() << QString("Using %1 for fragment shading").arg(sFragmentPath);
         return true;
     }
 

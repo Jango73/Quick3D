@@ -94,7 +94,7 @@ void CStandardController::update(double dDeltaTime)
             /*
             // Following is used when rotation is absolute
             Axis aOriginAxis(m_pRotationTarget->rotation());
-            Axis aNorthAxis = m_pRotationTarget->geoloc().getNOLLAxis();
+            Axis aNorthAxis = m_pRotationTarget->geoloc().getTopocentricAxis();
             aOriginAxis = aOriginAxis.transferFrom(aNorthAxis);
             m_pPositionTarget->setPosition(m_pPositionTarget->getPosition() + aOriginAxis.Right * (dMoveSpeed * dDeltaTime));
             */
@@ -138,7 +138,7 @@ void CStandardController::update(double dDeltaTime)
             if (m_pRotationTarget->isRootObject())
             {
                 Axis aOriginAxis = Axis(m_pRotationTarget->rotation());
-                Axis aNorthAxis = m_pRotationTarget->geoloc().getNOLLAxis();
+                Axis aNorthAxis = m_pRotationTarget->geoloc().getTopocentricAxis();
                 aOriginAxis = aOriginAxis.transferFrom(aNorthAxis);
                 aOriginAxis = aOriginAxis.rotate(vRotation);
                 aOriginAxis = aOriginAxis.transferTo(aNorthAxis);
@@ -161,7 +161,7 @@ void CStandardController::update(double dDeltaTime)
             if (m_pRotationTarget->isRootObject())
             {
                 Axis aOriginAxis = Axis(m_pRotationTarget->rotation());
-                Axis aNorthAxis = m_pRotationTarget->geoloc().getNOLLAxis();
+                Axis aNorthAxis = m_pRotationTarget->geoloc().getTopocentricAxis();
                 aOriginAxis = aOriginAxis.transferFrom(aNorthAxis);
                 aOriginAxis = aOriginAxis.rotate(vRotation);
                 aOriginAxis = aOriginAxis.transferTo(aNorthAxis);
@@ -356,7 +356,7 @@ void CStandardController::mouseMoveEvent(QMouseEvent* event)
                 if (m_pRotationTarget->isRootObject())
                 {
                     Axis aOriginAxis(m_pRotationTarget->rotation());
-                    Axis aNorthAxis = m_pRotationTarget->geoloc().getNOLLAxis();
+                    Axis aNorthAxis = m_pRotationTarget->geoloc().getTopocentricAxis();
                     aOriginAxis = aOriginAxis.transferFrom(aNorthAxis);
                     aOriginAxis = aOriginAxis.rotate(vRotationY);
                     aOriginAxis = aOriginAxis.transferTo(aNorthAxis);

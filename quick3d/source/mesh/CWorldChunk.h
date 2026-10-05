@@ -7,6 +7,9 @@
 #include <QMutex>
 #include <QMutexLocker>
 
+// Std
+#include <atomic>
+
 // Application
 #include "quick3d_global.h"
 #include "CWorker.h"
@@ -169,7 +172,9 @@ protected:
     CBoundingBox                        m_bWorldBounds;
     QVector<CBoundedMeshInstances*>     m_vBoundedMeshes;
     double                              m_dDistance;
-    bool                                m_bOK;
+    std::atomic<bool>                   m_bOK;
+    // Render thread only: set in setTerrain(), read in isEmpty()
+    bool                                m_bHadTerrain;
 
     // Shared data
 

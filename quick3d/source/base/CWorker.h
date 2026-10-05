@@ -4,6 +4,9 @@
 // Qt
 #include <QThread>
 
+// Std
+#include <atomic>
+
 // Application
 #include "quick3d_global.h"
 
@@ -33,10 +36,10 @@ public:
     // Getters
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne vrai si le travail a commencé
+    //! Retourne vrai si le travail a commencï¿½
     bool isStarted() { return m_bStarted; }
 
-    //! Retourne vrai si le travail est terminé
+    //! Retourne vrai si le travail est terminï¿½
     bool isFinished() { return m_bFinished; }
 
     //-------------------------------------------------------------------------------------------------
@@ -47,22 +50,25 @@ public:
     // Control methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Méthode de travail
+    //! Mï¿½thode de travail
     virtual void work();
 
     //! Annule le travail de l'objet
     void abort();
 
-    //! Exécute un sleep
+    //! Remet le travailleur en ï¿½tat d'ï¿½tre remis dans la file aprï¿½s une exï¿½cution
+    void resetForReuse();
+
+    //! Exï¿½cute un sleep
     void doSleep(int ms);
 
     //-------------------------------------------------------------------------------------------------
-    // Inherited methods protégées
+    // Inherited methods protï¿½gï¿½es
     //-------------------------------------------------------------------------------------------------
 
 protected:
 
-    //! Implémentation de la méthode run() de QThread
+    //! Implï¿½mentation de la mï¿½thode run() de QThread
     virtual void run();
 
     //-------------------------------------------------------------------------------------------------
@@ -71,10 +77,10 @@ protected:
 
 protected:
 
-    bool        m_bStopRequested;   // Indique si l'arrêt du travail est demandé
+    std::atomic<bool>   m_bStopRequested;   // Indique si l'arrï¿½t du travail est demandï¿½
 
 private:
 
-    bool        m_bStarted;         // Indique si le travail a commencé
-    bool        m_bFinished;        // Indique si le travail est terminé
+    std::atomic<bool>   m_bStarted;         // Indique si le travail a commencï¿½
+    std::atomic<bool>   m_bFinished;        // Indique si le travail est terminï¿½
 };

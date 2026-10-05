@@ -1,6 +1,9 @@
 
 #pragma once
 
+// Std
+#include <atomic>
+
 // qt-plus
 #include "CXMLNode.h"
 #include "CInterpolator.h"
@@ -164,7 +167,7 @@ protected:
     int                                 m_iMaxLevel;
     bool                                m_bAllHeightsOverSea;
     bool                                m_bIsWater;
-    bool                                m_bOK;
+    std::atomic<bool>                   m_bOK;
 
     static CInterpolator<double>        m_iAltitudes_Sand;
     static CInterpolator<double>        m_iAltitudes_Dirt;

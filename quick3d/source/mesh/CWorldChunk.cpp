@@ -24,6 +24,7 @@ CWorldChunk::CWorldChunk(C3DScene* pScene, CWorldTerrain* pAutoTerrain, CHeightF
     , m_pContainer(pContainer)
     , m_dDistance(0.0)
     , m_bOK(false)
+    , m_bHadTerrain(false)
 {
     CComponent::incComponentCounter(ClassName_CWorldChunk);
 
@@ -61,16 +62,18 @@ void CWorldChunk::setTerrain(QSP<CTerrain> value, bool bGenerateNow)
 {
     m_pTerrain = value;
 
+    if (m_pTerrain != nullptr)
+    {
+        m_bHadTerrain = true;
+    }
+
+    // Detail generation is queued by the build pass once the terrain is
+    // ready: this worker must never block waiting for another worker.
     if (m_pTerrain && m_pTerrain->level() < 2)
     {
         if (bGenerateNow)
         {
             work();
-        }
-        else
-        {
-            // Add this to workers for detail generation
-            CWorkerManager::getInstance()->addWorker(this);
         }
     }
 }
@@ -314,7 +317,10 @@ bool CWorldChunk::drawable()
 bool CWorldChunk::isEmpty()
 {
     bool bWaitingForBuild = CWorkerManager::getInstance()->containsWorker(this);
-    bool bSelfEmpty = (bWaitingForBuild == false && m_pTerrain == nullptr);
+    // Only chunks that already held a terrain count as empty: a freshly
+    // subdivided child has none yet, and deleting it before the build pass
+    // assigns one would lose its quadrant forever.
+    bool bSelfEmpty = (bWaitingForBuild == false && m_pTerrain == nullptr && m_bHadTerrain == true);
     bool bChildrenEmpty = true;
 
     foreach (QSP<CComponent> pChildComponent, m_vChildren)
@@ -404,15 +410,16 @@ void CWorldChunk::clearTerrain()
 
 void CWorldChunk::work()
 {
-    while (true)
-    {
-        if (m_pTerrain == nullptr) return;
-        if (m_bStopRequested) return;
-        if (m_pTerrain->isOK() == true) break;
-        msleep(50);
-    }
+    if (m_pTerrain == nullptr) return;
+    if (m_bStopRequested) return;
 
-    if (m_pTerrain != nullptr)
+    // The terrain mesh is built by its own worker: never block this worker
+    // waiting for it. The build pass queues detail work again once the
+    // terrain is ready, so simply leave the slot free meanwhile.
+    QSP<CTerrain> pTerrain = m_pTerrain;
+
+    if (pTerrain->isOK() == false) return;
+
     {
         // Create bounded containers
         {

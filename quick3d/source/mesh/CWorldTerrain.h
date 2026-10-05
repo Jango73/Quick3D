@@ -136,7 +136,7 @@ public:
     virtual void dump(QTextStream& stream, int iIdent);
 
     //-------------------------------------------------------------------------------------------------
-    // Méthodes protégés
+    // Mï¿½thodes protï¿½gï¿½s
     //-------------------------------------------------------------------------------------------------
 
 protected:
@@ -147,8 +147,14 @@ protected:
     //!
     bool enoughDetail(QSP<CWorldChunk> pChunk, CRenderContext* pContext, int iLevel);
 
-    //!
-    void paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRenderContext* pContext, QSP<CWorldChunk> pChunk, int iLevel, bool bForcePaint);
+    //! Collects the chunks to draw, falling back to the closest ready ancestor
+    void paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRenderContext* pContext, QSP<CWorldChunk> pChunk, int iLevel, QSP<CWorldChunk> pFallbackChunk);
+
+    //! Collects the fallback chunk when nothing finer can be drawn
+    void collectFallbackChunk(QVector<QSP<CWorldChunk> >& vChunkCollect, CRenderContext* pContext, QSP<CWorldChunk> pFallbackChunk);
+
+    //! Queues chunk detail work once its terrain is ready
+    void requestChunkDetailWork(QSP<CWorldChunk> pChunk);
 
     //!
     void buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pContext, int iLevel);

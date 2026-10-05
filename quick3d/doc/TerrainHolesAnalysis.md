@@ -62,6 +62,13 @@ dependency), or move the detail generation out of the worker pool. And fix the
 scheduler to scan the whole queue (count running workers instead of pinning
 service to the first N slots) and reap finished workers at any index.
 
+Fix applied: `CWorkerManager::run()` scans the whole queue, counts running
+workers and reaps finished workers at any index; `containsWorker()` is now
+mutex-protected; `CWorldChunk::work()` returns immediately when the terrain
+is not ready instead of busy-waiting, and the build pass
+(`CWorldTerrain::requestChunkDetailWork()`, called from `buildRecurse()`)
+re-queues chunk detail work once the terrain is ready.
+
 ## 2. Aggravating defect: `paintRecurse()` draws nothing when data is not ready
 
 `CWorldTerrain::paintRecurse()` (`CWorldTerrain.cpp`, lines ~612-700):
@@ -93,6 +100,11 @@ Fix direction: in the `bStayHere` branch, if the local terrain is not ready but
 children are drawable, keep drawing the children (finer data is better than a
 hole); if neither is drawable, draw the closest ready ancestor instead of
 nothing.
+
+Fix applied: `paintRecurse()` threads the closest ready ancestor through the
+recursion (`pFallbackChunk`, via `collectFallbackChunk()`) and collects it
+when neither the chunk nor its children can be drawn, in both the `bStayHere`
+and the detail-wanted branches.
 
 ## 3. Second mechanism: fresh child chunks deleted before their first build
 
@@ -138,6 +150,10 @@ Fix direction: never delete a child that was created but not yet visited by
 `buildRecurse()` (e.g. timestamp/flag on creation, or only prune children that
 already had a terrain once), and/or run the pruning in the build pass instead
 of the paint pass.
+
+Fix applied: `CWorldChunk::isEmpty()` only reports empty for chunks that
+already held a terrain (`m_bHadTerrain`, set in `setTerrain()`), so freshly
+subdivided children survive until the build pass assigns them a patch.
 
 ## 4. Ruled out
 

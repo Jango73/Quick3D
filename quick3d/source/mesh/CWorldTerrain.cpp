@@ -8,6 +8,7 @@
 // Application
 #include "C3DScene.h"
 #include "CComponentFactory.h"
+#include "CWorkerManager.h"
 #include "CWorldTerrain.h"
 #include "CTreeGenerator.h"
 #include "CTiledMaterial.h"
@@ -274,7 +275,7 @@ void CWorldTerrain::paint(CRenderContext* pContext)
 
     QVector<QSP<CWorldChunk> > vChunkCollect;
 
-    paintRecurse(vChunkCollect, pContext, m_pRoot, m_iLevels, false);
+    paintRecurse(vChunkCollect, pContext, m_pRoot, m_iLevels, QSP<CWorldChunk>());
 
     std::sort(vChunkCollect.begin(), vChunkCollect.end());
 
@@ -366,6 +367,32 @@ bool CWorldTerrain::enoughDetail(QSP<CWorldChunk> pChunk, CRenderContext* pConte
 //-------------------------------------------------------------------------------------------------
 
 /*!
+    Queues detail generation for \a pChunk once its terrain mesh is ready. \br\br
+    The chunk worker never waits for the terrain worker itself: this build
+    pass re-queues the chunk as long as its detail is missing, so a chunk
+    whose worker ran too early is simply picked up again on a later pass.
+*/
+void CWorldTerrain::requestChunkDetailWork(QSP<CWorldChunk> pChunk)
+{
+    if (pChunk == nullptr) return;
+    if (pChunk->isOK()) return;
+    if (pChunk->terrain() == nullptr || pChunk->terrain()->isOK() == false) return;
+    if (pChunk->terrain()->level() >= 2) return;
+
+    CWorkerManager* pManager = CWorkerManager::getInstance();
+
+    if (pManager->containsWorker(pChunk.data()) == false)
+    {
+        // A chunk whose worker ran before the terrain was ready is marked
+        // finished: reset it so the scheduler picks it up again
+        pChunk->resetForReuse();
+        pManager->addWorker(pChunk.data());
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
     Called by paint() to build necessary terrain patches given the camera location. \br\br
     \a pChunk is any chunk in the chunk tree of the terrain. \br
     \a pContext is the rendering context. \br
@@ -373,6 +400,8 @@ bool CWorldTerrain::enoughDetail(QSP<CWorldChunk> pChunk, CRenderContext* pConte
 */
 void CWorldTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pContext, int iLevel)
 {
+    if (pChunk == nullptr) return;
+
     CGeoloc gOriginalChunkPosition = pChunk->originalGeoloc();
     CGeoloc gOriginalChunkSize = pChunk->originalSize();
 
@@ -442,6 +471,8 @@ void CWorldTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pConte
 
             pChunk->setUsedNow();
         }
+
+        requestChunkDetailWork(pChunk);
     }
     else
     {
@@ -612,8 +643,43 @@ void CWorldTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pConte
 
 //-------------------------------------------------------------------------------------------------
 
-void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRenderContext* pContext, QSP<CWorldChunk> pChunk, int iLevel, bool bForcePaint)
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Collects \a pFallbackChunk for drawing when nothing finer is available. \br\br
+    \a pFallbackChunk is the closest ready ancestor: drawing it covers the
+    area with coarser data instead of leaving a hole. It is skipped when null
+    or already collected from a sibling subtree.
+*/
+void CWorldTerrain::collectFallbackChunk(QVector<QSP<CWorldChunk> >& vChunkCollect, CRenderContext* pContext, QSP<CWorldChunk> pFallbackChunk)
 {
+    if (pFallbackChunk == nullptr) return;
+
+    pFallbackChunk->setDistance(
+                (
+                    pFallbackChunk->geoloc().toVector3() -
+                    pContext->camera()->geoloc().toVector3()
+                    )
+                .magnitude()
+                );
+
+    if (vChunkCollect.contains(pFallbackChunk)) return;
+
+    vChunkCollect.append(pFallbackChunk);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Called by paint() to collect the chunks to draw for \a pChunk and its children. \br\br
+    \a pFallbackChunk is the closest ready ancestor of \a pChunk: when neither
+    the chunk nor its children can be drawn yet, it is collected instead of
+    leaving a hole. Finer data always wins over this fallback on later frames.
+*/
+void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRenderContext* pContext, QSP<CWorldChunk> pChunk, int iLevel, QSP<CWorldChunk> pFallbackChunk)
+{
+    if (pChunk == nullptr) return;
+
     CGeoloc gChunkPosition = pChunk->geoloc();
 
     bool bStayHere = enoughDetail(pChunk, pContext, iLevel);
@@ -623,16 +689,25 @@ void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRen
     {
         QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 
-        if (pChild->drawable() == false)
+        if (pChild == nullptr || pChild->drawable() == false)
         {
             bChildrenDrawable = false;
             break;
         }
     }
 
+    bool bSelfReady = pChunk->terrain() && pChunk->terrain()->isOK();
+
+    QSP<CWorldChunk> pReadyAncestor = pFallbackChunk;
+
+    if (bSelfReady)
+    {
+        pReadyAncestor = pChunk;
+    }
+
     if (bStayHere)
     {
-        if (pChunk->terrain() && pChunk->terrain()->isOK())
+        if (bSelfReady)
         {
             pChunk->setDistance(
                         (
@@ -670,8 +745,14 @@ void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRen
             {
                 QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 
-                paintRecurse(vChunkCollect, pContext, pChild, iLevel - 1, false);
+                paintRecurse(vChunkCollect, pContext, pChild, iLevel - 1, pReadyAncestor);
             }
+        }
+        else
+        {
+            // Neither this patch nor the children are ready: draw the closest
+            // ready ancestor instead of leaving a hole
+            collectFallbackChunk(vChunkCollect, pContext, pReadyAncestor);
         }
     }
     else
@@ -683,10 +764,10 @@ void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRen
             {
                 QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 
-                paintRecurse(vChunkCollect, pContext, pChild, iLevel - 1, false);
+                paintRecurse(vChunkCollect, pContext, pChild, iLevel - 1, pReadyAncestor);
             }
         }
-        else
+        else if (bSelfReady)
         {
             pChunk->setDistance(
                         (
@@ -698,6 +779,12 @@ void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRen
 
             // Paint this chunk
             vChunkCollect.append(pChunk);
+        }
+        else
+        {
+            // Children wanted but not ready, and this patch is not ready
+            // either: draw the closest ready ancestor instead of a hole
+            collectFallbackChunk(vChunkCollect, pContext, pReadyAncestor);
         }
     }
 }

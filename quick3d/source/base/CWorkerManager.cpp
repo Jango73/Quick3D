@@ -42,6 +42,8 @@ CWorkerManager::~CWorkerManager()
 
 bool CWorkerManager::containsWorker(CWorker* pWorker)
 {
+    QMutexLocker locker(&m_mMutex);
+
     return m_vWorkers.contains(pWorker);
 }
 
@@ -67,12 +69,17 @@ void CWorkerManager::removeWorker(CWorker* pWorker)
     {
         if (m_vWorkers[iIndex] == pWorker)
         {
-            if (pWorker->isStarted() == true && pWorker->isFinished() == false)
+            m_vWorkers.remove(iIndex);
+
+            // Wait outside any ambiguity: a worker whose finished flag is
+            // already set while its thread is still exiting must be joined
+            // before its owner destroys it. wait() on a finished thread
+            // returns immediately.
+            if (pWorker->isStarted() == true)
             {
                 pWorker->abort();
             }
 
-            m_vWorkers.remove(iIndex);
             return;
         }
     }
@@ -87,23 +94,31 @@ void CWorkerManager::run()
         {
             QMutexLocker locker(&m_mMutex);
 
-            for (int iIndex = 0; iIndex < MAX_WORKERS_RUNNING; iIndex++)
+            // Service the whole queue: count the running workers instead of
+            // pinning service to the first slots, so a blocked head worker
+            // can never starve the workers queued behind it.
+            // Finished workers are reaped at any index.
+            int iRunningWorkers = 0;
+
+            for (int iIndex = 0; iIndex < m_vWorkers.count(); iIndex++)
             {
-                if (m_vWorkers.count() > iIndex)
+                if (m_vWorkers[iIndex]->isFinished())
                 {
-                    if (m_vWorkers[iIndex]->isStarted() == false)
+                    m_vWorkers.remove(iIndex);
+                    iIndex--;
+                }
+                else if (m_vWorkers[iIndex]->isStarted() == false)
+                {
+                    if (iRunningWorkers < MAX_WORKERS_RUNNING)
                     {
                         m_vWorkers[iIndex]->start();
                         m_vWorkers[iIndex]->setPriority(QThread::HighPriority);
+                        iRunningWorkers++;
                     }
-                    else
-                    {
-                        if (m_vWorkers[iIndex]->isFinished())
-                        {
-                            m_vWorkers.remove(iIndex);
-                            iIndex--;
-                        }
-                    }
+                }
+                else
+                {
+                    iRunningWorkers++;
                 }
             }
         }

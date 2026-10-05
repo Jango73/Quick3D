@@ -21,3 +21,11 @@ target_link_libraries(Quick3DTest PRIVATE
 )
 
 set_target_properties(Quick3DTest PROPERTIES DEBUG_POSTFIX "d")
+
+# Runtime data (scenes, models, textures) resolves next to the binary
+# (see CRessourcesManager); mirror quick3dtest/bin/ beside the executable
+add_custom_command(TARGET Quick3DTest POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/bin
+        $<TARGET_FILE_DIR:Quick3DTest>
+)

@@ -42,6 +42,9 @@ public:
 
     void loadScene(QString sFileName);
 
+    //! Enables render check mode : captures the 3D view after a few frames, logs the black pixel ratio, quits
+    void setCheckRenderMode(bool bEnabled) { m_bCheckRender = bEnabled; }
+
     //-------------------------------------------------------------------------------------------------
     // Protected methods
     //-------------------------------------------------------------------------------------------------
@@ -115,4 +118,6 @@ protected:
     QString                         m_sExportPath;
     bool                            m_bProcessEvents;
     bool                            m_bRun;
+    bool                            m_bCheckRender;
+    int                             m_iCheckRenderFrames;
 };

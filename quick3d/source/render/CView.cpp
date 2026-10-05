@@ -58,15 +58,28 @@ CView::~CView()
 void CView::setScene(CGLWidgetScene* pScene)
 {
     //-----------------------------------------------
-    // Initialisation OpenGL
+    // OpenGL initialization
 
     m_pScene = pScene;
 
     if (m_pScene != nullptr)
     {
-        m_pScene->makeCurrentRenderingContext();
+        // The scene is hosted as a plain child widget, never as the graphics
+        // view viewport : QGraphicsView intercepts viewport paint events in
+        // viewportEvent, so QOpenGLWidget::paintGL never runs while set as viewport.
+        // No WA_NativeWindow here : QOpenGLWidget renders to an offscreen buffer
+        // composed by Qt, a forced native window breaks onscreen presentation.
+        m_pScene->setParent(this);
+        m_pScene->setGeometry(frameRect());
+        m_pScene->show();
+        m_pScene->raise();
 
-        setViewport(m_pScene);
+        setFocusPolicy(Qt::StrongFocus);
+        m_pScene->setFocusPolicy(Qt::StrongFocus);
+        m_pScene->setFocusProxy(this);
+        m_pScene->installEventFilter(this);
+
+        m_pScene->makeCurrentRenderingContext();
     }
 }
 
@@ -215,6 +228,37 @@ void CView::focusOutEvent(QFocusEvent* event)
             }
         }
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+bool CView::eventFilter(QObject* pObject, QEvent* pEvent)
+{
+    if (pObject == m_pScene && m_pScene != nullptr && pEvent != nullptr)
+    {
+        switch (pEvent->type())
+        {
+        case QEvent::MouseButtonPress:
+            mousePressEvent(static_cast<QMouseEvent*>(pEvent));
+            break;
+        case QEvent::MouseButtonRelease:
+            mouseReleaseEvent(static_cast<QMouseEvent*>(pEvent));
+            break;
+        case QEvent::MouseMove:
+            mouseMoveEvent(static_cast<QMouseEvent*>(pEvent));
+            break;
+        case QEvent::Wheel:
+            wheelEvent(static_cast<QWheelEvent*>(pEvent));
+            break;
+        case QEvent::FocusOut:
+            focusOutEvent(static_cast<QFocusEvent*>(pEvent));
+            break;
+        default:
+            break;
+        }
+    }
+
+    return QGraphicsView::eventFilter(pObject, pEvent);
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -87,35 +87,30 @@ CTexture::CTexture(C3DScene* pScene, QString sName, const QImage& imgTexture, QS
     , m_pUpdater(nullptr)
     , m_TextureUpdateWorker(nullptr)
     , m_uiGLTexture(0)
+    , m_tTargetSize(size)
     , m_bIsDynamic(bIsDynamic)
     , m_bDirty(false)
     , m_iUpdateFPS(25)
     , m_iUpdateCounter(0)
 {
+    Q_UNUSED(iIndex);
+
     if (imgTexture.width() > 0 && imgTexture.height() > 0)
     {
+        // Keep a CPU copy : no OpenGL context exists while the scene loads
+        // (widget not shown), so the GPU upload is deferred to ensureUploaded()
+        m_imgTexture = imgTexture.copy();
+
         m_pScene->makeCurrentRenderingContext();
 
-        QImage tImage = convertToGLFormat(imgTexture);
-
-        GL_glActiveTexture(GL_TEXTURE1 + iIndex);
-
-        glGenTextures(1, &m_uiGLTexture);
+        ensureUploaded();
 
         if (m_bIsDynamic)
         {
-            m_imgTexture = imgTexture.copy();
             m_TextureUpdateWorker = new CTextureUpdater(this);
             connect(m_TextureUpdateWorker, SIGNAL(updateFinished()), this, SLOT(onUpdateFinished()));
             m_TextureUpdateWorker->start();
         }
-
-        glBindTexture(GL_TEXTURE_2D, m_uiGLTexture);
-
-        tImage = tImage.scaled(size.width(), size.height(), Qt::IgnoreAspectRatio);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tImage.width(), tImage.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tImage.bits());
-
-        GL_glGenerateMipmap(GL_TEXTURE_2D);
     }
 }
 
@@ -152,11 +147,56 @@ void CTexture::update(double dDeltaTime)
 
 //-------------------------------------------------------------------------------------------------
 
+void CTexture::ensureUploaded()
+{
+    if (m_uiGLTexture != 0)
+    {
+        return;
+    }
+
+    if (m_imgTexture.width() <= 0 || m_imgTexture.height() <= 0)
+    {
+        return;
+    }
+
+    if (QOpenGLContext::currentContext() == nullptr)
+    {
+        return;
+    }
+
+    glGenTextures(1, &m_uiGLTexture);
+
+    if (m_uiGLTexture == 0)
+    {
+        return;
+    }
+
+    glBindTexture(GL_TEXTURE_2D, m_uiGLTexture);
+
+    QImage tImage = convertToGLFormat(m_imgTexture);
+
+    tImage = tImage.scaled(m_tTargetSize.width(), m_tTargetSize.height(), Qt::IgnoreAspectRatio);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tImage.width(), tImage.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tImage.bits());
+
+    GL_glGenerateMipmap(GL_TEXTURE_2D);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CTexture::activate(int iIndex)
 {
     m_pScene->makeCurrentRenderingContext();
 
     GL_glActiveTexture(GL_TEXTURE1 + iIndex);
+
+    ensureUploaded();
+
+    // No GPU texture (source image missing or upload failed) : leave the unit
+    // untouched so the caller can fall back to the untextured path
+    if (m_uiGLTexture == 0)
+    {
+        return;
+    }
 
     glBindTexture(GL_TEXTURE_2D, m_uiGLTexture);
 

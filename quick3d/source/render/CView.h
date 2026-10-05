@@ -95,6 +95,8 @@ protected:
     virtual void wheelEvent(QWheelEvent *event);
     virtual void focusOutEvent(QFocusEvent* event);
 
+    virtual bool eventFilter(QObject* pObject, QEvent* pEvent);
+
     //-------------------------------------------------------------------------------------------------
     // Signals
     //-------------------------------------------------------------------------------------------------

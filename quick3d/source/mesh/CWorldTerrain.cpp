@@ -329,6 +329,8 @@ void CWorldTerrain::buildRoot(CRenderContext* pContext)
         startLon = startLon - fmod(startLon, 90.0);
         startLon = Angles::clipAngleDegreePIMinusPI(startLon);
 
+        LOG_DEBUG(QString("CWorldTerrain::buildRoot() : camera lon = %1, start lon = %2").arg(pContext->camera()->geoloc().Longitude).arg(startLon));
+
         m_pRoot = QSP<CWorldChunk>(new CWorldChunk(m_pScene, this, this));
         m_pRoot->setInheritTransform(false);
         m_pRoot->CComponent::setParent(QSP<CComponent>(this));
@@ -410,6 +412,17 @@ void CWorldTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pConte
 
     // Decide whether this level of detail is enough
     bool bStayHere = enoughDetail(pChunk, pContext, iLevel);
+
+    {
+        static int iCounter = 0;
+        if (iCounter < 3)
+        {
+            iCounter++;
+            LOG_DEBUG(QString("CWorldTerrain::buildRecurse() : level = %1, stay = %2, children = %3, has terrain = %4, cam lat = %5 lon = %6")
+                .arg(iLevel).arg(bStayHere).arg(pChunk->childComponents().count()).arg(pChunk->terrain() != nullptr)
+                .arg(pContext->camera()->geoloc().Latitude).arg(pContext->camera()->geoloc().Longitude));
+        }
+    }
 
     if (bStayHere)
     {

@@ -22,6 +22,7 @@ using namespace Math;
 CGLWidgetScene::CGLWidgetScene(bool bForDisplay)
     : QOpenGLWidget()
     , C3DScene(bForDisplay)
+    , m_bShadersInitialized(false)
 {
     QSurfaceFormat tFormat;
     tFormat.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
@@ -62,6 +63,13 @@ void CGLWidgetScene::paintGL()
         m_tStatistics.reset();
 
         makeCurrentRenderingContext();
+
+        // The OpenGL context only exists once the widget is shown: compile shaders on first frame
+        if (m_bShadersInitialized == false)
+        {
+            initShaders();
+            m_bShadersInitialized = true;
+        }
 
         //-------------------------------------------------------------------------------------------------
         // Clear frame buffer
@@ -129,9 +137,7 @@ void CGLWidgetScene::init(QVector<QSP<CComponent> > vComponents)
 
     if (m_bForDisplay)
     {
-        makeCurrentRenderingContext();
-
-        initShaders();
+        m_bShadersInitialized = false;
     }
 
     C3DScene::init(vComponents);
@@ -447,19 +453,28 @@ bool CGLWidgetScene::tryAddShaderProgram_VF(const QString& sName, const QString&
     QOpenGLShaderProgram* pProgram = new QOpenGLShaderProgram();
 
     if (pProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, ressourcesManager()->getShaderByFilePathName(sVertexPath)) == false)
+    {
+        LOG_DEBUG(QString("Vertex shader failed : %1 : %2").arg(sVertexPath, pProgram->log()));
+        delete pProgram;
         return false;
+    }
 
     if (pProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, ressourcesManager()->getShaderByFilePathName(sFragmentPath)) == false)
+    {
+        LOG_DEBUG(QString("Fragment shader failed : %1 : %2").arg(sFragmentPath, pProgram->log()));
+        delete pProgram;
         return false;
+    }
 
     if (pProgram->link())
     {
         m_vShaders->addShader(sName, pProgram);
-        qDebug() << QString("Using %1 for vertex shading").arg(sVertexPath);
-        qDebug() << QString("Using %1 for fragment shading").arg(sFragmentPath);
+        LOG_DEBUG(QString("Using %1 for vertex shading").arg(sVertexPath));
+        LOG_DEBUG(QString("Using %1 for fragment shading").arg(sFragmentPath));
         return true;
     }
 
+    LOG_DEBUG(QString("Shader link failed : %1 %2 : %3").arg(sVertexPath, sFragmentPath, pProgram->log()));
     delete pProgram;
     return false;
 }
@@ -471,22 +486,36 @@ bool CGLWidgetScene::tryAddShaderProgram_VGF(const QString& sName, const QString
     QOpenGLShaderProgram* pProgram = new QOpenGLShaderProgram();
 
     if (pProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, ressourcesManager()->getShaderByFilePathName(sVertexPath)) == false)
+    {
+        LOG_DEBUG(QString("Vertex shader failed : %1 : %2").arg(sVertexPath, pProgram->log()));
+        delete pProgram;
         return false;
+    }
 
     if (pProgram->addShaderFromSourceCode(QOpenGLShader::Geometry, ressourcesManager()->getShaderByFilePathName(sGeometryPath)) == false)
+    {
+        LOG_DEBUG(QString("Geometry shader failed : %1 : %2").arg(sGeometryPath, pProgram->log()));
+        delete pProgram;
         return false;
+    }
 
     if (pProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, ressourcesManager()->getShaderByFilePathName(sFragmentPath)) == false)
+    {
+        LOG_DEBUG(QString("Fragment shader failed : %1 : %2").arg(sFragmentPath, pProgram->log()));
+        delete pProgram;
         return false;
+    }
 
     if (pProgram->link())
     {
         m_vShaders->addShader(sName, pProgram);
-        qDebug() << QString("Using %1 for vertex shading").arg(sVertexPath);
-        qDebug() << QString("Using %1 for fragment shading").arg(sFragmentPath);
+        LOG_DEBUG(QString("Using %1 for vertex shading").arg(sVertexPath));
+        LOG_DEBUG(QString("Using %1 for geometry shading").arg(sGeometryPath));
+        LOG_DEBUG(QString("Using %1 for fragment shading").arg(sFragmentPath));
         return true;
     }
 
+    LOG_DEBUG(QString("Shader link failed : %1 %2 %3 : %4").arg(sVertexPath, sGeometryPath, sFragmentPath, pProgram->log()));
     delete pProgram;
     return false;
 }

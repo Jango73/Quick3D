@@ -119,6 +119,8 @@ QSP<CMeshGeometry> CRessourcesManager::loadMesh(const QString& sBaseFile, const 
 {
     QString sFullFileName = locateResource(sBaseFile, sMeshFileName);
 
+    LOG_DEBUG(QString("CRessourcesManager::loadMesh() : %1 located as %2").arg(sMeshFileName, sFullFileName));
+
     QSP<CMeshGeometry> pLoadedMesh = findMesh(sFullFileName);
 
     if (pLoadedMesh != nullptr)
@@ -129,11 +131,17 @@ QSP<CMeshGeometry> CRessourcesManager::loadMesh(const QString& sBaseFile, const 
     if (sMeshFileName.contains(".obj"))
     {
         pLoadedMesh = COBJLoader::getInstance()->load(sBaseFile, pContainer, getObjByFilePathName(sFullFileName));
+
+        LOG_DEBUG(QString("CRessourcesManager::loadMesh() : OBJ loaded = %1").arg(pLoadedMesh != nullptr ? "yes" : "null"));
+
         pLoadedMesh->setURL(sFullFileName);
     }
     else if (sMeshFileName.contains(".q3d"))
     {
         pLoadedMesh = CQ3DLoader::getInstance()->load(sBaseFile, pContainer, getObjByFilePathName(sFullFileName));
+
+        LOG_DEBUG(QString("CRessourcesManager::loadMesh() : Q3D loaded = %1").arg(pLoadedMesh != nullptr ? "yes" : "null"));
+
         pLoadedMesh->setURL(sFullFileName);
     }
 

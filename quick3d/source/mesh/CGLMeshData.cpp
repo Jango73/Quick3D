@@ -56,7 +56,13 @@ CGLMeshData::CGLMeshData(C3DScene* pScene)
 */
 CGLMeshData::~CGLMeshData()
 {
-    GL_glDeleteBuffers(2, m_iVBO);
+    m_pScene->makeCurrentRenderingContext();
+
+    // At application teardown the OpenGL context may already be gone : skip GPU cleanup then
+    if (QOpenGLContext::currentContext() != nullptr)
+    {
+        GL_glDeleteBuffers(2, m_iVBO);
+    }
 
     if (m_vRenderPoints != nullptr)
     {
@@ -67,8 +73,6 @@ CGLMeshData::~CGLMeshData()
     {
         delete [] m_vRenderIndices;
     }
-
-    m_pScene->makeCurrentRenderingContext();
 }
 
 //-------------------------------------------------------------------------------------------------

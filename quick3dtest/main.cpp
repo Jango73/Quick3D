@@ -18,9 +18,10 @@
 #include <vld.h>
 #endif
 
-static const char* sArg_Help        = "--help";         // Affiche l'aide
-static const char* sArg_Scene       = "--scene";        // Nom de la scène
+static const char* sArg_Help        = "--help";         // Shows help
+static const char* sArg_Scene       = "--scene";        // Scene name
 static const char* sArg_UnitTests   = "--unit-tests";   // Unit tests mode
+static const char* sArg_CheckRender = "--check-render"; // Capture view, log black pixel ratio, quit
 
 static void printUsage()
 {
@@ -33,8 +34,9 @@ static void printUsage()
     sOut << "\n";
     sOut << "params:\n";
     sOut << "  " << sArg_Help << ": shows this help\n";
-    sOut << "  " << sArg_Scene << ": specify startup scene\n";
+    sOut <<   "  " << sArg_Scene << ": specify startup scene\n";
     sOut << "  " << sArg_UnitTests << ": runs unit tests\n";
+    sOut << "  " << sArg_CheckRender << ": captures the 3D view, logs the black pixel ratio, quits\n";
 }
 
 int main(int argc, char *argv[])
@@ -74,6 +76,7 @@ int main(int argc, char *argv[])
 
         QApplication a(argc, argv);
         Quick3DTest w(sSceneFileName);
+        w.setCheckRenderMode(lArgList.contains(sArg_CheckRender));
         w.show();
         return a.exec();
     }

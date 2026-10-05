@@ -119,6 +119,9 @@ public:
     virtual void activate(int iIndex = 0);
 
     //!
+    virtual void ensureUploaded();
+
+    //!
     bool lock();
 
     //!
@@ -151,6 +154,7 @@ protected:
     QString             m_sName;
     GLuint              m_uiGLTexture;
     QImage              m_imgTexture;
+    QSize               m_tTargetSize;
     bool                m_bIsDynamic;
     bool                m_bDirty;
     int                 m_iUpdateFPS;

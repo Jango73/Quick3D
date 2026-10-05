@@ -1,4 +1,4 @@
-#version 430
+#version 430 compatibility
 
 // Standard fragment shader
 

@@ -79,13 +79,13 @@ void CMaterial::loadParameters(const QString& sBaseFile, const CXMLNode& xMateri
 {
     m_sName = xMaterial.attributes()[ParamName_Name];
 
-    // Lecture couleur ambiante
+    // Read ambient color
     CXMLNode xAmbient = xMaterial.getNodeByTagName(ParamName_Ambient);
 
-    // Lecture couleur diffuse
+    // Read diffuse color
     CXMLNode xDiffuse = xMaterial.getNodeByTagName(ParamName_Diffuse);
 
-    // Lecture couleur spéculaire
+    // Read specular color
     CXMLNode xSpecular = xMaterial.getNodeByTagName(ParamName_Specular);
 
     // Read normal color
@@ -238,11 +238,16 @@ void CMaterial::addNormalTexture(const QString& sName, const QImage& imgTexture)
 
 void CMaterial::createShadowTexture()
 {
-    if (m_pScene->forDisplay())
+    if (m_pScene->forDisplay() && m_pShadowBuffer == nullptr)
     {
         m_pScene->makeCurrentRenderingContext();
 
-        m_pShadowBuffer = new QOpenGLFramebufferObject(2048, 2048, QOpenGLFramebufferObject::Depth, GL_TEXTURE_2D, GL_RED);
+        // No OpenGL context exists yet while the scene loads (widget not shown):
+        // creation is deferred to the first render pass (see enableFrameBuffer)
+        if (QOpenGLContext::currentContext() != nullptr)
+        {
+            m_pShadowBuffer = new QOpenGLFramebufferObject(2048, 2048, QOpenGLFramebufferObject::Depth, GL_TEXTURE_2D, GL_RED);
+        }
     }
 }
 
@@ -267,6 +272,11 @@ void CMaterial::clearTextures()
 
 void CMaterial::enableFrameBuffer()
 {
+    if (m_pShadowBuffer == nullptr)
+    {
+        createShadowTexture();
+    }
+
     if (m_pShadowBuffer != nullptr)
     {
         m_pScene->makeCurrentRenderingContext();
@@ -367,16 +377,38 @@ QOpenGLShaderProgram* CMaterial::activate(CRenderContext* pContext)
                     m_vDiffuseTextures[iIndex]->activate(iIndex);
                 }
 
-                pProgram->setUniformValue("u_texture_diffuse_enable", (GLint) 1);
+                // Fallback : textures created before the first frame have no GPU
+                // counterpart yet (no OpenGL context while the scene loads). If the
+                // upload failed, stay on the untextured path instead of sampling
+                // unbound units (pure black output)
+                bool bTexturesReady = true;
 
-                pProgram->setUniformValue("u_texture_diffuse_0", (GLint) 1);
-                pProgram->setUniformValue("u_texture_diffuse_1", (GLint) 2);
-                pProgram->setUniformValue("u_texture_diffuse_2", (GLint) 3);
-                pProgram->setUniformValue("u_texture_diffuse_3", (GLint) 4);
-                pProgram->setUniformValue("u_texture_diffuse_4", (GLint) 5);
-                pProgram->setUniformValue("u_texture_diffuse_5", (GLint) 6);
-                pProgram->setUniformValue("u_texture_diffuse_6", (GLint) 7);
-                pProgram->setUniformValue("u_texture_diffuse_7", (GLint) 8);
+                for (int iIndex = 0; iIndex < m_vDiffuseTextures.count() && iIndex < 8; iIndex++)
+                {
+                    if (m_vDiffuseTextures[iIndex]->glTexture() == 0)
+                    {
+                        bTexturesReady = false;
+                        break;
+                    }
+                }
+
+                if (bTexturesReady)
+                {
+                    pProgram->setUniformValue("u_texture_diffuse_enable", (GLint) 1);
+
+                    pProgram->setUniformValue("u_texture_diffuse_0", (GLint) 1);
+                    pProgram->setUniformValue("u_texture_diffuse_1", (GLint) 2);
+                    pProgram->setUniformValue("u_texture_diffuse_2", (GLint) 3);
+                    pProgram->setUniformValue("u_texture_diffuse_3", (GLint) 4);
+                    pProgram->setUniformValue("u_texture_diffuse_4", (GLint) 5);
+                    pProgram->setUniformValue("u_texture_diffuse_5", (GLint) 6);
+                    pProgram->setUniformValue("u_texture_diffuse_6", (GLint) 7);
+                    pProgram->setUniformValue("u_texture_diffuse_7", (GLint) 8);
+                }
+                else
+                {
+                    pProgram->setUniformValue("u_texture_diffuse_enable", (GLint) 0);
+                }
             }
             else
             {

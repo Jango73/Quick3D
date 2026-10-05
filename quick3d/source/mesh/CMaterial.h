@@ -8,6 +8,7 @@
 #include <QtOpenGL>
 #include <QtOpenGL/QOpenGLShaderProgram>
 #include <QOpenGLFramebufferObject>
+#include <QOpenGLContext>
 
 // qt-plus
 #include "CMemoryMonitor.h"
@@ -130,7 +131,6 @@ public:
     // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Charge les propriétés de l'objet depuis un CXMLNode
     //! Loads the object's properties from a CXMLNode
     virtual void loadParameters(const QString& sBaseFile, const CXMLNode& xComponent);
 
@@ -147,28 +147,28 @@ public:
     //! Updates this object using the elapsed time since last update
     virtual void update(double dDeltaTime);
 
-    //! Ajoute l'image spécifiée en texture diffuse
+    //! Adds the specified image as diffuse texture
     void addDiffuseTexture(const QString& sBaseFile, const QString& sResourceName);
 
-    //! Ajoute l'image spécifiée en texture diffuse
+    //! Adds the specified image as diffuse texture
     void addDiffuseTexture(const QString& sName, const QImage& imgTexture);
 
-    //! Ajoute l'image spécifiée en texture diffuse
+    //! Adds the specified image as diffuse texture
     void addDynamicDiffuseTexture(const QString& sBaseFile, const QString& sResourceName);
 
     //!
     void addDynamicDiffuseTexture(const QString& sName, const QImage& imgTexture);
 
-    //! Ajoute l'image spécifiée en texture normale
+    //! Adds the specified image as normal texture
     void addNormalTexture(const QString& sBaseFile, const QString& sResourceName);
 
-    //! Ajoute l'image spécifiée en texture normale
+    //! Adds the specified image as normal texture
     void addNormalTexture(const QString& sName, const QImage& imgTexture);
 
-    //! Créé une texture d'ombre portée
+    //! Creates a cast shadow texture
     void createShadowTexture();
 
-    //! Détruit toutes les textures
+    //! Destroys all textures
     void clearTextures();
 
     //!
@@ -177,13 +177,13 @@ public:
     //!
     void disableFrameBuffer();
 
-    //! Active ce matériau pour le rendu
+    //! Activates this material for rendering
     virtual QOpenGLShaderProgram* activate(CRenderContext* pContext);
 
-    //! Active les ombres portées
+    //! Activates cast shadows
     virtual void activateShadow(CRenderContext* pContext);
 
-    //! Applique des transformations à la géolocalisation donnée (ex: Mercator)
+    //! Applies transformations to the given geolocation (example: Mercator)
     virtual CGeoloc transformGeoloc(const CGeoloc& gPosition);
 
     //! Dumps contents to a stream

@@ -34,11 +34,13 @@ Légende : `[ ]` à faire, `[x]` fait, `[~]` en cours.
 
 ## Phase 3 — Port Qt6 `qt-plus` (sous-module, Qt6 uniquement)
 
-- [ ] `QRegExp` -> `QRegularExpression`, `qSort` -> `std::sort`, `QString::SkipEmptyParts` -> `Qt::SkipEmptyParts`
-- [ ] `QWheelEvent::delta()` et autres API événements retirées
-- [ ] `<QtGui/QApplication>` -> `<QApplication>`, `qInstallMsgHandler`, `QDesktopServices::storageLocation`
-- [ ] Correctifs C++17/20 du compilateur moderne, au fil des erreurs
-- [ ] `qt-plus` compile en lib sous Qt6 (cible du `add_subdirectory`)
+- [x] `QMutex::Recursive`/`RecursionMode` supprimés de Qt6 -> membres `QRecursiveMutex` (9 sites, `QMutexLocker` est template en Qt6 : OK) ; surcharge `CTracableMutex(eMode)` sans appelants supprimée
+- [x] `qsrand`/`qrand`/`toTime_t` -> `QRandomGenerator` (`CTDMADevice`, `ROKE` ; `s_bSeedInit` supprimé)
+- [x] `QRegExp` -> `QRegularExpression` (10 sites : `split`, `indexIn`/`cap` -> `match`/`captured`, `exactMatch` -> motif ancré `\A(?:...)\z`)
+- [x] `QColor::getHsvF(qreal*)` -> `float*` (`float` locaux), `QImage::alphaChannel()/setAlphaChannel()` -> `convertedTo(Format_Alpha8)` + `QPainter DestinationIn`
+- [x] `QString::SkipEmptyParts` -> `Qt::SkipEmptyParts`, `QByteArray::append(QString)` -> `.toLatin1()` (convention existante du fichier)
+- [x] `CSoundSynth` : `QAudioDeviceInfo`/`QAudioOutput`+format -> `QMediaDevices::defaultAudioOutput()` + `QAudioSink(device, format)` (`Int16`), membre renommé `m_tAudioSink`
+- [x] `qt-plus` compile en lib sous Qt6 (`build-debug/qt-plus/libqt-plusd.so`)
 
 ## Phase 4 — Port Qt6 lib `quick3d`
 

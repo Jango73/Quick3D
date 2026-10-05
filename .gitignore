@@ -72,6 +72,7 @@ Makefile.*
 
 # Project specific
 /tmp/
+/build/
 /bin/*.xml
 /bin/*.qml
 /help

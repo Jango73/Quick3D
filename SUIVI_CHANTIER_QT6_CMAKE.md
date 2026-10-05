@@ -2,7 +2,8 @@
 
 Objectif : compiler `quick3d` (lib) et `quick3dtest` (appli) sous Linux avec
 CMake + Qt6, même organisation que `galman` (builds shadow, `scripts/linux`).
-Qt5 est abandonné. Les `.pro` restent pour mémoire mais ne servent plus.
+Qt5 est abandonné. Les `.pro`/`.pri` sont conservés et maintenus à jour
+(usage QtCreator) ; la référence de build sous Linux est CMake.
 
 Légende : `[ ]` à faire, `[x]` fait, `[~]` en cours.
 
@@ -25,15 +26,11 @@ Légende : `[ ]` à faire, `[x]` fait, `[~]` en cours.
 
 ## Phase 2 — CMake + `scripts/linux` (modèle `galman`, builds shadow)
 
-- [ ] `CMakeLists.txt` racine (`cmake_minimum_required`, `project`, `add_subdirectory`)
-- [ ] `qt-plus/CMakeLists.txt` dans le sous-module (liste sources depuis `qt-plus.pri`, modules Qt6 ; bison déjà généré : `QMLGrammarParser.cpp` présent, pas de régénération)
-- [ ] `quick3d/CMakeLists.txt` : lib (`AUTOMOC`/`AUTORCC`/`AUTOUIC`, Qt6 `Core Gui Widgets Network OpenGL Xml Positioning`, OpenGL système, `zlib` système, `unzip11` depuis `third/`, SFML ignoré sur Linux — usage win32 joystick uniquement)
-- [ ] `quick3dtest/CMakeLists.txt` : appli (`main.cpp`, `Quick3DTest.cpp/.h`, `CUnitTests`, `.ui`, ressources, lien lib + `qt-plus`)
-- [ ] `scripts/linux/build.sh`, `clean.sh`, `deps.sh`, `run.sh` (adaptés : binaire `quick3dtest`, pas de `VERSION`/`packaging` pour l'instant)
-- [ ] Stratégie runtime data : `quick3dtest/bin/models|textures|*.xml` accessibles depuis `build-debug/` / `build-release/` (copie cmake ou `run.sh`)
-- [x] Dossier `tmp/` à la racine pour les fichiers temporaires/scratch (gitignoré, mentionné dans `AGENTS.md`, scripts avec `mkdir -p`)
-- [ ] `.gitignore` : `build-*/`, `build/`, artefacts cmake (`CMakeLists.txt.user*`, etc.) — `tmp/` déjà couvert
-- [ ] Premier `cmake -S . -B build-debug` qui configure sans erreur
+- [x] `CMakeLists.txt` racine, `qt-plus/CMakeLists.txt` (91 sources, `QTPLUS_LIBRARY`), `quick3d/CMakeLists.txt` (116 sources + `CZip` + `unzip11`, `QUICK3D_LIB`, `zlib` système, SFML exclu sur Linux), `quick3dtest/CMakeLists.txt` (appli + 2 `.ui` + `.qrc`, postfix `d` en debug comme les `.pro`)
+- [x] `scripts/linux/build.sh`, `clean.sh`, `deps.sh`, `run.sh` (binaire `quick3dtest/Quick3DTest[d]`, log `tmp/run.log`, args après `--` transmis à l'appli), `chmod +x`
+- [x] Stratégie runtime data : à affiner en phase 5 (`CRessourcesManager` cherche relatif à l'exécutable + `qrc` ; `run.sh` transmet `--scene`)
+- [x] `.gitignore` : `build-*/` (déjà `*build-*`), `/build/`, `tmp/` déjà couvert
+- [x] Premier `cmake -S . -B build-debug` qui configure sans erreur (dépendances installées via `deps.sh`)
 
 ## Phase 3 — Port Qt6 `qt-plus` (sous-module, Qt6 uniquement)
 
@@ -61,11 +58,11 @@ Légende : `[ ]` à faire, `[x]` fait, `[~]` en cours.
 
 - [ ] `AGENTS.md` : commandes build, noms dossiers, Qt6 (plus de Qt5/`qmake`)
 - [ ] `README.md` : instruction build CMake (plus de `Quick3D.pro` / Qt Creator sans shadow build)
-- [ ] Supprimer ou archiver les `.pro`/`.pri` obsolètes (à valider avec toi avant)
+- [ ] `.pro`/`.pri` conservés et maintenus à jour pour QtCreator (ne pas supprimer ; le build Linux de référence reste CMake)
 - [ ] Commit(s) : `quick3d` + sous-module `qt-plus` (seulement sur ta demande explicite)
 
 ## Points à valider avec toi
 
 1. Commits dans le sous-module `qt-plus` : OK de committer/pousser là-bas quand ce sera prêt ?
 2. `GLSL1`/`GLSL4` : dossiers passés en minuscules aussi (`glsl1`/`glsl4`) avec maj des références, ou gardés tels quels ?
-3. `package.sh` / `install-desktop.sh` / versionnage type `galman` : hors scope pour l'instant, on ajoute si besoin plus tard ?
+3. `package.sh` / `install-desktop.sh` / versionnage type `galman` : confirmé hors scope, plus tard si besoin.

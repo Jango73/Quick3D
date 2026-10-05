@@ -3,7 +3,7 @@
 
 #include "quick3d_global.h"
 
-// Fondations
+// Foundations
 #include "CVector3.h"
 #include "CGeoloc.h"
 #include "CXMLNode.h"
@@ -19,7 +19,7 @@ public:
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Constructeur avec paramètres
+    //! Constructor with parameters
     CBILField(CXMLNode xParameters, const QString& sPathToBILFiles = "", double dValueForNoData = 0.0);
 
     //! Destructor

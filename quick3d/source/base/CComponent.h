@@ -195,10 +195,10 @@ public:
     //! Is the object a light?
     virtual bool isLight() const { return false; }
 
-    //! Est-ce que l'objet est racine (n'a pas de parent)?
+    //! Is the object a root (has no parent)?
     virtual bool isRootObject() const { return m_sParentName == ""; }
 
-    //! Est-ce que l'objet peut avoir une trajectoire?
+    //! Can the object have a trajectory?
     virtual bool isTrajectorable() const { return false; }
 
     //! Returns this object's parent

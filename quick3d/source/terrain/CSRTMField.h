@@ -21,7 +21,7 @@ public:
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Constructeur avec paramètres
+    //! Constructor with parameters
     CSRTMField(CXMLNode xParameters, const QString& sPathToSRTMFiles = "", double dValueForNoData = -2000.0);
 
     //! Destructor

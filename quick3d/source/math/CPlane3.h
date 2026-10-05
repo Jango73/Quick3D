@@ -55,7 +55,7 @@ namespace Math
 			return *this;
 		}
 
-		//! Distance d'intersection avec un rayon, valide si > 0
+		//! Intersection distance with a ray, valid if > 0
 		inline RayTracingResult intersect(const CRay3& rRay)
 		{
 			// Find t.

@@ -26,7 +26,7 @@ public:
 	// Getters
 	//-------------------------------------------------------------------------------------------------
 
-	//! Retourne une chaine de caractère correspondant à l'ID donné
+	//! Returns a string matching the given ID
     CXMLNode& preferences() { return xPreferences; }
 
 protected:
@@ -35,7 +35,7 @@ protected:
 	// Constructors and destructor
 	//-------------------------------------------------------------------------------------------------
 
-	//! Constructeur
+	//! Constructor
 	CPreferencesManager();
 
 	//! Destructor

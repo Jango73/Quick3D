@@ -26,17 +26,17 @@ public:
     // Getters
     //-------------------------------------------------------------------------------------------------
 
-    //! Retire un travailleur du pool
+    //! Removes a worker from the pool
     bool containsWorker(CWorker* pWorker);
 
     //-------------------------------------------------------------------------------------------------
     // Control methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Ajoute un travailleur au pool
+    //! Adds a worker to the pool
     void addWorker(CWorker* pWorker);
 
-    //! Retire un travailleur du pool
+    //! Removes a worker from the pool
     void removeWorker(CWorker* pWorker);
 
     //-------------------------------------------------------------------------------------------------
@@ -45,13 +45,13 @@ public:
 
 protected:
 
-    //! Conctructeur par défaut
+    //! Default constructor
     CWorkerManager();
 
     //! Destructor
     virtual ~CWorkerManager();
 
-    //! Implémentation de la méthode run() de QThread
+    //! Implementation of the QThread run() method
     virtual void run();
 
     //-------------------------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ protected:
 
 protected:
 
-    QRecursiveMutex              m_mMutex;			// Mutex de protection des accès concurrents
-    QVector<CWorker*>   m_vWorkers;			// Pool de travailleurs
-    bool                m_bStopRequested;	// Indique si un arrêt du travail est demandé
+    QRecursiveMutex              m_mMutex;			// Mutex protecting concurrent accesses
+    QVector<CWorker*>   m_vWorkers;			// Worker pool
+    bool                m_bStopRequested;	// Indicates whether stopping the work is requested
 };

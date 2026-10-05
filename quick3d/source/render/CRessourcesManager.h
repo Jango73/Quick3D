@@ -27,7 +27,7 @@ class QUICK3D_EXPORT CRessourcesManager
 {
 public:
 
-    //! Conctructeur
+    //! Constructor
     CRessourcesManager(C3DScene* pScene);
 
     //! Destructor

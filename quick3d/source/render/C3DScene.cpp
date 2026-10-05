@@ -114,7 +114,7 @@ void C3DScene::clear()
 */
 void C3DScene::clearComponents()
 {
-    // Destruction des composants
+    // Destruction of the components
 
     foreach (QSP<CComponent> pComponent, m_vComponents)
     {
@@ -131,7 +131,7 @@ void C3DScene::clearComponents()
 */
 void C3DScene::clearViewports()
 {
-    // Destruction des viewports
+    // Destruction of the viewports
 
     foreach (int iIndex, m_pViewports.keys())
     {

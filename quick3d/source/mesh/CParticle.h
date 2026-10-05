@@ -20,7 +20,7 @@ public:
     //! Default constructor
     CParticle();
 
-    //! Constructeur avec paramètres
+    //! Constructor with parameters
     CParticle(Math::CVector3 NewPosition, Math::CVector3 NewVelocity = Math::CVector3());
 
     //! Assign operator

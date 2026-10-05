@@ -11,7 +11,7 @@
 #include <string.h>
 #include <fcntl.h>
 
-// Fondations
+// Foundations
 #include "quick3d_global.h"
 
 //-------------------------------------------------------------------------------------------------

@@ -16,10 +16,10 @@ class QUICK3D_EXPORT COBJLoader : public CSingleton<COBJLoader>
 
 public:
 
-    //! Charge un fichier .obj
+    //! Loads an .obj file
     QSP<CMeshGeometry> load(const QString& sBaseFile, CComponent* pContainer, QString sText);
 
-    //! Charge un fichier .mtl
+    //! Loads an .mtl file
     void loadMaterials(const QString& sBaseFile, C3DScene* pScene, CMeshGeometry* pMesh, QString sText);
 
 protected:

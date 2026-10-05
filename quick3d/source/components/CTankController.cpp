@@ -1,5 +1,5 @@
 
-// Fondations
+// Foundations
 #include "CVector3.h"
 #include "CAxis.h"
 

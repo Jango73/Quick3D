@@ -243,7 +243,7 @@ void CMeshGeometry::checkAndUpdateGeometry()
                                 );
                                 */
 
-                            // Cr�ation des buffers de g�om�trie OpenGL
+                            // Creation of the OpenGL geometry buffers
                             pGLMeshData->m_vRenderPoints = new CVertex[pGLMeshData->m_iNumRenderPoints];
                             pGLMeshData->m_vRenderIndices = new GLuint[pGLMeshData->m_iNumRenderIndices];
 
@@ -527,7 +527,7 @@ void CMeshGeometry::computeNormals()
     }
     else
     {
-        // Remise � z�ro des normales de polygone
+        // Reset of the polygon normals
         for (int Index = 0; Index < m_vVertices.count(); Index++)
         {
             m_vVertices[Index].normal() = CVector3(0.0, 0.0, 0.0);
@@ -535,13 +535,13 @@ void CMeshGeometry::computeNormals()
             m_vVertices[Index].normalDivider() = 0.0;
         }
 
-        // Parcours de tous les polygones
+        // Iteration over all polygons
         for (int FaceIndex = 0; FaceIndex < m_vFaces.count(); FaceIndex++)
         {
-            // Calcul du vecteur normal du polygone
+            // Computation of the polygon normal vector
             m_vFaces[FaceIndex].computeNormal();
 
-            // Traitement de chaque vertex du polygone
+            // Processing of each polygon vertex
             foreach (int VertexIndex, m_vFaces[FaceIndex].indices())
             {
                 m_vVertices[VertexIndex].normal() += m_vFaces[FaceIndex].normal();
@@ -550,7 +550,7 @@ void CMeshGeometry::computeNormals()
             }
         }
 
-        // Division des normales et tangentes de chaque vertex
+        // Division of the normals and tangents of each vertex
         for (int Index = 0; Index < m_vVertices.count(); Index++)
         {
             if (m_vVertices[Index].normalDivider() > 0.0)
@@ -622,13 +622,13 @@ void CMeshGeometry::createSphere(int iNumSegments)
 {
     clear();
 
-    // Le nombre de segments doit �tre paire
+    // The segment count must be even
     if ((iNumSegments & 1) == 1)
     {
         iNumSegments++;
     }
 
-    // et sup�rieur � 3
+    // and greater than 3
     if (iNumSegments < 4)
     {
         iNumSegments = 4;
@@ -637,10 +637,10 @@ void CMeshGeometry::createSphere(int iNumSegments)
     int iPanSegments = iNumSegments;
     int iTiltSegments = iNumSegments / 2;
 
-    // Sommet du dessus
+    // Top vertex
     m_vVertices.append(CVertex(CVector3(0.0, 1.0, 0.0), CVector2(0.0, 0.0)));
 
-    // Sommets interm�diaires
+    // Intermediate vertices
     for (int iTiltIndex = 1; iTiltIndex < iTiltSegments; iTiltIndex++)
     {
         double dCurrentTilt = (((double) iTiltIndex / (double) iTiltSegments) * Math::Pi);
@@ -657,7 +657,7 @@ void CMeshGeometry::createSphere(int iNumSegments)
         }
     }
 
-    // Sommet du dessous
+    // Bottom vertex
     m_vVertices.append(CVertex(CVector3(0.0, -1.0, 0.0), CVector2(0.0, 0.0)));
 
     int iVertexOffset = 0;
@@ -730,19 +730,19 @@ void CMeshGeometry::createSpherePart(
 {
     clear();
 
-    // Le nombre de segments en gisement doit �tre paire
+    // The bearing segment count must be even
     if ((iPanSegments & 1) == 1)
     {
         iPanSegments++;
     }
 
-    // Le nombre de segments en site doit �tre paire
+    // The elevation segment count must be even
     if ((iTiltSegments & 1) == 1)
     {
         iTiltSegments++;
     }
 
-    // L'angle gisement de d�but doit �tre inf�rieur � l'angle de fin
+    // The start bearing angle must be smaller than the end angle
     if (dStartPanDegrees > dEndPanDegrees)
     {
         double dTemp = dStartPanDegrees;
@@ -750,7 +750,7 @@ void CMeshGeometry::createSpherePart(
         dEndPanDegrees = dTemp;
     }
 
-    // L'angle site de d�but doit �tre inf�rieur � l'angle de fin
+    // The start elevation angle must be smaller than the end angle
     if (dStartTiltDegrees > dEndTiltDegrees)
     {
         double dTemp = dStartTiltDegrees;
@@ -758,17 +758,17 @@ void CMeshGeometry::createSpherePart(
         dEndTiltDegrees = dTemp;
     }
 
-    // Calcul de la course des angles gisement et site
+    // Computation of the bearing and elevation angle ranges
     double dPanSpanDegrees = dEndPanDegrees - dStartPanDegrees;
     double dTiltSpanDegrees = dEndTiltDegrees - dStartTiltDegrees;
 
-    // Sommets
+    // Vertices
     for (int iTiltIndex = 0; iTiltIndex < (iTiltSegments + 1); iTiltIndex++)
     {
         double dCurrentTiltNormalized = (double) iTiltIndex / (double) iTiltSegments;
         double dCurrentTilt = dStartTiltDegrees + ((dCurrentTiltNormalized) * dTiltSpanDegrees);
 
-        // Cr�ation de la matrice de rotation en site
+        // Creation of the elevation rotation matrix
         CMatrix4 mRotationTilt = CMatrix4().makeRotation(CVector3(Math::Angles::toRad(dCurrentTilt), 0.0, 0.0));
 
         for (int iPanIndex = 0; iPanIndex < (iPanSegments + 1); iPanIndex++)
@@ -776,13 +776,13 @@ void CMeshGeometry::createSpherePart(
             double dCurrentPanNormalized = (double) iPanIndex / (double) iPanSegments;
             double dCurrentPan = dStartPanDegrees + ((dCurrentPanNormalized) * dPanSpanDegrees);
 
-            // Cr�ation de la matrice de rotation en gisement
+            // Creation of the bearing rotation matrix
             CMatrix4 mRotationPan = CMatrix4().makeRotation(CVector3(0.0, Math::Angles::toRad(dCurrentPan), 0.0));
 
-            // Cr�ation du vecteur de position du sommet
+            // Creation of the vertex position vector
             CVector3 vPosition = mRotationPan * (mRotationTilt * CVector3(0.0, 1.0, 0.0));
 
-            // Ajout du sommet
+            // Addition of the vertex
             m_vVertices.append(CVertex(
                                    vPosition,
                                    CVector2(dCurrentPanNormalized, 1.0 - dCurrentTiltNormalized))

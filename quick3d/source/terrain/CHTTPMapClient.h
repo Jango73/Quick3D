@@ -24,10 +24,10 @@ public:
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    // Constructeur
+    // Constructor
     CHTTPMapClient();
 
-    // Destructeur
+    // Destructor
     virtual ~CHTTPMapClient();
 
     //-------------------------------------------------------------------------------------------------

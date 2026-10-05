@@ -3,7 +3,7 @@
 
 #include "quick3d_global.h"
 
-// Fondations
+// Foundations
 #include "CVector3.h"
 #include "CMatrix4.h"
 #include "CAxis.h"
@@ -32,22 +32,22 @@ public:
     // Getters
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne une valeur de bruit pour une position donnée
+    //! Returns a noise value for a given position
     double noise(Math::CVector3 pos);
 
-    //! Retourne une valeur de bruit normalisée pour une position donnée
+    //! Returns a normalized noise value for a given position
     double noise_0_1(Math::CVector3 pos);
 
-    //! Retourne une valeur de turbulence pour une position donnée
+    //! Returns a turbulence value for a given position
     double turbulence(Math::CVector3 pos);
 
-    //! Retourne une valeur d'érosion pour une position donnée
+    //! Returns an erosion value for a given position
     double erosion(Math::CVector3 pos, Math::CAxis reference, double dDisplace);
 
-    //! Retourne une valeur du pattern de Voronoi pour une position donnée
+    //! Returns a Voronoi pattern value for a given position
     double voronoi(Math::CVector3 pos, Math::CAxis reference, double dDisplace);
 
-    //! Retourne une valeur de déplacement pour une position donnée
+    //! Returns a displacement value for a given position
     Math::CVector3 displace(Math::CVector3 pos, double scale);
 
     //-------------------------------------------------------------------------------------------------

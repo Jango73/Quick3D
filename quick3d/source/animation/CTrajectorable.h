@@ -26,7 +26,7 @@ public:
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Constructeur
+    //! Constructor
     CTrajectorable(C3DScene* pScene);
 
     //!

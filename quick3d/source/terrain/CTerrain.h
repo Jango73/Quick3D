@@ -44,7 +44,7 @@ class C3DScene;
 
 */
 
-//! Classe de stockage d'un mesh de terrain
+//! Storage class of a terrain mesh
 class QUICK3D_EXPORT CTerrain : public CWorker, public CComponent, public CHeightField
 {
     Q_OBJECT

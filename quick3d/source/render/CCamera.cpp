@@ -503,7 +503,7 @@ void CCamera::renderDepth_CubeMapped
             }
         }
 
-        // Calcul de la taille d'un mini-rendu
+        // Computation of the size of a mini-render
         // A revoir car ce calcul suppose que la matrice demandée fait 360°x180°
 
         /*
@@ -530,7 +530,7 @@ void CCamera::renderDepth_CubeMapped
                     .arg(iRenderMapSize)
                     );
 
-        // Calcul des FOVs
+        // Computation of the FOVs
         double dFOV_Pan = 360.0 / (double) RENDER_SUBDIVISIONS_PAN;
         double dFOV_Tilt = 180.0 / (double) RENDER_SUBDIVISIONS_TILT;
         double dFOV_Ratio = dFOV_Tilt / dFOV_Pan;
@@ -538,7 +538,7 @@ void CCamera::renderDepth_CubeMapped
         // Définition de la taille du viewport
         QSize sMapSize(iRenderMapSize, (int) ((double) iRenderMapSize * dFOV_Ratio));
 
-        // Vecteur contenant la taille d'une image du cube-map
+        // Vector holding the size of a cube-map image
         CVector2 vMapSize((double) sMapSize.width(), (double) sMapSize.height());
 
         // Sauvegarde des paramètres de la caméra
@@ -573,7 +573,7 @@ void CCamera::renderDepth_CubeMapped
         double dHalfFOV_Pan = dFOV_Pan * 0.5;
         double dHalfFOV_Tilt = dFOV_Tilt * 0.5;
 
-        // Rendu de chaque portion d'image
+        // Rendering of each image portion
         for (int iTiltIndex = 0; iTiltIndex < RENDER_SUBDIVISIONS_TILT; iTiltIndex++)
         {
             for (int iPanIndex = 0; iPanIndex < RENDER_SUBDIVISIONS_PAN; iPanIndex++)
@@ -601,7 +601,7 @@ void CCamera::renderDepth_CubeMapped
                 // Application des angles de l'axe à la caméra
                 setRotation(anAxis.eulerAngles());
 
-                // Rendu OpenGL
+                // OpenGL rendering
                 pGLWidgetScene->paintGL();
 
                 // Copie de l'image rendue dans l'image complète
@@ -625,7 +625,7 @@ void CCamera::renderDepth_CubeMapped
         {
             for (int iPan = 0; iPan < tParams.m_sResolution.width(); iPan++)
             {
-                // Calcul du pan et tilt courant dans l'espace image
+                // Computation of the current pan and tilt in image space
 
                 double dPanNormalized = (double) iPan / (double) tParams.m_sResolution.width();
                 double dTiltNormalized = (double) iTilt / (double) tParams.m_sResolution.height();
@@ -671,8 +671,8 @@ void CCamera::renderDepth_CubeMapped
                         // Get the distance
                         dDistance = ((double) ((rgbPixel >> 16) & 0xFF) / 255.0) * 10000.0;
 
-                        // Produit scalaire entre vecteur "vue" et vecteur normal du terrain
-                        // Autrement dit, angle d'incidence du terrain
+                        // Dot product between "view" vector and terrain normal vector
+                        // In other words, terrain incidence angle
                         iDotRayNormal = (rgbPixel >> 8) & 0xFF;
 
                         // Here we work in the topocentric frame
@@ -759,7 +759,7 @@ void CCamera::computeFrustum(double dVerticalFOV, double dAspectRatio, double dM
     CVector3 v5( 0.0,  0.0,  1.0);
     CVector3 v6( 0.0,  0.0, -1.0);
 
-    // Ajout de chaque plan
+    // Addition of each plane
     m_pFrustumPlanes.append(CPlane3(0.0, mRotateY1 * v1));
     m_pFrustumPlanes.append(CPlane3(0.0, mRotateY2 * v2));
     m_pFrustumPlanes.append(CPlane3(0.0, mRotateX1 * v3));
@@ -772,7 +772,7 @@ void CCamera::computeFrustum(double dVerticalFOV, double dAspectRatio, double dM
 
 bool CCamera::contains(const CVector3& vPosition, double dRadius) const
 {
-    // Test du vecteur avec chaque plan du frustum
+    // Test of the vector against each frustum plane
     foreach (CPlane3 plane, m_pFrustumPlanes)
     {
         double dDistance = plane.vNormal.dot(vPosition) + plane.dDistance;

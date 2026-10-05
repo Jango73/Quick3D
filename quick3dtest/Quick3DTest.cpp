@@ -454,7 +454,7 @@ void Quick3DTest::onGenerateMatrixClicked()
 
 void Quick3DTest::onDumpSceneClicked()
 {
-    // Dump de la sc�ne
+    // Dump of the scene
 
     QFile dump(QCoreApplication::applicationDirPath() + "/Scene.dump.txt");
 

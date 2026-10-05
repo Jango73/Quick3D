@@ -117,7 +117,7 @@ void CImageUtilities::createPanoramicTextureSet(
 				rgbPixel = imgInput.pixel(iInputPanIndex, iInputTiltIndex);
 			}
 
-			// Ecriture du pixel dans l'image de sortie
+			// Writing of the pixel to the output image
 			imgOutput.setPixel(iOutputPanIndex, iOutputTiltIndex, rgbPixel);
 		}
 	}
@@ -125,13 +125,13 @@ void CImageUtilities::createPanoramicTextureSet(
 	// Création des textures de sortie d'après la texture de sortie intermédiaire (imgOutput)
 	tParams.images().clear();
 
-	// Parcours de chaque ligne
+	// Iteration over each row
 	for (int iTiltIndex = 0; iTiltIndex < iNumTiltImages; iTiltIndex++)
 	{
-		// Ajout d'un vecteur d'images pour la ligne courante
+		// Addition of an image vector for the current row
 		tParams.images().append(QVector<QImage>());
 
-		// Parcours de chaque colonne
+		// Iteration over each column
 		for (int iPanIndex = 0; iPanIndex < iNumPanImages; iPanIndex++)
 		{
 			QImage imgImage(QSize(iTextureWidth, iTextureHeight), QImage::Format_RGB888);

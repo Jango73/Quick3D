@@ -4,7 +4,7 @@
 #include <QTextStream>
 #include <QDataStream>
 
-// Fondations
+// Foundations
 #include "Angles.h"
 
 // Application

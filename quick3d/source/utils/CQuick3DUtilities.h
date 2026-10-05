@@ -56,7 +56,7 @@ public:
 
 protected:
 
-    //! Conctructeur
+    //! Constructor
     CQuick3DUtilities();
 
     //! Destructor

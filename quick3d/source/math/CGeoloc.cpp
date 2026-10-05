@@ -363,7 +363,7 @@ CVector3 CGeoloc::toVector3_UTM(const CGeoloc& gReference) const
 {
     CVector3 Result;
 
-    // Conversion des deux coordonn�es en UTM
+    // Conversion of both coordinates to UTM
 
     long Zone1, Zone2;
     char Hemi1, Hemi2;
@@ -384,7 +384,7 @@ CVector3 CGeoloc::toVector3_UTM(const CGeoloc& gReference) const
                 &Easting2, &Northing2
                 );
 
-    // Soustraction coordonn�es r�f�rence � celle de l'objet
+    // Subtraction of the reference coordinates from the object ones
 
     Result.X = Easting2 - Easting1;
     Result.Y = Altitude - gReference.Altitude;
@@ -402,7 +402,7 @@ CVector3 CGeoloc::toVector3_UTM() const
 {
     CVector3 Result;
 
-    // Conversion des deux coordonn�es en UTM
+    // Conversion of both coordinates to UTM
 
     long Zone1;
     char Hemi1;
@@ -434,7 +434,7 @@ CVector3 CGeoloc::toVector3_WGS84() const
     double dTemp;
 
     //-----------------------------------------------
-    // R�cup�ration des coordonn�es g�ocentriques
+    // Retrieval of the geocentric coordinates
 
     Convert_Geodetic_To_Geocentric(
                 Latitude * GeoTrans::fDeg2Rad,
@@ -535,7 +535,7 @@ CVector3 CGeoloc::toVector3_WGS84(const CGeoloc& gReference) const
     CMatrix4 mRotationInverseX = Math::CMatrix4::makeRotation(Math::CVector3(dAngleX * -1.0, 0.0, 0.0));
 
     //-----------------------------------------------
-    // On applique les angles inverses de la r�f�rence � la position et � la r�f�rence
+    // Applies the inverse angles of the reference to the position and to the reference
 
     vReference3D = mRotationInverseY * vReference3D;
     vReference3D = mRotationInverseX * vReference3D;

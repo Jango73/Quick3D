@@ -36,10 +36,10 @@ public:
     // Getters
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne vrai si le travail a commenc�
+    //! Returns true if the work has started
     bool isStarted() { return m_bStarted; }
 
-    //! Retourne vrai si le travail est termin�
+    //! Returns true if the work is finished
     bool isFinished() { return m_bFinished; }
 
     //-------------------------------------------------------------------------------------------------
@@ -50,25 +50,25 @@ public:
     // Control methods
     //-------------------------------------------------------------------------------------------------
 
-    //! M�thode de travail
+    //! Work method
     virtual void work();
 
-    //! Annule le travail de l'objet
+    //! Cancels the work of the object
     void abort();
 
-    //! Remet le travailleur en �tat d'�tre remis dans la file apr�s une ex�cution
+    //! Resets the worker so it can be queued again after a run
     void resetForReuse();
 
-    //! Ex�cute un sleep
+    //! Sleeps
     void doSleep(int ms);
 
     //-------------------------------------------------------------------------------------------------
-    // Inherited methods prot�g�es
+    // Protected inherited methods
     //-------------------------------------------------------------------------------------------------
 
 protected:
 
-    //! Impl�mentation de la m�thode run() de QThread
+    //! Implementation of the QThread run() method
     virtual void run();
 
     //-------------------------------------------------------------------------------------------------
@@ -77,10 +77,10 @@ protected:
 
 protected:
 
-    std::atomic<bool>   m_bStopRequested;   // Indique si l'arr�t du travail est demand�
+    std::atomic<bool>   m_bStopRequested;   // Indicates whether stopping the work is requested
 
 private:
 
-    std::atomic<bool>   m_bStarted;         // Indique si le travail a commenc�
-    std::atomic<bool>   m_bFinished;        // Indique si le travail est termin�
+    std::atomic<bool>   m_bStarted;         // Indicates whether the work has started
+    std::atomic<bool>   m_bFinished;        // Indicates whether the work is finished
 };

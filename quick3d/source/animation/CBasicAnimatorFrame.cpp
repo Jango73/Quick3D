@@ -24,7 +24,7 @@ CVector3 CBasicAnimatorFrame::compute(double dDeltaTime, CVector3 vCurrentValue)
 
 	if (m_vSteps.count() > 0)
 	{
-		// Est-on dans une boucle d'attente?
+		// Are we in a wait loop?
 		if (m_dTime > 0.0)
 		{
 			m_dTime -= dDeltaTime;

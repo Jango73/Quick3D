@@ -50,20 +50,20 @@ public:
     //! Active ce matériau pour le rendu
     virtual QOpenGLShaderProgram* activate(CRenderContext* pContext);
 
-    //! Retourne l'altitude à la géolocalisation donnée
+    //! Returns the altitude at the given geolocation
     virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = nullptr);
 
-    //! Retourne l'altitude à la géolocalisation donnée
+    //! Returns the altitude at the given geolocation
     virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, double* pRigidness = nullptr);
 
-    //! Retourne l'altitude à la géolocalisation donnée
+    //! Returns the altitude at the given geolocation
     virtual double getHeightAt(const Math::CVector3& vPosition, const Math::CAxis& aAxis, bool bForPhysics = true);
 
     //-------------------------------------------------------------------------------------------------
     // Control methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne l'altitude de vague à la géolocalisation donnée
+    //! Returns the wave altitude at the given geolocation
     double WaveHeight(CGeoloc gPosition);
 
     //-------------------------------------------------------------------------------------------------

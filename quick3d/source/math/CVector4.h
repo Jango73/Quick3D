@@ -95,13 +95,13 @@ public:
         *this = Target;
     }
 
-    //! Renvoie la longueur du vecteur
+    //! Returns the length of the vector
     inline double magnitude () const
     {
         return sqrt(sumComponentSqrs());
     }
 
-    //! Assigne la longueur du vecteur
+    //! Sets the length of the vector
     inline void setMagnitude (double value)
     {
         if (value >= 0.0)
@@ -118,13 +118,13 @@ public:
         }
     }
 
-    //! Renvoie vrai si le vecteur est unitaire
+    //! Returns true if the vector is unit length
     inline bool isUnitVector()
     {
         return magnitude() == 1.0;
     }
 
-    //! Normalise le vecteur = longueur de 1.0
+    //! Normalizes the vector = length of 1.0
     inline CVector4 normalized() const
     {
         if (magnitude() != 0.0)
@@ -143,7 +143,7 @@ public:
         return CVector4();
     }
 
-    //! Renvoie la somme des composants
+    //! Returns the sum of the components
     inline double sumComponents() const
     {
         return (X + Y + Z + W);

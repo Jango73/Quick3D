@@ -3,7 +3,7 @@
 
 #include "quick3d_global.h"
 
-// Fondations
+// Foundations
 #include "CVector3.h"
 
 class QUICK3D_EXPORT CBasicAnimationStep
@@ -44,16 +44,16 @@ public:
     // Getters
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne la cible (translation ou rotation)
+    //! Returns the target (translation or rotation)
     Math::CVector3 target() const { return m_vTarget; }
 
-    //! Retourne la vitesse (translation ou rotation)
+    //! Returns the velocity (translation or rotation)
     Math::CVector3 speed() const { return m_vSpeed; }
 
-    //! Retourne l'accélération (translation ou rotation)
+    //! Returns the acceleration (translation or rotation)
     Math::CVector3 acceleration() const { return m_vAcceleration; }
 
-    //! Retourne la durée en secondes
+    //! Returns the duration in seconds
     double duration() const { return m_dDuration; }
 
     //-------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 
-// Fondations
+// Foundations
 #include "CLogger.h"
 
 // Application

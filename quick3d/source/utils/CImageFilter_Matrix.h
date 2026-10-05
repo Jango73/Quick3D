@@ -18,7 +18,7 @@ public:
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Constructeur d'après une matrice 3x3
+    //! Constructor from a 3x3 matrix
     CImageFilter_Matrix(const QMatrix3x3& mMatrix);
 
     //! Destructor

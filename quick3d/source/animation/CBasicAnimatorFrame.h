@@ -49,7 +49,7 @@ public:
 
 protected:
 
-    //! Calcule une valeur cible selon une valeur courante
+    //! Computes a target value from a current value
     double computeSingleAxis(double dDeltaTime, double dCurrentValue, double dTargetValue, double dSpeed);
 
     //-------------------------------------------------------------------------------------------------

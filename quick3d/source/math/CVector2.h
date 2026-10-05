@@ -28,34 +28,34 @@ namespace Math
 			Y = 0.0f;
 		}
 
-		//! Constructeur par composants
+		//! Component-wise constructor
         inline CVector2(double NewX, double NewY)
 		{
 			X = NewX;
 			Y = NewY;
 		}
 
-		//! Constructeur par valeur
+		//! Value constructor
         inline CVector2(double value)
 		{
 			X = value;
 			Y = value;
 		}
 
-		//! Constructeur de copie
+		//! Copy constructor
         inline CVector2(const CVector2& Target)
 		{
 			X = Target.X;
 			Y = Target.Y;
 		}
 
-		//! Renvoie la longueur du vecteur
+		//! Returns the length of the vector
         inline double magnitude() const
 		{
             return sqrt(sumComponentSqrs());
 		}
 
-		//! Assigne la longueur du vecteur
+		//! Sets the length of the vector
         inline void setMagnitude(double value)
 		{
 			if (value >= 0.0f)
@@ -70,13 +70,13 @@ namespace Math
 			}
 		}
 
-		//! Renvoie vrai si le vecteur est unitaire
+		//! Returns true if the vector is unit length
         inline bool isUnitVector()
 		{
             return magnitude() == 1.0f;
 		}
 
-		//! Normalise le vecteur = longueur de 1.0
+		//! Normalizes the vector = length of 1.0
         inline CVector2 normalized() const
 		{
             if (magnitude() != 0.0f)
@@ -89,7 +89,7 @@ namespace Math
 			return CVector2();
 		}
 
-		//! Renvoie la somme des composants
+		//! Returns the sum of the components
         inline double sumComponents() const
 		{
 			return (X + Y);

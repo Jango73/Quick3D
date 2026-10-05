@@ -25,10 +25,10 @@ public:
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Constructeur avec un mesh cible
+    //! Constructor with a target mesh
     CMeshInstance(QSP<CMesh> pMesh);
 
-    //! Constructeur avec une liste de meshs cibles
+    //! Constructor with a list of target meshes
     CMeshInstance(const QVector<QSP<CMesh> >& vMeshes);
 
     //! Destructor

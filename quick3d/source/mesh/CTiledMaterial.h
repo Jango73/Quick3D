@@ -105,7 +105,7 @@ protected:
     // Protected methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne une quad key pour une géolocalisation et un niveau donnés
+    //! Returns a quad key for a given geolocation and level
     QString quadKeyFromPositionAndLevel(const CGeoloc& gPosition, int iLevel);
 
     //!

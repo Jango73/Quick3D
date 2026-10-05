@@ -84,6 +84,9 @@ Linux build is CMake. `QGL*` classes are gone: use `QOpenGL*`.
 - **File size**: Keep source files under 1000 lines; split by responsibility before crossing this limit.
 - **Vocabulary**:
   - NEVER use abbreviations; ALWAYS use full words (acronyms are OK).
+  - No figurative language: respect the repository vocabulary, use every word
+    in its primary (literal) sense. Name things for what they are, not for
+    what they resemble.
   - No "directory" : use "folder".
   - Fixed-width types (`U8/I8`, `U16/I16`, `U32/I32`, `U64/I64`, `F32`, `F64`) in persistent data (Q3D format, height-field files), not register-sized `INT/UINT`.
 

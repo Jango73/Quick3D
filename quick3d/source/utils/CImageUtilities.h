@@ -21,7 +21,7 @@ public:
 	//! Default constructor
 	CSphericalTextureSet();
 
-	//! Constructeur avec paramètres
+	//! Constructor with parameters
 	CSphericalTextureSet(
 		Math::CVector2 vStartAngles,
 		Math::CVector2 vEndAngles,
@@ -68,10 +68,10 @@ public:
 	//!
     QSize textureSize() { return m_sTextureSize; }
 
-	//! Retourne la liste d'images
+	//! Returns the image list
     QVector<QVector<QImage> >& images() { return m_vImages; }
 
-	//! Retourne la liste d'images
+	//! Returns the image list
     const QVector<QVector<QImage> >& images() const { return m_vImages; }
 
 	//-------------------------------------------------------------------------------------------------

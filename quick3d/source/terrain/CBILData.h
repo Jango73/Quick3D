@@ -8,7 +8,7 @@
 #include <QStringList>
 #include <QDateTime>
 
-// Fondations
+// Foundations
 #include "CVector3.h"
 #include "CGeoloc.h"
 #include "CXMLNode.h"

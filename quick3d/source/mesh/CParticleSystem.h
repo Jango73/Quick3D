@@ -25,7 +25,7 @@ public:
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Constructeur
+    //! Constructor
     CParticleSystem(C3DScene* pScene);
 
     //! Destructor

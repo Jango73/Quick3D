@@ -196,7 +196,7 @@ void CQ3DLoader::loadComponent(
         pMesh->faces()[iFaceIndex].setMaterialIndex(iNewFaceMaterialIndex);
     }
 
-    // Chargement des noeuds enfants
+    // Loading of the child nodes
     QVector<CXMLNode> vComponents = xComponent.getNodesByTagName(ParamName_Component);
 
     foreach (CXMLNode xChild, vComponents)

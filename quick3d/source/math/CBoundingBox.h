@@ -1,7 +1,7 @@
 
 #pragma once
 
-// Fondations
+// Foundations
 #include "CVector3.h"
 #include "CMatrix4.h"
 #include "CGeoloc.h"

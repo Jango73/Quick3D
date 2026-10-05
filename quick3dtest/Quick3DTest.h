@@ -26,7 +26,7 @@ public:
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Constructeur
+    //! Constructor
 #if QT_VERSION >= 0x050000
     Quick3DTest(QString sSceneFileName, QWidget *parent = 0);
 #else

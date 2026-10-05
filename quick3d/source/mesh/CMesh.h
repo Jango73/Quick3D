@@ -28,7 +28,7 @@ public:
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
 
-    //! Retourne une nouvelle instance de cet objet
+    //! Returns a new instance of this object
     static CComponent* instantiator(C3DScene* pScene);
 
     //!
@@ -76,16 +76,16 @@ public:
     //! Deletes this object's links
     virtual void clearLinks(C3DScene* pScene) Q_DECL_OVERRIDE;
 
-    //! Dessine l'objet
+    //! Draws the object
     virtual void paint(CRenderContext* pContext) Q_DECL_OVERRIDE;
 
     //! Ray intersection
     virtual Math::RayTracingResult intersect(Math::CRay3 ray) Q_DECL_OVERRIDE;
 
-    //! Inverse les vecteurs normaux des polygones
+    //! Inverts the normal vectors of the polygons
     virtual void flipNormals();
 
-    //! Transforme les sommets
+    //! Transforms the vertices
     virtual void transformVertices(const Math::CMatrix4& matrix);
 
     //! Dumps contents to a stream

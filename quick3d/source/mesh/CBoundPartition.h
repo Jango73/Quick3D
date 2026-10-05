@@ -180,7 +180,7 @@ protected:
                         vMaximum.Y = partition.bounds().minimum().Y + ((double) (iY + 1) * dNormalizedSizeY);
                         vMaximum.Z = partition.bounds().minimum().Z + ((double) (iZ + 1) * dNormalizedSizeZ);
 
-                        // Ajout de la partition enfant
+                        // Addition of the child partition
                         CBoundPartition<T> bpChild = CBoundPartition<T>(CBoundingBox(vMinimum, vMaximum));
 
                         createPartitionsInternal(bpChild, iLevel + 1);

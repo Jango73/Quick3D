@@ -145,13 +145,13 @@ public:
     //! Met à jour les buffers de géométrie OpenGL
     void checkAndUpdateGeometry();
 
-    //! Dessine l'objet
+    //! Draws the object
     void paint(CRenderContext* pContext, CComponent* pContainer);
 
-    //! Inverse les vecteurs normaux des polygones
+    //! Inverts the normal vectors of the polygons
     void flipNormals();
 
-    //! Transforme les sommets
+    //! Transforms the vertices
     void transformVertices(const Math::CMatrix4& matrix);
 
     //!

@@ -94,9 +94,8 @@ in the log, whatever the commit prefix above. Never leave a blank line in
 the commit message: lines follow each other directly.
 
 ## Common Build Commands
-- Submodules (required on fresh clone): `git submodule update --init --recursive`
-- Dependencies: `./scripts/linux/deps.sh` (apt/dnf/pacman; needs `sudo`,
-  which prompts for a password here)
+- Dependencies: `./scripts/linux/deps.sh` (submodules + apt/dnf/pacman packages;
+  needs `sudo`, which prompts for a password here)
 - Build (shadow, like `galman`): `./scripts/linux/build.sh [--debug|--release]`
   (`cmake -S . -B build-<debug|release> -G Ninja`, then `cmake --build`).
   Builds `qt-plus`, then `Quick3D`, then `Quick3DTest`.

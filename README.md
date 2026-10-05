@@ -9,8 +9,7 @@ But it has been pushed much further and is now a general purpose engine.
 Linux reference build is CMake + Qt6 (shadow builds, like `galman`):
 
 ```
-git submodule update --init --recursive
-./scripts/linux/deps.sh      # needs sudo
+./scripts/linux/deps.sh      # submodules + packages, needs sudo
 ./scripts/linux/build.sh     # --debug or --release
 ./scripts/linux/run.sh -- --unit-tests
 ```

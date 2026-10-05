@@ -71,6 +71,7 @@ Makefile.*
 *.blend1
 
 # Project specific
+/tmp/
 /bin/*.xml
 /bin/*.qml
 /help

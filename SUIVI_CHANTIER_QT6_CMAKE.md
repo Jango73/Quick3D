@@ -59,10 +59,10 @@ Légende : `[ ]` à faire, `[x]` fait, `[~]` en cours.
 
 ## Phase 6 — Finalisation
 
-- [ ] `AGENTS.md` : commandes build, noms dossiers, Qt6 (plus de Qt5/`qmake`)
-- [ ] `README.md` : instruction build CMake (plus de `Quick3D.pro` / Qt Creator sans shadow build)
-- [ ] `.pro`/`.pri` conservés et maintenus à jour pour QtCreator (ne pas supprimer ; le build Linux de référence reste CMake)
-- [ ] Commit(s) : `quick3d` + sous-module `qt-plus` (seulement sur ta demande explicite)
+- [x] `AGENTS.md` : commandes build (`scripts/linux/`, CMake + Ninja), noms dossiers, Qt6 (`QOpenGL*`, plus de `QGL*`/Qt5/`qmake`)
+- [x] `README.md` : instruction build CMake (plus de `Quick3D.pro` / Qt Creator sans shadow build)
+- [x] `.pro`/`.pri` conservés et maintenus à jour pour QtCreator (ne pas supprimer ; le build Linux de référence reste CMake)
+- [x] Vérification finale : `build.sh --release` complet from scratch OK + `--unit-tests` exit 0 en debug et release
 
 ## Points à valider avec toi
 

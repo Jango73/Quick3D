@@ -6,7 +6,18 @@ But it has been pushed much further and is now a general purpose engine.
 
 ## Building
 
-Open .pro file in Qt Creator and build **without** shadow build option.
+Linux reference build is CMake + Qt6 (shadow builds, like `galman`):
+
+```
+git submodule update --init --recursive
+./scripts/linux/deps.sh      # needs sudo
+./scripts/linux/build.sh     # --debug or --release
+./scripts/linux/run.sh -- --unit-tests
+```
+
+Binaries land in `build-debug/` / `build-release/`
+(`quick3dtest/Quick3DTest[d]`, libs next to them).
+The legacy `.pro`/`.pri` files are kept for QtCreator users.
 
 ## Features
 

@@ -3,8 +3,8 @@
 This file provides guidance to agents when working with code in this repository.
 
 ## Project Overview
-Qt-based 3D engine with geo-referenced entities (C++/Qt). `Quick3D.pro` is a
-subdirs project, built **without** shadow build (see `README.md`):
+Qt-based 3D engine with geo-referenced entities (C++/Qt), built with CMake
+for Qt6 (see `README.md`). Layout:
 - `qt-plus/` (git submodule): shared Qt utility library (`CLogger`, `CXMLNode`,
   `CSingleton`, `CInterpolator`, geotools, ...). Engine equivalent of a commons
   module — check here first before adding helpers.
@@ -20,8 +20,9 @@ subdirs project, built **without** shadow build (see `README.md`):
 
 Fresh clones have empty `qt-plus/` and `third/zlib/` until submodules are
 initialized (`git submodule update --init --recursive`). Rendering is
-`QGLWidget`-based, so the engine targets **Qt5**; the qmake in PATH on this
-machine is Qt6 (`qmake6`, Qt 6.2.4) and Qt5 dev packages are not installed.
+`QOpenGLWidget`-based, the engine targets **Qt6** (Qt 6.2.4 on this machine);
+the legacy `.pro`/`.pri` files are kept for QtCreator users but the reference
+Linux build is CMake. `QGL*` classes are gone: use `QOpenGL*`.
 
 ## Main rule
 **If the guidelines below are not followed, all modifications will be rejected.**
@@ -94,24 +95,23 @@ the commit message: lines follow each other directly.
 
 ## Common Build Commands
 - Submodules (required on fresh clone): `git submodule update --init --recursive`
-- Build: open `Quick3D.pro` in Qt Creator and build **without** shadow build
-  option (per `README.md`; `DESTDIR`/`OBJECTS_DIR`/`MOC_DIR`/`RCC_DIR`/`UI_DIR`
-  are in-source). Builds `qt-plus`, then `Quick3D`, then `Quick3DTest` (`CONFIG
-  += ordered`).
-- Qt5 dev packages are required (`QGLWidget`, `QtOpenGL`, multimedia,
-  serialport, declarative) but are NOT installed on this machine; `qmake` in
-  PATH resolves to Qt6 and the `qdoc` post-link step also fails (`qdoc: could
-  not exec '/usr/lib/qt5/bin/qdoc'`). Install the Qt5 dev packages (needs
-  `sudo`, which prompts for a password here) before attempting a full build.
-- Run the test app: `quick3dtest/bin/Quick3DTest[--d] [--scene <file>]`, or
-  `... --unit-tests` for the headless unit tests.
+- Dependencies: `./scripts/linux/deps.sh` (apt/dnf/pacman; needs `sudo`,
+  which prompts for a password here)
+- Build (shadow, like `galman`): `./scripts/linux/build.sh [--debug|--release]`
+  (`cmake -S . -B build-<debug|release> -G Ninja`, then `cmake --build`).
+  Builds `qt-plus`, then `Quick3D`, then `Quick3DTest`.
+- Clean: `./scripts/linux/clean.sh [--debug|--release|--all]`
+- Run the test app: `./scripts/linux/run.sh [--debug|--release] [-- <args>]`
+  (logs to `tmp/run.log`), or directly
+  `build-<debug|release>/quick3dtest/Quick3DTest[d] [--scene <file>]`, or
+  `... --unit-tests` for the headless unit tests (`QT_QPA_PLATFORM=offscreen`
+  works headless).
 
 ## Tool Execution Policy
 - `tmp/` at the repo root is the folder for temporary/scratch files. It is
   gitignored; scripts must create it (`mkdir -p`) if missing.
 - Never write scratch/generated artifacts into the repo without asking;
-  keep the tree clean (`bin/`, `obj/`, `moc/`, `rcc/`, `ui/` are already
-  in-source build outputs).
+  keep the tree clean (`build-debug/`, `build-release/`, `tmp/` are gitignored).
 - `sudo` prompts for a password on this machine: never assume elevation works;
   ask the user to run installs themselves or explicitly approve.
 - Run builds sequentially, not in parallel.
@@ -134,4 +134,4 @@ the commit message: lines follow each other directly.
 ## Debug Workflow
 1. Reproduce headless first when possible: `Quick3DTest --unit-tests`.
 2. For terrain LOD/patch issues, read `quick3d/doc/TerrainHolesAnalysis.md` before re-investigating: the worker-scheduler starvation, the missing `paintRecurse()` fallback, and the premature child-pruning mechanisms are already documented there.
-3. Known environment limitation (do not re-investigate from scratch): this machine has Qt6/qmake6 only with no Qt5 dev packages, so a full build fails on `QGLWidget`/`QtOpenGL` and on the `qdoc` post-link step.
+3. This machine has Qt 6.2 (system packages + `qmake6`); the reference build is CMake + Ninja via `scripts/linux/`.

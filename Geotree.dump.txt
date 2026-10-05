@@ -1,0 +1,192 @@
+[CGeoTree]
+Levels : 2
+Root :
+    [CGeoTreeItem]
+    Level : 0
+    Geoloc : <0, 0, 0>
+    Size : <180, 360, 0>
+    Data count : 0
+    Children :
+
+    {
+        [CGeoTreeItem]
+        Level : 1
+        Geoloc : <-45, -90, 0>
+        Size : <90, 180, 0>
+        Data count : 0
+        Children :
+
+        {
+            [CGeoTreeItem]
+            Level : 2
+            Geoloc : <-67.5, -135, 0>
+            Size : <45, 90, 0>
+            Data count : 0
+            Children :
+
+            {
+            }
+            [CGeoTreeItem]
+            Level : 2
+            Geoloc : <-67.5, -45, 0>
+            Size : <45, 90, 0>
+            Data count : 0
+            Children :
+
+            {
+            }
+            [CGeoTreeItem]
+            Level : 2
+            Geoloc : <-22.5, -135, 0>
+            Size : <45, 90, 0>
+            Data count : 0
+            Children :
+
+            {
+            }
+            [CGeoTreeItem]
+            Level : 2
+            Geoloc : <-22.5, -45, 0>
+            Size : <45, 90, 0>
+            Data count : 0
+            Children :
+
+            {
+            }
+        }
+        [CGeoTreeItem]
+        Level : 1
+        Geoloc : <-45, 90, 0>
+        Size : <90, 180, 0>
+        Data count : 0
+        Children :
+
+        {
+            [CGeoTreeItem]
+            Level : 2
+            Geoloc : <-67.5, 45, 0>
+            Size : <45, 90, 0>
+            Data count : 0
+            Children :
+
+            {
+            }
+            [CGeoTreeItem]
+            Level : 2
+            Geoloc : <-67.5, 135, 0>
+            Size : <45, 90, 0>
+            Data count : 0
+            Children :
+
+            {
+            }
+            [CGeoTreeItem]
+            Level : 2
+            Geoloc : <-22.5, 45, 0>
+            Size : <45, 90, 0>
+            Data count : 0
+            Children :
+
+            {
+            }
+            [CGeoTreeItem]
+            Level : 2
+            Geoloc : <-22.5, 135, 0>
+            Size : <45, 90, 0>
+            Data count : 0
+            Children :
+
+            {
+            }
+        }
+        [CGeoTreeItem]
+        Level : 1
+        Geoloc : <45, -90, 0>
+        Size : <90, 180, 0>
+        Data count : 0
+        Children :
+
+        {
+            [CGeoTreeItem]
+            Level : 2
+            Geoloc : <22.5, -135, 0>
+            Size : <45, 90, 0>
+            Data count : 0
+            Children :
+
+            {
+            }
+            [CGeoTreeItem]
+            Level : 2
+            Geoloc : <22.5, -45, 0>
+            Size : <45, 90, 0>
+            Data count : 0
+            Children :
+
+            {
+            }
+            [CGeoTreeItem]
+            Level : 2
+            Geoloc : <67.5, -135, 0>
+            Size : <45, 90, 0>
+            Data count : 0
+            Children :
+
+            {
+            }
+            [CGeoTreeItem]
+            Level : 2
+            Geoloc : <67.5, -45, 0>
+            Size : <45, 90, 0>
+            Data count : 0
+            Children :
+
+            {
+            }
+        }
+        [CGeoTreeItem]
+        Level : 1
+        Geoloc : <45, 90, 0>
+        Size : <90, 180, 0>
+        Data count : 0
+        Children :
+
+        {
+            [CGeoTreeItem]
+            Level : 2
+            Geoloc : <22.5, 45, 0>
+            Size : <45, 90, 0>
+            Data count : 2
+            Children :
+
+            {
+            }
+            [CGeoTreeItem]
+            Level : 2
+            Geoloc : <22.5, 135, 0>
+            Size : <45, 90, 0>
+            Data count : 0
+            Children :
+
+            {
+            }
+            [CGeoTreeItem]
+            Level : 2
+            Geoloc : <67.5, 45, 0>
+            Size : <45, 90, 0>
+            Data count : 2
+            Children :
+
+            {
+            }
+            [CGeoTreeItem]
+            Level : 2
+            Geoloc : <67.5, 135, 0>
+            Size : <45, 90, 0>
+            Data count : 0
+            Children :
+
+            {
+            }
+        }
+    }

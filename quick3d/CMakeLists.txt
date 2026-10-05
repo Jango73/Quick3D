@@ -58,6 +58,7 @@ add_library(Quick3D SHARED
     source/mesh/CBuildingGenerator.cpp
     source/mesh/CCone.cpp
     source/mesh/CFace.cpp
+    source/mesh/CGeometryGenerator.cpp
     source/mesh/CGLExtension.cpp
     source/mesh/CGLMeshData.cpp
     source/mesh/CMaterial.cpp

@@ -1,6 +1,7 @@
 
 // Qt
 #include <QFileDialog>
+#include <QRandomGenerator>
 
 // Quick3D
 #include "CConsoleBoard.h"
@@ -217,7 +218,7 @@ void Quick3DTest::fillControlableCombo(CComponent* pComponent)
 
 int Quick3DTest::randInt(int low, int high)
 {
-    return qrand() % ((high + 1) - low) + low;
+    return QRandomGenerator::global()->bounded(low, high + 1);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -453,7 +454,7 @@ void Quick3DTest::onGenerateMatrixClicked()
 
 void Quick3DTest::onDumpSceneClicked()
 {
-    // Dump de la scène
+    // Dump de la scï¿½ne
 
     QFile dump(QCoreApplication::applicationDirPath() + "/Scene.dump.txt");
 

@@ -53,9 +53,9 @@ Légende : `[ ]` à faire, `[x]` fait, `[~]` en cours.
 
 ## Phase 5 — Appli `quick3dtest` Qt6
 
-- [ ] `main.cpp`, `Quick3DTest.ui`, `CUnitTests` : port Qt6, `--unit-tests` sans GUI, `--scene <fichier>`
-- [ ] L'appli linke, se lance, `--unit-tests` passe (ou échecs listés ici)
-- [ ] `run.sh` lance l'appli avec ses données (`--scene` par défaut si pertinent)
+- [x] `main.cpp`, `Quick3DTest.ui`, `CUnitTests` : aucun port nécessaire au-delà de `qrand()` -> `QRandomGenerator::bounded()` ; `CGeometryGenerator.cpp` manquant dans le `CMakeLists` ajouté
+- [x] L'appli linke (`build-debug/quick3dtest/Quick3DTestd`), `--unit-tests` passe en `offscreen` (exit 0)
+- [x] `run.sh` testé (`-d -- --unit-tests`, log `tmp/run.log`) ; runtime data : `CRessourcesManager` cherche relatif à l'exécutable + `qrc`, scènes via `--scene <fichier>` — affiner si besoin à l'usage GUI
 
 ## Phase 6 — Finalisation
 

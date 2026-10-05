@@ -150,16 +150,16 @@ void CGLWidgetScene::initShaders()
         // Standard mesh
 
         bResult = tryAddShaderProgram_VGF(SP_Standard_Mesh,
-                                ":/Resources/Shaders/GLSL4/VS_Standard.c",
-                                ":/Resources/Shaders/GLSL4/GS_Standard_Triangle.c",
-                                ":/Resources/Shaders/GLSL4/FS_Standard.c"
+                                ":/resources/shaders/glsl4/VS_Standard.c",
+                                ":/resources/shaders/glsl4/GS_Standard_Triangle.c",
+                                ":/resources/shaders/glsl4/FS_Standard.c"
                                 );
 
         if (bResult == false)
         {
             tryAddShaderProgram_VF(SP_Standard_Mesh,
-                                    ":/Resources/Shaders/GLSL1/VS_Standard.c",
-                                    ":/Resources/Shaders/GLSL1/FS_Standard.c"
+                                    ":/resources/shaders/glsl1/VS_Standard.c",
+                                    ":/resources/shaders/glsl1/FS_Standard.c"
                                     );
         }
 
@@ -167,16 +167,16 @@ void CGLWidgetScene::initShaders()
         // Standard billboard
 
         bResult = tryAddShaderProgram_VGF(SP_Standard_Billboard,
-                                ":/Resources/Shaders/GLSL4/VS_Standard.c",
-                                ":/Resources/Shaders/GLSL4/GS_Standard_Billboard.c",
-                                ":/Resources/Shaders/GLSL4/FS_Standard.c"
+                                ":/resources/shaders/glsl4/VS_Standard.c",
+                                ":/resources/shaders/glsl4/GS_Standard_Billboard.c",
+                                ":/resources/shaders/glsl4/FS_Standard.c"
                                 );
 
         if (bResult == false)
         {
             tryAddShaderProgram_VF(SP_Standard_Billboard,
-                                    ":/Resources/Shaders/GLSL1/VS_Standard.c",
-                                    ":/Resources/Shaders/GLSL1/FS_Standard.c"
+                                    ":/resources/shaders/glsl1/VS_Standard.c",
+                                    ":/resources/shaders/glsl1/FS_Standard.c"
                                     );
         }
 
@@ -184,16 +184,16 @@ void CGLWidgetScene::initShaders()
         // Standard lines
 
         bResult = tryAddShaderProgram_VGF(SP_Special_Lines,
-                                ":/Resources/Shaders/GLSL4/VS_Standard.c",
-                                ":/Resources/Shaders/GLSL4/GS_Standard_Line.c",
-                                ":/Resources/Shaders/GLSL4/FS_Special_Line.c"
+                                ":/resources/shaders/glsl4/VS_Standard.c",
+                                ":/resources/shaders/glsl4/GS_Standard_Line.c",
+                                ":/resources/shaders/glsl4/FS_Special_Line.c"
                                 );
 
         if (bResult == false)
         {
             tryAddShaderProgram_VF(SP_Special_Lines,
-                                    ":/Resources/Shaders/GLSL1/VS_Standard.c",
-                                    ":/Resources/Shaders/GLSL1/FS_Special_Line.c"
+                                    ":/resources/shaders/glsl1/VS_Standard.c",
+                                    ":/resources/shaders/glsl1/FS_Special_Line.c"
                                     );
         }
 

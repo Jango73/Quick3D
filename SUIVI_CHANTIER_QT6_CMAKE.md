@@ -11,17 +11,17 @@ Légende : `[ ]` à faire, `[x]` fait, `[~]` en cours.
 - [x] Inventaire organisation `galman` (`build-debug/`, `build-release/`, `scripts/linux/`)
 - [x] Inventaire `quick3d` : lib 116 `.cpp` / 137 `.h`, appli test (5 sources + 1 `.ui`), `qt-plus` (sous-module), `COTS`
 - [x] Recensement Qt5-ismes : `QGLWidget` (7), `QGLShaderProgram` (30), `QGLShader` (5), `QGLFramebufferObject` (4), `QRegExp` (10), `qSort` (4), `SkipEmptyParts` (10), `QWheelEvent` (7), `<QtGui/QApplication>` (1)
-- [ ] Recenser toutes les références de chemins avec casse (`#include "Web/..."`, `INCLUDEPATH`, `.qrc`, chargement `"Models/..."`, `"Shaders/..."`, `"Textures/..."`)
+- [x] Recenser toutes les références de chemins avec casse (fait : aucun `#include "Dir/..."` côté `quick3d`, chemins `qrc` avec préfixe `/`, `Models/`/`Textures/` dans `bin/*.xml`, includes à sous-dossiers côté `qt-plus`)
 
-## Phase 1 — Dossiers en minuscules (`git mv`, fichiers inchangés, contenu `COTS` intact)
+## Phase 1 — Dossiers en minuscules (`git mv`, fichiers inchangés, contenu `third` intact)
 
-- [ ] `Quick3D` -> `quick3d`, `Quick3DTest` -> `quick3dtest`, `COTS` -> `third`
-- [ ] `quick3d/Documentation` -> `quick3d/doc`, `quick3d/Source` -> `quick3d/source` (+ 11 sous-dossiers : `animation`, `base`, `components`, `input`, `math`, `mesh`, `render`, `terrain`, `utils`, `zip`)
-- [ ] `quick3d/Resources` -> `quick3d/resources` (+ `shaders`, `GLSL1`, `GLSL4` : vérifier références avant)
-- [ ] `quick3dtest/bin/Models` -> `models`, `bin/Textures` -> `textures`
-- [ ] `quick3dtest/Models` -> `models` (+ `Textures` -> `textures`), `quick3dtest/Resources` -> `quick3dtest/resources` (+ `Samples`, `Source`)
-- [ ] `qt-plus` (sous-module, à committer là-bas) : `source/cpp/File` -> `file`, `GeoTools` -> `geotools`, `Image` -> `image`, `Poppy` -> `poppy`, `QMLTree` -> `qmltree`, `RemoteControl` -> `remotecontrol`, `Test` -> `test`, `Web` -> `web` (+ `WebControls` -> `webcontrols`), `source/{bison,css,js,misc,qml}` et `test/source` déjà minuscules
-- [ ] Mettre à jour toutes les références de casse (includes, `INCLUDEPATH`, `.qrc`, code, `Documentation/*.md`, `AGENTS.md`)
+- [x] `Quick3D` -> `quick3d`, `Quick3DTest` -> `quick3dtest`, `COTS` -> `third` (+ `.gitmodules` + gitdir `zlib` réparé, `submodule status` OK)
+- [x] `quick3d/Documentation` -> `doc`, `quick3d/Source` -> `source` (+ 11 sous-dossiers), `quick3d/Resources` -> `resources` (+ `shaders`, `glsl1`, `glsl4`, `doc/shaders/2d`), `quick3d/Blender` -> `blender`
+- [x] `quick3dtest/bin/Models` -> `models`, `bin/Textures` -> `textures`
+- [x] `quick3dtest/Models` -> `models` (+ `textures`), `quick3dtest/Resources` -> `resources` (+ `samples`, `source`)
+- [x] `qt-plus` (sous-module, à committer là-bas) : `file`, `geotools` (+ `wmm`), `image`, `poppy`, `qmltree`, `remotecontrol`, `test`, `web` (+ `webcontrols`)
+- [x] Références de casse mises à jour (includes, `INCLUDEPATH`, `.pro`/`.pri`, `.qrc`, strings `:/resources/...`, scènes `bin/*.xml`, `doc/*.md`, `AGENTS.md`, `.gitignore`)
+- Note : l'outil d'édition réduit `$$` en `$` dans les `newString` avec `replaceAll` — vérifier `$$PWD` après chaque édition de `.pro`, ou passer par `perl`.
 
 ## Phase 2 — CMake + `scripts/linux` (modèle `galman`, builds shadow)
 

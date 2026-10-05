@@ -2,5 +2,5 @@
 	path = qt-plus
 	url = https://github.com/Jango73/qt-plus.git
 [submodule "COTS/zlib"]
-	path = COTS/zlib
+	path = third/zlib
 	url = https://github.com/madler/zlib.git

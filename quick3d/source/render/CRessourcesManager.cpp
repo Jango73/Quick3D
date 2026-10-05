@@ -34,7 +34,7 @@ CRessourcesManager::CRessourcesManager(C3DScene* pScene)
 
     m_pTreeMaterial = QSP<CMaterial>(new CMaterial(pScene));
     m_pTreeMaterial->diffuse() = CVector4(0.5, 0.3, 0.1, 1.0);
-    m_pTreeMaterial->addDiffuseTexture(QString(""),"Textures/Tree01.jpg");
+    m_pTreeMaterial->addDiffuseTexture(QString(""),"textures/Tree01.jpg");
     m_pTreeMaterial->setIRFactor(0.2);
 }
 
@@ -88,7 +88,7 @@ QString CRessourcesManager::locateResource(const QString& sBaseFile, const QStri
 
     // Check in resources
     {
-        QString sFinalName = QString(":/Resources/%1").arg(sFileToLocate);
+        QString sFinalName = QString(":/resources/%1").arg(sFileToLocate);
         QFileInfo iFinalInfo(sFinalName);
         if (iFinalInfo.exists())
         {

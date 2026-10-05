@@ -14,26 +14,26 @@ DEFINES += SFML_WINDOW_EXPORTS
 
 # Dependencies
 INCLUDEPATH += $$PWD/../qt-plus/source/cpp
-INCLUDEPATH += $$PWD/../qt-plus/source/cpp/Web
-INCLUDEPATH += $$PWD/../qt-plus/source/cpp/GeoTools
-INCLUDEPATH += $$PWD/../COTS/unzip11
+INCLUDEPATH += $$PWD/../qt-plus/source/cpp/web
+INCLUDEPATH += $$PWD/../qt-plus/source/cpp/geotools
+INCLUDEPATH += $$PWD/../third/unzip11
 
 win32 {
-    INCLUDEPATH += $$PWD/../COTS/SFML-1.6/include
-    INCLUDEPATH += $$PWD/../COTS/SFML-1.6/src
+    INCLUDEPATH += $$PWD/../third/SFML-1.6/include
+    INCLUDEPATH += $$PWD/../third/SFML-1.6/src
 }
 
-INCLUDEPATH += $$PWD/Source
-INCLUDEPATH += $$PWD/Source/Animation
-INCLUDEPATH += $$PWD/Source/Base
-INCLUDEPATH += $$PWD/Source/Components
-INCLUDEPATH += $$PWD/Source/Input
-INCLUDEPATH += $$PWD/Source/Math
-INCLUDEPATH += $$PWD/Source/Mesh
-INCLUDEPATH += $$PWD/Source/Render
-INCLUDEPATH += $$PWD/Source/Terrain
-INCLUDEPATH += $$PWD/Source/Utils
-INCLUDEPATH += $$PWD/Source/Zip
+INCLUDEPATH += $$PWD/source
+INCLUDEPATH += $$PWD/source/animation
+INCLUDEPATH += $$PWD/source/base
+INCLUDEPATH += $$PWD/source/components
+INCLUDEPATH += $$PWD/source/input
+INCLUDEPATH += $$PWD/source/math
+INCLUDEPATH += $$PWD/source/mesh
+INCLUDEPATH += $$PWD/source/render
+INCLUDEPATH += $$PWD/source/terrain
+INCLUDEPATH += $$PWD/source/utils
+INCLUDEPATH += $$PWD/source/zip
 
 win32 {
     LIBS += -lopengl32 -luser32 -lgdi32 -lwinmm

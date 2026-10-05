@@ -89,14 +89,14 @@
                     </Function>
                 </Functions>
                 <Material Type="blend">
-                    <Texture Name="Textures/Stone01.jpg" />
-                    <Texture Name="Textures/Stone02.jpg" />
-                    <Texture Name="Textures/Dirt01.jpg" />
-                    <Texture Name="Textures/Dirt02.jpg" />
-                    <Texture Name="Textures/Sand01.jpg" />
-                    <Texture Name="Textures/Snow01.jpg" />
-                    <Texture Name="Textures/Grass01.jpg" />
-                    <Texture Name="Textures/Grass02.jpg" />
+                    <Texture Name="textures/Stone01.jpg" />
+                    <Texture Name="textures/Stone02.jpg" />
+                    <Texture Name="textures/Dirt01.jpg" />
+                    <Texture Name="textures/Dirt02.jpg" />
+                    <Texture Name="textures/Sand01.jpg" />
+                    <Texture Name="textures/Snow01.jpg" />
+                    <Texture Name="textures/Grass01.jpg" />
+                    <Texture Name="textures/Grass02.jpg" />
                 </Material>
                 <Height>
                     <Value Type="Sub">
@@ -485,7 +485,7 @@
                             </Coverage>
                             <Material Name="Bush02">
                                 <Ambient g="0.0300" b="0.0300" r="0.0300" />
-                                <Diffuse g="1.0000" b="1.0000" Map="Textures/GrassDecal02.png" r="1.0000" />
+                                <Diffuse g="1.0000" b="1.0000" Map="textures/GrassDecal02.png" r="1.0000" />
                                 <Specular g="1.0000" b="1.0000" Hardness="50" Intensity="0.2" r="1.0000" />
                             </Material>
                         </Bush>
@@ -496,7 +496,7 @@
                             </Coverage>
                             <Material Name="Flower01">
                                 <Ambient g="0.0300" b="0.0300" r="0.0300" />
-                                <Diffuse g="1.0000" b="1.0000" Map="Textures/FlowerDecal01.png" r="1.0000" />
+                                <Diffuse g="1.0000" b="1.0000" Map="textures/FlowerDecal01.png" r="1.0000" />
                                 <Specular g="1.0000" b="1.0000" Hardness="50" Intensity="0.2" r="1.0000" />
                             </Material>
                         </Bush>
@@ -582,7 +582,7 @@
         <Component Name="VBCI" Class="CTerrestrialVehicle">
             <Geoloc Latitude="19.237738" Longitude="10.896701" Altitude="0.0" />
             <Rotation x="0.0" y="0.0" z="0.0" />
-            <Mesh Name="Models/VBCI.q3d">
+            <Mesh Name="models/VBCI.q3d">
                 <Bounds>
                     <Minimum x="-1.3" y="0.0" z="-3.2" />
                     <Maximum x="1.3" y="2.6" z="3.1" />

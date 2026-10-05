@@ -5,11 +5,11 @@ holes in the terrain. The occurrence is random and hard to reproduce.
 
 Files involved:
 
-- `Quick3D/Source/Base/CWorkerManager.cpp` (scheduler)
-- `Quick3D/Source/Base/CWorker.{h,cpp}`
-- `Quick3D/Source/Mesh/CWorldChunk.cpp` (`work()`, `drawable()`, `paint()`)
-- `Quick3D/Source/Mesh/CWorldTerrain.cpp` (`buildRecurse()`, `paintRecurse()`)
-- `Quick3D/Source/Terrain/CTerrain.cpp` (`work()`)
+- `quick3d/source/base/CWorkerManager.cpp` (scheduler)
+- `quick3d/source/base/CWorker.{h,cpp}`
+- `quick3d/source/mesh/CWorldChunk.cpp` (`work()`, `drawable()`, `paint()`)
+- `quick3d/source/mesh/CWorldTerrain.cpp` (`buildRecurse()`, `paintRecurse()`)
+- `quick3d/source/terrain/CTerrain.cpp` (`work()`)
 
 ## 1. Primary cause: worker-scheduler deadlock / starvation (random, can be permanent)
 

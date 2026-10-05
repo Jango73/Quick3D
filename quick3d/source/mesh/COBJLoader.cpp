@@ -69,7 +69,7 @@ QSP<CMeshGeometry> COBJLoader::load(const QString& sBaseFile, CComponent *pConta
                 }
                 else if (sFirstWord == TOKEN_material_lib)
                 {
-                    QString sMaterialFileName = ":/Resources/" + lWords.at(1);
+                    QString sMaterialFileName = ":/resources/" + lWords.at(1);
 
                     loadMaterials(
                                 sBaseFile,

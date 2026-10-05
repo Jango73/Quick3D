@@ -14,17 +14,17 @@ TEMPLATE = app
 
 # Dependencies
 INCLUDEPATH += $$PWD/../qt-plus/source/cpp
-INCLUDEPATH += $$PWD/../qt-plus/source/cpp/Web
-INCLUDEPATH += $$PWD/../Quick3D/Source
-INCLUDEPATH += $$PWD/../Quick3D/Source/Animation
-INCLUDEPATH += $$PWD/../Quick3D/Source/Base
-INCLUDEPATH += $$PWD/../Quick3D/Source/Components
-INCLUDEPATH += $$PWD/../Quick3D/Source/Input
-INCLUDEPATH += $$PWD/../Quick3D/Source/Math
-INCLUDEPATH += $$PWD/../Quick3D/Source/Mesh
-INCLUDEPATH += $$PWD/../Quick3D/Source/Render
-INCLUDEPATH += $$PWD/../Quick3D/Source/Terrain
-INCLUDEPATH += $$PWD/../Quick3D/Source/Utils
+INCLUDEPATH += $$PWD/../qt-plus/source/cpp/web
+INCLUDEPATH += $$PWD/../quick3d/source
+INCLUDEPATH += $$PWD/../quick3d/source/animation
+INCLUDEPATH += $$PWD/../quick3d/source/base
+INCLUDEPATH += $$PWD/../quick3d/source/components
+INCLUDEPATH += $$PWD/../quick3d/source/input
+INCLUDEPATH += $$PWD/../quick3d/source/math
+INCLUDEPATH += $$PWD/../quick3d/source/mesh
+INCLUDEPATH += $$PWD/../quick3d/source/render
+INCLUDEPATH += $$PWD/../quick3d/source/terrain
+INCLUDEPATH += $$PWD/../quick3d/source/utils
 
 DEPENDPATH += $$PWD/../Quick3D
 
@@ -49,9 +49,9 @@ CONFIG(debug, debug|release) {
 
 # Libraries
 CONFIG(debug, debug|release) {
-    LIBS += -L$$PWD/../Quick3D/bin -lQuick3Dd
+    LIBS += -L$$PWD/../quick3d/bin -lQuick3Dd
 } else {
-    LIBS += -L$$PWD/../Quick3D/bin -lQuick3D
+    LIBS += -L$$PWD/../quick3d/bin -lQuick3D
 }
 
 CONFIG(debug, debug|release) {
@@ -90,10 +90,10 @@ QMAKE_PRE_LINK += $$QMAKE_COPY $$quote($$shell_path($$copyfile)) $$quote($$shell
 
 # Copy Quick3D to bin
 win32 {
-    copyfile = $$PWD/../Quick3D/bin/*.dll
+    copyfile = $$PWD/../quick3d/bin/*.dll
     copydest = $$PWD/bin
 } else {
-    copyfile = $$PWD/../Quick3D/bin/*.so
+    copyfile = $$PWD/../quick3d/bin/*.so
     copydest = $$PWD/bin
 }
 

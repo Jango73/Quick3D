@@ -9,5 +9,5 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     qt-plus/qt-plus.pro \
-    Quick3D/Quick3D.pro \
-    Quick3DTest/Quick3DTest.pro
+    quick3d/Quick3D.pro \
+    quick3dtest/Quick3DTest.pro

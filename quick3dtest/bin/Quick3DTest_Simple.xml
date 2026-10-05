@@ -16,14 +16,14 @@
             <Parameters>
                 <General Levels="15" Resolution="31" />
                 <Material Type="blend">
-                    <Texture Name="Textures/Stone01.jpg" />
-                    <Texture Name="Textures/Stone02.jpg" />
-                    <Texture Name="Textures/Dirt01.jpg" />
-                    <Texture Name="Textures/Dirt02.jpg" />
-                    <Texture Name="Textures/Sand01.jpg" />
-                    <Texture Name="Textures/Snow01.jpg" />
-                    <Texture Name="Textures/Grass01.jpg" />
-                    <Texture Name="Textures/Grass02.jpg" />
+                    <Texture Name="textures/Stone01.jpg" />
+                    <Texture Name="textures/Stone02.jpg" />
+                    <Texture Name="textures/Dirt01.jpg" />
+                    <Texture Name="textures/Dirt02.jpg" />
+                    <Texture Name="textures/Sand01.jpg" />
+                    <Texture Name="textures/Snow01.jpg" />
+                    <Texture Name="textures/Grass01.jpg" />
+                    <Texture Name="textures/Grass02.jpg" />
                 </Material>
                 <Height>
                     <Value Type="Sub">

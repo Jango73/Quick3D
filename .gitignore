@@ -87,8 +87,8 @@ Makefile.*
 *.user
 *.bak
 
-Quick3D/help
-Quick3DTest/bin/*.txt
-Quick3DTest/bin/Logs
-Quick3DTest/bin/Tiles
-Quick3DTest/bin/Quick3DTest
+quick3d/help
+quick3dtest/bin/*.txt
+quick3dtest/bin/Logs
+quick3dtest/bin/Tiles
+quick3dtest/bin/Quick3DTest

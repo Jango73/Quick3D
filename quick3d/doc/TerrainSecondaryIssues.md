@@ -6,13 +6,13 @@ patch. Numbered for tracking.
 
 ## 1. `QSP<CWorldChunk>(this)` creates a second ownership chain
 
-Location: `Quick3D/Source/Mesh/CWorldChunk.cpp`, `CWorldChunk::work()` (~line 461):
+Location: `quick3d/source/mesh/CWorldChunk.cpp`, `CWorldChunk::work()` (~line 461):
 
 ```cpp
 pGenerator->generate(QSP<CWorldChunk>(this));
 ```
 
-`QSP` is `QExplicitlySharedDataPointer` (`Quick3D/Source/Base/CQ3DConstants.h`)
+`QSP` is `QExplicitlySharedDataPointer` (`quick3d/source/base/CQ3DConstants.h`)
 and `CComponent` already inherits `QSharedData`. Wrapping the already-owned
 `this` in a fresh `QSP` creates a second, independent shared-ownership chain
 for the same object. When both chains release, the object is deleted twice
@@ -28,10 +28,10 @@ Fix direction: pass a `QSP` copied from the existing owner (e.g.
 
 Locations:
 
-- `Quick3D/Source/Base/CWorker.h` — `m_bStarted`, `m_bFinished`,
+- `quick3d/source/base/CWorker.h` — `m_bStarted`, `m_bFinished`,
   `m_bStopRequested`
-- `Quick3D/Source/Mesh/CWorldChunk.h` — `m_bOK`
-- `Quick3D/Source/Terrain/CTerrain.h` — `m_bOK`
+- `quick3d/source/mesh/CWorldChunk.h` — `m_bOK`
+- `quick3d/source/terrain/CTerrain.h` — `m_bOK`
 
 These are written on worker threads (`CWorker::run()`, `CTerrain::work()`,
 `CWorldChunk::work()`) and read on the render thread (`drawable()`,
@@ -44,7 +44,7 @@ guard them with the existing mutexes.
 
 ## 3. `buildRecurse()` runs only every 6th frame
 
-Location: `Quick3D/Source/Mesh/CWorldTerrain.cpp`, `CWorldTerrain::paint()`
+Location: `quick3d/source/mesh/CWorldTerrain.cpp`, `CWorldTerrain::paint()`
 (~lines 259-270):
 
 ```cpp
@@ -65,7 +65,7 @@ nothing for a visible area, or lower the throttle when the camera moves fast.
 
 ## 4. `getFaceIndexForVertices()` key collisions (height queries only)
 
-Location: `Quick3D/Source/Terrain/CTerrain.cpp`,
+Location: `quick3d/source/terrain/CTerrain.cpp`,
 `buildVerticesToFaceMap()` (~lines 596-617) and `getFaceIndexForVertices()`
 (~lines 168-186):
 

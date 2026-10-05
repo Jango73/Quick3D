@@ -6,19 +6,19 @@ This file provides guidance to agents when working with code in this repository.
 Qt-based 3D engine with geo-referenced entities (C++/Qt). `Quick3D.pro` is a
 subdirs project, built **without** shadow build (see `README.md`):
 - `qt-plus/` (git submodule): shared Qt utility library (`CLogger`, `CXMLNode`,
-  `CSingleton`, `CInterpolator`, GeoTools, ...). Engine equivalent of a commons
+  `CSingleton`, `CInterpolator`, geotools, ...). Engine equivalent of a commons
   module — check here first before adding helpers.
-- `Quick3D/` (engine library): `Source/` (`Animation`, `Base`, `Components`,
-  `Input`, `Math`, `Mesh`, `Render`, `Terrain`, `Utils`, `Zip`), shaders in
-  `Quick3DShaders.qrc`, docs in `Quick3D/Documentation/`.
-- `Quick3DTest/` (test/demo application): GUI (`Quick3DTest.ui`), `main.cpp`
-  (`--scene`, `--unit-tests`), scenes/models/textures in `Quick3DTest/bin/`.
-- `COTS/`: vendored third-party code (`SFML-1.6`, `unzip11`, `zlib` as git
+- `quick3d/` (engine library): `source/` (`animation`, `base`, `components`,
+  `input`, `math`, `mesh`, `render`, `terrain`, `utils`, `zip`), shaders in
+  `Quick3DShaders.qrc`, docs in `quick3d/doc/`.
+- `quick3dtest/` (test/demo application): GUI (`Quick3DTest.ui`), `main.cpp`
+  (`--scene`, `--unit-tests`), scenes/models/textures in `quick3dtest/bin/`.
+- `third/`: vendored third-party code (`SFML-1.6`, `unzip11`, `zlib` as git
   submodule). Do not add new third-party dependencies without asking.
-- `Quick3D/Blender/`: Blender Q3D export script (Python, existing exception to
+- `quick3d/blender/`: Blender Q3D export script (Python, existing exception to
   the C++ rule below).
 
-Fresh clones have empty `qt-plus/` and `COTS/zlib/` until submodules are
+Fresh clones have empty `qt-plus/` and `third/zlib/` until submodules are
 initialized (`git submodule update --init --recursive`). Rendering is
 `QGLWidget`-based, so the engine targets **Qt5**; the qmake in PATH on this
 machine is Qt6 (`qmake6`, Qt 6.2.4) and Qt5 dev packages are not installed.
@@ -28,7 +28,7 @@ machine is Qt6 (`qmake6`, Qt 6.2.4) and Qt5 dev packages are not installed.
 
 ## Work Tracking
 - Analysis and work notes live in
-  `Quick3D/Documentation/` (currently `TerrainHolesAnalysis.md`,
+  `quick3d/doc/` (currently `TerrainHolesAnalysis.md`,
   `TerrainSecondaryIssues.md`).
 - Keep these files up to date while working.
 
@@ -41,17 +41,17 @@ machine is Qt6 (`qmake6`, Qt 6.2.4) and Qt5 dev packages are not installed.
 
 ## Architecture and Reuse Rules
 - Bidirectional coupling is **STRICTLY FORBIDDEN**, both when writing code from scratch and when delivering a fix. Keep dependencies unidirectional and break cycles instead of introducing or preserving them.
-- Any behavior likely to appear in multiple places (filtering, interpolation, averaging, logging, XML access, geo math) MUST be implemented as a reusable module in `qt-plus/source/cpp` or, if engine-specific, in `Quick3D/Source/Utils`.
-- Before adding local logic in a component/generator/subsystem, check `qt-plus/source/cpp` and `Quick3D/Source/Utils` first. If no suitable module exists, create a generic one and use it from the caller.
+- Any behavior likely to appear in multiple places (filtering, interpolation, averaging, logging, XML access, geo math) MUST be implemented as a reusable module in `qt-plus/source/cpp` or, if engine-specific, in `quick3d/source/utils`.
+- Before adding local logic in a component/generator/subsystem, check `qt-plus/source/cpp` and `quick3d/source/utils` first. If no suitable module exists, create a generic one and use it from the caller.
 - Component code should only express policy/usage, not duplicate generic mechanics.
-- For log-flood control, add a shared helper in `qt-plus`/`Utils` and use it everywhere; do not hardcode ad-hoc counters/cooldowns inside modules.
+- For log-flood control, add a shared helper in `qt-plus`/`utils` and use it everywhere; do not hardcode ad-hoc counters/cooldowns inside modules.
 - **Container usage**: this rule applies to the whole engine. Use Qt containers (`QVector`, `QMap`) and shared ownership (`QSP`, see below). Do not introduce custom linked-list infrastructure.
 - **Mutex ownership**: this rule applies to the whole engine (worker queue in `CWorkerManager`, chunk mutex in `CWorldChunk`, ...). Never lock another object's mutex directly to inspect or mutate its internal state. Expose owner-side getters/setters/snapshot helpers, keep critical sections short, and never recurse or call callbacks/messages while holding structural object locks.
 - **Public headers**: `quick3d_global.h` and the headers consumed by downstream apps (`Quick3DTest`). Keep them app-safe: no internals that break downstream includes, no platform-only constructs leaking into the shared include surface.
 
 ## Coding Conventions
 - **Types**: Use the engine math types (`CGeoloc`, `CVector2/3/4`, `CMatrix4`, ...) and Qt types where they exist instead of introducing parallel raw-C representations. `double` for geo math.
-- **Dependencies**: This is a Qt user-space project. Qt and the STL are allowed. Do NOT add new third-party libraries/modules (vendored or system) without asking; `COTS/` is the only place for vendored code.
+- **Dependencies**: This is a Qt user-space project. Qt and the STL are allowed. Do NOT add new third-party libraries/modules (vendored or system) without asking; `third/` is the only place for vendored code.
 - **Debugging**: Debug output is logged with `LOG_METHOD_DEBUG()` (qt-plus `CLogger`), warnings with `LOG_WARNING()`/`LOG_METHOD_WARNING()`, errors with `LOG_ERROR()`/`LOG_METHOD_ERROR()`.
 - **Test-app failure visibility**: Any failure/error message shown on screen in `Quick3DTest` MUST also be emitted through `CLogger` with equivalent content. No failure must appear only on screen without a corresponding log entry.
 - **Logging**: `CLogger` already prefixes method context via the `LOG_METHOD_*` macros. Keep messages short at `Warning` level and above.
@@ -68,9 +68,9 @@ machine is Qt6 (`qmake6`, Qt 6.2.4) and Qt5 dev packages are not installed.
 - **Pointer style**: Never put a space between the type and the pointer asterisk. Write `char* Pointer`, never `char *Pointer`.
 - **Numbers**: Hexadecimal for constant numbers, except for sizes, vectors, points and time.
 - **Number suffixes**: Do not add numeric suffixes like `u` to constants; they are not wanted here.
-- **Documentation**: Update `Quick3D/Documentation/` when adding/modifying engine components. Both library `.pro` files run `qdoc` as a post-link step (`Quick3D.qdocconf`, `qt-plus.qdocconf`); keep the qdoc comments compiling.
+- **Documentation**: Update `quick3d/doc/` when adding/modifying engine components. Both library `.pro` files run `qdoc` as a post-link step (`Quick3D.qdocconf`, `qt-plus.qdocconf`); keep the qdoc comments compiling.
 - **Documentation wording**: Use timeless technical wording. Do not use temporal terms like "now", "currently", "at this time" in documentation/comments.
-- **Resource paths**: Scenes, models and textures resolve relative to `Quick3DTest/bin/` (`Models/`, `Textures/`, `*.xml`). Never hardcode absolute paths.
+- **Resource paths**: Scenes, models and textures resolve relative to `quick3dtest/bin/` (`models/`, `textures/`, `*.xml`). Never hardcode absolute paths.
 - **Languages**: C++ for engine and test app, avoid Python (the Blender Q3D export script is the existing exception).
 - **Unused parameters**: Use `Q_UNUSED()` to suppress the "unused parameter" warning.
 - **Shared ownership**: Components (`CComponent` inherits `QSharedData`) are held by `QSP` (`QExplicitlySharedDataPointer`, see `CQ3DConstants.h`). Null-check `QSP`s before use, cast with `QSP_CAST`, and NEVER wrap an already-owned `this` in a fresh `QSP` (second ownership chain = double-delete; see `TerrainSecondaryIssues.md` #1).
@@ -103,7 +103,7 @@ the commit message: lines follow each other directly.
   PATH resolves to Qt6 and the `qdoc` post-link step also fails (`qdoc: could
   not exec '/usr/lib/qt5/bin/qdoc'`). Install the Qt5 dev packages (needs
   `sudo`, which prompts for a password here) before attempting a full build.
-- Run the test app: `Quick3DTest/bin/Quick3DTest[--d] [--scene <file>]`, or
+- Run the test app: `quick3dtest/bin/Quick3DTest[--d] [--scene <file>]`, or
   `... --unit-tests` for the headless unit tests.
 
 ## Tool Execution Policy
@@ -121,17 +121,17 @@ the commit message: lines follow each other directly.
   exercises components without opening the GUI.
 
 ## Documentation
-- Build setup of the engine: `README.md`, `Quick3D/Documentation/`
+- Build setup of the engine: `README.md`, `quick3d/doc/`
   (`Quick3D.qdocconf`, `Quick3DScene.xsd`), `qt-plus/README.md`
 
 **Core Components:**
 - **qt-plus** (`qt-plus/source/cpp`): Shared Qt utility library (logging, XML, singletons, interpolation, geo tools, web, QML tree). Git submodule.
-- **Quick3D** (`Quick3D/Source/`): Engine library — `Base` (components, workers, factory), `Mesh` (world terrain/chunks, geometry), `Terrain` (patches, height fields), `Render` (`CGLWidgetScene`, scene, camera), `Math`, `Animation`, `Components` (vehicles, controllers), `Input`, `Utils`, `Zip`.
-- **Quick3DTest** (`Quick3DTest/`): GUI test application + `CUnitTests`.
-- **Blender** (`Quick3D/Blender/`): Q3D export script.
-- **COTS** (`COTS/`): Vendored third-party code (`SFML-1.6`, `unzip11`, `zlib` submodule).
+- **Quick3D** (`quick3d/source/`): Engine library — `base` (components, workers, factory), `mesh` (world terrain/chunks, geometry), `terrain` (patches, height fields), `render` (`CGLWidgetScene`, scene, camera), `math`, `animation`, `components` (vehicles, controllers), `input`, `utils`, `zip`.
+- **Quick3DTest** (`quick3dtest/`): GUI test application + `CUnitTests`.
+- **Blender** (`quick3d/blender/`): Q3D export script.
+- **third** (`third/`): Vendored third-party code (`SFML-1.6`, `unzip11`, `zlib` submodule).
 
 ## Debug Workflow
 1. Reproduce headless first when possible: `Quick3DTest --unit-tests`.
-2. For terrain LOD/patch issues, read `Quick3D/Documentation/TerrainHolesAnalysis.md` before re-investigating: the worker-scheduler starvation, the missing `paintRecurse()` fallback, and the premature child-pruning mechanisms are already documented there.
+2. For terrain LOD/patch issues, read `quick3d/doc/TerrainHolesAnalysis.md` before re-investigating: the worker-scheduler starvation, the missing `paintRecurse()` fallback, and the premature child-pruning mechanisms are already documented there.
 3. Known environment limitation (do not re-investigate from scratch): this machine has Qt6/qmake6 only with no Qt5 dev packages, so a full build fails on `QGLWidget`/`QtOpenGL` and on the `qdoc` post-link step.

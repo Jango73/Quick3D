@@ -13,8 +13,7 @@ using namespace Math;
 //-------------------------------------------------------------------------------------------------
 
 CHGTData::CHGTData(const CGeoloc& gGeoloc, const CGeoloc& gSize)
-    : m_tMutex(QMutex::Recursive)
-    , m_gGeoloc(gGeoloc)
+    : m_gGeoloc(gGeoloc)
     , m_gSize(gSize)
     , m_iNumCellsWidth(1201)
     , m_iNumCellsHeight(1201)

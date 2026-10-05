@@ -15,8 +15,7 @@
 //-------------------------------------------------------------------------------------------------
 
 CWorkerManager::CWorkerManager()
-    : m_mMutex(QMutex::Recursive)
-    , m_bStopRequested(false)
+    : m_bStopRequested(false)
 {
     start();
 }

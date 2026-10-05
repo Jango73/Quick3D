@@ -21,9 +21,9 @@ CWaterMaterial::~CWaterMaterial()
 {
 }
 
-QGLShaderProgram* CWaterMaterial::activate(CRenderContext* pContext)
+QOpenGLShaderProgram* CWaterMaterial::activate(CRenderContext* pContext)
 {
-    QGLShaderProgram* pProgram = CMaterial::activate(pContext);
+    QOpenGLShaderProgram* pProgram = CMaterial::activate(pContext);
 
     if (pProgram != nullptr)
     {

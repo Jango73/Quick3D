@@ -100,6 +100,6 @@ protected:
 
 protected:
 
-    QMutex      m_mMutex;
+    QRecursiveMutex      m_mMutex;
     C3DScene*   m_pScene;
 };

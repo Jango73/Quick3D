@@ -512,7 +512,7 @@ void C3DScene::paintShadowCastingComponents(CRenderContext* pContext)
 /*!
     Sets up the environment of the scene.
 */
-void C3DScene::setupEnvironment(CRenderContext* pContext, QGLShaderProgram* pProgram, bool bBackgroundItem)
+void C3DScene::setupEnvironment(CRenderContext* pContext, QOpenGLShaderProgram* pProgram, bool bBackgroundItem)
 {
 }
 

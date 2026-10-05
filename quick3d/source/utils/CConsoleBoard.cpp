@@ -16,7 +16,6 @@
 
 CConsoleBoard::CConsoleBoard()
     : m_bActive(false)
-    , m_tMutex(QMutex::Recursive)
 {
     connect(&m_tTimer, SIGNAL(timeout()), this, SLOT(onTimeout()));
 }

@@ -11,7 +11,7 @@ CShaderCollection::CShaderCollection()
 
 CShaderCollection::~CShaderCollection()
 {
-    foreach (QGLShaderProgram* pShader, m_vShaders.values())
+    foreach (QOpenGLShaderProgram* pShader, m_vShaders.values())
     {
         delete pShader;
     }
@@ -21,7 +21,7 @@ CShaderCollection::~CShaderCollection()
 
 void CShaderCollection::clear()
 {
-    foreach (QGLShaderProgram* pShader, m_vShaders.values())
+    foreach (QOpenGLShaderProgram* pShader, m_vShaders.values())
     {
         delete pShader;
     }
@@ -31,7 +31,7 @@ void CShaderCollection::clear()
 
 //-------------------------------------------------------------------------------------------------
 
-void CShaderCollection::addShader(QString sName, QGLShaderProgram* value)
+void CShaderCollection::addShader(QString sName, QOpenGLShaderProgram* value)
 {
     if (m_vShaders.contains(sName))
     {
@@ -43,7 +43,7 @@ void CShaderCollection::addShader(QString sName, QGLShaderProgram* value)
 
 //-------------------------------------------------------------------------------------------------
 
-QGLShaderProgram* CShaderCollection::getShader(QString sName)
+QOpenGLShaderProgram* CShaderCollection::getShader(QString sName)
 {
     if (m_vShaders.contains(sName))
     {

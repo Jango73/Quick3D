@@ -144,7 +144,7 @@ protected:
 
 protected:
 
-    QMutex              m_tMutex;
+    QRecursiveMutex              m_tMutex;
     C3DScene*           m_pScene;
     CComponent*         m_pUpdater;
     CTextureUpdater*    m_TextureUpdateWorker;

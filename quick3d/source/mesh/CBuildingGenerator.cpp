@@ -12,8 +12,7 @@ using namespace Math;
 //-------------------------------------------------------------------------------------------------
 
 CBuildingGenerator::CBuildingGenerator(C3DScene* pScene)
-    : m_mMutex(QMutex::Recursive)
-    , m_pScene(pScene)
+    : m_pScene(pScene)
     , m_pBuilding1(nullptr)
 {
     m_pBuilding1 = QSP<CMesh>(new CBox(m_pScene, 150.0));

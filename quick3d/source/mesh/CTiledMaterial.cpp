@@ -66,9 +66,9 @@ void CTiledMaterial::setCurrentPositionAndLevel(const CGeoloc& gPosition, int iL
 
 //-------------------------------------------------------------------------------------------------
 
-QGLShaderProgram* CTiledMaterial::activate(CRenderContext* pContext)
+QOpenGLShaderProgram* CTiledMaterial::activate(CRenderContext* pContext)
 {
-    QGLShaderProgram* pProgram = CMaterial::activate(pContext);
+    QOpenGLShaderProgram* pProgram = CMaterial::activate(pContext);
 
     if (pProgram != nullptr)
     {
@@ -144,7 +144,7 @@ QString CTiledMaterial::TileXYToQuadKey(int tileX, int tileY, int levelOfDetail)
         lTileY = lTileY / 2;
 
         int lCode = (lY * 2) + lX;
-        sKey.insert(0, QString('0' + lCode));
+        sKey.insert(0, QChar(static_cast<ushort>('0' + lCode)));
 
         levelOfDetail--;
     }

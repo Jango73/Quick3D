@@ -363,7 +363,7 @@ CVector3 CGeoloc::toVector3_UTM(const CGeoloc& gReference) const
 {
     CVector3 Result;
 
-    // Conversion des deux coordonnées en UTM
+    // Conversion des deux coordonnï¿½es en UTM
 
     long Zone1, Zone2;
     char Hemi1, Hemi2;
@@ -384,7 +384,7 @@ CVector3 CGeoloc::toVector3_UTM(const CGeoloc& gReference) const
                 &Easting2, &Northing2
                 );
 
-    // Soustraction coordonnées référence à celle de l'objet
+    // Soustraction coordonnï¿½es rï¿½fï¿½rence ï¿½ celle de l'objet
 
     Result.X = Easting2 - Easting1;
     Result.Y = Altitude - gReference.Altitude;
@@ -402,7 +402,7 @@ CVector3 CGeoloc::toVector3_UTM() const
 {
     CVector3 Result;
 
-    // Conversion des deux coordonnées en UTM
+    // Conversion des deux coordonnï¿½es en UTM
 
     long Zone1;
     char Hemi1;
@@ -434,7 +434,7 @@ CVector3 CGeoloc::toVector3_WGS84() const
     double dTemp;
 
     //-----------------------------------------------
-    // Récupération des coordonnées géocentriques
+    // Rï¿½cupï¿½ration des coordonnï¿½es gï¿½ocentriques
 
     Convert_Geodetic_To_Geocentric(
                 Latitude * GeoTrans::fDeg2Rad,
@@ -535,7 +535,7 @@ CVector3 CGeoloc::toVector3_WGS84(const CGeoloc& gReference) const
     CMatrix4 mRotationInverseX = Math::CMatrix4::makeRotation(Math::CVector3(dAngleX * -1.0, 0.0, 0.0));
 
     //-----------------------------------------------
-    // On applique les angles inverses de la référence à la position et à la référence
+    // On applique les angles inverses de la rï¿½fï¿½rence ï¿½ la position et ï¿½ la rï¿½fï¿½rence
 
     vReference3D = mRotationInverseY * vReference3D;
     vReference3D = mRotationInverseX * vReference3D;
@@ -647,7 +647,7 @@ QString CGeoloc::TileXYToQuadKey(int tileX, int tileY, int levelOfDetail) const
         lTileY = lTileY / 2;
 
         int lCode = (lY * 2) + lX;
-        sKey.insert(0, QString('0' + lCode));
+        sKey.insert(0, QChar(static_cast<ushort>('0' + lCode)));
 
         levelOfDetail--;
     }

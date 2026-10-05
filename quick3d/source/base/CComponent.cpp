@@ -247,7 +247,7 @@ QSP<CComponent> CComponent::findComponent(QString sName, QSP<CComponent> pCaller
 {
     if (sName.isEmpty() == false)
     {
-        QStringList lNames = sName.split(".", QString::KeepEmptyParts);
+        QStringList lNames = sName.split(".", Qt::KeepEmptyParts);
 
         if (lNames[0].isEmpty() && pCaller)
         {

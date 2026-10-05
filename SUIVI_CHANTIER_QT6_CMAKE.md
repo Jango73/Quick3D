@@ -44,11 +44,12 @@ Légende : `[ ]` à faire, `[x]` fait, `[~]` en cours.
 
 ## Phase 4 — Port Qt6 lib `quick3d`
 
-- [ ] `CGLWidgetScene` : `QGLWidget` -> `QOpenGLWidget` (+ `QOpenGLFunctions`)
-- [ ] `QGLShaderProgram`/`QGLShader` -> `QOpenGLShaderProgram`/`QOpenGLShader`, `QGLFramebufferObject` -> `QOpenGLFramebufferObject`, `QGLFormat`, `QGL` divers
-- [ ] `glext.h`, `CGLExtension.h`, `CMatrix4.h` : vérifier contre Qt6/OpenGL système
-- [ ] Reste des Qt5-ismes + correctifs C++17 au fil des erreurs
-- [ ] La lib `quick3d` linke
+- [x] `CGLWidgetScene` : `QGLWidget` -> `QOpenGLWidget` (format via `QSurfaceFormat` + `setFormat`, `grabFramebuffer()`)
+- [x] `QGLShaderProgram`/`QGLShader` -> `QOpenGLShaderProgram`/`QOpenGLShader`, `QGLFramebufferObject` -> `QOpenGLFramebufferObject` (ctor 5 args conservé, existe en Qt6), `QGLWidget::convertToGLFormat` -> helper local `convertToGLFormat()` (`RGBA8888` + miroir vertical), `updateGL()` -> `update()`
+- [x] `QMutex::Recursive` -> `QRecursiveMutex` (12 membres), `qSort` -> `std::sort`, `QString::Skip/KeepEmptyParts` -> `Qt::`, `Qt::MidButton` -> `Qt::MiddleButton`, `QWheelEvent::delta()` -> `angleDelta().y()`
+- [x] `QString('0' + code)` ambigu -> `QChar(static_cast<ushort>(...))` (`CGeoloc`, `CTiledMaterial` : même extrait dupliqué, à factoriser plus tard) ; `CAverager::getAverage` : `T(count)` ambigu (`qsizetype`) -> `T(static_cast<int>(count))` (fix générique dans `qt-plus`)
+- [x] `qt-plus` expose aussi `source/cpp/web` + `source/cpp/geotools` (comme le `.pro`) pour `CViewport.h`
+- [x] La lib `quick3d` linke (`build-debug/quick3d/libQuick3Dd.so`)
 
 ## Phase 5 — Appli `quick3dtest` Qt6
 

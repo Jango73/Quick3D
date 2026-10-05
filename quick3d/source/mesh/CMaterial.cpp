@@ -242,7 +242,7 @@ void CMaterial::createShadowTexture()
     {
         m_pScene->makeCurrentRenderingContext();
 
-        m_pShadowBuffer = new QGLFramebufferObject(2048, 2048, QGLFramebufferObject::Depth, GL_TEXTURE_2D, GL_RED);
+        m_pShadowBuffer = new QOpenGLFramebufferObject(2048, 2048, QOpenGLFramebufferObject::Depth, GL_TEXTURE_2D, GL_RED);
     }
 }
 
@@ -287,9 +287,9 @@ void CMaterial::disableFrameBuffer()
 
 //-------------------------------------------------------------------------------------------------
 
-QGLShaderProgram* CMaterial::activate(CRenderContext* pContext)
+QOpenGLShaderProgram* CMaterial::activate(CRenderContext* pContext)
 {
-    QGLShaderProgram* pProgram = nullptr;
+    QOpenGLShaderProgram* pProgram = nullptr;
 
     if (m_bBillBoard)
     {

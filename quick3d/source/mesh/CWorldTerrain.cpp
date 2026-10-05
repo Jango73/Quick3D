@@ -2,6 +2,9 @@
 // qt-plus
 #include "CLogger.h"
 
+// Std
+#include <algorithm>
+
 // Application
 #include "C3DScene.h"
 #include "CComponentFactory.h"
@@ -273,7 +276,7 @@ void CWorldTerrain::paint(CRenderContext* pContext)
 
     paintRecurse(vChunkCollect, pContext, m_pRoot, m_iLevels, false);
 
-    qSort(vChunkCollect.begin(), vChunkCollect.end());
+    std::sort(vChunkCollect.begin(), vChunkCollect.end());
 
     foreach (QSP<CWorldChunk> pChunk, vChunkCollect)
     {

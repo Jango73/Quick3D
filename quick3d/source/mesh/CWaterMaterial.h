@@ -48,7 +48,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Active ce matériau pour le rendu
-    virtual QGLShaderProgram* activate(CRenderContext* pContext);
+    virtual QOpenGLShaderProgram* activate(CRenderContext* pContext);
 
     //! Retourne l'altitude à la géolocalisation donnée
     virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = nullptr);

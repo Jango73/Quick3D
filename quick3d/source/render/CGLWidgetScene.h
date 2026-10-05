@@ -2,7 +2,7 @@
 #pragma once
 
 // Qt
-#include <QGLWidget>
+#include <QOpenGLWidget>
 #include <QImage>
 #include <QTime>
 
@@ -22,7 +22,7 @@
 
 //-------------------------------------------------------------------------------------------------
 
-class QUICK3D_EXPORT CGLWidgetScene : public QGLWidget, public C3DScene
+class QUICK3D_EXPORT CGLWidgetScene : public QOpenGLWidget, public C3DScene
 {
 public:
 
@@ -50,7 +50,7 @@ public:
     virtual void initShaders();
 
     //!
-    virtual void setupEnvironment(CRenderContext* pContext, QGLShaderProgram* pProgram, bool bBackgroundItem);
+    virtual void setupEnvironment(CRenderContext* pContext, QOpenGLShaderProgram* pProgram, bool bBackgroundItem);
 
     //!
     virtual void setupLights(CRenderContext* pContext);

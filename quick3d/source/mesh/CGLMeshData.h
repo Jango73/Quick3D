@@ -44,7 +44,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //!
-    void paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolute, QGLShaderProgram* pProgram, int iGLType);
+    void paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolute, QOpenGLShaderProgram* pProgram, int iGLType);
 
     //-------------------------------------------------------------------------------------------------
     // Properties

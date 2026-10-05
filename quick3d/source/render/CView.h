@@ -10,7 +10,7 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QGraphicsItem>
-#include <QGLWidget>
+#include <QOpenGLWidget>
 #include <QTcpSocket>
 #include <QTcpServer>
 

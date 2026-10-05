@@ -130,7 +130,7 @@ void CCartoController::mouseMoveEvent(QMouseEvent* event)
 
 void CCartoController::wheelEvent(QWheelEvent *event)
 {
-    double dDeltaY = (double) event->delta() * -0.25;
+    double dDeltaY = (double) event->angleDelta().y() * -0.25;
 
     if (m_rPositionTarget.component())
     {

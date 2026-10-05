@@ -18,7 +18,6 @@ using namespace Math;
 
 CRessourcesManager::CRessourcesManager(C3DScene* pScene)
     : m_pScene(pScene)
-    , m_mMutex(QMutex::Recursive)
     , m_pDefaultMaterial(nullptr)
     , m_pWaterMaterial(nullptr)
     , m_pSkyboxMaterial(nullptr)

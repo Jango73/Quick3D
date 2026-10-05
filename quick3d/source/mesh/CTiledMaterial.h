@@ -94,7 +94,7 @@ public:
     //-------------------------------------------------------------------------------------------------
 
     //! Active ce matériau pour le rendu
-    virtual QGLShaderProgram* activate(CRenderContext* pContext);
+    virtual QOpenGLShaderProgram* activate(CRenderContext* pContext);
 
     //! Applique des transformations à la géolocalisation donnée (ex: Mercator)
     virtual CGeoloc transformGeoloc(const CGeoloc& gPosition);

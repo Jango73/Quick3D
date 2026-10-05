@@ -80,7 +80,7 @@ CGLMeshData::~CGLMeshData()
     \a pProgram is the shader program to use. \br
     \a iGLType can be one of: GL_POINTS, GL_LINES, GL_TRIANGLES, GL_QUADS
 */
-void CGLMeshData::paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolute, QGLShaderProgram* pProgram, int iGLType)
+void CGLMeshData::paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolute, QOpenGLShaderProgram* pProgram, int iGLType)
 {
     // If at least one point to render
     if (m_iNumRenderPoints > 0 && m_iNumRenderIndices > 0 && m_iVBO[0] > 0 && m_iVBO[1] > 0)

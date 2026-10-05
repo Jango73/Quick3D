@@ -6,8 +6,8 @@
 #include <QSharedData>
 #include <QExplicitlySharedDataPointer>
 #include <QtOpenGL>
-#include <QtOpenGL/QGLShaderProgram>
-#include <QGLFramebufferObject>
+#include <QtOpenGL/QOpenGLShaderProgram>
+#include <QOpenGLFramebufferObject>
 
 // qt-plus
 #include "CMemoryMonitor.h"
@@ -178,7 +178,7 @@ public:
     void disableFrameBuffer();
 
     //! Active ce matériau pour le rendu
-    virtual QGLShaderProgram* activate(CRenderContext* pContext);
+    virtual QOpenGLShaderProgram* activate(CRenderContext* pContext);
 
     //! Active les ombres portées
     virtual void activateShadow(CRenderContext* pContext);
@@ -214,7 +214,7 @@ protected:
     double                  m_dSSSRadius;
     QVector<CTexture*>      m_vDiffuseTextures;
     QVector<CTexture*>      m_vNormalTextures;
-    QGLFramebufferObject*   m_pShadowBuffer;
+    QOpenGLFramebufferObject*   m_pShadowBuffer;
     double                  m_dIRFactor;
     bool                    m_bHasAlpha;
     bool                    m_bUseSky;

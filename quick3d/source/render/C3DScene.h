@@ -2,7 +2,7 @@
 #pragma once
 
 // Qt
-#include <QGLWidget>
+#include <QOpenGLWidget>
 #include <QImage>
 #include <QTime>
 
@@ -235,7 +235,7 @@ public:
     virtual void initShaders();
 
     //! Sets up the environment
-    virtual void setupEnvironment(CRenderContext* pContext, QGLShaderProgram* pProgram, bool bBackgroundItem);
+    virtual void setupEnvironment(CRenderContext* pContext, QOpenGLShaderProgram* pProgram, bool bBackgroundItem);
 
     //! Sets up the ligths
     virtual void setupLights(CRenderContext* pContext);

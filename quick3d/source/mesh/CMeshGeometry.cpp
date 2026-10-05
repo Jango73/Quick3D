@@ -2,6 +2,9 @@
 // qt-plus
 #include "CLogger.h"
 
+// Std
+#include <algorithm>
+
 // Application
 #include "COBJLoader.h"
 #include "C3DScene.h"
@@ -17,7 +20,6 @@ IMPLEMENT_MEMORY_MONITORED(CMeshGeometry, "CMeshGeometry")
 
 CMeshGeometry::CMeshGeometry(C3DScene* pScene, double dMaxDistance, bool bUseSpacePartitionning)
     : m_pScene(pScene)
-    , m_mMutex(QMutex::Recursive)
     , m_dMaxDistance(dMaxDistance)
     , m_iGLType(GL_TRIANGLES)
     , m_bUseSpacePartitionning(bUseSpacePartitionning)
@@ -139,7 +141,7 @@ void CMeshGeometry::checkAndUpdateGeometry()
         if (m_vVertices.count() > 0)
         {
             // Sort faces by material
-            qSort(m_vFaces);
+            std::sort(m_vFaces.begin(), m_vFaces.end());
 
             // Compute normal vectors
             computeNormals();
@@ -241,7 +243,7 @@ void CMeshGeometry::checkAndUpdateGeometry()
                                 );
                                 */
 
-                            // Création des buffers de géométrie OpenGL
+                            // Crï¿½ation des buffers de gï¿½omï¿½trie OpenGL
                             pGLMeshData->m_vRenderPoints = new CVertex[pGLMeshData->m_iNumRenderPoints];
                             pGLMeshData->m_vRenderIndices = new GLuint[pGLMeshData->m_iNumRenderIndices];
 
@@ -525,7 +527,7 @@ void CMeshGeometry::computeNormals()
     }
     else
     {
-        // Remise à zéro des normales de polygone
+        // Remise ï¿½ zï¿½ro des normales de polygone
         for (int Index = 0; Index < m_vVertices.count(); Index++)
         {
             m_vVertices[Index].normal() = CVector3(0.0, 0.0, 0.0);
@@ -620,13 +622,13 @@ void CMeshGeometry::createSphere(int iNumSegments)
 {
     clear();
 
-    // Le nombre de segments doit être paire
+    // Le nombre de segments doit ï¿½tre paire
     if ((iNumSegments & 1) == 1)
     {
         iNumSegments++;
     }
 
-    // et supérieur à 3
+    // et supï¿½rieur ï¿½ 3
     if (iNumSegments < 4)
     {
         iNumSegments = 4;
@@ -638,7 +640,7 @@ void CMeshGeometry::createSphere(int iNumSegments)
     // Sommet du dessus
     m_vVertices.append(CVertex(CVector3(0.0, 1.0, 0.0), CVector2(0.0, 0.0)));
 
-    // Sommets intermédiaires
+    // Sommets intermï¿½diaires
     for (int iTiltIndex = 1; iTiltIndex < iTiltSegments; iTiltIndex++)
     {
         double dCurrentTilt = (((double) iTiltIndex / (double) iTiltSegments) * Math::Pi);
@@ -728,19 +730,19 @@ void CMeshGeometry::createSpherePart(
 {
     clear();
 
-    // Le nombre de segments en gisement doit être paire
+    // Le nombre de segments en gisement doit ï¿½tre paire
     if ((iPanSegments & 1) == 1)
     {
         iPanSegments++;
     }
 
-    // Le nombre de segments en site doit être paire
+    // Le nombre de segments en site doit ï¿½tre paire
     if ((iTiltSegments & 1) == 1)
     {
         iTiltSegments++;
     }
 
-    // L'angle gisement de début doit être inférieur à l'angle de fin
+    // L'angle gisement de dï¿½but doit ï¿½tre infï¿½rieur ï¿½ l'angle de fin
     if (dStartPanDegrees > dEndPanDegrees)
     {
         double dTemp = dStartPanDegrees;
@@ -748,7 +750,7 @@ void CMeshGeometry::createSpherePart(
         dEndPanDegrees = dTemp;
     }
 
-    // L'angle site de début doit être inférieur à l'angle de fin
+    // L'angle site de dï¿½but doit ï¿½tre infï¿½rieur ï¿½ l'angle de fin
     if (dStartTiltDegrees > dEndTiltDegrees)
     {
         double dTemp = dStartTiltDegrees;
@@ -766,7 +768,7 @@ void CMeshGeometry::createSpherePart(
         double dCurrentTiltNormalized = (double) iTiltIndex / (double) iTiltSegments;
         double dCurrentTilt = dStartTiltDegrees + ((dCurrentTiltNormalized) * dTiltSpanDegrees);
 
-        // Création de la matrice de rotation en site
+        // Crï¿½ation de la matrice de rotation en site
         CMatrix4 mRotationTilt = CMatrix4().makeRotation(CVector3(Math::Angles::toRad(dCurrentTilt), 0.0, 0.0));
 
         for (int iPanIndex = 0; iPanIndex < (iPanSegments + 1); iPanIndex++)
@@ -774,10 +776,10 @@ void CMeshGeometry::createSpherePart(
             double dCurrentPanNormalized = (double) iPanIndex / (double) iPanSegments;
             double dCurrentPan = dStartPanDegrees + ((dCurrentPanNormalized) * dPanSpanDegrees);
 
-            // Création de la matrice de rotation en gisement
+            // Crï¿½ation de la matrice de rotation en gisement
             CMatrix4 mRotationPan = CMatrix4().makeRotation(CVector3(0.0, Math::Angles::toRad(dCurrentPan), 0.0));
 
-            // Création du vecteur de position du sommet
+            // Crï¿½ation du vecteur de position du sommet
             CVector3 vPosition = mRotationPan * (mRotationTilt * CVector3(0.0, 1.0, 0.0));
 
             // Ajout du sommet
@@ -1544,7 +1546,7 @@ void CMeshGeometry::paint(CRenderContext* pContext, CComponent* pContainer)
                 CMaterial* pMaterial = m_vMaterials[iIndex].data();
 
                 // Get a program from object material
-                QGLShaderProgram* pProgram = pMaterial->activate(pContext);
+                QOpenGLShaderProgram* pProgram = pMaterial->activate(pContext);
 
                 // If program ok...
                 if (pProgram != nullptr)

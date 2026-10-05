@@ -3,6 +3,9 @@
 #include "CMeshByMaterial.h"
 #include "C3DScene.h"
 
+// Std
+#include <algorithm>
+
 #ifndef WIN32
 #include <GL/glext.h>
 #endif
@@ -62,12 +65,12 @@ void CMeshByMaterial::paint(CRenderContext* pContext)
         vMaterials.append(pMaterial);
     }
 
-    qSort(vMaterials.begin(), vMaterials.end(), compareMaterialsByAlpha);
+    std::sort(vMaterials.begin(), vMaterials.end(), compareMaterialsByAlpha);
 
     foreach (CMaterial* pMaterial, vMaterials)
     {
         // Get a program from object material
-        QGLShaderProgram* pProgram = pMaterial->activate(pContext);
+        QOpenGLShaderProgram* pProgram = pMaterial->activate(pContext);
 
         // If program ok...
         if (pProgram != nullptr)

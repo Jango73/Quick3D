@@ -18,6 +18,15 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
+//! Converts \a imgImage to GL upload format (mirrored vertically, RGBA bytes).
+//! Qt6 replacement for the removed QGLWidget::convertToGLFormat().
+static QImage convertToGLFormat(const QImage& imgImage)
+{
+    return imgImage.convertToFormat(QImage::Format_RGBA8888).mirrored(false, true);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 CTextureUpdater::CTextureUpdater(CTexture* pTexture)
     : m_pTexture(pTexture)
     , m_dDeltaTime(0.0)
@@ -73,8 +82,7 @@ void CTextureUpdater::run()
 //-------------------------------------------------------------------------------------------------
 
 CTexture::CTexture(C3DScene* pScene, QString sName, const QImage& imgTexture, QSize size, int iIndex, bool bIsDynamic)
-    : m_tMutex(QMutex::Recursive)
-    , m_pScene(pScene)
+    : m_pScene(pScene)
     , m_sName(sName)
     , m_pUpdater(nullptr)
     , m_TextureUpdateWorker(nullptr)
@@ -88,7 +96,7 @@ CTexture::CTexture(C3DScene* pScene, QString sName, const QImage& imgTexture, QS
     {
         m_pScene->makeCurrentRenderingContext();
 
-        QImage tImage = QGLWidget::convertToGLFormat(imgTexture);
+        QImage tImage = convertToGLFormat(imgTexture);
 
         GL_glActiveTexture(GL_TEXTURE1 + iIndex);
 
@@ -196,7 +204,7 @@ void CTexture::onUpdateFinished()
 
         glBindTexture(GL_TEXTURE_2D, m_uiGLTexture);
 
-        QImage tImage = QGLWidget::convertToGLFormat(m_imgTexture);
+        QImage tImage = convertToGLFormat(m_imgTexture);
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tImage.width(), tImage.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tImage.bits());
 

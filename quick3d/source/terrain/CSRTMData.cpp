@@ -72,8 +72,7 @@ typedef struct tag_SRTM_BIN_HEADER
 //-------------------------------------------------------------------------------------------------
 
 CSRTMData::CSRTMData(double dValueForNoData)
-    : m_tMutex(QMutex::Recursive)
-    , m_dValueForNoData(dValueForNoData)
+    : m_dValueForNoData(dValueForNoData)
     , m_iNumCellsWidth(0)
     , m_iNumCellsHeight(0)
     , m_ui16NoDataValue(0)
@@ -92,8 +91,7 @@ CSRTMData::CSRTMData(
         const qint16* vData,
         double dValueForNoData
         )
-    : m_tMutex(QMutex::Recursive)
-    , m_dValueForNoData(dValueForNoData)
+    : m_dValueForNoData(dValueForNoData)
     , m_vData(nullptr)
 {
     if (iNumCellsWidth > 0 && iNumCellsHeight > 0 && vData != nullptr)
@@ -287,7 +285,7 @@ QStringList CSRTMData::readSRTMHeader()
 
             for (int iHeaderIndex = 0; iHeaderIndex < 6; iHeaderIndex++)
             {
-                QStringList sList = in.readLine().split(" ", QString::SkipEmptyParts);
+                QStringList sList = in.readLine().split(" ", Qt::SkipEmptyParts);
 
                 if (sList.count() > 1)
                 {

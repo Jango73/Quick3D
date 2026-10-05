@@ -235,7 +235,7 @@ void CView::update(double dDeltaTimeS)
 
         m_pScene->setTime(dTime);
         m_pScene->setGeometry(this->frameRect());
-        m_pScene->updateGL();
+        m_pScene->update();
 
         foreach (int iIndex, m_pScene->viewports().keys())
         {

@@ -60,7 +60,7 @@ protected:
 
 protected:
 
-    QMutex              m_mMutex;			// Mutex de protection des accès concurrents
+    QRecursiveMutex              m_mMutex;			// Mutex de protection des accès concurrents
     QVector<CWorker*>   m_vWorkers;			// Pool de travailleurs
     bool                m_bStopRequested;	// Indique si un arrêt du travail est demandé
 };

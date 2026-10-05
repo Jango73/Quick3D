@@ -65,7 +65,6 @@ double swap_double( double dbl )
 
 CBILData::CBILData(double dValueForNoData)
     : CExpendable(20)
-    , m_tMutex(QMutex::Recursive)
     , m_dValueForNoData(dValueForNoData)
     , m_iNumCellsWidth(0)
     , m_iNumCellsHeight(0)
@@ -87,7 +86,6 @@ CBILData::CBILData(
         double dValueForNoData
         )
     : CExpendable(20)
-    , m_tMutex(QMutex::Recursive)
     , m_dValueForNoData(dValueForNoData)
     , m_vData(nullptr)
 {
@@ -297,7 +295,7 @@ QStringList CBILData::readHeader()
 
             for (int iHeaderIndex = 0; iHeaderIndex < NUM_HEADER_FIELDS; iHeaderIndex++)
             {
-                QStringList sList = in.readLine().split(" ", QString::SkipEmptyParts);
+                QStringList sList = in.readLine().split(" ", Qt::SkipEmptyParts);
 
                 if (sList.count() > 1)
                 {

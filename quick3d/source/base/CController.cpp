@@ -198,7 +198,7 @@ void CController::generateQ3DMouseEvent(CQ3DEvent::EEventAction eAction, QMouseE
                     bProcess = true;
                     break;
 
-                case Qt::MidButton:
+                case Qt::MiddleButton:
                     if (sType == Q3D_MiddleMouseButton)
                         m_eCurrentRightMouseEvent.setName(sName);
                     bProcess = true;

@@ -91,7 +91,7 @@ protected:
 
 protected:
 
-    QMutex      m_tMutex;
+    QRecursiveMutex      m_tMutex;
     QFile*      m_pFile;
     QString     m_sFileName;
     CGeoloc     m_gGeoloc;

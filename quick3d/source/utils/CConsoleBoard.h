@@ -91,6 +91,6 @@ protected:
 
     bool                        m_bActive;
     QTimer                      m_tTimer;
-    QMutex                      m_tMutex;
+    QRecursiveMutex                      m_tMutex;
     QMap<QString, QString>      m_mValues;
 };

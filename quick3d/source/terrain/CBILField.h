@@ -70,7 +70,7 @@ protected:
 
 protected:
 
-    QMutex              m_tMutex;
+    QRecursiveMutex              m_tMutex;
     CXMLNode            m_xParameters;
     double              m_dValueForNoData;
     QString             m_sPath;

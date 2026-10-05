@@ -28,8 +28,7 @@ using namespace Math;
     \a dValueForNoData if the special value that identifies empty data.
 */
 CBILField::CBILField(CXMLNode xParameters, const QString& sPathToBILFiles, double dValueForNoData)
-    : m_tMutex(QMutex::Recursive)
-    , m_xParameters(xParameters)
+    : m_xParameters(xParameters)
     , m_dValueForNoData(dValueForNoData)
 {
     LOG_METHOD_DEBUG(sPathToBILFiles);

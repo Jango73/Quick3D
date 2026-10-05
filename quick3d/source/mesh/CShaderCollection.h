@@ -8,7 +8,7 @@
 // Qt
 #include <QMap>
 #include <QtOpenGL>
-#include <QtOpenGL/QGLShaderProgram>
+#include <QtOpenGL/QOpenGLShaderProgram>
 
 // Application
 #include "CQ3DConstants.h"
@@ -29,12 +29,12 @@ public:
     void clear();
 
     //!
-    void addShader(QString sName, QGLShaderProgram* value);
+    void addShader(QString sName, QOpenGLShaderProgram* value);
 
     //!
-    QGLShaderProgram* getShader(QString sName);
+    QOpenGLShaderProgram* getShader(QString sName);
 
 protected:
 
-    QMap<QString, QGLShaderProgram*> m_vShaders;
+    QMap<QString, QOpenGLShaderProgram*> m_vShaders;
 };

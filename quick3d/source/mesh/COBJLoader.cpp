@@ -58,7 +58,7 @@ QSP<CMeshGeometry> COBJLoader::load(const QString& sBaseFile, CComponent *pConta
 
         if (sLine.length() > 0)
         {
-            QStringList lWords = sLine.trimmed().split(QChar(' '), QString::SkipEmptyParts);
+            QStringList lWords = sLine.trimmed().split(QChar(' '), Qt::SkipEmptyParts);
 
             if (lWords.count() > 0)
             {
@@ -135,7 +135,7 @@ QSP<CMeshGeometry> COBJLoader::load(const QString& sBaseFile, CComponent *pConta
 
                     for (int Index = 1; Index < lWords.count(); Index++)
                     {
-                        QStringList sFaceIndices = lWords.at(Index).split('/', QString::KeepEmptyParts);
+                        QStringList sFaceIndices = lWords.at(Index).split('/', Qt::KeepEmptyParts);
 
                         int iPositionIndex = -1;
                         int iTextureIndex = -1;
@@ -199,7 +199,7 @@ void COBJLoader::loadMaterials(const QString& sBaseFile, C3DScene* pScene, CMesh
 
         if (sLine.length() > 0)
         {
-            QStringList lWords = sLine.trimmed().split(QChar(' '), QString::SkipEmptyParts);
+            QStringList lWords = sLine.trimmed().split(QChar(' '), Qt::SkipEmptyParts);
 
             if (lWords.count() > 0)
             {

@@ -229,7 +229,7 @@ protected:
 
     // Owned data
 
-    QMutex                          m_mMutex;                   // Data protection for multithreading
+    QRecursiveMutex                          m_mMutex;                   // Data protection for multithreading
     C3DScene*                       m_pScene;
     QString                         m_sURL;
     CBoundingBox                    m_bBounds;                  // Mesh bounds

@@ -118,7 +118,7 @@ protected:
 
 protected:
 
-    QMutex          m_tMutex;
+    QRecursiveMutex          m_tMutex;
     double          m_dValueForNoData;
     QString         m_sFileName;
     QString         m_sBILFileName;

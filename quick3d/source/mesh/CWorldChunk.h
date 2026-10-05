@@ -160,7 +160,7 @@ public:
 
 protected:
 
-    QMutex                              m_mMutex;
+    QRecursiveMutex                              m_mMutex;
     CWorldTerrain*                      m_pAutoTerrain;
     CHeightField*                       m_pContainer;
     CGeoloc                             m_gOriginalGeoloc;

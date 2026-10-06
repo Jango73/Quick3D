@@ -12,22 +12,43 @@
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Constructs a CJoystick. \br\br
+    \a uiJoystickIndex is the joystick index.
+*/
 CJoystick::CJoystick(unsigned int uiJoystickIndex)
 : m_bConnected(false)
 , m_uiJoystickIndex(uiJoystickIndex)
 , m_uiNumButtons(2)
 , m_uiNumAxis(4)
+#ifndef WIN32
+, m_pReader(new CJoystickReader(uiJoystickIndex))
+#endif
 {
+#ifndef WIN32
+    m_bConnected = m_pReader->connected();
+    m_mButtonStates = m_pReader->buttonStates();
+    m_dAxisStates = m_pReader->axisStates();
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Destroys a CJoystick.
+*/
 CJoystick::~CJoystick()
 {
+#ifndef WIN32
+    delete m_pReader;
+#endif
 }
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Updates this object using \a dDeltaTime, which is the elapsed seconds since the last frame.
+*/
 void CJoystick::update(double dDeltaTime)
 {
     Q_UNUSED(dDeltaTime)
@@ -52,6 +73,14 @@ void CJoystick::update(double dDeltaTime)
             m_dAxisStates[uiAxisIndex] = 0.0;
         }
 	}
+
+#else
+
+    m_pReader->update();
+
+    m_bConnected = m_pReader->connected();
+    m_mButtonStates = m_pReader->buttonStates();
+    m_dAxisStates = m_pReader->axisStates();
 
 #endif
 }

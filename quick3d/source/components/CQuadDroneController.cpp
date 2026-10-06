@@ -80,7 +80,8 @@ void CQuadDroneController::update(double dDeltaTimeS)
                     );
 
             dLateralDemand = m_pJoystick->axisStates()[0];
-            dForwardDemand = m_pJoystick->axisStates()[1];
+            // Stick Y is negative forward, demand is positive nose down (as on keyboard and aircraft elevator)
+            dForwardDemand = m_pJoystick->axisStates()[1] * -1.0;
             dYawDemand = m_pJoystick->axisStates()[3];
             // dVertSpeedDemand = 1.0 - ((m_pJoystick->axisStates()[2] + 1.0) * 0.5);
         }

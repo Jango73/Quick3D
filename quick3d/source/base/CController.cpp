@@ -38,6 +38,19 @@ CController::CController(C3DScene* pScene)
             break;
         }
     }
+#else
+    for (unsigned int uiJoystickIndex = 0; uiJoystickIndex < 8; uiJoystickIndex++)
+    {
+        CJoystick* pCandidate = new CJoystick(uiJoystickIndex);
+
+        if (pCandidate->connected() == true)
+        {
+            m_pJoystick = pCandidate;
+            break;
+        }
+
+        delete pCandidate;
+    }
 #endif
 }
 
@@ -114,6 +127,11 @@ void CController::update(double dDeltaTime)
     if (m_pJoystick != nullptr)
     {
         sf::Joystick::Update();
+        m_pJoystick->update(dDeltaTime);
+    }
+#else
+    if (m_pJoystick != nullptr)
+    {
         m_pJoystick->update(dDeltaTime);
     }
 #endif

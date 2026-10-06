@@ -4,6 +4,10 @@
 // Application
 #include "quick3d_global.h"
 
+#ifndef WIN32
+#include "CJoystickReader.h"
+#endif
+
 //-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CJoystick
@@ -48,4 +52,7 @@ protected:
     unsigned int                m_uiNumAxis;
     QMap<unsigned int, bool>    m_mButtonStates;
     QMap<unsigned int, double>  m_dAxisStates;
+#ifndef WIN32
+    CJoystickReader*            m_pReader;
+#endif
 };

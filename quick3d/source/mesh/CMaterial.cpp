@@ -1,4 +1,8 @@
 
+
+// qt-plus
+#include "CLogger.h"
+
 // Application
 #include "CRessourcesManager.h"
 #include "C3DScene.h"
@@ -174,6 +178,10 @@ void CMaterial::addDiffuseTexture(const QString& sBaseFile, const QString& sReso
         QImage imgTexture = QImage(sFinalResource);
         addDiffuseTexture(sFinalResource, imgTexture);
     }
+    else
+    {
+        LOG_WARNING(QString("CMaterial::addDiffuseTexture() : texture not found : %1").arg(sResourceName));
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -196,6 +204,10 @@ void CMaterial::addDynamicDiffuseTexture(const QString& sBaseFile, const QString
     {
         QImage imgTexture = QImage(sFinalResource);
         addDynamicDiffuseTexture(sFinalResource, imgTexture);
+    }
+    else
+    {
+        LOG_WARNING(QString("CMaterial::addDynamicDiffuseTexture() : texture not found : %1").arg(sResourceName));
     }
 }
 
@@ -221,6 +233,10 @@ void CMaterial::addNormalTexture(const QString& sBaseFile, const QString& sResou
     {
         QImage imgTexture = QImage(sFinalResource);
         addNormalTexture(sFinalResource, imgTexture);
+    }
+    else
+    {
+        LOG_WARNING(QString("CMaterial::addNormalTexture() : texture not found : %1").arg(sResourceName));
     }
 }
 

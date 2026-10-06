@@ -46,7 +46,42 @@ CGLMeshData::CGLMeshData(C3DScene* pScene)
 
     m_pScene->makeCurrentRenderingContext();
 
+    ensureBuffers();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Allocates the OpenGL vertex and index buffers when a rendering context is
+    current. \br\br
+    Meshes loaded while the scene loads (widget not shown yet) have no current
+    context, so their buffers stay null until the first render pass. Like
+    CTexture::ensureUploaded(), allocation is deferred to first use instead of
+    leaving the mesh silently undrawable.
+*/
+void CGLMeshData::ensureBuffers()
+{
+    if (m_iVBO[0] != 0 && m_iVBO[1] != 0)
+    {
+        return;
+    }
+
+    if (QOpenGLContext::currentContext() == nullptr)
+    {
+        return;
+    }
+
+    GL_glDeleteBuffers(2, m_iVBO);
+
+    m_iVBO[0] = 0;
+    m_iVBO[1] = 0;
+
     GL_glGenBuffers(2, m_iVBO);
+
+    if (m_iVBO[0] != 0 && m_iVBO[1] != 0)
+    {
+        m_bNeedTransferBuffers = true;
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -86,11 +121,13 @@ CGLMeshData::~CGLMeshData()
 */
 void CGLMeshData::paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolute, QOpenGLShaderProgram* pProgram, int iGLType)
 {
+    m_pScene->makeCurrentRenderingContext();
+
+    ensureBuffers();
+
     // If at least one point to render
     if (m_iNumRenderPoints > 0 && m_iNumRenderIndices > 0 && m_iVBO[0] > 0 && m_iVBO[1] > 0)
     {
-        m_pScene->makeCurrentRenderingContext();
-
         pContext->tStatistics.m_iNumMeshesDrawn++;
 
         if (m_iCurrentVBO != m_iVBO[0])

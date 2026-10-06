@@ -46,6 +46,9 @@ public:
     //!
     void paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolute, QOpenGLShaderProgram* pProgram, int iGLType);
 
+    //! Allocates the OpenGL buffers when a rendering context is available
+    void ensureBuffers();
+
     //-------------------------------------------------------------------------------------------------
     // Properties
     //-------------------------------------------------------------------------------------------------

@@ -1,5 +1,6 @@
 
 // Qt
+#include <QDir>
 #include <QFile>
 #include <QTextStream>
 
@@ -13,6 +14,77 @@
 #include "CQ3DLoader.h"
 
 using namespace Math;
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Resolves \a sRelativePath inside \a sBaseDirectory, matching each path
+    component case-insensitively. Returns the existing file path, or an empty
+    string when nothing matches. \br\br
+    Windows-authored assets reference folders like "Textures/" while the
+    deployed tree uses "textures/" : exact lookup fails on case-sensitive
+    file systems, so this fallback keeps those assets working on Linux.
+*/
+static QString locateFileCaseInsensitive(const QString& sBaseDirectory, const QString& sRelativePath)
+{
+    QDir tCurrent(sBaseDirectory);
+
+    if (tCurrent.exists() == false)
+    {
+        return QString("");
+    }
+
+    QStringList lComponents = sRelativePath.split("/", Qt::SkipEmptyParts);
+
+    for (int iIndex = 0; iIndex < lComponents.count(); iIndex++)
+    {
+        bool bLastComponent = (iIndex == lComponents.count() - 1);
+        QString sWanted = lComponents[iIndex];
+
+        if (sWanted == "." || sWanted == "..")
+        {
+            return QString("");
+        }
+
+        QStringList lEntries = tCurrent.entryList(
+            bLastComponent ? (QDir::Files | QDir::NoDotAndDotDot) : (QDir::Dirs | QDir::NoDotAndDotDot));
+
+        bool bFound = false;
+
+        foreach (const QString& sEntry, lEntries)
+        {
+            if (sEntry.compare(sWanted, Qt::CaseInsensitive) == 0)
+            {
+                if (bLastComponent)
+                {
+                    QFileInfo tInfo(tCurrent.absoluteFilePath(sEntry));
+
+                    if (tInfo.isFile() && tInfo.isReadable())
+                    {
+                        return tInfo.absoluteFilePath();
+                    }
+
+                    return QString("");
+                }
+
+                if (tCurrent.cd(sEntry) == false)
+                {
+                    return QString("");
+                }
+
+                bFound = true;
+                break;
+            }
+        }
+
+        if (bLastComponent == false && bFound == false)
+        {
+            return QString("");
+        }
+    }
+
+    return QString("");
+}
 
 //-------------------------------------------------------------------------------------------------
 
@@ -92,6 +164,32 @@ QString CRessourcesManager::locateResource(const QString& sBaseFile, const QStri
         if (iFinalInfo.exists())
         {
             return sFinalName;
+        }
+    }
+
+    // Case-insensitive fallback for Windows-authored paths ("Textures/..."
+    // deployed as "textures/...") : exact lookup fails on Linux file systems
+    if (sBaseFile.isEmpty() == false)
+    {
+        QFileInfo iBaseInfo(sBaseFile);
+        QString sFallback = locateFileCaseInsensitive(iBaseInfo.absolutePath(), sFileToLocate);
+
+        if (sFallback.isEmpty() == false)
+        {
+            LOG_DEBUG(QString("CRessourcesManager::locateResource() : %1 resolved as %2").arg(sFileToLocate, sFallback));
+
+            return sFallback;
+        }
+    }
+
+    {
+        QString sFallback = locateFileCaseInsensitive(QCoreApplication::applicationDirPath(), sFileToLocate);
+
+        if (sFallback.isEmpty() == false)
+        {
+            LOG_DEBUG(QString("CRessourcesManager::locateResource() : %1 resolved as %2").arg(sFileToLocate, sFallback));
+
+            return sFallback;
         }
     }
 

@@ -140,6 +140,15 @@ void CMeshGeometry::checkAndUpdateGeometry()
 
         if (m_vVertices.count() > 0)
         {
+            // Geometry shaders accept points, lines and triangles, never quads :
+            // quad-based geometry is triangulated below and rendered as triangles
+            int iRenderGLType = m_iGLType;
+
+            if (iRenderGLType == GL_QUADS)
+            {
+                iRenderGLType = GL_TRIANGLES;
+            }
+
             // Sort faces by material
             std::sort(m_vFaces.begin(), m_vFaces.end());
 
@@ -159,7 +168,7 @@ void CMeshGeometry::checkAndUpdateGeometry()
                 for (int iMaterialIndex = 0; iMaterialIndex < m_vMaterials.count(); iMaterialIndex++)
                 {
                     CGLMeshData* pData = new CGLMeshData(m_pScene);
-                    pData->m_iGLType = m_iGLType;
+                    pData->m_iGLType = iRenderGLType;
                     m_vGLMeshData.append(pData);
                 }
             }
@@ -176,6 +185,7 @@ void CMeshGeometry::checkAndUpdateGeometry()
 
                 // Buffers must be transmitted to OpenGL
                 pGLMeshData->m_bNeedTransferBuffers = true;
+                pGLMeshData->m_iGLType = iRenderGLType;
 
                 if (m_iGLType == GL_POINTS || m_iGLType == GL_LINES)
                 {
@@ -224,14 +234,8 @@ void CMeshGeometry::checkAndUpdateGeometry()
                         // Define quantities
                         pGLMeshData->m_iNumRenderPoints = m_vVertices.count();
 
-                        if (m_iGLType == GL_QUADS)
-                        {
-                            pGLMeshData->m_iNumRenderIndices = vFaceIndices.count() * 4;
-                        }
-                        else
-                        {
-                            pGLMeshData->m_iNumRenderIndices = triangleCountForFaces(vFaceIndices) * 3;
-                        }
+                        // Quad faces are triangulated as triangle fans, like other polygons
+                        pGLMeshData->m_iNumRenderIndices = triangleCountForFaces(vFaceIndices) * 3;
 
                         if (pGLMeshData->m_iNumRenderPoints > 0 && pGLMeshData->m_iNumRenderIndices > 0)
                         {
@@ -263,35 +267,20 @@ void CMeshGeometry::checkAndUpdateGeometry()
 
                             m_bBounds.expand(CVector3(0.1, 0.1, 0.1));
 
-                            // Fill OpenGL index buffer
+                            // Fill OpenGL index buffer, triangulating quad faces as triangle fans
                             int iIndiceIndex = 0;
 
-                            if (m_iGLType == GL_QUADS)
+                            for (int iFaceIndex = 0; iFaceIndex < vFaceIndices.count(); iFaceIndex++)
                             {
-                                for (int iFaceIndex = 0; iFaceIndex < vFaceIndices.count(); iFaceIndex++)
-                                {
-                                    CFace* pFace = &(m_vFaces[vFaceIndices[iFaceIndex]]);
+                                CFace* pFace = &(m_vFaces[vFaceIndices[iFaceIndex]]);
 
-                                    pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->indices()[0];
-                                    pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->indices()[1];
-                                    pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->indices()[2];
-                                    pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->indices()[3];
-                                }
-                            }
-                            else
-                            {
-                                for (int iFaceIndex = 0; iFaceIndex < vFaceIndices.count(); iFaceIndex++)
+                                if (pFace->indices().count() > 2)
                                 {
-                                    CFace* pFace = &(m_vFaces[vFaceIndices[iFaceIndex]]);
-
-                                    if (pFace->indices().count() > 2)
+                                    for (int iIndex = 2; iIndex < pFace->indices().count(); iIndex++)
                                     {
-                                        for (int iIndex = 2; iIndex < pFace->indices().count(); iIndex++)
-                                        {
-                                            pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->indices()[0];
-                                            pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->indices()[iIndex - 1];
-                                            pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->indices()[iIndex];
-                                        }
+                                        pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->indices()[0];
+                                        pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->indices()[iIndex - 1];
+                                        pGLMeshData->m_vRenderIndices[iIndiceIndex++] = pFace->indices()[iIndex];
                                     }
                                 }
                             }

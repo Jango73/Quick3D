@@ -2,10 +2,6 @@
 
 // Standard geometry shader
 
-#extension GL_EXT_gpu_shader4 : enable
-#extension GL_ARB_gpu_shader5 : enable
-#extension GL_EXT_geometry_shader4 : enable
-
 #ifdef GL_ES
 precision highp int;
 precision highp float;
@@ -88,39 +84,39 @@ uniform int             u_inverse_polarity_enable;
 layout (points) in;
 layout (triangle_strip, max_vertices = 6) out;
 
-varying in vec3			v_position[1];
-varying in vec3			v_normal[1];
-varying in vec3			v_tangent[1];
-varying in vec3			v_binormal[1];
-varying in vec3			v_texcoord[1];
-varying in vec4			v_shadow_coord[1];
-varying in float		v_distance[1];
-varying in float		v_altitude[1];
-varying in float		v_difftex_weight_0[1];
-varying in float		v_difftex_weight_1[1];
-varying in float		v_difftex_weight_2[1];
-varying in float		v_difftex_weight_3[1];
-varying in float		v_difftex_weight_4[1];
-varying in float		v_difftex_weight_5[1];
-varying in float		v_difftex_weight_6[1];
-varying in float		v_difftex_weight_7[1];
+in vec3			v_position[1];
+in vec3			v_normal[1];
+in vec3			v_tangent[1];
+in vec3			v_binormal[1];
+in vec3			v_texcoord[1];
+in vec4			v_shadow_coord[1];
+in float		v_distance[1];
+in float		v_altitude[1];
+in float		v_difftex_weight_0[1];
+in float		v_difftex_weight_1[1];
+in float		v_difftex_weight_2[1];
+in float		v_difftex_weight_3[1];
+in float		v_difftex_weight_4[1];
+in float		v_difftex_weight_5[1];
+in float		v_difftex_weight_6[1];
+in float		v_difftex_weight_7[1];
 
-varying out vec3		vo_position;
-varying out vec3		vo_normal;
-varying out vec3		vo_tangent;
-varying out vec3		vo_binormal;
-varying out vec3		vo_texcoord;
-varying out vec4		vo_shadow_coord;
-varying out float		vo_distance;
-varying out float		vo_altitude;
-varying out float		vo_difftex_weight_0;
-varying out float		vo_difftex_weight_1;
-varying out float		vo_difftex_weight_2;
-varying out float		vo_difftex_weight_3;
-varying out float		vo_difftex_weight_4;
-varying out float		vo_difftex_weight_5;
-varying out float		vo_difftex_weight_6;
-varying out float		vo_difftex_weight_7;
+out vec3		vo_position;
+out vec3		vo_normal;
+out vec3		vo_tangent;
+out vec3		vo_binormal;
+out vec3		vo_texcoord;
+out vec4		vo_shadow_coord;
+out float		vo_distance;
+out float		vo_altitude;
+out float		vo_difftex_weight_0;
+out float		vo_difftex_weight_1;
+out float		vo_difftex_weight_2;
+out float		vo_difftex_weight_3;
+out float		vo_difftex_weight_4;
+out float		vo_difftex_weight_5;
+out float		vo_difftex_weight_6;
+out float		vo_difftex_weight_7;
 
 void emitQuad(vec3 position, vec3 normal, vec3 tangent, float distance, float altitude, float size)
 {

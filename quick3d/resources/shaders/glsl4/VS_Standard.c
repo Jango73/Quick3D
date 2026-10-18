@@ -2,10 +2,6 @@
 
 // Standard vertex shader
 
-#extension GL_EXT_gpu_shader4 : enable
-#extension GL_ARB_gpu_shader5 : enable
-#extension GL_EXT_geometry_shader4 : enable
-
 #ifdef GL_ES
 precision highp int;
 precision highp float;
@@ -88,33 +84,33 @@ uniform int				u_inverse_polarity_enable;
 
 // Interpolated values
 
-varying vec3            v_position;
-varying vec3            v_normal;
-varying vec3            v_tangent;
-varying vec3            v_binormal;
-varying vec3            v_texcoord;
-varying vec4            v_shadow_coord;
-varying float           v_distance;
-varying float           v_altitude;
-varying float           v_difftex_weight_0;
-varying float           v_difftex_weight_1;
-varying float           v_difftex_weight_2;
-varying float           v_difftex_weight_3;
-varying float           v_difftex_weight_4;
-varying float           v_difftex_weight_5;
-varying float           v_difftex_weight_6;
-varying float           v_difftex_weight_7;
+out vec3            v_position;
+out vec3            v_normal;
+out vec3            v_tangent;
+out vec3            v_binormal;
+out vec3            v_texcoord;
+out vec4            v_shadow_coord;
+out float           v_distance;
+out float           v_altitude;
+out float           v_difftex_weight_0;
+out float           v_difftex_weight_1;
+out float           v_difftex_weight_2;
+out float           v_difftex_weight_3;
+out float           v_difftex_weight_4;
+out float           v_difftex_weight_5;
+out float           v_difftex_weight_6;
+out float           v_difftex_weight_7;
 
 // Incoming data from vertices
 
-attribute vec3          a_position;
-attribute vec3          a_texcoord;
-attribute vec3          a_normal;
-attribute vec3          a_difftext_weight_0_1_2;
-attribute vec3          a_difftext_weight_3_4_5;
-attribute vec3          a_difftext_weight_6_7_8;
-attribute vec3          a_tangent;
-attribute float         a_altitude;
+in vec3          a_position;
+in vec3          a_texcoord;
+in vec3          a_normal;
+in vec3          a_difftext_weight_0_1_2;
+in vec3          a_difftext_weight_3_4_5;
+in vec3          a_difftext_weight_6_7_8;
+in vec3          a_tangent;
+in float         a_altitude;
 
 //-------------------------------------------------------------------------------------------------
 

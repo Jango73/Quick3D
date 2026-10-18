@@ -454,6 +454,7 @@ bool CGLWidgetScene::tryAddShaderProgram_VF(const QString& sName, const QString&
 
     if (pProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, ressourcesManager()->getShaderByFilePathName(sVertexPath)) == false)
     {
+        LOG_WARNING(QString("Shader failed : %1").arg(sVertexPath));
         LOG_DEBUG(QString("Vertex shader failed : %1 : %2").arg(sVertexPath, pProgram->log()));
         delete pProgram;
         return false;
@@ -461,6 +462,7 @@ bool CGLWidgetScene::tryAddShaderProgram_VF(const QString& sName, const QString&
 
     if (pProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, ressourcesManager()->getShaderByFilePathName(sFragmentPath)) == false)
     {
+        LOG_WARNING(QString("Shader failed : %1").arg(sFragmentPath));
         LOG_DEBUG(QString("Fragment shader failed : %1 : %2").arg(sFragmentPath, pProgram->log()));
         delete pProgram;
         return false;
@@ -474,6 +476,7 @@ bool CGLWidgetScene::tryAddShaderProgram_VF(const QString& sName, const QString&
         return true;
     }
 
+    LOG_WARNING(QString("Shader link failed : %1").arg(sName));
     LOG_DEBUG(QString("Shader link failed : %1 %2 : %3").arg(sVertexPath, sFragmentPath, pProgram->log()));
     delete pProgram;
     return false;
@@ -487,6 +490,7 @@ bool CGLWidgetScene::tryAddShaderProgram_VGF(const QString& sName, const QString
 
     if (pProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, ressourcesManager()->getShaderByFilePathName(sVertexPath)) == false)
     {
+        LOG_WARNING(QString("Shader failed : %1").arg(sVertexPath));
         LOG_DEBUG(QString("Vertex shader failed : %1 : %2").arg(sVertexPath, pProgram->log()));
         delete pProgram;
         return false;
@@ -494,6 +498,7 @@ bool CGLWidgetScene::tryAddShaderProgram_VGF(const QString& sName, const QString
 
     if (pProgram->addShaderFromSourceCode(QOpenGLShader::Geometry, ressourcesManager()->getShaderByFilePathName(sGeometryPath)) == false)
     {
+        LOG_WARNING(QString("Shader failed : %1").arg(sGeometryPath));
         LOG_DEBUG(QString("Geometry shader failed : %1 : %2").arg(sGeometryPath, pProgram->log()));
         delete pProgram;
         return false;
@@ -501,6 +506,7 @@ bool CGLWidgetScene::tryAddShaderProgram_VGF(const QString& sName, const QString
 
     if (pProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, ressourcesManager()->getShaderByFilePathName(sFragmentPath)) == false)
     {
+        LOG_WARNING(QString("Shader failed : %1").arg(sFragmentPath));
         LOG_DEBUG(QString("Fragment shader failed : %1 : %2").arg(sFragmentPath, pProgram->log()));
         delete pProgram;
         return false;
@@ -515,6 +521,7 @@ bool CGLWidgetScene::tryAddShaderProgram_VGF(const QString& sName, const QString
         return true;
     }
 
+    LOG_WARNING(QString("Shader link failed : %1").arg(sName));
     LOG_DEBUG(QString("Shader link failed : %1 %2 %3 : %4").arg(sVertexPath, sGeometryPath, sFragmentPath, pProgram->log()));
     delete pProgram;
     return false;

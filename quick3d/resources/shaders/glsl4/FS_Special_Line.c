@@ -2,10 +2,6 @@
 
 // Line fragment shader
 
-#extension GL_EXT_gpu_shader4 : enable
-#extension GL_ARB_gpu_shader5 : enable
-#extension GL_EXT_geometry_shader4 : enable
-
 #ifdef GL_ES
 precision highp int;
 precision highp float;
@@ -87,22 +83,22 @@ uniform int				u_inverse_polarity_enable;
 
 // Interpolated values
 
-varying vec3			vo_position;
-varying vec3			vo_normal;
-varying vec3			vo_tangent;
-varying vec3			vo_binormal;
-varying vec3			vo_texcoord;
-varying vec4			vo_shadow_coord;
-varying float			vo_distance;
-varying float			vo_altitude;
-varying float			vo_difftex_weight_0;
-varying float			vo_difftex_weight_1;
-varying float			vo_difftex_weight_2;
-varying float			vo_difftex_weight_3;
-varying float			vo_difftex_weight_4;
-varying float			vo_difftex_weight_5;
-varying float			vo_difftex_weight_6;
-varying float			vo_difftex_weight_7;
+in vec3			vo_position;
+in vec3			vo_normal;
+in vec3			vo_tangent;
+in vec3			vo_binormal;
+in vec3			vo_texcoord;
+in vec4			vo_shadow_coord;
+in float			vo_distance;
+in float			vo_altitude;
+in float			vo_difftex_weight_0;
+in float			vo_difftex_weight_1;
+in float			vo_difftex_weight_2;
+in float			vo_difftex_weight_3;
+in float			vo_difftex_weight_4;
+in float			vo_difftex_weight_5;
+in float			vo_difftex_weight_6;
+in float			vo_difftex_weight_7;
 
 //-------------------------------------------------------------------------------------------------
 

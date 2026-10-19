@@ -1,7 +1,7 @@
 [submodule "qt-plus"]
 	path = qt-plus
 	url = https://github.com/Jango73/qt-plus.git
-	branch = qt6
+	branch = master
 [submodule "COTS/zlib"]
 	path = third/zlib
 	url = https://github.com/madler/zlib.git

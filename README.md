@@ -1,4 +1,7 @@
 # Quick3D
+
+[![Build](https://github.com/Jango73/quick3d/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/Jango73/quick3d/actions/workflows/build.yml)
+
 Qt based 3D engine with geo-referenced entities
 
 This used to be a very simple 3D engine that could show a 3D terrain and objects.
@@ -17,6 +20,13 @@ Linux reference build is CMake + Qt6 (shadow builds, like `galman`):
 Binaries land in `build-debug/` / `build-release/`
 (`quick3dtest/Quick3DTest[d]`, libs next to them).
 The legacy `.pro`/`.pri` files are kept for QtCreator users.
+
+## Running tests
+
+Run the local CI (same steps as the GitHub workflow):
+```
+./scripts/linux/ci-local.sh
+```
 
 ## Features
 

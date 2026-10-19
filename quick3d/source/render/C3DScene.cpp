@@ -5,7 +5,6 @@
 
 // Qt
 #include <QtOpenGL>
-#include <GL/glu.h>
 
 // qt-plus
 #include "CLogger.h"

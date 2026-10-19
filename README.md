@@ -11,7 +11,7 @@ Linux reference build is CMake + Qt6 (shadow builds, like `galman`):
 ```
 ./scripts/linux/deps.sh      # submodules + packages, needs sudo
 ./scripts/linux/build.sh     # --debug or --release
-./scripts/linux/run.sh -- --unit-tests
+./scripts/linux/run.sh -- run-tests
 ```
 
 Binaries land in `build-debug/` / `build-release/`

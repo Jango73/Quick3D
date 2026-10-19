@@ -19,7 +19,7 @@ Usage: ./run.sh [--debug|--release] [-d|-r] [--verbose|-v] [-c Debug|Release] [-
   --release, -r  Build type Release
   --verbose, -v  Verbose build output
   -c             Build type (Debug or Release)
-  Extra arguments after -- are forwarded to Quick3DTest (eg. -- --unit-tests).
+  Extra arguments after -- are forwarded to Quick3DTest (eg. -- run-tests).
 USAGE
 }
 

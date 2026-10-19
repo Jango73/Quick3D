@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT += core gui network opengl xml
+QT += core gui network opengl xml testlib
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -63,12 +63,20 @@ CONFIG(debug, debug|release) {
 # Code
 SOURCES += \
     Quick3DTest.cpp \
-    CUnitTests.cpp \
+    tests/CTestFixture.cpp \
+    tests/CTestMath.cpp \
+    tests/CTestCamera.cpp \
+    tests/CTestGeo.cpp \
+    tests/CTestQuick3D.cpp \
     main.cpp
 
 HEADERS  += \
     Quick3DTest.h \
-    CUnitTests.h
+    tests/CTestFixture.h \
+    tests/CTestMath.h \
+    tests/CTestCamera.h \
+    tests/CTestGeo.h \
+    tests/CTestQuick3D.h
 
 RESOURCES += \
     Quick3DTest.qrc

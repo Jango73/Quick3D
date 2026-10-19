@@ -12,7 +12,7 @@ for Qt6 (see `README.md`). Layout:
   `input`, `math`, `mesh`, `render`, `terrain`, `utils`, `zip`), shaders in
   `Quick3DShaders.qrc`, docs in `quick3d/doc/`.
 - `quick3dtest/` (test/demo application): GUI (`Quick3DTest.ui`), `main.cpp`
-  (`--scene`, `--unit-tests`), scenes/models/textures in `quick3dtest/bin/`.
+  (`--scene`, `run-tests`), scenes/models/textures in `quick3dtest/bin/`.
 - `third/`: vendored third-party code (`SFML-1.6`, `unzip11`, `zlib` as git
   submodule). Do not add new third-party dependencies without asking.
 - `quick3d/blender/`: Blender Q3D export script (Python, existing exception to
@@ -106,7 +106,7 @@ the commit message: lines follow each other directly.
 - Run the test app: `./scripts/linux/run.sh [--debug|--release] [-- <args>]`
   (logs to `tmp/run.log`), or directly
   `build-<debug|release>/quick3dtest/Quick3DTest[d] [--scene <file>]`, or
-  `... --unit-tests` for the headless unit tests (`QT_QPA_PLATFORM=offscreen`
+  `... run-tests` for the headless unit tests (`QT_QPA_PLATFORM=offscreen`
   works headless).
 
 ## Tool Execution Policy
@@ -119,7 +119,7 @@ the commit message: lines follow each other directly.
 - Run builds sequentially, not in parallel.
 
 ## Debug output
-- Engine logging goes through `CLogger` (qt-plus). `Quick3DTest --unit-tests`
+- Engine logging goes through `CLogger` (qt-plus). `Quick3DTest run-tests`
   exercises components without opening the GUI.
 
 ## Documentation
@@ -129,11 +129,11 @@ the commit message: lines follow each other directly.
 **Core Components:**
 - **qt-plus** (`qt-plus/source/cpp`): Shared Qt utility library (logging, XML, singletons, interpolation, geo tools, web, QML tree). Git submodule.
 - **Quick3D** (`quick3d/source/`): Engine library — `base` (components, workers, factory), `mesh` (world terrain/chunks, geometry), `terrain` (patches, height fields), `render` (`CGLWidgetScene`, scene, camera), `math`, `animation`, `components` (vehicles, controllers), `input`, `utils`, `zip`.
-- **Quick3DTest** (`quick3dtest/`): GUI test application + `CUnitTests`.
+- **Quick3DTest** (`quick3dtest/`): GUI test application + QtTest suites (`quick3dtest/tests/`).
 - **Blender** (`quick3d/blender/`): Q3D export script.
 - **third** (`third/`): Vendored third-party code (`SFML-1.6`, `unzip11`, `zlib` submodule).
 
 ## Debug Workflow
-1. Reproduce headless first when possible: `Quick3DTest --unit-tests`.
+1. Reproduce headless first when possible: `Quick3DTest run-tests`.
 2. For terrain LOD/patch issues, read `quick3d/doc/TerrainHolesAnalysis.md` before re-investigating: the worker-scheduler starvation, the missing `paintRecurse()` fallback, and the premature child-pruning mechanisms are already documented there.
 3. This machine has Qt 6.2 (system packages + `qmake6`); the reference build is CMake + Ninja via `scripts/linux/`.

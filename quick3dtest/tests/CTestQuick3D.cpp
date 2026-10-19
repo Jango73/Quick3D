@@ -1,0 +1,49 @@
+
+// Application
+#include "CTestQuick3D.h"
+#include "CTestMath.h"
+#include "CTestCamera.h"
+#include "CTestGeo.h"
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+* \brief Constructor.
+*/
+/***************************************************************************/
+CTestQuick3D::CTestQuick3D()
+{
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+* \brief Runs every test suite sequentially.
+* \return Combined status, 0 when every suite passes.
+*/
+/***************************************************************************/
+int CTestQuick3D::runAllTests()
+{
+    int iStatus = 0;
+
+    {
+        CTestMath oTest;
+        iStatus |= QTest::qExec(&oTest);
+    }
+
+    {
+        CTestCamera oTest;
+        iStatus |= QTest::qExec(&oTest);
+    }
+
+    {
+        CTestGeo oTest;
+        iStatus |= QTest::qExec(&oTest);
+    }
+
+    return iStatus;
+}
+
+//-------------------------------------------------------------------------------------------------

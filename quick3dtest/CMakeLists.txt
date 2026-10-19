@@ -2,8 +2,16 @@ add_executable(Quick3DTest
     main.cpp
     Quick3DTest.cpp
     Quick3DTest.h
-    CUnitTests.cpp
-    CUnitTests.h
+    tests/CTestFixture.cpp
+    tests/CTestFixture.h
+    tests/CTestMath.cpp
+    tests/CTestMath.h
+    tests/CTestCamera.cpp
+    tests/CTestCamera.h
+    tests/CTestGeo.cpp
+    tests/CTestGeo.h
+    tests/CTestQuick3D.cpp
+    tests/CTestQuick3D.h
     Quick3DTest.ui
     ExportDialog.ui
     Quick3DTest.qrc
@@ -18,6 +26,7 @@ target_link_libraries(Quick3DTest PRIVATE
     Qt6::Network
     Qt6::Xml
     Qt6::OpenGL
+    Qt6::Test
 )
 
 set_target_properties(Quick3DTest PROPERTIES DEBUG_POSTFIX "d")

@@ -242,6 +242,85 @@ double CGeoloc::distanceTo(const CGeoloc& other)
 
 //---------------------------------------------------------------------------------------------
 
+/***************************************************************************/
+/*!
+    \brief Computes the sine and cosine factors of a geodetic position.
+    \param LatitudeDegrees : geodetic latitude in degrees (input).
+    \param LongitudeDegrees : geodetic longitude in degrees (input).
+    \param SinLatitude : sine of the latitude in radians (output).
+    \param CosLatitude : cosine of the latitude in radians (output).
+    \param SinLongitude : sine of the longitude in radians (output).
+    \param CosLongitude : cosine of the longitude in radians (output).
+    Single direct sin/cos evaluation shared by the relative conversions
+    and by the topocentric axis, so the rotation is built once.
+*/
+/***************************************************************************/
+static void computeGeodeticDirectionFactors(double LatitudeDegrees, double LongitudeDegrees, double& SinLatitude, double& CosLatitude, double& SinLongitude, double& CosLongitude)
+{
+    double LatitudeRadians = LatitudeDegrees * GeoTrans::fDeg2Rad;
+    double LongitudeRadians = LongitudeDegrees * GeoTrans::fDeg2Rad;
+
+    SinLatitude = sin(LatitudeRadians);
+    CosLatitude = cos(LatitudeRadians);
+    SinLongitude = sin(LongitudeRadians);
+    CosLongitude = cos(LongitudeRadians);
+}
+
+//---------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+    \brief Converts a standard ECEF difference to an engine local vector.
+    Engine axes are Right (East), Up, Front (North).
+    \param DeltaX : standard ECEF X difference in meters (input).
+    \param DeltaY : standard ECEF Y difference in meters (input).
+    \param DeltaZ : standard ECEF Z difference in meters (input).
+    \param SinLatitude : sine of the reference latitude (input).
+    \param CosLatitude : cosine of the reference latitude (input).
+    \param SinLongitude : sine of the reference longitude (input).
+    \param CosLongitude : cosine of the reference longitude (input).
+    \return Engine local vector (East, Up, North) in meters.
+    Closed form East/North/Up projection, no Euler angle round trip.
+*/
+/***************************************************************************/
+static CVector3 convertStandardDeltaToEngineLocal(double DeltaX, double DeltaY, double DeltaZ, double SinLatitude, double CosLatitude, double SinLongitude, double CosLongitude)
+{
+    double East = -SinLongitude * DeltaX + CosLongitude * DeltaY;
+    double North = -SinLatitude * CosLongitude * DeltaX - SinLatitude * SinLongitude * DeltaY + CosLatitude * DeltaZ;
+    double Up = CosLatitude * CosLongitude * DeltaX + CosLatitude * SinLongitude * DeltaY + SinLatitude * DeltaZ;
+
+    return CVector3(East, Up, North);
+}
+
+//---------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+    \brief Converts an engine local vector back to a standard ECEF difference.
+    Transpose of convertStandardDeltaToEngineLocal.
+    \param LocalPosition : engine local vector (East, Up, North) in meters (input).
+    \param SinLatitude : sine of the reference latitude (input).
+    \param CosLatitude : cosine of the reference latitude (input).
+    \param SinLongitude : sine of the reference longitude (input).
+    \param CosLongitude : cosine of the reference longitude (input).
+    \param DeltaX : standard ECEF X difference in meters (output).
+    \param DeltaY : standard ECEF Y difference in meters (output).
+    \param DeltaZ : standard ECEF Z difference in meters (output).
+*/
+/***************************************************************************/
+static void convertEngineLocalToStandardDelta(const CVector3& LocalPosition, double SinLatitude, double CosLatitude, double SinLongitude, double CosLongitude, double& DeltaX, double& DeltaY, double& DeltaZ)
+{
+    double East = LocalPosition.X;
+    double Up = LocalPosition.Y;
+    double North = LocalPosition.Z;
+
+    DeltaX = -SinLongitude * East - SinLatitude * CosLongitude * North + CosLatitude * CosLongitude * Up;
+    DeltaY = CosLongitude * East - SinLatitude * SinLongitude * North + CosLatitude * SinLongitude * Up;
+    DeltaZ = CosLatitude * North + SinLatitude * Up;
+}
+
+//---------------------------------------------------------------------------------------------
+
 /*!
     Returns the topocentric axis of this geoloc. See CComponent for details on the topocentric frame.
 */
@@ -249,22 +328,42 @@ CAxis CGeoloc::getTopocentricAxis() const
 {
     CAxis aReturnValue;
 
-    CGeoloc gPos1(Latitude, Longitude, 0.0, Datum);
-    CGeoloc gPos2(Latitude + 0.001, Longitude, 0.0, Datum);
-    CGeoloc gPos3(Latitude, Longitude, 10.0, Datum);
+    //-----------------------------------------------
+    // Optimized form: closed form orthonormal basis from sin/cos.
+    // Engine frame is Right (East), Up, Front (North).
+    // Absolute engine mapping is (Y, Z, -X) of standard ECEF,
+    // applied here to the standard East/North/Up unit vectors.
 
-    if (gPos2.Latitude > 90.0)
-        gPos2.Latitude = 90.0;
+    double SinLatitude = 0.0;
+    double CosLatitude = 0.0;
+    double SinLongitude = 0.0;
+    double CosLongitude = 0.0;
 
-    CVector3 vPos1 = gPos1.toVector3();
-    CVector3 vPos2 = gPos2.toVector3();
-    CVector3 vPos3 = gPos3.toVector3();
+    computeGeodeticDirectionFactors(Latitude, Longitude, SinLatitude, CosLatitude, SinLongitude, CosLongitude);
 
-    aReturnValue.Front = (vPos2 - vPos1).normalized();
-    aReturnValue.Up = (vPos3 - vPos1).normalized();
-    aReturnValue.Right = aReturnValue.Up.cross(aReturnValue.Front);
+    // Standard East (-sinLon, cosLon, 0) mapped to engine absolute.
+    aReturnValue.Right = CVector3(CosLongitude, 0.0, SinLongitude);
+    // Standard Up mapped to engine absolute.
+    aReturnValue.Up = CVector3(CosLatitude * SinLongitude, SinLatitude, -CosLatitude * CosLongitude);
+    // Standard North mapped to engine absolute.
+    aReturnValue.Front = CVector3(-SinLatitude * SinLongitude, CosLatitude, SinLatitude * CosLongitude);
 
     return aReturnValue;
+
+    //-----------------------------------------------
+    // ORIGINAL METHODICAL FORM (kept for reference):
+    // CGeoloc gPos1(Latitude, Longitude, 0.0, Datum);
+    // CGeoloc gPos2(Latitude + 0.001, Longitude, 0.0, Datum);
+    // CGeoloc gPos3(Latitude, Longitude, 10.0, Datum);
+    // if (gPos2.Latitude > 90.0)
+    //     gPos2.Latitude = 90.0;
+    // CVector3 vPos1 = gPos1.toVector3();
+    // CVector3 vPos2 = gPos2.toVector3();
+    // CVector3 vPos3 = gPos3.toVector3();
+    // aReturnValue.Front = (vPos2 - vPos1).normalized();
+    // aReturnValue.Up = (vPos3 - vPos1).normalized();
+    // aReturnValue.Right = aReturnValue.Up.cross(aReturnValue.Front);
+    // return aReturnValue;
 }
 
 //---------------------------------------------------------------------------------------------
@@ -431,7 +530,6 @@ CVector3 CGeoloc::toVector3_UTM() const
 CVector3 CGeoloc::toVector3_WGS84() const
 {
     CVector3 vPosition3D;
-    double dTemp;
 
     //-----------------------------------------------
     // Retrieval of the geocentric coordinates
@@ -443,14 +541,27 @@ CVector3 CGeoloc::toVector3_WGS84() const
                 &(vPosition3D.X), &(vPosition3D.Y), &(vPosition3D.Z)
                 );
 
-    dTemp = vPosition3D.Y; vPosition3D.Y = vPosition3D.Z; vPosition3D.Z = dTemp;
-
     //-----------------------------------------------
+    // Optimized axis remap: standard ECEF (X, Y, Z) to engine (Y, Z, -X).
+    // Exact permutation, no cos/sin(Pi/2) matrix multiply.
 
-    CMatrix4 mRotationAdjustY = Math::CMatrix4::makeRotation(Math::CVector3(0.0, Math::Pi / 2.0, 0.0));
-    vPosition3D = mRotationAdjustY * vPosition3D;
+    double StandardX = vPosition3D.X;
+    double StandardY = vPosition3D.Y;
+    double StandardZ = vPosition3D.Z;
+
+    vPosition3D.X = StandardY;
+    vPosition3D.Y = StandardZ;
+    vPosition3D.Z = -StandardX;
 
     return vPosition3D;
+
+    //-----------------------------------------------
+    // ORIGINAL METHODICAL FORM (kept for reference):
+    // double dTemp;
+    // dTemp = vPosition3D.Y; vPosition3D.Y = vPosition3D.Z; vPosition3D.Z = dTemp;
+    // CMatrix4 mRotationAdjustY = Math::CMatrix4::makeRotation(Math::CVector3(0.0, Math::Pi / 2.0, 0.0));
+    // vPosition3D = mRotationAdjustY * vPosition3D;
+    // return vPosition3D;
 }
 
 //---------------------------------------------------------------------------------------------
@@ -464,15 +575,16 @@ CGeoloc CGeoloc::fromVector3_WGS84(const CVector3& vPosition)
     CGeoloc gReturnValue;
 
     //-----------------------------------------------
-    // Adust Y angle of position
+    // Optimized inverse axis remap: engine (X, Y, Z) to standard (-Z, X, Y).
+    // Exact permutation, no cos/sin(-Pi/2) matrix multiply.
 
-    CMatrix4 mRotationAdjustY = Math::CMatrix4::makeRotation(Math::CVector3(0.0, Math::Pi / -2.0, 0.0));
-    vPosition3D = mRotationAdjustY * vPosition3D;
+    double EngineX = vPosition3D.X;
+    double EngineY = vPosition3D.Y;
+    double EngineZ = vPosition3D.Z;
 
-    //-----------------------------------------------
-    // Adjust axis conventions
-
-    SWAP_DOUBLE(vPosition3D.Y, vPosition3D.Z);
+    vPosition3D.X = -EngineZ;
+    vPosition3D.Y = EngineX;
+    vPosition3D.Z = EngineY;
 
     //-----------------------------------------------
 
@@ -487,6 +599,13 @@ CGeoloc CGeoloc::fromVector3_WGS84(const CVector3& vPosition)
     gReturnValue.Longitude = gReturnValue.Longitude * GeoTrans::fRad2Deg;
 
     return gReturnValue;
+
+    //-----------------------------------------------
+    // ORIGINAL METHODICAL FORM (kept for reference):
+    // CMatrix4 mRotationAdjustY = Math::CMatrix4::makeRotation(Math::CVector3(0.0, Math::Pi / -2.0, 0.0));
+    // vPosition3D = mRotationAdjustY * vPosition3D;
+    // SWAP_DOUBLE(vPosition3D.Y, vPosition3D.Z);
+    // Convert_Geocentric_To_Geodetic(...);
 }
 
 //---------------------------------------------------------------------------------------------
@@ -517,37 +636,43 @@ CVector3 CGeoloc::toVector3_WGS84(const CGeoloc& gReference) const
                 );
 
     //-----------------------------------------------
-    // Adjust axis conventions
+    // Optimized form: closed form East/North/Up projection of the
+    // standard ECEF difference. No Euler angle extraction, no matrix chain.
 
-    SWAP_DOUBLE(vReference3D.Y, vReference3D.Z);
-    SWAP_DOUBLE(vPosition3D.Y, vPosition3D.Z);
-    vReference3D.Y *= -1.0; vReference3D.Z *= -1.0;
-    vPosition3D.Y *= -1.0; vPosition3D.Z *= -1.0;
+    double SinLatitude = 0.0;
+    double CosLatitude = 0.0;
+    double SinLongitude = 0.0;
+    double CosLongitude = 0.0;
+
+    computeGeodeticDirectionFactors(gReference.Latitude, gReference.Longitude, SinLatitude, CosLatitude, SinLongitude, CosLongitude);
+
+    double DeltaX = vPosition3D.X - vReference3D.X;
+    double DeltaY = vPosition3D.Y - vReference3D.Y;
+    double DeltaZ = vPosition3D.Z - vReference3D.Z;
+
+    return convertStandardDeltaToEngineLocal(DeltaX, DeltaY, DeltaZ, SinLatitude, CosLatitude, SinLongitude, CosLongitude);
 
     //-----------------------------------------------
-
-    CMatrix4 mRotationAdjustX = Math::CMatrix4::makeRotation(Math::CVector3(Math::Pi / -2.0, 0.0, 0.0));
-    CVector3 vTemp = vReference3D;
-    double dAngleY = vTemp.eulerYAngle();
-    CMatrix4 mRotationInverseY = Math::CMatrix4::makeRotation(Math::CVector3(0, dAngleY * -1.0, 0.0));
-    vTemp = mRotationInverseY * vTemp;
-    double dAngleX = vTemp.eulerXAngle();
-    CMatrix4 mRotationInverseX = Math::CMatrix4::makeRotation(Math::CVector3(dAngleX * -1.0, 0.0, 0.0));
-
-    //-----------------------------------------------
-    // Applies the inverse angles of the reference to the position and to the reference
-
-    vReference3D = mRotationInverseY * vReference3D;
-    vReference3D = mRotationInverseX * vReference3D;
-    vReference3D = mRotationAdjustX * vReference3D;
-
-    vPosition3D = mRotationInverseY * vPosition3D;
-    vPosition3D = mRotationInverseX * vPosition3D;
-    vPosition3D = mRotationAdjustX * vPosition3D;
-
-    vPosition3D = vPosition3D - vReference3D;
-
-    return vPosition3D;
+    // ORIGINAL METHODICAL FORM (kept for reference):
+    // SWAP_DOUBLE(vReference3D.Y, vReference3D.Z);
+    // SWAP_DOUBLE(vPosition3D.Y, vPosition3D.Z);
+    // vReference3D.Y *= -1.0; vReference3D.Z *= -1.0;
+    // vPosition3D.Y *= -1.0; vPosition3D.Z *= -1.0;
+    // CMatrix4 mRotationAdjustX = Math::CMatrix4::makeRotation(Math::CVector3(Math::Pi / -2.0, 0.0, 0.0));
+    // CVector3 vTemp = vReference3D;
+    // double dAngleY = vTemp.eulerYAngle();
+    // CMatrix4 mRotationInverseY = Math::CMatrix4::makeRotation(Math::CVector3(0, dAngleY * -1.0, 0.0));
+    // vTemp = mRotationInverseY * vTemp;
+    // double dAngleX = vTemp.eulerXAngle();
+    // CMatrix4 mRotationInverseX = Math::CMatrix4::makeRotation(Math::CVector3(dAngleX * -1.0, 0.0, 0.0));
+    // vReference3D = mRotationInverseY * vReference3D;
+    // vReference3D = mRotationInverseX * vReference3D;
+    // vReference3D = mRotationAdjustX * vReference3D;
+    // vPosition3D = mRotationInverseY * vPosition3D;
+    // vPosition3D = mRotationInverseX * vPosition3D;
+    // vPosition3D = mRotationAdjustX * vPosition3D;
+    // vPosition3D = vPosition3D - vReference3D;
+    // return vPosition3D;
 }
 
 //---------------------------------------------------------------------------------------------
@@ -572,47 +697,25 @@ CGeoloc CGeoloc::fromVector3_WGS84(const CGeoloc& gReference, const CVector3& vP
                 );
 
     //-----------------------------------------------
-    // Adjust axis conventions
+    // Optimized form: transpose projection of the engine local offset,
+    // back to a standard ECEF difference added to the reference.
 
-    SWAP_DOUBLE(vReference3D.Y, vReference3D.Z);
-    vReference3D.Y *= -1.0; vReference3D.Z *= -1.0;
+    double SinLatitude = 0.0;
+    double CosLatitude = 0.0;
+    double SinLongitude = 0.0;
+    double CosLongitude = 0.0;
 
-    //-----------------------------------------------
+    computeGeodeticDirectionFactors(gReference.Latitude, gReference.Longitude, SinLatitude, CosLatitude, SinLongitude, CosLongitude);
 
-    CMatrix4 mRotationAdjustX = Math::CMatrix4::makeRotation(Math::CVector3(Math::Pi / -2.0, 0.0, 0.0));
-    CVector3 vTemp = vReference3D;
-    double dAngleY = vTemp.eulerYAngle();
-    CMatrix4 mRotationInverseY = Math::CMatrix4::makeRotation(Math::CVector3(0, dAngleY * -1.0, 0.0));
-    vTemp = mRotationInverseY * vTemp;
-    double dAngleX = vTemp.eulerXAngle();
-    CMatrix4 mRotationInverseX = Math::CMatrix4::makeRotation(Math::CVector3(dAngleX * -1.0, 0.0, 0.0));
+    double DeltaX = 0.0;
+    double DeltaY = 0.0;
+    double DeltaZ = 0.0;
 
-    //-----------------------------------------------
-    // Apply inverse angles to reference point
+    convertEngineLocalToStandardDelta(vPosition3D, SinLatitude, CosLatitude, SinLongitude, CosLongitude, DeltaX, DeltaY, DeltaZ);
 
-    vReference3D = mRotationInverseY * vReference3D;
-    vReference3D = mRotationInverseX * vReference3D;
-    vReference3D = mRotationAdjustX * vReference3D;
-
-    vPosition3D = vReference3D + vPosition3D;
-
-    //-----------------------------------------------
-
-    CMatrix4 mRotationAdjustInverseX = Math::CMatrix4::makeRotation(Math::CVector3(Math::Pi / 2.0, 0.0, 0.0));
-    CMatrix4 mRotationX = Math::CMatrix4::makeRotation(Math::CVector3(dAngleX * 1.0, 0.0, 0.0));
-    CMatrix4 mRotationY = Math::CMatrix4::makeRotation(Math::CVector3(0, dAngleY * 1.0, 0.0));
-
-    //-----------------------------------------------
-
-    vPosition3D = mRotationAdjustInverseX * vPosition3D;
-    vPosition3D = mRotationX * vPosition3D;
-    vPosition3D = mRotationY * vPosition3D;
-
-    //-----------------------------------------------
-    // Adjust axis conventions
-
-    SWAP_DOUBLE(vPosition3D.Y, vPosition3D.Z);
-    vPosition3D.Y *= -1.0; vPosition3D.Z *= -1.0;
+    vPosition3D.X = vReference3D.X + DeltaX;
+    vPosition3D.Y = vReference3D.Y + DeltaY;
+    vPosition3D.Z = vReference3D.Z + DeltaZ;
 
     //-----------------------------------------------
 
@@ -627,6 +730,31 @@ CGeoloc CGeoloc::fromVector3_WGS84(const CGeoloc& gReference, const CVector3& vP
     gReturnValue.Longitude = gReturnValue.Longitude * GeoTrans::fRad2Deg;
 
     return gReturnValue;
+
+    //-----------------------------------------------
+    // ORIGINAL METHODICAL FORM (kept for reference):
+    // SWAP_DOUBLE(vReference3D.Y, vReference3D.Z);
+    // vReference3D.Y *= -1.0; vReference3D.Z *= -1.0;
+    // CMatrix4 mRotationAdjustX = Math::CMatrix4::makeRotation(Math::CVector3(Math::Pi / -2.0, 0.0, 0.0));
+    // CVector3 vTemp = vReference3D;
+    // double dAngleY = vTemp.eulerYAngle();
+    // CMatrix4 mRotationInverseY = Math::CMatrix4::makeRotation(Math::CVector3(0, dAngleY * -1.0, 0.0));
+    // vTemp = mRotationInverseY * vTemp;
+    // double dAngleX = vTemp.eulerXAngle();
+    // CMatrix4 mRotationInverseX = Math::CMatrix4::makeRotation(Math::CVector3(dAngleX * -1.0, 0.0, 0.0));
+    // vReference3D = mRotationInverseY * vReference3D;
+    // vReference3D = mRotationInverseX * vReference3D;
+    // vReference3D = mRotationAdjustX * vReference3D;
+    // vPosition3D = vReference3D + vPosition3D;
+    // CMatrix4 mRotationAdjustInverseX = Math::CMatrix4::makeRotation(Math::CVector3(Math::Pi / 2.0, 0.0, 0.0));
+    // CMatrix4 mRotationX = Math::CMatrix4::makeRotation(Math::CVector3(dAngleX * 1.0, 0.0, 0.0));
+    // CMatrix4 mRotationY = Math::CMatrix4::makeRotation(Math::CVector3(0, dAngleY * 1.0, 0.0));
+    // vPosition3D = mRotationAdjustInverseX * vPosition3D;
+    // vPosition3D = mRotationX * vPosition3D;
+    // vPosition3D = mRotationY * vPosition3D;
+    // SWAP_DOUBLE(vPosition3D.Y, vPosition3D.Z);
+    // vPosition3D.Y *= -1.0; vPosition3D.Z *= -1.0;
+    // Convert_Geocentric_To_Geodetic(...);
 }
 
 //-------------------------------------------------------------------------------------------------

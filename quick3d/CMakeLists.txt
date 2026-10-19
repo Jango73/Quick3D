@@ -108,6 +108,7 @@ add_library(Quick3D SHARED
     source/terrain/CTerrain.cpp
     source/terrain/CWorldTerrainMap.cpp
     source/utils/CConsoleBoard.cpp
+    source/utils/CCollisionResolver.cpp
     source/utils/CImageFilter.cpp
     source/utils/CImageFilter_Matrix.cpp
     source/utils/CImageUtilities.cpp

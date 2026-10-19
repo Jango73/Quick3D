@@ -5,6 +5,7 @@
 #include "C3DScene.h"
 #include "CPhysicalComponent.h"
 #include "CAtmosphere.h"
+#include "CCollisionResolver.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -557,25 +558,127 @@ QVector<CContactPoint> CPhysicalComponent::contactPoints()
 //-------------------------------------------------------------------------------------------------
 
 /*!
+    Resolves the contact between \a pFirst and \a pSecond using an arcade impulse. \br\br
+    Spheres are separated proportionally to inverse mass and the approach speed
+    along the contact normal is removed with a small restitution. No energy is created.
+*/
+static void resolvePhysicalPair(const QSP<CPhysicalComponent>& pFirst, const QSP<CPhysicalComponent>& pSecond)
+{
+    if (pFirst == nullptr || pSecond == nullptr)
+    {
+        return;
+    }
+
+    if (pFirst == pSecond)
+    {
+        return;
+    }
+
+    if (pFirst->isRootObject() == false || pSecond->isRootObject() == false)
+    {
+        return;
+    }
+
+    if (pFirst->collisionsActive() == false || pSecond->collisionsActive() == false)
+    {
+        return;
+    }
+
+    // Terrains are for now processed in update()
+    if (pFirst->getClassName() == ClassName_CWorldTerrain || pSecond->getClassName() == ClassName_CWorldTerrain)
+    {
+        return;
+    }
+
+    bool bFirstMovable = pFirst->physicsActive();
+    bool bSecondMovable = pSecond->physicsActive();
+
+    if (bFirstMovable == false && bSecondMovable == false)
+    {
+        return;
+    }
+
+    // Offset from first body to second body, in meters (engine local frame)
+    CVector3 vFromFirstToSecond = pSecond->geoloc().toVector3(pFirst->geoloc());
+    double dRadiusSum = pFirst->worldBounds().radius() + pSecond->worldBounds().radius();
+
+    CVector3 vFirstVelocityOut;
+    CVector3 vSecondVelocityOut;
+    CVector3 vFirstCorrection;
+    CVector3 vSecondCorrection;
+
+    bool bContact = CCollisionResolver::resolveSphereContact(
+            pFirst->totalMass_kg(),
+            pFirst->velocity_ms(),
+            bFirstMovable,
+            pSecond->totalMass_kg(),
+            pSecond->velocity_ms(),
+            bSecondMovable,
+            vFromFirstToSecond,
+            dRadiusSum,
+            0.1,
+            0.8,
+            vFirstVelocityOut,
+            vSecondVelocityOut,
+            vFirstCorrection,
+            vSecondCorrection
+            );
+
+    if (bContact == false)
+    {
+        return;
+    }
+
+    if (bFirstMovable)
+    {
+        pFirst->setVelocity_ms(vFirstVelocityOut);
+
+        if (vFirstCorrection.magnitude() > 0.0)
+        {
+            pFirst->setGeoloc(CGeoloc(pFirst->geoloc(), vFirstCorrection));
+        }
+    }
+
+    if (bSecondMovable)
+    {
+        pSecond->setVelocity_ms(vSecondVelocityOut);
+
+        if (vSecondCorrection.magnitude() > 0.0)
+        {
+            pSecond->setGeoloc(CGeoloc(pSecond->geoloc(), vSecondCorrection));
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
     Computes collisions for the components in \a vComponents using \a dDeltaTimeS, which is the elapsed seconds since the last frame.
 */
 void CPhysicalComponent::computeCollisions(QVector<QSP<CComponent> >& vComponents, double dDeltaTimeS)
 {
-    foreach (QSP<CComponent> pComponent, vComponents)
-    {
-        QSP<CPhysicalComponent> pPhysical = QSP_CAST(CPhysicalComponent, pComponent);
+    Q_UNUSED(dDeltaTimeS);
 
-        // Terrains are for now processed in update()
-        if (pPhysical && pPhysical->getClassName() != ClassName_CWorldTerrain)
+    // Each pair is processed once so contacts never apply a double impulse
+    for (int iIndexFirst = 0; iIndexFirst < vComponents.count(); iIndexFirst++)
+    {
+        QSP<CPhysicalComponent> pFirst = QSP_CAST(CPhysicalComponent, vComponents[iIndexFirst]);
+
+        if (pFirst == nullptr)
         {
-            if (pPhysical->isRootObject() && pPhysical->collisionsActive() == true)
+            continue;
+        }
+
+        for (int iIndexSecond = iIndexFirst + 1; iIndexSecond < vComponents.count(); iIndexSecond++)
+        {
+            QSP<CPhysicalComponent> pSecond = QSP_CAST(CPhysicalComponent, vComponents[iIndexSecond]);
+
+            if (pSecond == nullptr)
             {
-                // Compute collisions only if object has non null speed
-                if (pPhysical->velocity_ms().magnitude() > 0.0)
-                {
-                    computeCollisionsForComponent(pPhysical, vComponents, dDeltaTimeS);
-                }
+                continue;
             }
+
+            resolvePhysicalPair(pFirst, pSecond);
         }
     }
 }
@@ -588,6 +691,13 @@ void CPhysicalComponent::computeCollisions(QVector<QSP<CComponent> >& vComponent
 */
 void CPhysicalComponent::computeCollisionsForComponent(QSP<CPhysicalComponent> pPhysical, QVector<QSP<CComponent> >& vOtherComponents, double dDeltaTimeS)
 {
+    Q_UNUSED(dDeltaTimeS);
+
+    if (pPhysical == nullptr)
+    {
+        return;
+    }
+
     // Iterate through each other components
     foreach (QSP<CComponent> pOtherComponent, vOtherComponents)
     {
@@ -595,30 +705,7 @@ void CPhysicalComponent::computeCollisionsForComponent(QSP<CPhysicalComponent> p
 
         if (pOtherPhysical != nullptr)
         {
-            if (pPhysical != pOtherPhysical && pOtherPhysical->isRootObject() && pOtherPhysical->collisionsActive() == true)
-            {
-                // Terrains are for now processed in update()
-                if (pOtherPhysical->getClassName() != ClassName_CWorldTerrain)
-                {
-                    // Compute distance to other object
-                    CVector3 vPosition = pPhysical->geoloc().toVector3(pOtherPhysical->geoloc());
-                    double dRadiusSum = pPhysical->worldBounds().radius() + pOtherPhysical->worldBounds().radius();
-
-                    // Do the spheres intersect?
-                    if (vPosition.magnitude() < dRadiusSum)
-                    {
-                        // If yes, make objects bounce
-
-                        double dForce = pPhysical->m_vVelocity_ms.magnitude() * pPhysical->totalMass_kg() * 4.0;
-                        CVector3 vForceDirection = vPosition.normalized() * 0.5 * dForce;
-                        double dTotalMass = pPhysical->totalMass_kg() + pOtherPhysical->totalMass_kg();
-                        double dForceThisComponent = 1.0 - (pPhysical->totalMass_kg() / dTotalMass);
-                        double dForceOtherComponent = 1.0 - (pOtherPhysical->totalMass_kg() / dTotalMass);
-                        pPhysical->addForce_kg(vForceDirection * dForceThisComponent);
-                        pOtherPhysical->addForce_kg(vForceDirection * dForceOtherComponent * -1.0);
-                    }
-                }
-            }
+            resolvePhysicalPair(pPhysical, pOtherPhysical);
         }
     }
 }

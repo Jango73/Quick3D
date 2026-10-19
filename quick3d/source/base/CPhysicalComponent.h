@@ -148,6 +148,9 @@ public:
     //! Returns sum of all torques in radians per second per second
     Math::CVector3 summedTorques_rss() const { return m_vSummedTorques_rss; }
 
+    //! Returns \c true if physics computations are active
+    bool physicsActive() const { return m_bPhysicsActive; }
+
     //! Returns \c true if collisions are active
     bool collisionsActive() const { return m_bCollisionsActive; }
 

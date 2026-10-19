@@ -321,6 +321,74 @@ static void convertEngineLocalToStandardDelta(const CVector3& LocalPosition, dou
 
 //---------------------------------------------------------------------------------------------
 
+/***************************************************************************/
+/*!
+    \brief Converts standard ECEF coordinates to geodetic coordinates.
+    \param StandardX : standard ECEF X in meters (input).
+    \param StandardY : standard ECEF Y in meters (input).
+    \param StandardZ : standard ECEF Z in meters (input).
+    \param LatitudeRadians : geodetic latitude in radians (output).
+    \param LongitudeRadians : geodetic longitude in radians (output).
+    \param Height : geodetic height in meters (output).
+    Single pass Toms (Convert_Geocentric_To_Geodetic) leaves a systematic
+    bias of a few millimeters, which accumulates when the physics loop
+    round-trips geodetic to geocentric and back every frame. Seed with the
+    single pass, then iterate the closed form fixed point
+    Latitude = atan((Z + Rn * e2 * sin(Latitude)) / W) to convergence.
+    Ellipsoid parameters come from Get_Geocentric_Parameters, so the active
+    datum is honored. Polar and center of earth cases are left to the seed.
+*/
+/***************************************************************************/
+static void convertStandardGeocentricToGeodetic(double StandardX, double StandardY, double StandardZ, double& LatitudeRadians, double& LongitudeRadians, double& Height)
+{
+    Convert_Geocentric_To_Geodetic(StandardX, StandardY, StandardZ, &LatitudeRadians, &LongitudeRadians, &Height);
+
+    double DistanceFromAxis = sqrt(StandardX * StandardX + StandardY * StandardY);
+
+    if (DistanceFromAxis > 0.0)
+    {
+        double SemiMajorAxis = 0.0;
+        double Flattening = 0.0;
+
+        Get_Geocentric_Parameters(&SemiMajorAxis, &Flattening);
+
+        if (SemiMajorAxis > 0.0)
+        {
+            double EccentricitySquared = Flattening * (2.0 - Flattening);
+            double RefinedLatitude = LatitudeRadians;
+
+            for (int Iteration = 0; Iteration < 3; Iteration++)
+            {
+                double SinLatitude = sin(RefinedLatitude);
+                double PrimeVerticalRadius = SemiMajorAxis / sqrt(1.0 - EccentricitySquared * SinLatitude * SinLatitude);
+
+                RefinedLatitude = atan((StandardZ + PrimeVerticalRadius * EccentricitySquared * SinLatitude) / DistanceFromAxis);
+            }
+
+            double SinLatitude = sin(RefinedLatitude);
+            double CosLatitude = cos(RefinedLatitude);
+            double PrimeVerticalRadius = SemiMajorAxis / sqrt(1.0 - EccentricitySquared * SinLatitude * SinLatitude);
+
+            LatitudeRadians = RefinedLatitude;
+
+            if (CosLatitude >= 0.382683432365089772)
+            {
+                Height = DistanceFromAxis / CosLatitude - PrimeVerticalRadius;
+            }
+            else if (CosLatitude <= -0.382683432365089772)
+            {
+                Height = DistanceFromAxis / -CosLatitude - PrimeVerticalRadius;
+            }
+            else
+            {
+                Height = StandardZ / SinLatitude + PrimeVerticalRadius * (EccentricitySquared - 1.0);
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------------------------
+
 /*!
     Returns the topocentric axis of this geoloc. See CComponent for details on the topocentric frame.
 */
@@ -588,11 +656,11 @@ CGeoloc CGeoloc::fromVector3_WGS84(const CVector3& vPosition)
 
     //-----------------------------------------------
 
-    Convert_Geocentric_To_Geodetic(
+    convertStandardGeocentricToGeodetic(
                 vPosition3D.X, vPosition3D.Y, vPosition3D.Z,
-                &(gReturnValue.Latitude),
-                &(gReturnValue.Longitude),
-                &(gReturnValue.Altitude)
+                gReturnValue.Latitude,
+                gReturnValue.Longitude,
+                gReturnValue.Altitude
                 );
 
     gReturnValue.Latitude = gReturnValue.Latitude * GeoTrans::fRad2Deg;
@@ -719,11 +787,11 @@ CGeoloc CGeoloc::fromVector3_WGS84(const CGeoloc& gReference, const CVector3& vP
 
     //-----------------------------------------------
 
-    Convert_Geocentric_To_Geodetic(
+    convertStandardGeocentricToGeodetic(
                 vPosition3D.X, vPosition3D.Y, vPosition3D.Z,
-                &(gReturnValue.Latitude),
-                &(gReturnValue.Longitude),
-                &(gReturnValue.Altitude)
+                gReturnValue.Latitude,
+                gReturnValue.Longitude,
+                gReturnValue.Altitude
                 );
 
     gReturnValue.Latitude = gReturnValue.Latitude * GeoTrans::fRad2Deg;

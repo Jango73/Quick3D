@@ -64,4 +64,5 @@ public:
 
 protected:
 
+    QString                     m_sLastDriverInputLog;  ///< Last sent driver tuple, change-only debug log without flood
 };

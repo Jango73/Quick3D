@@ -24,6 +24,7 @@ CWorldChunk::CWorldChunk(C3DScene* pScene, CWorldTerrain* pAutoTerrain, CHeightF
     , m_pContainer(pContainer)
     , m_dDistance(0.0)
     , m_bOK(false)
+    , m_iPhysicsHeightfieldIndex(-1)
     , m_bHadTerrain(false)
 {
     CComponent::incComponentCounter(ClassName_CWorldChunk);
@@ -404,6 +405,51 @@ void CWorldChunk::clearTerrain()
 
         m_pWater.reset();
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Copies the terrain altitude grid when ready, row 0 is the north edge. \br\br
+    Returns false when no finished terrain mesh is available, callers run
+    on the main thread and read a worker built mesh like paint() does.
+*/
+bool CWorldChunk::terrainGrid(QVector<float>& outHeights, int& outSampleCount) const
+{
+    outHeights.clear();
+    outSampleCount = 0;
+
+    // Note: local shared copy, the terrain worker owns the mesh writes and
+    // isOK() is only set once its work() method has finished
+    QSP<CTerrain> pTerrain = m_pTerrain;
+
+    if (pTerrain == nullptr || pTerrain->isOK() == false)
+    {
+        return false;
+    }
+
+    const CMeshGeometry* pMesh = pTerrain->mesh();
+    int iPoints = pTerrain->numPoints();
+
+    if (pMesh == nullptr || iPoints < 2 || pMesh->vertices().count() != iPoints * iPoints)
+    {
+        return false;
+    }
+
+    outSampleCount = iPoints;
+    outHeights.reserve(iPoints * iPoints);
+
+    // Note: vertex index grows with X eastward and Z northward, rows are
+    // stored north edge first to match the height field convention
+    for (int iZ = iPoints - 1; iZ >= 0; iZ--)
+    {
+        for (int iX = 0; iX < iPoints; iX++)
+        {
+            outHeights.append(float(pMesh->vertices()[pTerrain->getPointIndexForXZ(iX, iZ)].altitude()));
+        }
+    }
+
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------

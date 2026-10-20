@@ -2,6 +2,7 @@
 // Qt
 #include <QFileDialog>
 #include <QRandomGenerator>
+#include <QKeyEvent>
 
 // Quick3D
 #include "CConsoleBoard.h"
@@ -12,8 +13,12 @@
 #include "CTerrain.h"
 #include "CWorldChunk.h"
 #include "CVehicle.h"
+#include "CWheel.h"
 #include "CWorldTerrain.h"
 #include "CController.h"
+#include "CPhysicsWorld.h"
+#include "CRemoteControlServer.h"
+#include "CUiRemoteControlHandler.h"
 
 // Application
 #include "Quick3DTest.h"
@@ -42,6 +47,8 @@ Quick3DTest::Quick3DTest(QString sSceneFileName, QWidget *parent, Qt::WFlags fla
     , m_bRun(true)
     , m_bCheckRender(false)
     , m_iCheckRenderFrames(0)
+    , m_pRemoteHandler(nullptr)
+    , m_pRemoteServer(nullptr)
 {
     // CConsoleBoard::getInstance()->start();
 
@@ -51,6 +58,20 @@ Quick3DTest::Quick3DTest(QString sSceneFileName, QWidget *parent, Qt::WFlags fla
 
     m_pScene = new CGLWidgetScene();
     m_pView = new CView(m_pScene, ui.Render1);
+
+    if (qEnvironmentVariableIsSet("Q3D_REMOTE_PORT") == true)
+    {
+        bool bPortOk = false;
+        int iPort = qEnvironmentVariableIntValue("Q3D_REMOTE_PORT", &bPortOk);
+
+        if (bPortOk == false)
+        {
+            iPort = 8181;
+        }
+
+        m_pRemoteHandler = new CUiRemoteControlHandler(this, this);
+        m_pRemoteServer = new CRemoteControlServer(m_pRemoteHandler, quint16(iPort), this);
+    }
 
     // Event handlers
     connect(&m_tTimer, SIGNAL(timeout()), this, SLOT(onTimer()));
@@ -761,6 +782,185 @@ void Quick3DTest::onControllableIndexChanged(const QString& sName)
             }
         }
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Selects the first combo item matching sName (exact, then contains), returns its index or -1
+*/
+int Quick3DTest::selectComboItem(QComboBox* pCombo, const QString& sName)
+{
+    if (pCombo == nullptr)
+    {
+        return -1;
+    }
+
+    int iIndex = pCombo->findText(sName);
+
+    if (iIndex < 0)
+    {
+        for (int iItem = 0; iItem < pCombo->count(); iItem++)
+        {
+            if (pCombo->itemText(iItem).contains(sName) == true)
+            {
+                iIndex = iItem;
+                break;
+            }
+        }
+    }
+
+    if (iIndex >= 0)
+    {
+        pCombo->setCurrentIndex(iIndex);
+    }
+
+    return iIndex;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Selects a vehicle through the controllable combo box, like a user click, returns true on success
+*/
+bool Quick3DTest::selectVehicleByName(const QString& sName)
+{
+    if (m_pScene == nullptr)
+    {
+        return false;
+    }
+
+    if (selectComboItem(ui.m_cbControllable, sName) < 0)
+    {
+        return false;
+    }
+
+    foreach (QSP<CComponent> pComponent, m_pScene->components())
+    {
+        QSP<CComponent> pFound = pComponent->findComponent(sName);
+
+        if (pFound != nullptr && pFound->controller() != nullptr)
+        {
+            return m_pScene->controller() == pFound->controller();
+        }
+    }
+
+    return false;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Selects a camera through the views combo box, like a user click, returns true on success
+*/
+bool Quick3DTest::selectViewByName(const QString& sName)
+{
+    if (m_pScene == nullptr || m_pScene->viewports().count() == 0)
+    {
+        return false;
+    }
+
+    if (selectComboItem(ui.m_cbViews1, sName) < 0)
+    {
+        return false;
+    }
+
+    QSP<CCamera> pCamera = m_pScene->viewports()[0]->camera();
+
+    return pCamera != nullptr && pCamera->qualifiedName().contains(sName) == true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Posts a key event (Qt::Key value, 0 = press, 1 = release, 2 = click) to the 3D view, returns true on success
+*/
+bool Quick3DTest::postKeyToView(int iKey, int iAction)
+{
+    if (m_pView == nullptr)
+    {
+        return false;
+    }
+
+    if (iAction == 0 || iAction == 2)
+    {
+        QApplication::postEvent(m_pView, new QKeyEvent(QEvent::KeyPress, iKey, Qt::NoModifier));
+    }
+
+    if (iAction == 1 || iAction == 2)
+    {
+        QApplication::postEvent(m_pView, new QKeyEvent(QEvent::KeyRelease, iKey, Qt::NoModifier));
+    }
+
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Returns a JSON document describing the vehicle named sName
+*/
+QString Quick3DTest::vehicleStatusJson(const QString& sName)
+{
+    if (m_pScene == nullptr)
+    {
+        return "{\"ok\":false,\"error\":\"no scene\"}";
+    }
+
+    QSP<CVehicle> pVehicle;
+
+    foreach (QSP<CComponent> pComponent, m_pScene->components())
+    {
+        QSP<CComponent> pFound = pComponent->findComponent(sName);
+
+        if (pFound != nullptr)
+        {
+            pVehicle = QSP_CAST(CVehicle, pFound);
+            break;
+        }
+    }
+
+    if (pVehicle == nullptr)
+    {
+        return "{\"ok\":false,\"error\":\"vehicle not found\"}";
+    }
+
+    CGeoloc gGeoloc = pVehicle->geoloc();
+    CVector3 vRotation = pVehicle->rotation();
+
+    int iContacts = -1;
+
+    CPhysicsWorld* pWorld = m_pScene->physicsWorld();
+
+    if (pWorld != nullptr && pVehicle->hasPhysicsVehicle() == true)
+    {
+        iContacts = 0;
+
+        QVector<QSP<CWheel> > vWheels = pVehicle->wheels();
+
+        for (int iWheel = 0; iWheel < vWheels.count(); iWheel++)
+        {
+            if (pWorld->vehicleWheelHasContact(pVehicle->physicsVehicleIndex(), iWheel) == true)
+            {
+                iContacts++;
+            }
+        }
+    }
+
+    bool bControlled = m_pScene->controller() != nullptr
+        && pVehicle->controller() != nullptr
+        && m_pScene->controller() == pVehicle->controller();
+
+    return QString("{\"ok\":true,\"name\":\"%1\",\"physics\":%2,\"latitude\":%3,\"longitude\":%4,\"altitude\":%5,"
+        "\"rotationX\":%6,\"rotationY\":%7,\"rotationZ\":%8,\"handBrake\":%9,\"wheels\":%10,\"contacts\":%11,\"controlled\":%12}")
+        .arg(pVehicle->name())
+        .arg(pVehicle->hasPhysicsVehicle() == true ? "true" : "false")
+        .arg(gGeoloc.Latitude, 0, 'g', 10).arg(gGeoloc.Longitude, 0, 'g', 10).arg(gGeoloc.Altitude, 0, 'g', 10)
+        .arg(vRotation.X, 0, 'g', 10).arg(vRotation.Y, 0, 'g', 10).arg(vRotation.Z, 0, 'g', 10)
+        .arg(pVehicle->isHandBrakeEngaged() == true ? "true" : "false")
+        .arg(pVehicle->wheels().count())
+        .arg(iContacts)
+        .arg(bControlled == true ? "true" : "false");
 }
 
 //-------------------------------------------------------------------------------------------------

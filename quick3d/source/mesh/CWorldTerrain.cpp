@@ -7,6 +7,7 @@
 
 // Application
 #include "C3DScene.h"
+#include "CPhysicsMath.h"
 #include "CComponentFactory.h"
 #include "CWorkerManager.h"
 #include "CWorldTerrain.h"
@@ -285,6 +286,10 @@ void CWorldTerrain::paint(CRenderContext* pContext)
 
         pChunk->paint(pContext);
     }
+
+    // Note: main thread only, height field bodies are never added or removed
+    // during a physics step, which runs from updateScene()
+    syncPhysicsHeightfields();
 
     // Garbage collection
 
@@ -805,6 +810,108 @@ void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRen
 //-------------------------------------------------------------------------------------------------
 
 /*!
+    Registers ready chunk grids as physics height fields, drops stale ones
+*/
+void CWorldTerrain::syncPhysicsHeightfields()
+{
+    if (m_pRoot == nullptr || m_pScene == nullptr)
+    {
+        return;
+    }
+
+    if (m_pScene->physicsWorld() == nullptr)
+    {
+        return;
+    }
+
+    syncPhysicsHeightfieldsRecurse(m_pRoot);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Registers \a pChunk 's grid once its terrain is ready, drops the height
+    field when the grid is gone, then visits child chunks
+*/
+void CWorldTerrain::syncPhysicsHeightfieldsRecurse(QSP<CWorldChunk> pChunk)
+{
+    if (pChunk == nullptr || m_pScene == nullptr)
+    {
+        return;
+    }
+
+    CPhysicsWorld* pWorld = m_pScene->physicsWorld();
+
+    if (pWorld == nullptr)
+    {
+        return;
+    }
+
+    m_pScene->ensurePhysicsReference(pChunk->geoloc());
+
+    QVector<float> vGrid;
+    int iPoints = 0;
+
+    if (pChunk->terrainGrid(vGrid, iPoints) == true)
+    {
+        if (pChunk->physicsHeightfieldIndex() < 0)
+        {
+            CPhysicsMath::SHeightfieldFrame cFrame = CPhysicsMath::heightfieldFrame(
+                pChunk->geoloc(),
+                pChunk->size(),
+                iPoints,
+                m_pScene->physicsReference().toVector3()
+                );
+
+            int iHeightfield = pWorld->addHeightfield(vGrid, iPoints, cFrame.SpacingXM, cFrame.SpacingZM, cFrame.Position, cFrame.Rotation);
+
+            if (iHeightfield < 0)
+            {
+                LOG_METHOD_WARNING("Chunk height field registration failed");
+            }
+
+            pChunk->setPhysicsHeightfieldIndex(iHeightfield);
+        }
+    }
+    else
+    {
+        removeChunkHeightfield(pChunk);
+    }
+
+    foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
+    {
+        QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
+
+        if (pChild != nullptr)
+        {
+            syncPhysicsHeightfieldsRecurse(pChild);
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Removes the physics height field of \a pChunk when registered
+*/
+void CWorldTerrain::removeChunkHeightfield(QSP<CWorldChunk> pChunk)
+{
+    if (pChunk == nullptr || pChunk->physicsHeightfieldIndex() < 0)
+    {
+        return;
+    }
+
+    if (m_pScene != nullptr && m_pScene->physicsWorld() != nullptr)
+    {
+        m_pScene->physicsWorld()->removeHeightfield(pChunk->physicsHeightfieldIndex());
+    }
+
+    pChunk->setPhysicsHeightfieldIndex(-1);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
     Called by paint in order to collect any useless chunks.
 */
 void CWorldTerrain::collectGarbage()
@@ -836,6 +943,8 @@ void CWorldTerrain::collectGarbageRecurse(QSP<CWorldChunk> pChunk)
     {
         if (pChunk->isExpendable())
         {
+            removeChunkHeightfield(pChunk);
+
             pChunk->clearLinks(m_pScene);
             pChunk->clearTerrain();
         }

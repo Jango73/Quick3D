@@ -323,7 +323,9 @@ void CPhysicalComponent::update(double dDeltaTimeS)
 
     if (isRootObject())
     {
-        if (m_pFields.count() > 0)
+        // Motion owned by a physics world is synced back by the scene, the
+        // arcade integration below would advance the pose twice
+        if (m_pFields.count() > 0 && hasPhysicsBody() == false)
         {
             if (dDeltaTimeS > 0.0)
             {
@@ -580,6 +582,13 @@ static void resolvePhysicalPair(const QSP<CPhysicalComponent>& pFirst, const QSP
     }
 
     if (pFirst->collisionsActive() == false || pSecond->collisionsActive() == false)
+    {
+        return;
+    }
+
+    // Bodies owned by a physics world resolve their contacts there, the arcade
+    // impulse below would fight the simulation
+    if (pFirst->hasPhysicsBody() == true || pSecond->hasPhysicsBody() == true)
     {
         return;
     }

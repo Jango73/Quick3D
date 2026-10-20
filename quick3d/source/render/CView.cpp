@@ -97,7 +97,12 @@ void CView::keyPressEvent(QKeyEvent* event)
         {
             if (m_pScene->controller() != nullptr)
             {
+                LOG_DEBUG(QString("Key press %1 to %2").arg(event->key()).arg(m_pScene->controller()->qualifiedName()));
                 m_pScene->controller()->keyPressEvent(event);
+            }
+            else
+            {
+                LOG_DEBUG(QString("Key press %1 without controller").arg(event->key()));
             }
         }
     }

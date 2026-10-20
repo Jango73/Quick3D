@@ -67,6 +67,9 @@ SOURCES += \
     tests/CTestMath.cpp \
     tests/CTestCamera.cpp \
     tests/CTestGeo.cpp \
+    tests/CTestPhysics.cpp \
+    tests/CTestVehicle.cpp \
+    tests/CTestScene.cpp \
     tests/CTestQuick3D.cpp \
     main.cpp
 
@@ -76,6 +79,9 @@ HEADERS  += \
     tests/CTestMath.h \
     tests/CTestCamera.h \
     tests/CTestGeo.h \
+    tests/CTestPhysics.h \
+    tests/CTestVehicle.h \
+    tests/CTestScene.h \
     tests/CTestQuick3D.h
 
 RESOURCES += \

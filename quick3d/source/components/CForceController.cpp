@@ -1,9 +1,16 @@
 
+// qt-plus
+#include "CLogger.h"
+
+// STL
+#include <cmath>
+
 // Application
 #include "CVector3.h"
 #include "CAxis.h"
 #include "C3DScene.h"
 #include "CForceController.h"
+#include "CVehicle.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -47,43 +54,94 @@ void CForceController::update(double dDeltaTime)
 
         if (pPhysicalPositionTarget != nullptr)
         {
-            double dMoveFactor = pPhysicalPositionTarget->geoloc().Altitude / 500.0;
-            if (dMoveFactor < 1.0) dMoveFactor = 1.0;
+            QSP<CVehicle> pPhysicsVehicle = QSP_CAST(CVehicle, pPhysicalPositionTarget);
 
-            dMoveSpeed = dMoveSpeed * dMoveFactor;
-
-            if (m_pJoystick != nullptr && m_pJoystick->connected())
+            if (pPhysicsVehicle != nullptr && pPhysicsVehicle->hasPhysicsVehicle() == true)
             {
-                pPhysicalPositionTarget->addLocalForce_kg(CVector3(0.0, 0.0, m_pJoystick->axisStates()[1] * -dMoveSpeed));
+                double dHandBrakeNorm = pPhysicsVehicle->isHandBrakeEngaged() ? 1.0 : 0.0;
+                double dForwardNorm = driveForwardNorm();
+                double dBrakeNorm = 0.0;
+
+                // Note: heavy vehicles carry high torque for grades, the
+                // authored speed caps the top speed instead, throttle tapers
+                // to zero over the last 1 m/s before the cap and a staged
+                // brake holds the vehicle back past it, reverse stays free so
+                // no binary throttle brake jerk can build up into a weave
+                double dSpeedLimitMS = pPhysicsVehicle->getSpeedMS();
+                Math::CVector3 vVelocity = pPhysicsVehicle->velocity_ms();
+                double dHorizontalMS = sqrt(vVelocity.X * vVelocity.X + vVelocity.Z * vVelocity.Z);
+
+                if (dSpeedLimitMS > 0.0)
+                {
+                    if (dForwardNorm > 0.0)
+                    {
+                        dForwardNorm *= qBound(0.0, (dSpeedLimitMS - dHorizontalMS) / 1.0, 1.0);
+                    }
+
+                    if (dHorizontalMS > dSpeedLimitMS + 0.5)
+                    {
+                        dBrakeNorm = 0.4;
+                    }
+                    else if (dHorizontalMS > dSpeedLimitMS)
+                    {
+                        dBrakeNorm = 0.15;
+                    }
+                }
+
+                QString sDriverInputLog = QString("%1 fwd=%2 right=%3 brake=%4 hand=%5 speed=%6 limit=%7")
+                    .arg(pPhysicsVehicle->name())
+                    .arg(dForwardNorm, 0, 'f', 2).arg(driveRightNorm(), 0, 'f', 2)
+                    .arg(dBrakeNorm, 0, 'f', 2).arg(dHandBrakeNorm, 0, 'f', 2)
+                    .arg(dHorizontalMS, 0, 'f', 2).arg(dSpeedLimitMS, 0, 'f', 2);
+
+                if (sDriverInputLog != m_sLastDriverInputLog)
+                {
+                    LOG_DEBUG(sDriverInputLog);
+                    m_sLastDriverInputLog = sDriverInputLog;
+                }
+
+                pPhysicsVehicle->setDriverInputNorm(dForwardNorm, driveRightNorm(), dBrakeNorm, dHandBrakeNorm);
             }
             else
             {
-                if (m_bGoForward)
-                {
-                    pPhysicalPositionTarget->addLocalForce_kg(CVector3(0.0, 0.0, dMoveSpeed));
-                }
-                else if (m_bGoBackward)
-                {
-                    pPhysicalPositionTarget->addLocalForce_kg(CVector3(0.0, 0.0, -dMoveSpeed));
-                }
-            }
+                double dMoveFactor = pPhysicalPositionTarget->geoloc().Altitude / 500.0;
+                if (dMoveFactor < 1.0) dMoveFactor = 1.0;
 
-            if (m_bGoUp)
-            {
-                pPhysicalPositionTarget->addLocalForce_kg(CVector3(0.0, dMoveSpeed, 0.0));
-            }
-            else if (m_bGoDown)
-            {
-                pPhysicalPositionTarget->addLocalForce_kg(CVector3(0.0, -dMoveSpeed, 0.0));
-            }
+                dMoveSpeed = dMoveSpeed * dMoveFactor;
 
-            if (m_bStrafeRight)
-            {
-                pPhysicalPositionTarget->addLocalForce_kg(CVector3(dMoveSpeed, 0.0, 0.0));
-            }
-            else if (m_bStrafeLeft)
-            {
-                pPhysicalPositionTarget->addLocalForce_kg(CVector3(-dMoveSpeed, 0.0, 0.0));
+                if (m_pJoystick != nullptr && m_pJoystick->connected())
+                {
+                    pPhysicalPositionTarget->addLocalForce_kg(CVector3(0.0, 0.0, m_pJoystick->axisStates()[1] * -dMoveSpeed));
+                }
+                else
+                {
+                    if (m_bGoForward)
+                    {
+                        pPhysicalPositionTarget->addLocalForce_kg(CVector3(0.0, 0.0, dMoveSpeed));
+                    }
+                    else if (m_bGoBackward)
+                    {
+                        pPhysicalPositionTarget->addLocalForce_kg(CVector3(0.0, 0.0, -dMoveSpeed));
+                    }
+                }
+
+                if (m_bGoUp)
+                {
+                    pPhysicalPositionTarget->addLocalForce_kg(CVector3(0.0, dMoveSpeed, 0.0));
+                }
+                else if (m_bGoDown)
+                {
+                    pPhysicalPositionTarget->addLocalForce_kg(CVector3(0.0, -dMoveSpeed, 0.0));
+                }
+
+                if (m_bStrafeRight)
+                {
+                    pPhysicalPositionTarget->addLocalForce_kg(CVector3(dMoveSpeed, 0.0, 0.0));
+                }
+                else if (m_bStrafeLeft)
+                {
+                    pPhysicalPositionTarget->addLocalForce_kg(CVector3(-dMoveSpeed, 0.0, 0.0));
+                }
             }
         }
     }
@@ -94,6 +152,17 @@ void CForceController::update(double dDeltaTime)
 
         if (pPhysicalRotationTarget != nullptr)
         {
+            QSP<CVehicle> pPhysicsVehicle = QSP_CAST(CVehicle, pPhysicalRotationTarget);
+            bool bPhysicsDriven = pPhysicsVehicle != nullptr && pPhysicsVehicle->hasPhysicsVehicle() == true;
+
+            // Note: a physics attached chassis steers through the wheel driver
+            // inputs above, direct rotation writes fight the constraint solver
+            // and eject the body, only detached targets keep arcade rotation
+            if (bPhysicsDriven == true)
+            {
+                return;
+            }
+
             double dRotationSpeed = m_dForceFactor * 0.02;
 
             if (m_bLookUp)
@@ -154,6 +223,19 @@ void CForceController::keyPressEvent(QKeyEvent* event)
 
     switch (event->key())
     {
+        case Qt::Key_H:
+            if (m_rPositionTarget.component())
+            {
+                QSP<CVehicle> pTargetVehicle = QSP_CAST(CVehicle, m_rPositionTarget.component());
+
+                if (pTargetVehicle != nullptr)
+                {
+                    pTargetVehicle->setHandBrakeEngaged(pTargetVehicle->isHandBrakeEngaged() == false);
+
+                    LOG_METHOD_INFO(QString("Hand brake of %1 engaged: %2").arg(pTargetVehicle->name()).arg(pTargetVehicle->isHandBrakeEngaged()));
+                }
+            }
+            break;
         case Qt::Key_8:
             generateQ3DEvent(CQ3DEvent(Q3DEvent_LookFront, CQ3DEvent::Press));
             break;

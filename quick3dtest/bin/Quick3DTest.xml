@@ -594,22 +594,22 @@
             <Component Name="FrontRightWheel" Class="CWheel">
                 <Position x="0.8" y="0.4" z="3.0" />
                 <SpringAxis x="0.0" y="1.0" z="0.0" />
-                <General Radius="0.8" />
+                <General Radius="0.8" Width="0.5" Driven="1" Steered="1" MaxSteerAngleDeg="30.0" />
             </Component>
             <Component Name="FrontLeftWheel" Class="CWheel">
                 <Position x="-0.8" y="0.4" z="3.0" />
                 <SpringAxis x="0.0" y="1.0" z="0.0" />
-                <General Radius="0.8" />
+                <General Radius="0.8" Width="0.5" Driven="1" Steered="1" MaxSteerAngleDeg="30.0" />
             </Component>
             <Component Name="BackRightWheel" Class="CWheel">
                 <Position x="0.8" y="0.4" z="-3.0" />
                 <SpringAxis x="0.0" y="1.0" z="0.0" />
-                <General Radius="0.8" />
+                <General Radius="0.8" Width="0.5" Driven="1" HandBrake="1" />
             </Component>
             <Component Name="BackLeftWheel" Class="CWheel">
                 <Position x="-0.8" y="0.4" z="-3.0" />
                 <SpringAxis x="0.0" y="1.0" z="0.0" />
-                <General Radius="0.8" />
+                <General Radius="0.8" Width="0.5" Driven="1" HandBrake="1" />
             </Component>
             <Component Name="Pilot" Class="CCamera">
                 <Physics CollisionsActive="0" />
@@ -667,10 +667,35 @@
         <Component Name="Visitor2" Class="CTerrestrialVehicle">
             <Geoloc Latitude="19.2380" Longitude="10.8960" Altitude="0.0" />
             <Rotation x="0.0" y="0.0" z="0.0" />
-            <Mesh Name="PVP.obj" />
+            <Mesh Name="models/PVP.q3d">
+                <Bounds>
+                    <Minimum x="-1.33" y="0.0" z="-2.1312" />
+                    <Maximum x="1.0982" y="2.85" z="2.0001" />
+                </Bounds>
+            </Mesh>
             <IR Factor="0.8" />
             <Physics MassKG="7500" SpeedMS="4.0" TurnSpeedDS="30.0" Drag="0.1" Friction="2.0" PhysicsActive="1" />
             <Controller Class="CForceController" ForceFactor="10000.0" />
+            <Component Name="FrontRightWheel" Class="CWheel">
+                <Position x="0.8" y="0.45" z="1.5" />
+                <SpringAxis x="0.0" y="1.0" z="0.0" />
+                <General Radius="0.45" Driven="1" Steered="1" MaxSteerAngleDeg="30.0" />
+            </Component>
+            <Component Name="FrontLeftWheel" Class="CWheel">
+                <Position x="-0.8" y="0.45" z="1.5" />
+                <SpringAxis x="0.0" y="1.0" z="0.0" />
+                <General Radius="0.45" Driven="1" Steered="1" MaxSteerAngleDeg="30.0" />
+            </Component>
+            <Component Name="BackRightWheel" Class="CWheel">
+                <Position x="0.8" y="0.45" z="-1.5" />
+                <SpringAxis x="0.0" y="1.0" z="0.0" />
+                <General Radius="0.45" Driven="1" HandBrake="1" />
+            </Component>
+            <Component Name="BackLeftWheel" Class="CWheel">
+                <Position x="-0.8" y="0.45" z="-1.5" />
+                <SpringAxis x="0.0" y="1.0" z="0.0" />
+                <General Radius="0.45" Driven="1" HandBrake="1" />
+            </Component>
             <Component Name="Driver" Class="CCamera">
                 <Physics CollisionsActive="0" />
                 <Position x="0.0" y="3.2" z="-4" />
@@ -681,10 +706,35 @@
         <Component Name="PCC" Class="CTerrestrialVehicle">
             <Geoloc Latitude="19.2374" Longitude="10.8966" Altitude="0.0" />
             <Rotation x="0.0" y="90.0" z="0.0" />
-            <Mesh Name="PCC.obj" />
+            <Mesh Name="models/PCC.q3d">
+                <Bounds>
+                    <Minimum x="-1.33" y="0.0" z="-2.1312" />
+                    <Maximum x="1.0982" y="2.85" z="2.0001" />
+                </Bounds>
+            </Mesh>
             <IR Factor="0.8" />
             <Physics MassKG="7500" SpeedMS="4.5" TurnSpeedDS="30.0" Drag="0.1" Friction="2.0" PhysicsActive="1" />
             <Controller Class="CForceController" ForceFactor="10000.0" />
+            <Component Name="FrontRightWheel" Class="CWheel">
+                <Position x="0.8" y="0.45" z="1.5" />
+                <SpringAxis x="0.0" y="1.0" z="0.0" />
+                <General Radius="0.45" Driven="1" Steered="1" MaxSteerAngleDeg="30.0" />
+            </Component>
+            <Component Name="FrontLeftWheel" Class="CWheel">
+                <Position x="-0.8" y="0.45" z="1.5" />
+                <SpringAxis x="0.0" y="1.0" z="0.0" />
+                <General Radius="0.45" Driven="1" Steered="1" MaxSteerAngleDeg="30.0" />
+            </Component>
+            <Component Name="BackRightWheel" Class="CWheel">
+                <Position x="0.8" y="0.45" z="-1.5" />
+                <SpringAxis x="0.0" y="1.0" z="0.0" />
+                <General Radius="0.45" Driven="1" HandBrake="1" />
+            </Component>
+            <Component Name="BackLeftWheel" Class="CWheel">
+                <Position x="-0.8" y="0.45" z="-1.5" />
+                <SpringAxis x="0.0" y="1.0" z="0.0" />
+                <General Radius="0.45" Driven="1" HandBrake="1" />
+            </Component>
             <Component Name="Light1" Class="CLight">
                 <Physics CollisionsActive="0" />
                 <Position x="0.8" y="1.0" z="3.0" />

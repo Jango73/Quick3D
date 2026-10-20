@@ -16,12 +16,14 @@
 #include "CComponent.h"
 #include "CView.h"
 
+class CRemoteControlServer;
+class CUiRemoteControlHandler;
+
 class Quick3DTest : public QMainWindow
 {
     Q_OBJECT
 
 public:
-
     //-------------------------------------------------------------------------------------------------
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
@@ -44,6 +46,18 @@ public:
 
     //! Enables render check mode : captures the 3D view after a few frames, logs the black pixel ratio, quits
     void setCheckRenderMode(bool bEnabled) { m_bCheckRender = bEnabled; }
+
+    //! Selects a vehicle through the controllable combo box, like a user click, returns true on success
+    bool selectVehicleByName(const QString& sName);
+
+    //! Selects a camera through the views combo box, like a user click, returns true on success
+    bool selectViewByName(const QString& sName);
+
+    //! Posts a key event (Qt::Key value, 0 = press, 1 = release, 2 = click) to the 3D view, returns true on success
+    bool postKeyToView(int iKey, int iAction);
+
+    //! Returns a JSON document describing the vehicle named sName
+    QString vehicleStatusJson(const QString& sName);
 
     //-------------------------------------------------------------------------------------------------
     // Protected methods
@@ -68,6 +82,9 @@ protected:
 
     //!
     QString getDateString() const;
+
+    //! Selects the first combo item matching sName (exact, then contains), returns its index or -1
+    int selectComboItem(QComboBox* pCombo, const QString& sName);
 
     //-------------------------------------------------------------------------------------------------
     // Slots
@@ -120,4 +137,6 @@ protected:
     bool                            m_bRun;
     bool                            m_bCheckRender;
     int                             m_iCheckRenderFrames;
+    CUiRemoteControlHandler*        m_pRemoteHandler;
+    CRemoteControlServer*           m_pRemoteServer;
 };

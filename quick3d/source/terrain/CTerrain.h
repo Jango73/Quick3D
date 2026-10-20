@@ -91,6 +91,9 @@ public:
     int level() { return m_iLevel; }
 
     //!
+    int numPoints() const { return m_iNumPoints; }
+
+    //!
     CMeshGeometry* mesh () { return m_pMesh; }
 
     //!

@@ -1,0 +1,455 @@
+
+// Qt
+#include <QKeyEvent>
+
+// Application
+#include "CTestVehicle.h"
+#include "CVehicle.h"
+#include "CWheel.h"
+#include "CForceController.h"
+#include "CPhysicsWorld.h"
+#include "CXMLNode.h"
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+* \brief Builds a vehicle with four driven wheels, front wheels steered.
+*/
+/***************************************************************************/
+static QSP<CVehicle> createFourWheelTestVehicle()
+{
+    QSP<CVehicle> pVehicle(new CVehicle(nullptr));
+
+    pVehicle->setMass_kg(1200.0);
+
+    for (int iWheel = 0; iWheel < 4; iWheel++)
+    {
+        QSP<CWheel> pWheel(new CWheel(nullptr));
+
+        pWheel->setDriven(true);
+
+        // Note: the loader names the parent, which switches position() and
+        // setPosition() to the local frame. setParent() is avoided, it would
+        // wrap this in a second ownership chain. The name must be set before
+        // the position, setPosition on a root object writes the geolocation.
+        pWheel->setParentName(QString("TestVehicle"));
+        pWheel->setPosition(Math::CVector3((iWheel % 2 == 0) ? 0.9 : -0.9, -0.27, (iWheel < 2) ? 1.2 : -1.2));
+
+        if (iWheel < 2)
+        {
+            pWheel->setSteered(true);
+        }
+
+        pVehicle->childComponents().append(pWheel);
+    }
+
+    return pVehicle;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+* \brief Constructor.
+*/
+/***************************************************************************/
+CTestVehicle::CTestVehicle()
+    : CTestFixture()
+{
+}
+
+/***************************************************************************/
+/*!
+* \brief Wheel defaults match the physics wheel defaults.
+*/
+/***************************************************************************/
+void CTestVehicle::testWheelDefaultsMatchPhysicsDefaults()
+{
+    CWheel oWheel(nullptr);
+    CVehicleWheel cPhysicsWheel;
+
+    QVERIFY(oWheel.radiusM() == cPhysicsWheel.m_dRadiusM);
+    QVERIFY(oWheel.widthM() == cPhysicsWheel.m_dWidthM);
+    QVERIFY(oWheel.driven() == cPhysicsWheel.m_bDriven);
+    QVERIFY(oWheel.steered() == (cPhysicsWheel.m_dMaxSteerAngleRad != 0.0));
+    QVERIFY(oWheel.suspensionMinLengthM() == cPhysicsWheel.m_dSuspensionMinLengthM);
+    QVERIFY(oWheel.suspensionMaxLengthM() == cPhysicsWheel.m_dSuspensionMaxLengthM);
+    QVERIFY(oWheel.suspensionFrequencyHz() == cPhysicsWheel.m_dSuspensionFrequencyHz);
+    QVERIFY(oWheel.suspensionDampingNorm() == cPhysicsWheel.m_dSuspensionDampingNorm);
+    QVERIFY(oWheel.longitudinalFrictionNorm() == cPhysicsWheel.m_dLongitudinalFrictionNorm);
+    QVERIFY(oWheel.lateralFrictionNorm() == cPhysicsWheel.m_dLateralFrictionNorm);
+    QVERIFY(oWheel.handBrake() == cPhysicsWheel.m_bHandBrake);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+* \brief Wheel parameters load from the General XML node.
+*/
+/***************************************************************************/
+void CTestVehicle::testWheelLoadsParametersFromXML()
+{
+    QString sError;
+    CXMLNode xComponent = CXMLNode::parseXML(QString("<Component Name=\"Wheel\" Class=\"CWheel\"><Position x=\"0.8\" y=\"0.4\" z=\"3.0\" /><General Radius=\"0.8\" Width=\"0.5\" Driven=\"1\" Steered=\"1\" MaxSteerAngleDeg=\"25.0\" SuspensionMinLength=\"0.2\" SuspensionMaxLength=\"0.5\" SuspensionFrequencyHz=\"2.0\" SuspensionDamping=\"0.5\" LongitudinalFriction=\"1.2\" LateralFriction=\"0.9\" /></Component>"), &sError);
+
+    QVERIFY2(sError.isEmpty() == true, qPrintable(sError));
+
+    CWheel oWheel(nullptr);
+    oWheel.setParentName(QString("WheelParent"));
+    oWheel.loadParameters(QString(""), xComponent);
+
+    QVERIFY(oWheel.position().X == 0.8);
+    QVERIFY(oWheel.position().Y == 0.4);
+    QVERIFY(oWheel.position().Z == 3.0);
+    QVERIFY(oWheel.radiusM() == 0.8);
+    QVERIFY(oWheel.widthM() == 0.5);
+    QVERIFY(oWheel.driven() == true);
+    QVERIFY(oWheel.steered() == true);
+    QVERIFY(oWheel.maxSteerAngleDeg() == 25.0);
+    QVERIFY(oWheel.suspensionMinLengthM() == 0.2);
+    QVERIFY(oWheel.suspensionMaxLengthM() == 0.5);
+    QVERIFY(oWheel.suspensionFrequencyHz() == 2.0);
+    QVERIFY(oWheel.suspensionDampingNorm() == 0.5);
+    QVERIFY(oWheel.longitudinalFrictionNorm() == 1.2);
+    QVERIFY(oWheel.lateralFrictionNorm() == 0.9);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+* \brief A vehicle builds one physics wheel per wheel child.
+*/
+/***************************************************************************/
+void CTestVehicle::testVehicleBuildsPhysicsWheelsFromChildren()
+{
+    QSP<CVehicle> pVehicle = createFourWheelTestVehicle();
+
+    QVERIFY(pVehicle->hasWheels() == true);
+
+    QVector<CVehicleWheel> vPhysicsWheels = pVehicle->buildPhysicsWheels();
+
+    QVERIFY(vPhysicsWheels.count() == 4);
+
+    QVERIFY(vPhysicsWheels[0].m_vPosition.X == 0.9);
+    QVERIFY(vPhysicsWheels[0].m_vPosition.Z == 1.2);
+    QVERIFY(vPhysicsWheels[0].m_bDriven == true);
+    QVERIFY(vPhysicsWheels[0].m_dMaxSteerAngleRad > 0.0);
+
+    QVERIFY(vPhysicsWheels[2].m_vPosition.Z == -1.2);
+    QVERIFY(vPhysicsWheels[2].m_bDriven == true);
+    QVERIFY(vPhysicsWheels[2].m_dMaxSteerAngleRad == 0.0);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+* \brief A vehicle without wheels refuses physics attachment.
+*/
+/***************************************************************************/
+void CTestVehicle::testVehicleWithoutWheelsRefusesAttachment()
+{
+    CPhysicsWorld oWorld;
+
+    QVERIFY(oWorld.initialize() == true);
+
+    CVehicle oVehicle(nullptr);
+
+    QVERIFY(oVehicle.hasWheels() == false);
+    QVERIFY(oVehicle.attachPhysicsVehicle(&oWorld, Math::CVector3(0.9, 0.3, 2.0), Math::CVector3(0.0, 2.0, 0.0)) == false);
+    QVERIFY(oVehicle.hasPhysicsVehicle() == false);
+    QVERIFY(oWorld.vehicleCount() == 0);
+
+    oWorld.shutdown();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+* \brief Key presses report normalized drive inputs.
+*/
+/***************************************************************************/
+void CTestVehicle::testControllerReportsNormalizedDriveInput()
+{
+    CForceController oController(nullptr);
+
+    QVERIFY(oController.driveForwardNorm() == 0.0);
+    QVERIFY(oController.driveRightNorm() == 0.0);
+
+    QKeyEvent cForwardPress(QEvent::KeyPress, Qt::Key_Z, Qt::NoModifier);
+    oController.keyPressEvent(&cForwardPress);
+
+    QVERIFY(oController.driveForwardNorm() == 1.0);
+
+    QKeyEvent cRightPress(QEvent::KeyPress, Qt::Key_C, Qt::NoModifier);
+    oController.keyPressEvent(&cRightPress);
+
+    QVERIFY(oController.driveRightNorm() == 1.0);
+
+    QKeyEvent cForwardRelease(QEvent::KeyRelease, Qt::Key_Z, Qt::NoModifier);
+    oController.keyReleaseEvent(&cForwardRelease);
+
+    QVERIFY(oController.driveForwardNorm() == 0.0);
+
+    QKeyEvent cBackwardPress(QEvent::KeyPress, Qt::Key_S, Qt::NoModifier);
+    oController.keyPressEvent(&cBackwardPress);
+
+    QVERIFY(oController.driveForwardNorm() == -1.0);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+* \brief A force controller drives an attached vehicle through driver inputs.
+*/
+/***************************************************************************/
+void CTestVehicle::testWheeledControllerDrivesAttachedVehicle()
+{
+    CPhysicsWorld oWorld;
+
+    QVERIFY(oWorld.initialize() == true);
+    QVERIFY(oWorld.addStaticBox(Math::CVector3(50.0, 1.0, 50.0), Math::CVector3(0.0, -1.0, 0.0)) >= 0);
+
+    QSP<CVehicle> pVehicle = createFourWheelTestVehicle();
+
+    QVERIFY(pVehicle->attachPhysicsVehicle(&oWorld, Math::CVector3(0.9, 0.3, 2.0), Math::CVector3(0.0, 2.0, 0.0)) == true);
+    QVERIFY(pVehicle->hasPhysicsVehicle() == true);
+
+    CForceController oController(nullptr);
+    oController.setPositionTarget(pVehicle);
+
+    QKeyEvent cForwardPress(QEvent::KeyPress, Qt::Key_Z, Qt::NoModifier);
+    oController.keyPressEvent(&cForwardPress);
+
+    for (int iStep = 0; iStep < 300; iStep++)
+    {
+        oController.update(1.0 / 60.0);
+        oWorld.step(1.0 / 60.0);
+    }
+
+    Math::CVector3 vPosition;
+
+    QVERIFY(oWorld.vehiclePosition(0, vPosition) == true);
+    QVERIFY2(vPosition.Z > 2.0, qPrintable(QString("Chassis moved to z=%1").arg(vPosition.Z)));
+
+    QVERIFY(pVehicle->summedForces_mss() == Math::CVector3(0.0, 0.0, 0.0));
+
+    pVehicle->detachPhysicsVehicle();
+
+    QVERIFY(pVehicle->hasPhysicsVehicle() == false);
+    QVERIFY(oWorld.vehicleCount() == 0);
+
+    oWorld.shutdown();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+* \brief The hand brake is engaged by default and toggles with the H key.
+*/
+/***************************************************************************/
+void CTestVehicle::testHandBrakeEngagedByDefault()
+{
+    QSP<CVehicle> pVehicle(new CVehicle(nullptr));
+
+    QVERIFY(pVehicle->isHandBrakeEngaged() == true);
+
+    pVehicle->setHandBrakeEngaged(false);
+
+    QVERIFY(pVehicle->isHandBrakeEngaged() == false);
+
+    CForceController oController(nullptr);
+    oController.setPositionTarget(pVehicle);
+
+    QKeyEvent cTogglePress(QEvent::KeyPress, Qt::Key_H, Qt::NoModifier);
+    oController.keyPressEvent(&cTogglePress);
+
+    QVERIFY(pVehicle->isHandBrakeEngaged() == true);
+
+    oController.keyPressEvent(&cTogglePress);
+
+    QVERIFY(pVehicle->isHandBrakeEngaged() == false);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+* \brief The hand brake flag loads from XML and reaches the physics wheels.
+*/
+/***************************************************************************/
+void CTestVehicle::testHandBrakeReachesPhysicsWheels()
+{
+    QString sError;
+    CXMLNode xComponent = CXMLNode::parseXML(QString("<Component Name=\"Wheel\" Class=\"CWheel\"><Position x=\"0.8\" y=\"0.4\" z=\"-3.0\" /><General Radius=\"0.8\" Width=\"0.5\" Driven=\"1\" HandBrake=\"1\" /></Component>"), &sError);
+
+    QVERIFY2(sError.isEmpty() == true, qPrintable(sError));
+
+    QSP<CVehicle> pVehicle(new CVehicle(nullptr));
+    QSP<CWheel> pWheel(new CWheel(nullptr));
+
+    pWheel->setParentName(QString("TestVehicle"));
+    pWheel->loadParameters(QString(""), xComponent);
+
+    QVERIFY(pWheel->handBrake() == true);
+
+    pVehicle->childComponents().append(pWheel);
+
+    QVector<CVehicleWheel> vPhysicsWheels = pVehicle->buildPhysicsWheels();
+
+    QVERIFY(vPhysicsWheels.count() == 1);
+    QVERIFY(vPhysicsWheels[0].m_bHandBrake == true);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+* \brief Builds a 7500 kg vehicle with rear hand brake wheels.
+*/
+/***************************************************************************/
+static QSP<CVehicle> createHeavyTestVehicle()
+{
+    QSP<CVehicle> pVehicle(new CVehicle(nullptr));
+
+    pVehicle->setMass_kg(7500.0);
+
+    for (int iWheel = 0; iWheel < 4; iWheel++)
+    {
+        QSP<CWheel> pWheel(new CWheel(nullptr));
+
+        pWheel->setDriven(true);
+        pWheel->setRadiusM(0.45);
+        pWheel->setParentName(QString("TestVehicle"));
+        pWheel->setPosition(Math::CVector3((iWheel % 2 == 0) ? 0.8 : -0.8, 0.45, (iWheel < 2) ? 1.5 : -1.5));
+
+        if (iWheel < 2)
+        {
+            pWheel->setSteered(true);
+        }
+        else
+        {
+            pWheel->setHandBrake(true);
+        }
+
+        pVehicle->childComponents().append(pWheel);
+    }
+
+    return pVehicle;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+* \brief Drives a heavy vehicle at full throttle, returns the distance covered.
+*/
+static double driveHeavyTestVehicle(bool bReleaseBrake)
+{
+    CPhysicsWorld oWorld;
+
+    if (oWorld.initialize() == false)
+    {
+        return -1.0;
+    }
+
+    if (oWorld.addStaticBox(Math::CVector3(50.0, 1.0, 50.0), Math::CVector3(0.0, -1.0, 0.0)) < 0)
+    {
+        return -1.0;
+    }
+
+    QSP<CVehicle> pVehicle = createHeavyTestVehicle();
+
+    // Note: like the scene hunters, wheels sit above the origin and the
+    // chassis center offset carries them below the body center
+    if (pVehicle->attachPhysicsVehicle(&oWorld, Math::CVector3(1.22, 1.425, 2.07), Math::CVector3(0.0, 2.0, 0.0), Math::CQuaternion(0.0, 0.0, 0.0, 1.0), Math::CVector3(0.0, 1.425, 0.0)) == false)
+    {
+        return -1.0;
+    }
+
+    if (bReleaseBrake == true)
+    {
+        pVehicle->setHandBrakeEngaged(false);
+    }
+
+    CForceController oController(nullptr);
+    oController.setPositionTarget(pVehicle);
+
+    QKeyEvent cForwardPress(QEvent::KeyPress, Qt::Key_Z, Qt::NoModifier);
+    oController.keyPressEvent(&cForwardPress);
+
+    for (int iStep = 0; iStep < 300; iStep++)
+    {
+        oController.update(1.0 / 60.0);
+        oWorld.step(1.0 / 60.0);
+    }
+
+    Math::CVector3 vPosition;
+
+    if (oWorld.vehiclePosition(0, vPosition) == false)
+    {
+        return -1.0;
+    }
+
+    pVehicle->detachPhysicsVehicle();
+    oWorld.shutdown();
+
+    return vPosition.Z;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+* \brief A released heavy vehicle drives, an engaged hand brake holds it back.
+*/
+/***************************************************************************/
+void CTestVehicle::testHeavyVehicleDrivesOnlyWhenReleased()
+{
+    double dReleased = driveHeavyTestVehicle(true);
+    double dEngaged = driveHeavyTestVehicle(false);
+
+    QVERIFY2(dReleased > 3.0, qPrintable(QString("Released heavy vehicle covered %1 m").arg(dReleased)));
+    QVERIFY2(dEngaged >= 0.0, qPrintable(QString("Engaged run failed with %1").arg(dEngaged)));
+    QVERIFY2(dEngaged < 0.3 * dReleased, qPrintable(QString("Engaged %1 m versus released %2 m").arg(dEngaged).arg(dReleased)));
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+* \brief All wheels of a settled heavy vehicle report ground contact.
+*/
+/***************************************************************************/
+void CTestVehicle::testHeavyVehicleWheelsTouchGround()
+{
+    CPhysicsWorld oWorld;
+
+    QVERIFY(oWorld.initialize() == true);
+    QVERIFY(oWorld.addStaticBox(Math::CVector3(50.0, 1.0, 50.0), Math::CVector3(0.0, -1.0, 0.0)) >= 0);
+
+    QSP<CVehicle> pVehicle = createHeavyTestVehicle();
+
+    QVERIFY(pVehicle->attachPhysicsVehicle(&oWorld, Math::CVector3(1.22, 1.425, 2.07), Math::CVector3(0.0, 2.0, 0.0), Math::CQuaternion(0.0, 0.0, 0.0, 1.0), Math::CVector3(0.0, 1.425, 0.0)) == true);
+
+    for (int iStep = 0; iStep < 120; iStep++)
+    {
+        oWorld.step(1.0 / 60.0);
+    }
+
+    for (int iWheel = 0; iWheel < 4; iWheel++)
+    {
+        QVERIFY2(oWorld.vehicleWheelHasContact(0, iWheel) == true, qPrintable(QString("Wheel %1 has no contact").arg(iWheel)));
+    }
+
+    pVehicle->detachPhysicsVehicle();
+    oWorld.shutdown();
+}
+
+//-------------------------------------------------------------------------------------------------

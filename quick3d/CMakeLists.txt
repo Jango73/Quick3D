@@ -83,6 +83,7 @@ add_library(Quick3D SHARED
     source/mesh/CWaterMaterial.cpp
     source/mesh/CWorldChunk.cpp
     source/mesh/CWorldTerrain.cpp
+    source/physics/CPhysicsWorld.cpp
     source/render/C3DScene.cpp
     source/render/CAtmosphere.cpp
     source/render/CCamera.cpp
@@ -114,6 +115,8 @@ add_library(Quick3D SHARED
     source/utils/CImageUtilities.cpp
     source/utils/CPreferencesManager.cpp
     source/utils/CQuick3DUtilities.cpp
+    source/utils/CRemoteControlHandler.cpp
+    source/utils/CRemoteControlServer.cpp
     source/utils/CUtility.cpp
     source/zip/CZip.cpp
     "${CMAKE_CURRENT_SOURCE_DIR}/../third/unzip11/ioapi.c"
@@ -133,6 +136,7 @@ target_include_directories(Quick3D PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/source/input"
     "${CMAKE_CURRENT_SOURCE_DIR}/source/math"
     "${CMAKE_CURRENT_SOURCE_DIR}/source/mesh"
+    "${CMAKE_CURRENT_SOURCE_DIR}/source/physics"
     "${CMAKE_CURRENT_SOURCE_DIR}/source/render"
     "${CMAKE_CURRENT_SOURCE_DIR}/source/terrain"
     "${CMAKE_CURRENT_SOURCE_DIR}/source/utils"
@@ -151,6 +155,10 @@ target_link_libraries(Quick3D PUBLIC
     Qt6::OpenGL
     Qt6::OpenGLWidgets
     Qt6::Positioning
+)
+
+target_link_libraries(Quick3D PRIVATE
+    Jolt
 )
 
 set_target_properties(Quick3D PROPERTIES DEBUG_POSTFIX "d")

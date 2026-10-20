@@ -53,7 +53,7 @@ struct CMatrix4
 public:
 
     bool        m_bIsIdentity;
-    double      Data [4][4];
+    double      Data [4][4];    ///< Row major storage, applied standardly: (M * X) equals row 0, (M * Y) row 1, (M * Z) row 2. Build rotations with makeRotation(), fromQuaternion() or fromBasisVectors(), never by hand.
 
     //! Default constructor
     inline CMatrix4()
@@ -129,7 +129,7 @@ public:
         return Result;
     }
 
-    //! Crée une matrice de rotation selon angles euler
+    //! Crï¿½e une matrice de rotation selon angles euler
     static inline CMatrix4 makeRotation(const CVector3& Rotation)
     {
         CMatrix4 Result;
@@ -175,7 +175,34 @@ public:
         return Result;
     }
 
-    //! Crée une matrice de rotation selon angles euler
+    //! Builds a rotation mapping local axes to the given world basis. \br\br
+    //! Result * X equals \a vRight, Result * Y equals \a vUp, Result * Z
+    //! equals \a vFront. \br\br
+    //! \a vRight, \a vUp and \a vFront must form a right handed orthonormal
+    //! triple, which (east, up, north) is in the engine frame. A mirrored
+    //! triple silently produces a reflection, conversions expect rotations.
+    static inline CMatrix4 fromBasisVectors(const CVector3& vRight, const CVector3& vUp, const CVector3& vFront)
+    {
+        CMatrix4 Result;
+
+        Result.m_bIsIdentity = false;
+
+        Result.Data[0][0] = vRight.X;
+        Result.Data[0][1] = vRight.Y;
+        Result.Data[0][2] = vRight.Z;
+
+        Result.Data[1][0] = vUp.X;
+        Result.Data[1][1] = vUp.Y;
+        Result.Data[1][2] = vUp.Z;
+
+        Result.Data[2][0] = vFront.X;
+        Result.Data[2][1] = vFront.Y;
+        Result.Data[2][2] = vFront.Z;
+
+        return Result;
+    }
+
+    //! Crï¿½e une matrice de rotation selon angles euler
     static inline CMatrix4 makeInverseRotation(const CVector3& Rotation)
     {
         CMatrix4 Result;
@@ -221,7 +248,7 @@ public:
         return Result;
     }
 
-    //! Crée une matrice de mise à l'échelle
+    //! Crï¿½e une matrice de mise ï¿½ l'ï¿½chelle
     static inline CMatrix4 makeScale(const CVector3& Scale)
     {
         CMatrix4 Result;
@@ -379,7 +406,7 @@ public:
         return m;
     }
 
-    //! Crée une matrice de rotation d'après un quaternion
+    //! Crï¿½e une matrice de rotation d'aprï¿½s un quaternion
     static inline CMatrix4 fromQuaternion(const CQuaternion& Quat)
     {
         CMatrix4 Result;
@@ -391,7 +418,9 @@ public:
         double sqy = Quat.Y * Quat.Y;
         double sqz = Quat.Z * Quat.Z;
 
-        // invs (inverse square length) is only required if quaternion is not already normalised
+        // Note: the engine operator * applies the transposed matrix, so the
+        // off diagonal terms are transposed here to match makeRotation and
+        // CQuaternion::operator *. fromQuaternion(q) * v equals q * v.
         double invs = 1 / (sqx + sqy + sqz + sqw);
         Result.Data[0][0] = (sqx - sqy - sqz + sqw) * invs; // since sqw + sqx + sqy + sqz =1/invs*invs
         Result.Data[1][1] = (-sqx + sqy - sqz + sqw) * invs;
@@ -399,18 +428,18 @@ public:
 
         double tmp1 = Quat.X * Quat.Y;
         double tmp2 = Quat.Z * Quat.W;
-        Result.Data[1][0] = 2.0 * (tmp1 + tmp2) * invs;
-        Result.Data[0][1] = 2.0 * (tmp1 - tmp2) * invs;
+        Result.Data[0][1] = 2.0 * (tmp1 + tmp2) * invs;
+        Result.Data[1][0] = 2.0 * (tmp1 - tmp2) * invs;
 
         tmp1 = Quat.X * Quat.Z;
         tmp2 = Quat.Y * Quat.W;
-        Result.Data[2][0] = 2.0 * (tmp1 - tmp2) * invs;
-        Result.Data[0][2] = 2.0 * (tmp1 + tmp2) * invs;
+        Result.Data[0][2] = 2.0 * (tmp1 - tmp2) * invs;
+        Result.Data[2][0] = 2.0 * (tmp1 + tmp2) * invs;
 
         tmp1 = Quat.Y * Quat.Z;
         tmp2 = Quat.X * Quat.W;
-        Result.Data[2][1] = 2.0 * (tmp1 + tmp2) * invs;
-        Result.Data[1][2] = 2.0 * (tmp1 - tmp2) * invs;
+        Result.Data[1][2] = 2.0 * (tmp1 + tmp2) * invs;
+        Result.Data[2][1] = 2.0 * (tmp1 - tmp2) * invs;
 
         return Result;
     }

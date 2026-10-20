@@ -2,6 +2,8 @@ add_executable(Quick3DTest
     main.cpp
     Quick3DTest.cpp
     Quick3DTest.h
+    CUiRemoteControlHandler.cpp
+    CUiRemoteControlHandler.h
     tests/CTestFixture.cpp
     tests/CTestFixture.h
     tests/CTestMath.cpp
@@ -10,6 +12,12 @@ add_executable(Quick3DTest
     tests/CTestCamera.h
     tests/CTestGeo.cpp
     tests/CTestGeo.h
+    tests/CTestPhysics.cpp
+    tests/CTestPhysics.h
+    tests/CTestVehicle.cpp
+    tests/CTestVehicle.h
+    tests/CTestScene.cpp
+    tests/CTestScene.h
     tests/CTestQuick3D.cpp
     tests/CTestQuick3D.h
     Quick3DTest.ui
@@ -30,6 +38,11 @@ target_link_libraries(Quick3DTest PRIVATE
 )
 
 set_target_properties(Quick3DTest PROPERTIES DEBUG_POSTFIX "d")
+
+# CTestScene includes Jolt types directly for the rotation anchor test
+target_include_directories(Quick3DTest PRIVATE
+    "${CMAKE_SOURCE_DIR}/third/JoltPhysics"
+)
 
 # Runtime data (scenes, models, textures) resolves next to the binary
 # (see CRessourcesManager); mirror quick3dtest/bin/ beside the executable

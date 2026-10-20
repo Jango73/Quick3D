@@ -10,11 +10,13 @@
 #include "CComponent.h"
 #include "CTrajectorable.h"
 #include "CMeshInstance.h"
+#include "CPhysicsWorld.h"
 
 //-------------------------------------------------------------------------------------------------
 // Forward declarations
 
 class C3DScene;
+class CWheel;
 
 //-------------------------------------------------------------------------------------------------
 
@@ -54,9 +56,58 @@ public:
     //!
     virtual QVector<CContactPoint> contactPoints() Q_DECL_OVERRIDE;
 
+    //! Returns true when the vehicle is registered in a physics world
+    virtual bool hasPhysicsBody() const Q_DECL_OVERRIDE;
+
     //-------------------------------------------------------------------------------------------------
     // Control methods
     //-------------------------------------------------------------------------------------------------
+
+    //! Returns the wheel children of this vehicle, whatever the vehicle class
+    QVector<QSP<CWheel> > wheels() const;
+
+    //! Returns true when this vehicle carries at least one wheel
+    bool hasWheels();
+
+    //! Returns the chassis half extents from the first mesh child bounds, zeros without bounds
+    Math::CVector3 chassisHalfExtentsM() const;
+
+    //! Returns the chassis center offset from the first mesh child bounds, zeros without bounds
+    Math::CVector3 chassisCenterOffsetM() const;
+
+    //! Builds one physics wheel per CWheel child, in child order
+    QVector<CVehicleWheel> buildPhysicsWheels() const;
+
+    //! Registers the chassis and its wheels in the given world, returns false without wheels or on failure. \br\br
+    //! \a vLocalPositionM is the vehicle origin, the body spawns shifted by \a vCenterOffsetM rotated into the chassis frame.
+    bool attachPhysicsVehicle(CPhysicsWorld* pWorld, const Math::CVector3& vChassisHalfExtentsM, const Math::CVector3& vLocalPositionM, const Math::CQuaternion& cRotation = Math::CQuaternion(0.0, 0.0, 0.0, 1.0), const Math::CVector3& vCenterOffsetM = Math::CVector3(0.0, 0.0, 0.0));
+
+    //! Removes the vehicle from its physics world, if any
+    void detachPhysicsVehicle();
+
+    //! Returns true when the vehicle is registered in a physics world
+    bool hasPhysicsVehicle() const { return m_pPhysicsWorld != nullptr && m_iPhysicsVehicle >= 0; }
+
+    //! Returns the physics world index of the vehicle, -1 when detached
+    int physicsVehicleIndex() const { return m_iPhysicsVehicle; }
+
+    //! Forwards normalized driver inputs to the physics vehicle, does nothing when detached
+    void setDriverInputNorm(double dForwardNorm, double dRightNorm, double dBrakeNorm, double dHandBrakeNorm);
+
+    //! Engages or releases the hand brake, engaged by default so vehicles hold slopes at spawn
+    void setHandBrakeEngaged(bool value) { m_bHandBrakeEngaged = value; }
+
+    //! Returns true when the hand brake is engaged
+    bool isHandBrakeEngaged() const { return m_bHandBrakeEngaged; }
+
+    //-------------------------------------------------------------------------------------------------
+    // Protected methods
+    //-------------------------------------------------------------------------------------------------
+
+protected:
+
+    //! Returns the bounds of the first direct child mesh, an empty box without mesh child
+    CBoundingBox firstMeshBounds() const;
 
     //-------------------------------------------------------------------------------------------------
     // Properties
@@ -65,4 +116,7 @@ public:
 protected:
 
     QVector<CMeshInstance*>     m_vAxisMeshes;
+    CPhysicsWorld*              m_pPhysicsWorld;
+    int                         m_iPhysicsVehicle;
+    bool                        m_bHandBrakeEngaged;
 };

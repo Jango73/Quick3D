@@ -15,6 +15,8 @@
 #include "C3DSceneStatistics.h"
 #include "CVector3.h"
 #include "CMatrix4.h"
+#include "CGeoloc.h"
+#include "CPhysicsWorld.h"
 #include "CDumpable.h"
 #include "CGLExtension.h"
 #include "CRessourcesManager.h"
@@ -37,6 +39,7 @@
 
 class CView;
 class CController;
+class CVehicle;
 
 //-------------------------------------------------------------------------------------------------
 
@@ -249,6 +252,35 @@ public:
     //! Updates the scene using elapsed time in \a dDeltaTimeS.
     void updateScene(double dDeltaTime);
 
+    //! Returns the physics world of the scene, initializing it on first call
+    CPhysicsWorld* physicsWorld();
+
+    //! Returns true when a physics reference geoloc is frozen
+    bool hasPhysicsReference() const { return m_bPhysicsReferenceValid; }
+
+    //! Returns the frozen physics reference geoloc, the origin of the physics local frame
+    const CGeoloc& physicsReference() const { return m_gPhysicsReference; }
+
+    //! Freezes the physics reference on \a gReference when none is set. \br\br
+    //! The first frozen reference wins, later calls are ignored.
+    void ensurePhysicsReference(const CGeoloc& gReference);
+
+    //! Returns the number of fixed physics steps executed since initialization
+    unsigned long long physicsSteps() const { return m_uPhysicsSteps; }
+
+    //! Registers a wheeled vehicle in the physics world, returns false on failure. \br\br
+    //! Freezes the physics reference on first attach, gravity follows the reference down direction.
+    bool attachVehicleToPhysics(QSP<CVehicle> pVehicle);
+
+    //! Removes a vehicle from the physics world, does nothing when detached
+    void detachVehicleFromPhysics(QSP<CVehicle> pVehicle);
+
+    //! Attaches grounded root vehicles, the arcade path holds the others
+    void ensureVehiclePhysics();
+
+    //! Advances the physics world at a fixed step and syncs attached vehicles
+    void stepPhysics(double dDeltaTimeS);
+
     //! Paints all components, using \a pContext.
     void paintComponents(CRenderContext* pContext);
 
@@ -290,6 +322,9 @@ protected:
 
     //!
     static void getLightsByTagRecurse(QVector<QSP<CLight> >& vLights, const QString &sTag, QSP<CComponent> pComponent);
+
+    //!
+    void syncVehicleFromPhysics(QSP<CVehicle> pVehicle);
 
     //-------------------------------------------------------------------------------------------------
     // Properties
@@ -339,4 +374,10 @@ protected:
 
     QVector<QSP<CComponent> >               m_vComponents;
     QSP<CMeshGeometry>                      m_pSegments;
+    CPhysicsWorld                           m_PhysicsWorld;
+    bool                                    m_bPhysicsInitialized;
+    CGeoloc                                 m_gPhysicsReference;
+    bool                                    m_bPhysicsReferenceValid;
+    double                                  m_dPhysicsAccumulatorS;
+    unsigned long long                      m_uPhysicsSteps;
 };

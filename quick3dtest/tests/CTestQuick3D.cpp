@@ -4,6 +4,9 @@
 #include "CTestMath.h"
 #include "CTestCamera.h"
 #include "CTestGeo.h"
+#include "CTestPhysics.h"
+#include "CTestVehicle.h"
+#include "CTestScene.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -40,6 +43,21 @@ int CTestQuick3D::runAllTests()
 
     {
         CTestGeo oTest;
+        iStatus |= QTest::qExec(&oTest);
+    }
+
+    {
+        CTestPhysics oTest;
+        iStatus |= QTest::qExec(&oTest);
+    }
+
+    {
+        CTestVehicle oTest;
+        iStatus |= QTest::qExec(&oTest);
+    }
+
+    {
+        CTestScene oTest;
         iStatus |= QTest::qExec(&oTest);
     }
 

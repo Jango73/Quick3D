@@ -42,6 +42,15 @@ public:
     // Control methods
     //-------------------------------------------------------------------------------------------------
 
+    //! Returns the normalized forward command from keys and joystick, -1 to 1
+    double driveForwardNorm() const;
+
+    //! Returns the normalized right command from keys and joystick, -1 to 1
+    double driveRightNorm() const;
+
+    //! Applies the joystick dead zone, resting axes report exactly zero
+    static double applyJoystickDeadZone(double dAxisNorm);
+
     //-------------------------------------------------------------------------------------------------
     // Inherited methods
     //-------------------------------------------------------------------------------------------------

@@ -168,6 +168,15 @@ protected:
     //!
     void collectGarbageRecurse(QSP<CWorldChunk> pChunk);
 
+    //! Registers ready chunk grids as physics height fields, drops stale ones
+    void syncPhysicsHeightfields();
+
+    //!
+    void syncPhysicsHeightfieldsRecurse(QSP<CWorldChunk> pChunk);
+
+    //! Removes the physics height field of \a pChunk when registered
+    void removeChunkHeightfield(QSP<CWorldChunk> pChunk);
+
     //! Ray intersection
     Math::RayTracingResult intersectRecurse(QSP<CWorldChunk> pChunk, const Math::CRay3& ray) const;
 

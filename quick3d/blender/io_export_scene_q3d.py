@@ -19,8 +19,8 @@
 bl_info = {
     "name": "Export Quick3D Format(.q3d)",
     "author": "Guillaume Darier",
-    "version": (1, 1, 0),
-    "blender": (2, 71, 0),
+    "version": (1, 2, 0),
+    "blender": (3, 1, 0),
     "location": "File > Export > Quick3D (.q3d)",
     "description": "Export mesh Quick3D data (.q3d)",
     "warning": "",
@@ -74,40 +74,49 @@ def closeNode(file, text):
 
 #--------------------------------------------------------------------------------------------------
 
+def principled_bsdf(mat):
+    if mat.use_nodes == False:
+        return None
+
+    for node in mat.node_tree.nodes:
+        if node.type == 'BSDF_PRINCIPLED':
+            return node
+
+    return None
+
 def writeMaterial(file, mat, filepath):
     source_dir = os.path.dirname(bpy.data.filepath)
 
     openNode(file, 'Material', 0, Name = mat.name)
 
     diffuse_map = ''
+    diffuse_color = mat.diffuse_color[:3] if hasattr(mat, 'diffuse_color') else (1.0, 1.0, 1.0)
+    specular_color = (1.0, 1.0, 1.0)
 
-    if len(mat.texture_slots) > 0:
-        if mat.texture_slots[0] is not None:
-            if mat.texture_slots[0].texture.type == 'IMAGE':
-                head, tail = os.path.split(mat.texture_slots[0].texture.image.filepath)
+    bsdf = principled_bsdf(mat)
+
+    if bsdf is not None:
+        diffuse_color = bsdf.inputs['Base Color'].default_value[:3]
+        specular_value = bsdf.inputs['Specular'].default_value
+        specular_color = (specular_value, specular_value, specular_value)
+
+        for link in bsdf.inputs['Base Color'].links:
+            if link.from_node.type == 'TEX_IMAGE' and link.from_node.image is not None:
+                head, tail = os.path.split(link.from_node.image.filepath)
                 diffuse_map = 'Textures/' + tail
-                # image = mat.texture_slots[0].texture.image
-                # diffuse_map = bpy_extras.io_utils.path_reference(image.filepath, source_dir, filepath)
-
-    openNode(file, 'Ambient', 1,
-        r = '{0:.4f}'.format(mat.ambient),
-        g = '{0:.4f}'.format(mat.ambient),
-        b = '{0:.4f}'.format(mat.ambient)
-        )
+                break
 
     openNode(file, 'Diffuse', 1,
-        r = '{0:.4f}'.format(mat.diffuse_color[0]),
-        g = '{0:.4f}'.format(mat.diffuse_color[1]),
-        b = '{0:.4f}'.format(mat.diffuse_color[2]),
+        r = '{0:.4f}'.format(diffuse_color[0]),
+        g = '{0:.4f}'.format(diffuse_color[1]),
+        b = '{0:.4f}'.format(diffuse_color[2]),
         Map = diffuse_map
         )
 
     openNode(file, 'Specular', 1,
-        r = '{0:.4f}'.format(mat.specular_color[0]),
-        g = '{0:.4f}'.format(mat.specular_color[1]),
-        b = '{0:.4f}'.format(mat.specular_color[2]),
-        Intensity = mat.specular_intensity,
-        Hardness = mat.specular_hardness / 512
+        r = '{0:.4f}'.format(specular_color[0]),
+        g = '{0:.4f}'.format(specular_color[1]),
+        b = '{0:.4f}'.format(specular_color[2])
         )
 
     closeNode(file, 'Material')
@@ -141,13 +150,11 @@ def getVertexUVs(mesh):
 
 #--------------------------------------------------------------------------------------------------
 
-def writeMesh(file, object, materials, scene, props):
-    mat_x90 = mathutils.Matrix.Rotation(-math.pi/2, 4, 'X')
-
-    try:
-        mesh = object.to_mesh(scene, props.apply_modifiers, 'PREVIEW', calc_tessface=False)
-    except RuntimeError:
-        mesh = None
+def writeMesh(file, object, depsgraph, materials, scene, props):
+    if props.apply_modifiers:
+        mesh = object.evaluated_get(depsgraph).data
+    else:
+        mesh = object.data
 
     if mesh is None:
         return
@@ -247,7 +254,7 @@ def writeMesh(file, object, materials, scene, props):
 
     # Write child objects
     for child in object.children:
-        writeSingleObject(file, child, materials, scene, props)
+        writeSingleObject(file, child, depsgraph, materials, scene, props)
 
     closeNode(file, 'Component')
 
@@ -318,7 +325,7 @@ def writeBone(file, bone, materials, scene, props):
 
 #--------------------------------------------------------------------------------------------------
 
-def writeArmature(file, object, materials, scene, props):
+def writeArmature(file, object, depsgraph, materials, scene, props):
     openNode(file, 'Component', 0, Name=object.name, Class="CArmature")
 
     armature = object.data
@@ -329,36 +336,36 @@ def writeArmature(file, object, materials, scene, props):
 
     # Write child objects
     for child in object.children:
-        writeSingleObject(file, child, materials, scene, props)
+        writeSingleObject(file, child, depsgraph, materials, scene, props)
 
     closeNode(file, 'Component')
 
 #--------------------------------------------------------------------------------------------------
 
-def writeSingleObject(file, object, materials, scene, props):
+def writeSingleObject(file, object, depsgraph, materials, scene, props):
     if object.type == 'ARMATURE':
-        writeArmature(file, object, materials, scene, props)
+        writeArmature(file, object, depsgraph, materials, scene, props)
     else:
-        writeMesh(file, object, materials, scene, props)
+        writeMesh(file, object, depsgraph, materials, scene, props)
 
 #--------------------------------------------------------------------------------------------------
 
-def writeTopLevelObjects(file, objects, materials, scene, props):
+def writeTopLevelObjects(file, objects, depsgraph, materials, scene, props):
     for object in objects:
         if object.parent is None:
-            writeSingleObject(file, object, materials, scene, props)
+            writeSingleObject(file, object, depsgraph, materials, scene, props)
 
 #--------------------------------------------------------------------------------------------------
 
-def getMaterials(objects, scene, props):
+def getMaterials(objects, depsgraph, props):
     materials = []
 
     for object in objects:
 
-        try:
-            mesh = object.to_mesh(scene, props.apply_modifiers, 'PREVIEW', calc_tessface=False)
-        except RuntimeError:
-            mesh = None
+        if props.apply_modifiers:
+            mesh = object.evaluated_get(depsgraph).data
+        else:
+            mesh = object.data
 
         if mesh is not None:
             for mat in mesh.materials:
@@ -378,6 +385,7 @@ def get_sampled_frames(start, end, sampling):
 
 def do_export(context, props, filepath):
     scene = context.scene
+    depsgraph = context.evaluated_depsgraph_get()
     start = props.range_start
     end = props.range_end
     sampling = float(props.sampling)
@@ -392,11 +400,11 @@ def do_export(context, props, filepath):
 
     openNode(file, 'Root', 0)
 
-    materials = getMaterials(objects, scene, props)
+    materials = getMaterials(objects, depsgraph, props)
 
     writeMaterials(file, materials, filepath)
 
-    writeTopLevelObjects(file, objects, materials, scene, props)
+    writeTopLevelObjects(file, objects, depsgraph, materials, scene, props)
 
     closeNode(file, 'Root')
 
@@ -454,7 +462,7 @@ class Export_q3d(bpy.types.Operator, ExportHelper):
 
     @classmethod
     def poll(cls, context):
-        return context.active_object.type in {'MESH', 'CURVE', 'SURFACE', 'FONT', 'ARMATURE'}
+        return context.active_object is not None and context.active_object.type in {'MESH', 'CURVE', 'SURFACE', 'FONT', 'ARMATURE'}
 
     def execute(self, context):
         start_time = time.time()
@@ -473,20 +481,8 @@ class Export_q3d(bpy.types.Operator, ExportHelper):
 
     def invoke(self, context, event):
         wm = context.window_manager
-
-        if True:
-            # File selector
-            wm.fileselect_add(self) # will run self.execute()
-            return {'RUNNING_MODAL'}
-        elif True:
-            # search the enum
-            wm.invoke_search_popup(self)
-            return {'RUNNING_MODAL'}
-        elif False:
-            # Redo popup
-            return wm.invoke_props_popup(self, event)
-        elif False:
-            return self.execute(context)
+        wm.fileselect_add(self)
+        return {'RUNNING_MODAL'}
 
 ### REGISTER ###
 
@@ -494,15 +490,15 @@ def menu_func(self, context):
     self.layout.operator(Export_q3d.bl_idname, text="Quick3D (.q3d)")
 
 def register():
-    bpy.utils.register_module(__name__)
+    bpy.utils.register_class(Export_q3d)
 
-    bpy.types.INFO_MT_file_export.append(menu_func)
+    bpy.types.TOPBAR_MT_file_export.append(menu_func)
     #bpy.types.VIEW3D_PT_tools_objectmode.prepend(menu_func)
 
 def unregister():
-    bpy.utils.unregister_module(__name__)
+    bpy.utils.unregister_class(Export_q3d)
 
-    bpy.types.INFO_MT_file_export.remove(menu_func)
+    bpy.types.TOPBAR_MT_file_export.remove(menu_func)
     #bpy.types.VIEW3D_PT_tools_objectmode.remove(menu_func)
 
 if __name__ == "__main__":

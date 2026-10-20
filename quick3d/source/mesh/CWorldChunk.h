@@ -92,6 +92,12 @@ public:
     //!
     bool isOK() const { return m_bOK; }
 
+    //!
+    int physicsHeightfieldIndex() const { return m_iPhysicsHeightfieldIndex; }
+
+    //!
+    void setPhysicsHeightfieldIndex(int iIndex) { m_iPhysicsHeightfieldIndex = iIndex; }
+
     //-------------------------------------------------------------------------------------------------
     // Inherited methods
     //-------------------------------------------------------------------------------------------------
@@ -142,6 +148,11 @@ public:
     //!
     bool isEmpty();
 
+    //! Copies the terrain altitude grid when ready, row 0 is the north edge. \br\br
+    //! Returns false when no finished terrain mesh is available, callers run
+    //! on the main thread and read a worker built mesh like paint() does.
+    bool terrainGrid(QVector<float>& outHeights, int& outSampleCount) const;
+
     //!
     CBoundingBox createBoundsForTerrain(CGeoloc gPosition, CGeoloc gSize, double dAltitudeFactor = 1.0);
 
@@ -173,6 +184,7 @@ protected:
     QVector<CBoundedMeshInstances*>     m_vBoundedMeshes;
     double                              m_dDistance;
     std::atomic<bool>                   m_bOK;
+    int                                 m_iPhysicsHeightfieldIndex;
     // Render thread only: set in setTerrain(), read in isEmpty()
     bool                                m_bHadTerrain;
 

@@ -179,6 +179,9 @@ public:
     //! Returns a list of contact points for this component
     virtual QVector<CContactPoint> contactPoints();
 
+    //! Returns true when the motion of this component is owned by a physics world
+    virtual bool hasPhysicsBody() const { return false; }
+
     //! Dumps contents to a stream
     virtual void dump(QTextStream& stream, int iIdent) Q_DECL_OVERRIDE;
 

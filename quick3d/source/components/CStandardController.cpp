@@ -1,4 +1,7 @@
 
+// qt-plus
+#include "CLogger.h"
+
 // Application
 #include "CVector3.h"
 #include "CAxis.h"
@@ -12,6 +15,13 @@ using namespace Math;
 //-------------------------------------------------------------------------------------------------
 
 #define TURN_SPEED			40.0
+
+//-------------------------------------------------------------------------------------------------
+
+namespace
+{
+    const double JOYSTICK_DEAD_ZONE_NORM = 0.15;
+}
 
 //-------------------------------------------------------------------------------------------------
 
@@ -43,6 +53,101 @@ CStandardController::CStandardController(C3DScene* pScene)
 
 CStandardController::~CStandardController()
 {
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+* \brief Applies the joystick dead zone, resting axes report exactly zero.
+*/
+/***************************************************************************/
+double CStandardController::applyJoystickDeadZone(double dAxisNorm)
+{
+    if (fabs(dAxisNorm) < JOYSTICK_DEAD_ZONE_NORM)
+    {
+        return 0.0;
+    }
+
+    return dAxisNorm;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+* \brief Returns the normalized forward command from keys and joystick, -1 to 1.
+*/
+/***************************************************************************/
+double CStandardController::driveForwardNorm() const
+{
+    double dForward = 0.0;
+
+    if (m_bGoForward == true)
+    {
+        dForward += 1.0;
+    }
+
+    if (m_bGoBackward == true)
+    {
+        dForward -= 1.0;
+    }
+
+    if (m_pJoystick != nullptr && m_pJoystick->connected() == true)
+    {
+        dForward += -applyJoystickDeadZone(m_pJoystick->axisStates()[1]);
+    }
+
+    if (dForward > 1.0)
+    {
+        dForward = 1.0;
+    }
+
+    if (dForward < -1.0)
+    {
+        dForward = -1.0;
+    }
+
+    return dForward;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+* \brief Returns the normalized right command from keys and joystick, -1 to 1.
+*/
+/***************************************************************************/
+double CStandardController::driveRightNorm() const
+{
+    double dRight = 0.0;
+
+    if (m_bTurnRight == true)
+    {
+        dRight += 1.0;
+    }
+
+    if (m_bTurnLeft == true)
+    {
+        dRight -= 1.0;
+    }
+
+    if (m_pJoystick != nullptr && m_pJoystick->connected() == true)
+    {
+        dRight += applyJoystickDeadZone(m_pJoystick->axisStates()[0]);
+    }
+
+    if (dRight > 1.0)
+    {
+        dRight = 1.0;
+    }
+
+    if (dRight < -1.0)
+    {
+        dRight = -1.0;
+    }
+
+    return dRight;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -380,6 +485,7 @@ void CStandardController::q3dEvent(CQ3DEvent* event)
 {
     CController::q3dEvent(event);
 
+    LOG_DEBUG(QString("Event %1 %2 on %3").arg(event->getName()).arg(event->getAction()).arg(qualifiedName()));
     if (event->getName() == Q3DEvent_Forward)
     {
         m_bGoForward = (event->getAction() == CQ3DEvent::Press);

@@ -6,6 +6,7 @@ HEADERS += \
     source/input/*.h \
     source/math/*.h \
     source/mesh/*.h \
+    source/physics/*.h \
     source/render/*.h \
     source/terrain/*.h \
     source/utils/*.h
@@ -17,6 +18,7 @@ SOURCES += \
     source/input/*.cpp \
     source/math/*.cpp \
     source/mesh/*.cpp \
+    source/physics/*.cpp \
     source/render/*.cpp \
     source/terrain/*.cpp \
     source/utils/*.cpp

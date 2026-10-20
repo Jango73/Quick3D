@@ -137,7 +137,10 @@ void CController::update(double dDeltaTime)
 #endif
 
     // For debug
-    m_pScene->addSegment(m_rLastRay.vOrigin, m_rLastRay.vOrigin + m_rLastRay.vNormal * 2.0);
+    if (m_pScene != nullptr)
+    {
+        m_pScene->addSegment(m_rLastRay.vOrigin, m_rLastRay.vOrigin + m_rLastRay.vNormal * 2.0);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------

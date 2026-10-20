@@ -7,7 +7,7 @@
 
 // Application
 #include "C3DScene.h"
-#include "CPhysicsMath.h"
+#include "CGeoFrame.h"
 #include "CComponentFactory.h"
 #include "CWorkerManager.h"
 #include "CWorldTerrain.h"
@@ -102,6 +102,8 @@ CWorldTerrain::CWorldTerrain(C3DScene* pScene, CGeoloc gCameraPosition, CHeightF
 */
 CWorldTerrain::~CWorldTerrain()
 {
+    clearPhysicsHeightfields();
+
     CComponent::decComponentCounter(ClassName_CWorldTerrain);
 }
 
@@ -239,6 +241,8 @@ void CWorldTerrain::solveLinks(C3DScene* pScene)
 */
 void CWorldTerrain::clearLinks(C3DScene* pScene)
 {
+    clearPhysicsHeightfields();
+
     CComponent::clearLinks(pScene);
 
     if (m_pRoot != nullptr)
@@ -854,9 +858,9 @@ void CWorldTerrain::syncPhysicsHeightfieldsRecurse(QSP<CWorldChunk> pChunk)
 
     if (pChunk->terrainGrid(vGrid, iPoints) == true)
     {
-        if (pChunk->physicsHeightfieldIndex() < 0)
+        if (chunkHeightfieldIndex(pChunk) < 0)
         {
-            CPhysicsMath::SHeightfieldFrame cFrame = CPhysicsMath::heightfieldFrame(
+            SGeoFrame cFrame = CGeoFrame::heightfieldFrame(
                 pChunk->geoloc(),
                 pChunk->size(),
                 iPoints,
@@ -870,7 +874,7 @@ void CWorldTerrain::syncPhysicsHeightfieldsRecurse(QSP<CWorldChunk> pChunk)
                 LOG_METHOD_WARNING("Chunk height field registration failed");
             }
 
-            pChunk->setPhysicsHeightfieldIndex(iHeightfield);
+            setChunkHeightfieldIndex(pChunk, iHeightfield);
         }
     }
     else
@@ -896,17 +900,89 @@ void CWorldTerrain::syncPhysicsHeightfieldsRecurse(QSP<CWorldChunk> pChunk)
 */
 void CWorldTerrain::removeChunkHeightfield(QSP<CWorldChunk> pChunk)
 {
-    if (pChunk == nullptr || pChunk->physicsHeightfieldIndex() < 0)
+    int iHeightfield = chunkHeightfieldIndex(pChunk);
+
+    if (pChunk == nullptr || iHeightfield < 0)
     {
         return;
     }
 
     if (m_pScene != nullptr && m_pScene->physicsWorld() != nullptr)
     {
-        m_pScene->physicsWorld()->removeHeightfield(pChunk->physicsHeightfieldIndex());
+        m_pScene->physicsWorld()->removeHeightfield(iHeightfield);
     }
 
-    pChunk->setPhysicsHeightfieldIndex(-1);
+    setChunkHeightfieldIndex(pChunk, -1);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Returns the registered height field id of \a pChunk, -1 when none
+*/
+int CWorldTerrain::chunkHeightfieldIndex(QSP<CWorldChunk> pChunk) const
+{
+    if (pChunk == nullptr)
+    {
+        return -1;
+    }
+
+    return m_mPhysicsHeightfields.value(pChunk.data(), -1);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Records \a iIndex as the height field of \a pChunk, -1 unregisters without removal
+*/
+void CWorldTerrain::setChunkHeightfieldIndex(QSP<CWorldChunk> pChunk, int iIndex)
+{
+    if (pChunk == nullptr)
+    {
+        return;
+    }
+
+    if (iIndex < 0)
+    {
+        m_mPhysicsHeightfields.remove(pChunk.data());
+    }
+    else
+    {
+        m_mPhysicsHeightfields.insert(pChunk.data(), iIndex);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Removes every registered chunk height field from the physics world
+*/
+void CWorldTerrain::clearPhysicsHeightfields()
+{
+    if (m_mPhysicsHeightfields.count() == 0)
+    {
+        return;
+    }
+
+    CPhysicsWorld* pWorld = nullptr;
+
+    if (m_pScene != nullptr)
+    {
+        pWorld = m_pScene->physicsWorld();
+    }
+
+    // Note: keys are copied, removal during iteration is safe
+    foreach (const CWorldChunk* pChunk, m_mPhysicsHeightfields.keys())
+    {
+        int iHeightfield = m_mPhysicsHeightfields.value(pChunk, -1);
+
+        if (pWorld != nullptr && iHeightfield >= 0)
+        {
+            pWorld->removeHeightfield(iHeightfield);
+        }
+    }
+
+    m_mPhysicsHeightfields.clear();
 }
 
 //-------------------------------------------------------------------------------------------------

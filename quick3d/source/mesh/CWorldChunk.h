@@ -92,12 +92,6 @@ public:
     //!
     bool isOK() const { return m_bOK; }
 
-    //!
-    int physicsHeightfieldIndex() const { return m_iPhysicsHeightfieldIndex; }
-
-    //!
-    void setPhysicsHeightfieldIndex(int iIndex) { m_iPhysicsHeightfieldIndex = iIndex; }
-
     //-------------------------------------------------------------------------------------------------
     // Inherited methods
     //-------------------------------------------------------------------------------------------------
@@ -184,7 +178,6 @@ protected:
     QVector<CBoundedMeshInstances*>     m_vBoundedMeshes;
     double                              m_dDistance;
     std::atomic<bool>                   m_bOK;
-    int                                 m_iPhysicsHeightfieldIndex;
     // Render thread only: set in setTerrain(), read in isEmpty()
     bool                                m_bHadTerrain;
 

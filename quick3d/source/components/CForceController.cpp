@@ -10,7 +10,6 @@
 #include "CAxis.h"
 #include "C3DScene.h"
 #include "CForceController.h"
-#include "CVehicle.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -54,11 +53,9 @@ void CForceController::update(double dDeltaTime)
 
         if (pPhysicalPositionTarget != nullptr)
         {
-            QSP<CVehicle> pPhysicsVehicle = QSP_CAST(CVehicle, pPhysicalPositionTarget);
-
-            if (pPhysicsVehicle != nullptr && pPhysicsVehicle->hasPhysicsVehicle() == true)
+            if (pPhysicalPositionTarget->isDriveable() == true && pPhysicalPositionTarget->hasPhysicsBody() == true)
             {
-                double dHandBrakeNorm = pPhysicsVehicle->isHandBrakeEngaged() ? 1.0 : 0.0;
+                double dHandBrakeNorm = pPhysicalPositionTarget->isHandBrakeEngaged() ? 1.0 : 0.0;
                 double dForwardNorm = driveForwardNorm();
                 double dBrakeNorm = 0.0;
 
@@ -67,8 +64,8 @@ void CForceController::update(double dDeltaTime)
                 // to zero over the last 1 m/s before the cap and a staged
                 // brake holds the vehicle back past it, reverse stays free so
                 // no binary throttle brake jerk can build up into a weave
-                double dSpeedLimitMS = pPhysicsVehicle->getSpeedMS();
-                Math::CVector3 vVelocity = pPhysicsVehicle->velocity_ms();
+                double dSpeedLimitMS = pPhysicalPositionTarget->driveSpeedLimitMS();
+                Math::CVector3 vVelocity = pPhysicalPositionTarget->velocity_ms();
                 double dHorizontalMS = sqrt(vVelocity.X * vVelocity.X + vVelocity.Z * vVelocity.Z);
 
                 if (dSpeedLimitMS > 0.0)
@@ -89,18 +86,17 @@ void CForceController::update(double dDeltaTime)
                 }
 
                 QString sDriverInputLog = QString("%1 fwd=%2 right=%3 brake=%4 hand=%5 speed=%6 limit=%7")
-                    .arg(pPhysicsVehicle->name())
+                    .arg(pPhysicalPositionTarget->name())
                     .arg(dForwardNorm, 0, 'f', 2).arg(driveRightNorm(), 0, 'f', 2)
                     .arg(dBrakeNorm, 0, 'f', 2).arg(dHandBrakeNorm, 0, 'f', 2)
                     .arg(dHorizontalMS, 0, 'f', 2).arg(dSpeedLimitMS, 0, 'f', 2);
 
-                if (sDriverInputLog != m_sLastDriverInputLog)
+                if (m_cDriverInputLog.hasChanged(sDriverInputLog) == true)
                 {
                     LOG_DEBUG(sDriverInputLog);
-                    m_sLastDriverInputLog = sDriverInputLog;
                 }
 
-                pPhysicsVehicle->setDriverInputNorm(dForwardNorm, driveRightNorm(), dBrakeNorm, dHandBrakeNorm);
+                pPhysicalPositionTarget->setDriverInputNorm(dForwardNorm, driveRightNorm(), dBrakeNorm, dHandBrakeNorm);
             }
             else
             {
@@ -152,8 +148,10 @@ void CForceController::update(double dDeltaTime)
 
         if (pPhysicalRotationTarget != nullptr)
         {
-            QSP<CVehicle> pPhysicsVehicle = QSP_CAST(CVehicle, pPhysicalRotationTarget);
-            bool bPhysicsDriven = pPhysicsVehicle != nullptr && pPhysicsVehicle->hasPhysicsVehicle() == true;
+            // Note: a physics attached chassis steers through the wheel driver
+            // inputs above, direct rotation writes fight the constraint solver
+            // and eject the body, only detached targets keep arcade rotation
+            bool bPhysicsDriven = pPhysicalRotationTarget->isDriveable() == true && pPhysicalRotationTarget->hasPhysicsBody() == true;
 
             // Note: a physics attached chassis steers through the wheel driver
             // inputs above, direct rotation writes fight the constraint solver
@@ -226,9 +224,9 @@ void CForceController::keyPressEvent(QKeyEvent* event)
         case Qt::Key_H:
             if (m_rPositionTarget.component())
             {
-                QSP<CVehicle> pTargetVehicle = QSP_CAST(CVehicle, m_rPositionTarget.component());
+                QSP<CPhysicalComponent> pTargetVehicle = QSP_CAST(CPhysicalComponent, m_rPositionTarget.component());
 
-                if (pTargetVehicle != nullptr)
+                if (pTargetVehicle != nullptr && pTargetVehicle->isDriveable() == true)
                 {
                     pTargetVehicle->setHandBrakeEngaged(pTargetVehicle->isHandBrakeEngaged() == false);
 

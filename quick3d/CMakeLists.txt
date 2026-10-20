@@ -51,6 +51,7 @@ add_library(Quick3D SHARED
     source/input/CJoystick.cpp
     source/math/CBoundingBox.cpp
     source/math/CGeoBounds.cpp
+    source/math/CGeoFrame.cpp
     source/math/CGeoloc.cpp
     source/math/CGeolocalized.cpp
     source/mesh/CBoundedMeshInstances.cpp
@@ -83,8 +84,11 @@ add_library(Quick3D SHARED
     source/mesh/CWaterMaterial.cpp
     source/mesh/CWorldChunk.cpp
     source/mesh/CWorldTerrain.cpp
+    source/physics/CPhysicsHeightfields.cpp
+    source/physics/CPhysicsVehicles.cpp
     source/physics/CPhysicsWorld.cpp
     source/render/C3DScene.cpp
+    source/render/C3DScenePhysics.cpp
     source/render/CAtmosphere.cpp
     source/render/CCamera.cpp
     source/render/CFog.cpp

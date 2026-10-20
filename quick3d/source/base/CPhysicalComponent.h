@@ -182,6 +182,21 @@ public:
     //! Returns true when the motion of this component is owned by a physics world
     virtual bool hasPhysicsBody() const { return false; }
 
+    //! Returns true when this component accepts normalized driver inputs
+    virtual bool isDriveable() const { return false; }
+
+    //! Forwards normalized driver inputs, does nothing when not driveable
+    virtual void setDriverInputNorm(double, double, double, double) { }
+
+    //! Engages or releases the hand brake, does nothing when not driveable
+    virtual void setHandBrakeEngaged(bool) { }
+
+    //! Returns true when the hand brake is engaged
+    virtual bool isHandBrakeEngaged() const { return false; }
+
+    //! Returns the authored speed limit in meters per second, 0 without limit
+    virtual double driveSpeedLimitMS() const { return 0.0; }
+
     //! Dumps contents to a stream
     virtual void dump(QTextStream& stream, int iIdent) Q_DECL_OVERRIDE;
 

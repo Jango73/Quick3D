@@ -14,6 +14,8 @@
 #include "CWheel.h"
 #include "CBoundedMeshInstances.h"
 #include "CPhysicsMath.h"
+#include "CGeoFrame.h"
+#include "internal/CPhysicsJolt.h"
 #include "CWorldChunk.h"
 #include "CTerrain.h"
 #include "CStandardController.h"
@@ -181,7 +183,7 @@ static int registerFlatTestGrid(C3DScene& cScene, const CGeoloc& gCenter, double
 
     CGeoloc gDatum(gCenter.Latitude, gCenter.Longitude, 0.0);
 
-    CPhysicsMath::SHeightfieldFrame cFrame = CPhysicsMath::heightfieldFrame(gDatum, CGeoloc(0.01, 0.01, 0.0), iPoints, cScene.physicsReference().toVector3());
+    SGeoFrame cFrame = CGeoFrame::heightfieldFrame(gDatum, CGeoloc(0.01, 0.01, 0.0), iPoints, cScene.physicsReference().toVector3());
 
     return cScene.physicsWorld()->addHeightfield(vGrid, iPoints, cFrame.SpacingXM, cFrame.SpacingZM, cFrame.Position, cFrame.Rotation);
 }
@@ -276,7 +278,7 @@ void CTestScene::testConvertedRotationMatchesJolt()
 {
     Math::CVector3 vEuler(0.0, Math::Angles::toRad(90.0), 0.0);
     Math::CMatrix4 mRotation = Math::CMatrix4::makeRotation(vEuler);
-    JPH::Quat cJoltRotation = CPhysicsMath::toJoltRotation(CPhysicsMath::toQuaternion(mRotation)).Normalized();
+    JPH::Quat cJoltRotation = CPhysicsJolt::toJoltRotation(CPhysicsMath::toQuaternion(mRotation)).Normalized();
 
     JPH::Vec3 vTurned = cJoltRotation * JPH::Vec3(0.0f, 0.0f, 1.0f);
     Math::CVector3 vExpected = mRotation * Math::CVector3(0.0, 0.0, 1.0);
@@ -319,7 +321,7 @@ void CTestScene::testBasisVectorsMapLocalAxes()
         QVERIFY2(qAbs(vMapped.Z - vWorld[iAxis].Z) < 1.0e-9, "Basis Z differs");
     }
 
-    JPH::Quat cRotation = CPhysicsMath::toJoltRotation(CPhysicsMath::toQuaternion(mBasis)).Normalized();
+    JPH::Quat cRotation = CPhysicsJolt::toJoltRotation(CPhysicsMath::toQuaternion(mBasis)).Normalized();
 
     JPH::Vec3 vEast = cRotation * JPH::Vec3(1.0f, 0.0f, 0.0f);
     JPH::Vec3 vUp = cRotation * JPH::Vec3(0.0f, 1.0f, 0.0f);
@@ -553,13 +555,13 @@ void CTestScene::testHeightfieldRayHitsRegisteredGrid()
         vGrid.append(42.0f);
     }
 
-    CPhysicsMath::SHeightfieldFrame cFrame = CPhysicsMath::heightfieldFrame(gCenter, CGeoloc(0.01, 0.01, 0.0), iPoints, vFrameOrigin);
+    SGeoFrame cFrame = CGeoFrame::heightfieldFrame(gCenter, CGeoloc(0.01, 0.01, 0.0), iPoints, vFrameOrigin);
 
     QVERIFY(cFrame.SpacingXM > 0.0f);
     QVERIFY(cFrame.SpacingZM > 0.0f);
 
     // Note: the converted frame turns local axes into the topocentric basis
-    JPH::Quat cFrameRotation = CPhysicsMath::toJoltRotation(CPhysicsMath::toQuaternion(cFrame.Rotation)).Normalized();
+    JPH::Quat cFrameRotation = CPhysicsJolt::toJoltRotation(CPhysicsMath::toQuaternion(cFrame.Rotation)).Normalized();
     Math::CAxis aAxis = gCenter.getTopocentricAxis();
 
     JPH::Vec3 vEast = cFrameRotation * JPH::Vec3(1.0f, 0.0f, 0.0f);
@@ -649,7 +651,7 @@ void CTestScene::testEnsureAttachesVehicleOverPhysicsGround()
 
     CGeoloc gCenter(19.237738, 10.896701, 0.0);
 
-    CPhysicsMath::SHeightfieldFrame cFrame = CPhysicsMath::heightfieldFrame(gCenter, CGeoloc(0.01, 0.01, 0.0), iPoints, cScene.physicsReference().toVector3());
+    SGeoFrame cFrame = CGeoFrame::heightfieldFrame(gCenter, CGeoloc(0.01, 0.01, 0.0), iPoints, cScene.physicsReference().toVector3());
 
     int iHeightfield = cScene.physicsWorld()->addHeightfield(vGrid, iPoints, cFrame.SpacingXM, cFrame.SpacingZM, cFrame.Position, cFrame.Rotation);
 

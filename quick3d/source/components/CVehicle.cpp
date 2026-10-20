@@ -17,6 +17,52 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Ground alignment angles from sample clearances. \br\br
+    \a dFrontClear and \a dBackClear are the mean heights above ground at
+    the front and back stations, \a dRightClear and \a dLeftClear the same
+    across the vehicle, lever arms locate the stations from the origin. A
+    missing station disables its axis, both axes missing report no alignment.
+*/
+struct SGroundAlignment
+{
+    double m_dDiffX = 0.0;
+    double m_dDiffZ = 0.0;
+    bool m_bAlign = false;
+};
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Computes pitch and roll corrections from clearance samples and lever arms
+*/
+static SGroundAlignment alignmentFromClearances(double dFrontClear, bool bHasFront, double dBackClear, bool bHasBack, double dRightClear, bool bHasRight, double dLeftClear, bool bHasLeft, double dFrontLeverZM, double dBackLeverZM, double dRightLeverXM, double dLeftLeverXM)
+{
+    SGroundAlignment cAlignment;
+
+    if (bHasFront == true && bHasBack == true)
+    {
+        CVector3 Front = CVector3(0.0, dFrontClear, dFrontLeverZM);
+        CVector3 Back = CVector3(0.0, dBackClear, dBackLeverZM);
+
+        cAlignment.m_dDiffX = (Front - Back).eulerXAngle();
+        cAlignment.m_bAlign = true;
+    }
+
+    if (bHasRight == true && bHasLeft == true)
+    {
+        CVector3 Right = CVector3(dRightLeverXM, dRightClear, 0.0);
+        CVector3 Left = CVector3(dLeftLeverXM, dLeftClear, 0.0);
+
+        cAlignment.m_dDiffZ = (Right - Left).eulerZAngle();
+        cAlignment.m_bAlign = true;
+    }
+
+    return cAlignment;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 CComponent* CVehicle::instantiator(C3DScene* pScene)
 {
     return new CVehicle(pScene);
@@ -183,23 +229,17 @@ void CVehicle::update(double dDeltaTime)
 
                     if (fabs(geoloc().Altitude - hAverage) < 5.0)
                     {
-                        if (iFrontCount > 0 && iBackCount > 0)
-                        {
-                            CVector3 Front = CVector3(0.0, dFrontSum / double(iFrontCount), dLeverZ);
-                            CVector3 Back = CVector3(0.0, dBackSum / double(iBackCount), -dLeverZ);
+                        SGroundAlignment cAlignment = alignmentFromClearances(
+                            dFrontSum / double(iFrontCount), iFrontCount > 0,
+                            dBackSum / double(iBackCount), iBackCount > 0,
+                            dRightSum / double(iRightCount), iRightCount > 0,
+                            dLeftSum / double(iLeftCount), iLeftCount > 0,
+                            dLeverZ, -dLeverZ, dLeverX, -dLeverX
+                            );
 
-                            dDiffX = (Front - Back).eulerXAngle();
-                            bAlign = true;
-                        }
-
-                        if (iRightCount > 0 && iLeftCount > 0)
-                        {
-                            CVector3 Right = CVector3(dLeverX, dRightSum / double(iRightCount), 0.0);
-                            CVector3 Left = CVector3(-dLeverX, dLeftSum / double(iLeftCount), 0.0);
-
-                            dDiffZ = (Right - Left).eulerZAngle();
-                            bAlign = true;
-                        }
+                        dDiffX = cAlignment.m_dDiffX;
+                        dDiffZ = cAlignment.m_dDiffZ;
+                        bAlign = cAlignment.m_bAlign;
                     }
                 }
             }
@@ -233,18 +273,18 @@ void CVehicle::update(double dDeltaTime)
                         double hdFrontLeft = gFrontLeft.Altitude - hFrontLeft;
                         double hdFrontRight = gFrontRight.Altitude - hFrontRight;
 
-                        // X
-                        CVector3 Front = CVector3(0.0, (hdFrontLeft + hdFrontRight) / 2.0, box.maximum().Z * 0.8);
-                        CVector3 Back = CVector3(0.0, (hdBackLeft + hdBackRight) / 2.0, box.minimum().Z * 0.8);
+                        SGroundAlignment cAlignment = alignmentFromClearances(
+                            (hdFrontLeft + hdFrontRight) / 2.0, true,
+                            (hdBackLeft + hdBackRight) / 2.0, true,
+                            (hdBackRight + hdFrontRight) / 2.0, true,
+                            (hdBackLeft + hdFrontLeft) / 2.0, true,
+                            box.maximum().Z * 0.8, box.minimum().Z * 0.8,
+                            box.maximum().X * 0.8, box.minimum().X * 0.8
+                            );
 
-                        dDiffX = (Front - Back).eulerXAngle();
-
-                        // Z
-                        CVector3 Right = CVector3(box.maximum().X * 0.8, (hdBackRight + hdFrontRight) / 2.0, 0.0);
-                        CVector3 Left = CVector3(box.minimum().X * 0.8, (hdBackLeft + hdFrontLeft) / 2.0, 0.0);
-
-                        dDiffZ = (Right - Left).eulerZAngle();
-                        bAlign = true;
+                        dDiffX = cAlignment.m_dDiffX;
+                        dDiffZ = cAlignment.m_dDiffZ;
+                        bAlign = cAlignment.m_bAlign;
                     }
                 }
             }
@@ -385,8 +425,12 @@ QVector<CVehicleWheel> CVehicle::buildPhysicsWheels() const
 
 /*!
     Registers the chassis and its wheels in the given world. \br\br
-    The world must outlive the vehicle: call detachPhysicsVehicle() before
-    destroying the world. Returns false without wheels or on failure.
+    Explicit registration without a second ownership chain: the world keeps
+    the body, the vehicle keeps an observing pointer and the body index.
+    The scene owns the world and detaches every registered vehicle before
+    clearing it, call detachPhysicsVehicle() before destroying the world
+    when driving the vehicle outside a scene. Returns false without wheels
+    or on failure.
 */
 bool CVehicle::attachPhysicsVehicle(CPhysicsWorld* pWorld, const Math::CVector3& vChassisHalfExtentsM, const Math::CVector3& vLocalPositionM, const Math::CQuaternion& cRotation, const Math::CVector3& vCenterOffsetM)
 {
@@ -453,6 +497,16 @@ void CVehicle::setDriverInputNorm(double dForwardNorm, double dRightNorm, double
 //-------------------------------------------------------------------------------------------------
 
 /*!
+    Returns the authored speed limit in meters per second
+*/
+double CVehicle::driveSpeedLimitMS() const
+{
+    return getSpeedMS();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
     Returns true when the vehicle is registered in a physics world
 */
 bool CVehicle::hasPhysicsBody() const
@@ -468,9 +522,9 @@ bool CVehicle::hasPhysicsBody() const
 */
 Math::CVector3 CVehicle::chassisHalfExtentsM() const
 {
-    CBoundingBox cBounds = firstMeshBounds();
+    CBoundingBox cBounds;
 
-    if (cBounds.radius() <= 0.0)
+    if (validChassisBounds(cBounds) == false)
     {
         return Math::CVector3(0.0, 0.0, 0.0);
     }
@@ -485,14 +539,26 @@ Math::CVector3 CVehicle::chassisHalfExtentsM() const
 */
 Math::CVector3 CVehicle::chassisCenterOffsetM() const
 {
-    CBoundingBox cBounds = firstMeshBounds();
+    CBoundingBox cBounds;
 
-    if (cBounds.radius() <= 0.0)
+    if (validChassisBounds(cBounds) == false)
     {
         return Math::CVector3(0.0, 0.0, 0.0);
     }
 
     return cBounds.center();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Resolves the first mesh bounds, false without usable bounds
+*/
+bool CVehicle::validChassisBounds(CBoundingBox& cBounds) const
+{
+    cBounds = firstMeshBounds();
+
+    return cBounds.radius() > 0.0;
 }
 
 //-------------------------------------------------------------------------------------------------

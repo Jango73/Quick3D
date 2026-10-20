@@ -177,6 +177,15 @@ protected:
     //! Removes the physics height field of \a pChunk when registered
     void removeChunkHeightfield(QSP<CWorldChunk> pChunk);
 
+    //! Returns the registered height field id of \a pChunk, -1 when none
+    int chunkHeightfieldIndex(QSP<CWorldChunk> pChunk) const;
+
+    //! Records \a iIndex as the height field of \a pChunk, -1 unregisters without removal
+    void setChunkHeightfieldIndex(QSP<CWorldChunk> pChunk, int iIndex);
+
+    //! Removes every registered chunk height field from the physics world
+    void clearPhysicsHeightfields();
+
     //! Ray intersection
     Math::RayTracingResult intersectRecurse(QSP<CWorldChunk> pChunk, const Math::CRay3& ray) const;
 
@@ -200,4 +209,5 @@ protected:
     QSP<CWorldChunk>            m_pRoot;
     QSP<CMaterial>              m_pMaterial;
     QVector<QSP<CComponent> >   m_vGenerators;
+    QMap<const CWorldChunk*, int> m_mPhysicsHeightfields; ///< Chunk to height field ids, owned here not in the mesh
 };

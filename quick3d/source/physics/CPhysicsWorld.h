@@ -3,22 +3,31 @@
 
 // Qt
 #include <QMap>
+#include <QMutex>
 #include <QVector>
+
+// STL
+#include <functional>
 
 // Application
 #include "quick3d_global.h"
 #include "CVector3.h"
 #include "CMatrix4.h"
 #include "CQuaternion.h"
+#include "CChangeFilter.h"
 
 //-------------------------------------------------------------------------------------------------
 
 namespace JPH
 {
+    class Body;
     class PhysicsSystem;
     class JobSystemThreadPool;
     class TempAllocatorImpl;
     class VehicleConstraint;
+    class BroadPhaseLayerInterface;
+    class ObjectVsBroadPhaseLayerFilter;
+    class ObjectLayerPairFilter;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -194,16 +203,19 @@ private:
 
     Q_DISABLE_COPY(CPhysicsWorld)
 
+    //! Returns true when the system is initialized and usable
+    bool isReady() const { return m_bInitialized && m_pPhysicsSystem != nullptr; }
+
+    //! Runs \a cReader under a read lock on the chassis body, false for an unknown vehicle
+    bool withLockedChassisBody(int iVehicle, const std::function<void(const JPH::Body&)>& cReader) const;
+
     //! Links a chassis body to its owned vehicle constraint
     struct CVehicleRecord
     {
         unsigned int m_uChassisBody = 0;
         JPH::VehicleConstraint* m_pConstraint = nullptr;
         Math::CVector3 m_vCenterOffsetM;        ///< Vehicle origin to body center in chassis frame
-        float m_fLastForwardNorm = 2.0f;        ///< Last driver forward input, 2.0 forces the first change log
-        float m_fLastRightNorm = 2.0f;          ///< Last driver right input
-        float m_fLastBrakeNorm = 2.0f;          ///< Last driver brake input
-        float m_fLastHandBrakeNorm = 2.0f;      ///< Last driver hand brake input
+        CChangeFilter<QVector<float> > m_cDriverInputLog; ///< Change-only driver tuple log without flood
     };
 
     //! Links a height field index to its static body
@@ -216,7 +228,11 @@ private:
     JPH::PhysicsSystem* m_pPhysicsSystem;
     JPH::JobSystemThreadPool* m_pJobSystem;
     JPH::TempAllocatorImpl* m_pTempAllocator;
+    JPH::BroadPhaseLayerInterface* m_pBroadPhaseMapper;
+    JPH::ObjectVsBroadPhaseLayerFilter* m_pBroadPhaseFilter;
+    JPH::ObjectLayerPairFilter* m_pLayerFilter;
     QVector<unsigned int> m_vBodies;
+    QMutex m_mInitMutex;
     QVector<CVehicleRecord> m_vVehicles;
     QMap<int, CHeightfieldRecord> m_mHeightfields;
     int m_iNextHeightfieldId;

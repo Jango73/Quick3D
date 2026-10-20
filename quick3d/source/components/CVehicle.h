@@ -59,6 +59,21 @@ public:
     //! Returns true when the vehicle is registered in a physics world
     virtual bool hasPhysicsBody() const Q_DECL_OVERRIDE;
 
+    //! Returns true, vehicles accept normalized driver inputs
+    virtual bool isDriveable() const Q_DECL_OVERRIDE { return true; }
+
+    //! Forwards normalized driver inputs to the physics vehicle, does nothing when detached
+    virtual void setDriverInputNorm(double dForwardNorm, double dRightNorm, double dBrakeNorm, double dHandBrakeNorm) Q_DECL_OVERRIDE;
+
+    //! Engages or releases the hand brake, engaged by default so vehicles hold slopes at spawn
+    virtual void setHandBrakeEngaged(bool value) Q_DECL_OVERRIDE { m_bHandBrakeEngaged = value; }
+
+    //! Returns true when the hand brake is engaged
+    virtual bool isHandBrakeEngaged() const Q_DECL_OVERRIDE { return m_bHandBrakeEngaged; }
+
+    //! Returns the authored speed limit in meters per second
+    virtual double driveSpeedLimitMS() const Q_DECL_OVERRIDE;
+
     //-------------------------------------------------------------------------------------------------
     // Control methods
     //-------------------------------------------------------------------------------------------------
@@ -91,14 +106,10 @@ public:
     //! Returns the physics world index of the vehicle, -1 when detached
     int physicsVehicleIndex() const { return m_iPhysicsVehicle; }
 
-    //! Forwards normalized driver inputs to the physics vehicle, does nothing when detached
-    void setDriverInputNorm(double dForwardNorm, double dRightNorm, double dBrakeNorm, double dHandBrakeNorm);
-
-    //! Engages or releases the hand brake, engaged by default so vehicles hold slopes at spawn
-    void setHandBrakeEngaged(bool value) { m_bHandBrakeEngaged = value; }
-
-    //! Returns true when the hand brake is engaged
-    bool isHandBrakeEngaged() const { return m_bHandBrakeEngaged; }
+    //! Returns the registered physics world, nullptr when detached. \br\br
+    //! Observing pointer only, the scene owns the world and detaches every
+    //! registered vehicle before clearing it, never a second ownership chain.
+    CPhysicsWorld* physicsWorld() const { return m_pPhysicsWorld; }
 
     //-------------------------------------------------------------------------------------------------
     // Protected methods
@@ -109,6 +120,9 @@ protected:
     //! Returns the bounds of the first direct child mesh, an empty box without mesh child
     CBoundingBox firstMeshBounds() const;
 
+    //! Resolves the first mesh bounds, false without usable bounds
+    bool validChassisBounds(CBoundingBox& cBounds) const;
+
     //-------------------------------------------------------------------------------------------------
     // Properties
     //-------------------------------------------------------------------------------------------------
@@ -116,7 +130,7 @@ protected:
 protected:
 
     QVector<CMeshInstance*>     m_vAxisMeshes;
-    CPhysicsWorld*              m_pPhysicsWorld;
+    CPhysicsWorld*              m_pPhysicsWorld; ///< Registered world, observing only, set by attach and cleared by detach
     int                         m_iPhysicsVehicle;
     bool                        m_bHandBrakeEngaged;
 };

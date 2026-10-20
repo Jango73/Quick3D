@@ -326,6 +326,15 @@ protected:
     //!
     void syncVehicleFromPhysics(QSP<CVehicle> pVehicle);
 
+    //!
+    void rebuildVehicleRegistry();
+
+    //!
+    void registerVehicleComponent(QSP<CComponent> pComponent);
+
+    //!
+    void unregisterVehicleComponent(QSP<CComponent> pComponent);
+
     //-------------------------------------------------------------------------------------------------
     // Properties
     //-------------------------------------------------------------------------------------------------
@@ -373,6 +382,7 @@ protected:
     // Shared data
 
     QVector<QSP<CComponent> >               m_vComponents;
+    QVector<QSP<CVehicle> >                 m_vSceneVehicles; ///< Registered vehicles, avoids per frame type scans
     QSP<CMeshGeometry>                      m_pSegments;
     CPhysicsWorld                           m_PhysicsWorld;
     bool                                    m_bPhysicsInitialized;

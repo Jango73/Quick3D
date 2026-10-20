@@ -72,6 +72,12 @@ protected:
     //! Serves /view from \a mArguments, result as JSON in \a sResponse
     void serveView(const QMap<QString, QString>& mArguments, QString& sResponse);
 
+    //! Checks the name argument and the handler, false with \a sResponse set to the error envelope
+    bool requireHandlerName(const QMap<QString, QString>& mArguments, QString& sName, QString& sResponse) const;
+
+    //! Invokes the bool handler \a pMethod with \a sName, writes the ok envelope to \a sResponse
+    bool invokeHandlerBool(const char* pMethod, const QString& sName, QString& sResponse, const char* pError) const;
+
     //-------------------------------------------------------------------------------------------------
     // Properties
     //-------------------------------------------------------------------------------------------------

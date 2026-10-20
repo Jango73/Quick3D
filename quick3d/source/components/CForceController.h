@@ -5,6 +5,7 @@
 #include "quick3d_global.h"
 #include "CQ3DConstants.h"
 #include "CStandardController.h"
+#include "CChangeFilter.h"
 
 //-------------------------------------------------------------------------------------------------
 // Forward declarations
@@ -64,5 +65,5 @@ public:
 
 protected:
 
-    QString                     m_sLastDriverInputLog;  ///< Last sent driver tuple, change-only debug log without flood
+    CChangeFilter<QString>      m_cDriverInputLog;  ///< Change-only driver tuple log without flood
 };

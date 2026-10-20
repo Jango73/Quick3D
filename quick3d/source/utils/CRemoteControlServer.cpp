@@ -205,11 +205,10 @@ void CRemoteControlServer::serveKey(const QMap<QString, QString>& mArguments, QS
 */
 void CRemoteControlServer::serveVehicle(const QMap<QString, QString>& mArguments, QString& sResponse)
 {
-    QString sName = mArguments.value("name");
+    QString sName;
 
-    if (sName.isEmpty() == true || m_pHandler.isNull() == true)
+    if (requireHandlerName(mArguments, sName, sResponse) == false)
     {
-        sResponse = "{\"ok\":false,\"error\":\"missing name or handler\"}";
         return;
     }
 
@@ -229,21 +228,14 @@ void CRemoteControlServer::serveVehicle(const QMap<QString, QString>& mArguments
 */
 void CRemoteControlServer::serveSelect(const QMap<QString, QString>& mArguments, QString& sResponse)
 {
-    QString sName = mArguments.value("name");
+    QString sName;
 
-    if (sName.isEmpty() == true || m_pHandler.isNull() == true)
+    if (requireHandlerName(mArguments, sName, sResponse) == false)
     {
-        sResponse = "{\"ok\":false,\"error\":\"missing name or handler\"}";
         return;
     }
 
-    bool bResult = false;
-
-    QMetaObject::invokeMethod(m_pHandler, "selectVehicle", Qt::BlockingQueuedConnection,
-        Q_RETURN_ARG(bool, bResult),
-        Q_ARG(QString, sName));
-
-    sResponse = bResult == true ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"vehicle not selected\"}";
+    invokeHandlerBool("selectVehicle", sName, sResponse, "vehicle not selected");
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -253,19 +245,48 @@ void CRemoteControlServer::serveSelect(const QMap<QString, QString>& mArguments,
 */
 void CRemoteControlServer::serveView(const QMap<QString, QString>& mArguments, QString& sResponse)
 {
-    QString sName = mArguments.value("name");
+    QString sName;
+
+    if (requireHandlerName(mArguments, sName, sResponse) == false)
+    {
+        return;
+    }
+
+    invokeHandlerBool("selectView", sName, sResponse, "view not selected");
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Checks the name argument and the handler, false with \a sResponse set to the error envelope
+*/
+bool CRemoteControlServer::requireHandlerName(const QMap<QString, QString>& mArguments, QString& sName, QString& sResponse) const
+{
+    sName = mArguments.value("name");
 
     if (sName.isEmpty() == true || m_pHandler.isNull() == true)
     {
         sResponse = "{\"ok\":false,\"error\":\"missing name or handler\"}";
-        return;
+        return false;
     }
 
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Invokes the bool handler \a pMethod with \a sName, writes the ok envelope to \a sResponse
+*/
+bool CRemoteControlServer::invokeHandlerBool(const char* pMethod, const QString& sName, QString& sResponse, const char* pError) const
+{
     bool bResult = false;
 
-    QMetaObject::invokeMethod(m_pHandler, "selectView", Qt::BlockingQueuedConnection,
+    QMetaObject::invokeMethod(m_pHandler, pMethod, Qt::BlockingQueuedConnection,
         Q_RETURN_ARG(bool, bResult),
         Q_ARG(QString, sName));
 
-    sResponse = bResult == true ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"view not selected\"}";
+    sResponse = bResult == true ? "{\"ok\":true}" : QString("{\"ok\":false,\"error\":\"%1\"}").arg(pError);
+
+    return bResult;
 }

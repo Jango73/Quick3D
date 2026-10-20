@@ -24,7 +24,6 @@ CWorldChunk::CWorldChunk(C3DScene* pScene, CWorldTerrain* pAutoTerrain, CHeightF
     , m_pContainer(pContainer)
     , m_dDistance(0.0)
     , m_bOK(false)
-    , m_iPhysicsHeightfieldIndex(-1)
     , m_bHadTerrain(false)
 {
     CComponent::incComponentCounter(ClassName_CWorldChunk);

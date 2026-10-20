@@ -18,7 +18,7 @@
 	</Material>
 	<Component Name="PVP" Class="CMesh">
 		<Position x="0.0000" y="0.0000" z="0.0000"/>
-		<Rotation x="-1.5708" y="-0.0000" z="0.0000"/>
+		<Rotation x="-0.0000" y="0.0000" z="0.0000"/>
 		<Vertices>
 			<Vertex x="-0.2000" y="0.4000" z="-0.2000" u="0.6000" v="0.4000"/>
 			<Vertex x="-0.2000" y="0.4000" z="0.2000" u="0.4000" v="0.2000"/>

@@ -89,6 +89,7 @@ protected:
     GLfloat         u_light_spot_angle [MAX_GL_LIGHTS];
     GLfloat         u_light_occlusion [MAX_GL_LIGHTS];
     QVector3D       vSunColor;
+    QVector3D       vSunDirection;
     QVector3D       vSkyZenithColor;
     bool            m_bShadersInitialized;
 };

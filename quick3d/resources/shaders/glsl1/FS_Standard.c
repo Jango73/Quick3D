@@ -81,6 +81,14 @@ uniform float           u_fog_level;
 uniform vec3            u_fog_color;
 uniform vec3            u_sky_zenith_color;
 uniform vec3            u_sun_color;
+uniform int             u_sky_model;
+uniform vec3            u_sun_direction;
+uniform vec3            u_rayleigh_beta;
+uniform float           u_rayleigh_scale_height;
+uniform vec3            u_ozone_beta;
+uniform float           u_ozone_amount;
+uniform float           u_sky_exposure;
+uniform float           u_sun_intensity;
 
 uniform int             u_IR_enable;
 uniform float           u_IR_factor;
@@ -127,10 +135,11 @@ float pixelDistanceY = 0.01;
 #define PI              pi
 #define SUN_DISC_SHARP_EXPONENT   1000.0
 #define SUN_DISC_BLURRY_EXPONENT  32.0
-#define SUN_DISC_BLURRY_DIM_FACTOR 0.35
+#define SUN_DISC_BLURRY_DIM_FACTOR 0.2
 #define SUN_GLOW_SHARP_FACTOR     0.25
-#define SUN_GLOW_BLURRY_FACTOR    0.5
+#define SUN_GLOW_BLURRY_FACTOR    0.3
 #define FOG_DENSE_FALLOFF_EXPONENT 0.5
+#define SKY_MODEL_PHYSICAL        0
 
 //-------------------------------------------------------------------------------------------------
 // Math functions
@@ -616,7 +625,9 @@ vec3 stars(vec3 direction)
 {
     float n = clamp(perlin(direction * 500.0), 0.95, 1.0);
     float a = pow(n, 80.0);
-    return vec3(a);
+    // Day sky hides stars only inside the atmosphere, in space the sky stays
+    // black at noon so stars remain visible
+    return vec3(a) * (1.0 - u_sun_intensity * gAtmosphereFactor);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -701,16 +712,50 @@ vec4 lightFlares(vec3 lightPosition, vec3 pixelPosition, vec4 lightColor, float 
 //-------------------------------------------------------------------------------------------------
 // Sky
 
-vec3 getSkyAt(vec3 origin, vec3 direction, vec2 xy)
+// Rayleigh single scattering with ozone absorption along the view direction,
+// same model as the sun tint. The scattering share weighs in-scattered light
+// by the Rayleigh part of the extinction, absorbed light does not scatter.
+vec3 rayleighSkyAt(vec3 direction)
+{
+    // Kasten and Young (1989) relative airmass coefficients
+    const float KY_A = 0.50572;
+    const float KY_B = 6.07995;
+    const float KY_C = 1.6364;
+
+    vec3 viewDirection = normalize(direction);
+
+    float sinView = max(dot(viewDirection, u_world_up), 0.0);
+    float viewElevation = degrees(asin(min(sinView, 1.0)));
+    float viewAirmass = 1.0 / (sinView + KY_A * pow(viewElevation + KY_B, -KY_C));
+    float viewPath = u_rayleigh_scale_height * viewAirmass;
+
+    float mu = dot(viewDirection, u_sun_direction);
+    float phase = 3.0 / (16.0 * PI) * (1.0 + mu * mu);
+
+    vec3 extinction = u_rayleigh_beta + u_ozone_amount * u_ozone_beta;
+    vec3 scatteringShare = u_rayleigh_beta / extinction;
+
+    return u_sky_exposure * u_sun_color * phase * scatteringShare * (1.0 - exp(-extinction * viewPath));
+}
+
+vec3 standardSkyAt(vec3 origin, vec3 direction, vec2 xy)
 {
     vec3 earthDirection = normalize(-u_world_origin - origin);
-    vec3 zenithColor = u_sky_zenith_color;
-    vec3 horizonColor = u_sun_color;
     vec3 earthGlowColor = vec3(0.5, 0.75, 1.0);
     float earthGlowAmount = max(dot(direction, earthDirection), 0.0);
     float up = pow(1.0 - dot(u_world_up, direction), 6.0);
 
-    vec3 sky = mix(zenithColor, horizonColor, up);
+    vec3 sky;
+
+    if (u_sky_model == SKY_MODEL_PHYSICAL)
+    {
+        sky = rayleighSkyAt(direction);
+    }
+    else
+    {
+        // Defensive fallback, scene files always select a known model
+        sky = mix(u_sky_zenith_color, u_sun_color, up);
+    }
 
     sky *= smoothstep(-0.3, 0.0, up);
     sky *= gAtmosphereFactor;
@@ -720,6 +765,12 @@ vec3 getSkyAt(vec3 origin, vec3 direction, vec2 xy)
     {
         sky += (earthGlowColor * min(pow(earthGlowAmount, 25.0), 1.0));
     }
+
+    // Highlight rolloff on the scattered sky only, stars are added after so
+    // the tonemap never dims them. Pixels below 1.0 are untouched, brighter
+    // pixels are scaled onto the gamut surface: ratios are preserved exactly,
+    // where a hard clamp would clip bright orange to white
+    sky /= max(max(sky.r, max(sky.g, sky.b)), 1.0);
 
     // Stars
     sky += stars(direction);
@@ -1198,7 +1249,7 @@ void main()
                 // Apply sky if asked
                 if (bool(u_sky_enable))
                 {
-                    color = vec4(getSkyAt(u_camera_position, eyeToVertex, xy), color.a);
+                    color = vec4(standardSkyAt(u_camera_position, eyeToVertex, xy), color.a);
                 }
 
                 // Apply water if asked

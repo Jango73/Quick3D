@@ -75,8 +75,11 @@ C3DScene::C3DScene(bool bForDisplay)
     , m_bPhysicsReferenceValid(false)
     , m_dPhysicsAccumulatorS(0.0)
     , m_uPhysicsSteps(0)
+    , m_pSkyModel(nullptr)
 {
     m_pSegments = QSP<CMeshGeometry>(new CMeshGeometry(this));
+
+    resetEnvironmentToDefaults();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -94,6 +97,7 @@ C3DScene::~C3DScene()
     if (m_pTreeGenerator != nullptr) delete m_pTreeGenerator;
     if (m_pBuildingGenerator != nullptr) delete m_pBuildingGenerator;
     if (m_pRessourcesManager != nullptr) delete m_pRessourcesManager;
+    if (m_pSkyModel != nullptr) delete m_pSkyModel;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -173,21 +177,12 @@ void C3DScene::init(QVector<QSP<CComponent> > vComponents)
     LOG_METHOD_DEBUG("");
 
     //-----------------------------------------------
-    // Init fog and sun color
+    // Init fog runtime state. Base colors and distances come from the
+    // rendering environment (defaults + scene XML), applied on load.
 
     m_tFog.enabled() = true;
     m_tFog.level() = 0.0;
-    m_tFog.color() = CVector3(0.5, 0.5, 0.5);
-
-    m_vFogBaseColor = CVector3(0.5, 0.5, 0.5);
-    m_vSkyBaseColor = CVector3(0.2, 0.6, 1.0);
-
-    m_iSunColor.clear();
-    m_iSunColor.addValue( 0.00, CVector4(0.0, 0.0, 0.0, 1.0));
-    m_iSunColor.addValue( 0.50, CVector4(1.1, 0.5, 0.4, 1.0));
-    m_iSunColor.addValue( 0.60, CVector4(1.1, 0.5, 0.4, 1.0));
-    m_iSunColor.addValue( 0.75, CVector4(1.4, 1.4, 1.2, 1.0));
-    m_iSunColor.addValue( 1.00, CVector4(1.4, 1.4, 1.2, 1.0));
+    m_tFog.color() = m_vFogBaseColor;
 
     //-----------------------------------------------
     // Assign components
@@ -227,6 +222,89 @@ void C3DScene::init(QVector<QSP<CComponent> > vComponents)
             break;
         }
     }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Resets the rendering environment to default values.
+*/
+void C3DScene::resetEnvironmentToDefaults()
+{
+    m_dAtmosphereAltitude = DEFAULT_ATMOSPHERE_ALTITUDE;
+    m_dFogMinimumDistance = DEFAULT_FOG_MINIMUM_DISTANCE;
+    m_dUnderwaterFogDistance = DEFAULT_UNDERWATER_FOG_DISTANCE;
+
+    m_vGlobalAmbientColor = CVector3(DEFAULT_GLOBAL_AMBIENT_R, DEFAULT_GLOBAL_AMBIENT_G, DEFAULT_GLOBAL_AMBIENT_B);
+    m_vFogBaseColor = CVector3(DEFAULT_FOG_COLOR_R, DEFAULT_FOG_COLOR_G, DEFAULT_FOG_COLOR_B);
+    m_vSkyBaseColor = CVector3(DEFAULT_SKY_COLOR_R, DEFAULT_SKY_COLOR_G, DEFAULT_SKY_COLOR_B);
+
+    if (m_pSkyModel != nullptr) delete m_pSkyModel;
+    m_pSkyModel = CSkyModel::create(DEFAULT_SKY_MODEL);
+    m_dOzoneAmount = DEFAULT_OZONE_AMOUNT;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+static void readEnvironmentColor(const CXMLNode& xEnvironment, const QString& sTag, Math::CVector3& vColor)
+{
+    CXMLNode xColor = xEnvironment.getNodeByTagName(sTag);
+
+    if (xColor.isEmpty() == false)
+    {
+        if (xColor.attributes()[ParamName_r].isEmpty() == false)
+        {
+            vColor.X = xColor.attributes()[ParamName_r].toDouble();
+        }
+
+        if (xColor.attributes()[ParamName_g].isEmpty() == false)
+        {
+            vColor.Y = xColor.attributes()[ParamName_g].toDouble();
+        }
+
+        if (xColor.attributes()[ParamName_b].isEmpty() == false)
+        {
+            vColor.Z = xColor.attributes()[ParamName_b].toDouble();
+        }
+    }
+}
+
+/************************************************************************/
+
+/*!
+    Loads the rendering environment from an \a xEnvironment XML node.
+    Missing attributes or colors keep their current values.
+*/
+void C3DScene::loadEnvironment(const CXMLNode& xEnvironment)
+{
+    if (xEnvironment.attributes()[ParamName_AtmosphereAltitude].isEmpty() == false)
+    {
+        m_dAtmosphereAltitude = xEnvironment.attributes()[ParamName_AtmosphereAltitude].toDouble();
+    }
+
+    if (xEnvironment.attributes()[ParamName_FogMinimumDistance].isEmpty() == false)
+    {
+        m_dFogMinimumDistance = xEnvironment.attributes()[ParamName_FogMinimumDistance].toDouble();
+    }
+
+    if (xEnvironment.attributes()[ParamName_UnderwaterFogDistance].isEmpty() == false)
+    {
+        m_dUnderwaterFogDistance = xEnvironment.attributes()[ParamName_UnderwaterFogDistance].toDouble();
+    }
+
+    if (xEnvironment.attributes()[ParamName_SkyModel].isEmpty() == false)
+    {
+        setSkyModel(xEnvironment.attributes()[ParamName_SkyModel]);
+    }
+
+    if (xEnvironment.attributes()[ParamName_OzoneAmount].isEmpty() == false)
+    {
+        m_dOzoneAmount = xEnvironment.attributes()[ParamName_OzoneAmount].toDouble();
+    }
+
+    readEnvironmentColor(xEnvironment, ParamName_GlobalAmbient, m_vGlobalAmbientColor);
+    readEnvironmentColor(xEnvironment, ParamName_FogColor, m_vFogBaseColor);
+    readEnvironmentColor(xEnvironment, ParamName_SkyColor, m_vSkyBaseColor);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -340,6 +418,83 @@ void C3DScene::setFogColor(const Math::CVector3& vColor)
 void C3DScene::setSkyColor(const Math::CVector3& vColor)
 {
     m_vSkyBaseColor = vColor;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Sets the global ambient light color to \a vColor.
+*/
+void C3DScene::setGlobalAmbientColor(const Math::CVector3& vColor)
+{
+    m_vGlobalAmbientColor = vColor;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Sets the altitude where the atmosphere factor reaches zero to \a value.
+*/
+void C3DScene::setAtmosphereAltitude(double value)
+{
+    m_dAtmosphereAltitude = value;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Sets the fog distance floor applied at maximum fog level to \a value.
+*/
+void C3DScene::setFogMinimumDistance(double value)
+{
+    m_dFogMinimumDistance = value;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Sets the fog distance applied when the camera is underwater to \a value.
+*/
+void C3DScene::setUnderwaterFogDistance(double value)
+{
+    m_dUnderwaterFogDistance = value;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Sets the sky model matching \a sModel. Unknown names are rejected, the
+    current model stays active.
+*/
+void C3DScene::setSkyModel(const QString& sModel)
+{
+    CSkyModel* pNewModel = CSkyModel::create(sModel);
+
+    if (pNewModel != nullptr)
+    {
+        if (m_pSkyModel != nullptr) delete m_pSkyModel;
+        m_pSkyModel = pNewModel;
+    }
+    else
+    {
+        LOG_WARNING(QString("C3DScene::setSkyModel() : unknown sky model %1, keeping %2").arg(sModel).arg(m_pSkyModel->name()));
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Sets the ozone column amount scaling the nominal ozone absorption to \a value.
+    Negative values are clipped to zero, which disables ozone absorption.
+*/
+void C3DScene::setOzoneAmount(double value)
+{
+    if (value < 0.0)
+    {
+        value = 0.0;
+    }
+
+    m_dOzoneAmount = value;
 }
 
 //-------------------------------------------------------------------------------------------------

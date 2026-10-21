@@ -98,6 +98,8 @@ add_library(Quick3D SHARED
     source/render/CRenderContext.cpp
     source/render/CRessourcesManager.cpp
     source/render/CSkyBox.cpp
+    source/render/CSkyModel.cpp
+    source/render/CRayleighSkyModel.cpp
     source/render/CView.cpp
     source/render/CViewport.cpp
     source/terrain/CBILData.cpp

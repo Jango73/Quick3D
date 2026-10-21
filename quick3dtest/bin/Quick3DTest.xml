@@ -5,6 +5,12 @@
     <Camera3 Name="Drone01.Pilot" />
     <ControlledComponent Name="Man1" />
 
+    <Environment AtmosphereAltitude="100000.0" FogMinimumDistance="50.0" UnderwaterFogDistance="1000.0" SkyModel="Physical">
+        <GlobalAmbient r="0.05" g="0.05" b="0.15" />
+        <SkyColor r="0.2" g="0.6" b="1.0" />
+        <FogColor r="0.5" g="0.5" b="0.5" />
+    </Environment>
+
     <!--
     <Camera1 Name="Drone01.Pilot" />
     <ControlledComponent Name="Drone01" />

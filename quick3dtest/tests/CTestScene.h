@@ -81,6 +81,32 @@ private slots:
 
     //! A PVP like vehicle holding Z and C curves to the right of its start heading
     void testKeyDrivenPvpLikeVehicleTurnsRight();
+
+    //! A fresh scene carries the default rendering environment values
+    void testEnvironmentDefaultsMatchConstants();
+
+    //! An Environment node overrides the rendering environment values
+    void testEnvironmentLoadsFromXmlNode();
+
+    //! A high sun renders warm white, ordered red over green over blue
+    void testSunlightIsWarmWhiteAtNoon();
+
+    //! A sun near the horizon renders orange red, blue mostly scattered away
+    void testSunlightTurnsRedAtHorizon();
+
+    //! A sun below the horizon renders black
+    void testSunlightIsBlackAtNight();
+
+    //! The horizon sky under a high sun has no green cast with ozone
+    void testHorizonSkyHasNoGreenCastWithOzone();
+
+    //! Setting the ozone amount clamps negative values and keeps the tint valid
+    void testOzoneAmountClampsNegativeValues();
+    //! An unknown sky model name keeps the current model active
+    void testUnknownSkyModelKeepsCurrentModel();
+
+    //! The sky model factory builds the physical model and rejects the rest
+    void testSkyModelFactoryBuildsPhysicalModel();
 };
 
 //-------------------------------------------------------------------------------------------------

@@ -37,6 +37,8 @@ QVector<QSP<CComponent> > CComponentLoader::load(const QString& sBaseFile, C3DSc
     QString sCamera4;
     QString sControlled;
 
+    pScene->resetEnvironmentToDefaults();
+
     foreach (CXMLNode xNode, tDoc.nodes())
     {
         if (xNode.tag() == ParamName_Camera1)
@@ -58,6 +60,10 @@ QVector<QSP<CComponent> > CComponentLoader::load(const QString& sBaseFile, C3DSc
         else if (xNode.tag() == ParamName_ControlledComponent)
         {
             sControlled = xNode.attributes()[ParamName_Name];
+        }
+        else if (xNode.tag() == ParamName_Environment)
+        {
+            pScene->loadEnvironment(xNode);
         }
         else if (xNode.tag() == ParamName_Components)
         {

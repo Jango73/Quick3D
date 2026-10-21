@@ -109,9 +109,6 @@ private slots:
     void onFogColorClicked();
     void onFogColorChanged(const QColor& tColor);
     void onFogColorDialogClosed();
-    void onSkyColorClicked();
-    void onSkyColorChanged(const QColor& tColor);
-    void onSkyColorDialogClosed();
     void onWindLevelChanged(int iValue);
     void onShaderQualityChanged(int iValue);
     void onTerrainResChanged(int iValue);
@@ -147,5 +144,4 @@ protected:
     CUiRemoteControlHandler*        m_pRemoteHandler;
     CRemoteControlServer*           m_pRemoteServer;
     QColorDialog*                   m_pFogColorDialog;
-    QColorDialog*                   m_pSkyColorDialog;
 };

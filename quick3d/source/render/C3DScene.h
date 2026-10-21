@@ -7,11 +7,13 @@
 #include <QTime>
 
 // qt-plus
-#include "CInterpolator.h"
 #include "CAverager.h"
+#include "CXMLNode.h"
 
 // Application
 #include "quick3d_global.h"
+#include "CEnvironmentDefaults.h"
+#include "CSkyModel.h"
 #include "C3DSceneStatistics.h"
 #include "CVector3.h"
 #include "CMatrix4.h"
@@ -87,6 +89,24 @@ public:
 
     //!
     void setSkyColor(const Math::CVector3& vColor);
+
+    //!
+    void setGlobalAmbientColor(const Math::CVector3& vColor);
+
+    //!
+    void setAtmosphereAltitude(double value);
+
+    //!
+    void setFogMinimumDistance(double value);
+
+    //!
+    void setUnderwaterFogDistance(double value);
+
+    //!
+    void setSkyModel(const QString& sModel);
+
+    //!
+    void setOzoneAmount(double value);
 
     //!
     void setWindLevel(double value);
@@ -191,6 +211,30 @@ public:
     //! Returns the user-set base sky zenith color, before sun intensity is applied
     Math::CVector3 skyColor() const { return m_vSkyBaseColor; }
 
+    //! Returns the user-set global ambient light color
+    Math::CVector3 globalAmbientColor() const { return m_vGlobalAmbientColor; }
+
+    //! Returns the altitude where the atmosphere factor reaches zero
+    double atmosphereAltitude() const { return m_dAtmosphereAltitude; }
+
+    //! Returns the fog distance floor applied at maximum fog level
+    double fogMinimumDistance() const { return m_dFogMinimumDistance; }
+
+    //! Returns the fog distance applied when the camera is underwater
+    double underwaterFogDistance() const { return m_dUnderwaterFogDistance; }
+
+    //! Returns the selected sky model name
+    QString skyModelName() const { return m_pSkyModel->name(); }
+
+    //! Returns the selected sky model, owned by the scene
+    CSkyModel* skyModel() { return m_pSkyModel; }
+
+    //! Returns the shader id matching the selected sky model
+    int skyModelId() const { return m_pSkyModel->id(); }
+
+    //! Returns the ozone column amount scaling the nominal ozone absorption
+    double ozoneAmount() const { return m_dOzoneAmount; }
+
     //!
     double time() const { return m_dTime; }
 
@@ -245,6 +289,12 @@ public:
 
     //! Sets up the scene
     virtual void init(QVector<QSP<CComponent> > vComponents);
+
+    //! Resets the rendering environment to default values
+    void resetEnvironmentToDefaults();
+
+    //! Loads the rendering environment from an <Environment> XML node
+    void loadEnvironment(const CXMLNode& xEnvironment);
 
     //! Sets up shaders
     virtual void initShaders();
@@ -375,7 +425,12 @@ protected:
     CFog                                    m_tFog;
     Math::CVector3                          m_vFogBaseColor;
     Math::CVector3                          m_vSkyBaseColor;
-    CInterpolator<Math::CVector4>           m_iSunColor;
+    Math::CVector3                          m_vGlobalAmbientColor;
+    double                                  m_dAtmosphereAltitude;
+    double                                  m_dFogMinimumDistance;
+    double                                  m_dUnderwaterFogDistance;
+    CSkyModel*                              m_pSkyModel;
+    double                                  m_dOzoneAmount;
     bool                                    m_bForDisplay;
     bool                                    m_bFrustumCheck;
     bool                                    m_bEditMode;

@@ -1,7 +1,6 @@
 
 // Application
 #include "CSkyModel.h"
-#include "CRayleighSkyModel.h"
 #include "CEnvironmentDefaults.h"
 
 // Qt
@@ -27,20 +26,5 @@ void CSkyModel::setupUniforms(QOpenGLShaderProgram* pProgram, const QVector3D& v
     Q_UNUSED(vSunDirection);
     Q_UNUSED(dOzoneAmount);
 
-    pProgram->setUniformValue("u_sky_model", (GLint) id());
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/*!
-    Creates the model matching \a sName, nullptr when unknown.
-*/
-CSkyModel* CSkyModel::create(const QString& sName)
-{
-    if (sName == SKY_MODEL_PHYSICAL)
-    {
-        return new CRayleighSkyModel();
-    }
-
-    return nullptr;
+    pProgram->setUniformValue(SkyUniforms::Model, (GLint) id());
 }

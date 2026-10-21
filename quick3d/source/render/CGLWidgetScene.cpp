@@ -6,6 +6,7 @@
 #include "CVector3.h"
 #include "CGLWidgetScene.h"
 #include "CSunlightModel.h"
+#include "CEnvironmentDefaults.h"
 #include "CRessourcesManager.h"
 #include "CTreeGenerator.h"
 #include "CBuildingGenerator.h"
@@ -253,11 +254,13 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QOpenGLShaderPro
         pProgram->setUniformValue("u_world_origin", QVector3D(m_vWorldOrigin.X, m_vWorldOrigin.Y, m_vWorldOrigin.Z));
         pProgram->setUniformValue("u_world_up", QVector3D(vWorldUp.X, vWorldUp.Y, vWorldUp.Z));
         pProgram->setUniformValue("u_camera_altitude", (GLfloat) pContext->camera()->geoloc().Altitude);
-        pProgram->setUniformValue("u_atmosphere_altitude", (GLfloat) m_dAtmosphereAltitude);
+        pProgram->setUniformValue("u_atmosphere_altitude", (GLfloat) atmosphereAltitude());
 
         // Lights
 
-        pProgram->setUniformValue("u_global_ambient", QVector3D(m_vGlobalAmbientColor.X, m_vGlobalAmbientColor.Y, m_vGlobalAmbientColor.Z));
+        Math::CVector3 vGlobalAmbient = globalAmbientColor();
+
+        pProgram->setUniformValue("u_global_ambient", QVector3D(vGlobalAmbient.X, vGlobalAmbient.Y, vGlobalAmbient.Z));
         pProgram->setUniformValue("u_shadow_enable", u_shadow_enable);
 
         pProgram->setUniformValue("u_num_lights", (GLint) iOpenGLLightIndex);
@@ -275,10 +278,21 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QOpenGLShaderPro
         pProgram->setUniformValue("u_fog_distance", (GLfloat) m_tFog.distance());
         pProgram->setUniformValue("u_fog_color", QVector3D(m_tFog.color().X, m_tFog.color().Y, m_tFog.color().Z));
         pProgram->setUniformValue("u_fog_level", (GLfloat) m_tFog.level());
-        pProgram->setUniformValue("u_sky_zenith_color", vSkyZenithColor);
+
+        if (skyModelId() != SkyModels::PhysicalId)
+        {
+            pProgram->setUniformValue(SkyUniforms::SkyZenithColor, vSkyZenithColor);
+        }
+
         pProgram->setUniformValue("u_sun_color", vSunColor);
         pProgram->setUniformValue("u_sun_intensity", (GLfloat) m_dSunIntensity);
-        pContext->scene()->skyModel()->setupUniforms(pProgram, vSunDirection, pContext->scene()->ozoneAmount());
+
+        QSP<CSkyModel> pSkyModel = skyModel();
+
+        if (pSkyModel != nullptr)
+        {
+            pSkyModel->setupUniforms(pProgram, vSunDirection, ozoneAmount());
+        }
     }
 
     C3DScene::setupEnvironment(pContext, pProgram, bBackgroundItem);
@@ -290,7 +304,7 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
 {
     if (m_bForDisplay)
     {
-        m_tFog.color() = m_vFogBaseColor;
+        m_tFog.color() = fogColor();
 
         double dNormalizedTime = fabs(((double) m_tTimeOfDay.secsTo(QTime(0, 0, 0)) /  86400.0));
         double dSunAngle = (dNormalizedTime * -360.0) + 180.0;
@@ -300,9 +314,10 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
         CVector3 vSunDir = vSunPosition.normalized();
         vSunDirection = QVector3D(vSunDir.X, vSunDir.Y, vSunDir.Z);
 
-        // Compute sun intensity
-        double dCosZenith = vSunDir.dot(pContext->camera()->worldPosition().normalized());
-        m_dSunIntensity = (dCosZenith + 1.0) * 0.5;
+        // Sun elevation sine, the dot product with the local up vector equals
+        // sin(elevation) and cos(zenith) at once
+        double dSunElevationSine = vSunDir.dot(pContext->camera()->worldPosition().normalized());
+        m_dSunIntensity = (dSunElevationSine + 1.0) * 0.5;
 
         // Underwater light absorption (Beer-Lambert law, per channel)
         CVector3 vWaterAttenuation(1.0, 1.0, 1.0);
@@ -310,24 +325,25 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
         if (pContext->camera()->geoloc().Altitude < 0.0)
         {
             double dDepth = fabs(pContext->camera()->geoloc().Altitude);
-            vWaterAttenuation.X = exp(-DEFAULT_WATER_ATTENUATION_R * dDepth);
-            vWaterAttenuation.Y = exp(-DEFAULT_WATER_ATTENUATION_G * dDepth);
-            vWaterAttenuation.Z = exp(-DEFAULT_WATER_ATTENUATION_B * dDepth);
+            vWaterAttenuation = CVector3(
+                exp(-AtmospherePhysics::WaterAttenuationR * dDepth),
+                exp(-AtmospherePhysics::WaterAttenuationG * dDepth),
+                exp(-AtmospherePhysics::WaterAttenuationB * dDepth));
         }
 
-        double dAtmosphereFactor = (m_dAtmosphereAltitude - pContext->camera()->geoloc().Altitude) / m_dAtmosphereAltitude;
+        double dAtmosphereFactor = (atmosphereAltitude() - pContext->camera()->geoloc().Altitude) / atmosphereAltitude();
         if (dAtmosphereFactor < 0.0) dAtmosphereFactor = 0.0;
         if (dAtmosphereFactor > 1.0) dAtmosphereFactor = 1.0;
 
         // Compute fog distance
         double dFogDistance = (1.0 - m_tFog.level()) * pContext->camera()->maxDistance();
-        if (dFogDistance < m_dFogMinimumDistance) dFogDistance = m_dFogMinimumDistance;
+        if (dFogDistance < fogMinimumDistance()) dFogDistance = fogMinimumDistance();
         m_tFog.distance() = dFogDistance;
 
         // Underwater fog
         if (pContext->camera()->geoloc().Altitude < 0.0)
         {
-            m_tFog.distance() = m_dUnderwaterFogDistance;
+            m_tFog.distance() = underwaterFogDistance();
         }
 
         m_dSunIntensity = Math::Angles::_max(m_dSunIntensity, 1.0 - dAtmosphereFactor);
@@ -339,12 +355,10 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
         {
             vSuns[0]->setPosition(vSunPosition);
 
-            CVector3 vTint = computeSunlightColor(dCosZenith, pContext->scene()->ozoneAmount());
+            CVector3 vTint = CSunlightModel::computeSunlightColor(dSunElevationSine, ozoneAmount());
             CVector4 vSurfaceColor(vTint.X, vTint.Y, vTint.Z, 1.0);
 
-            vSurfaceColor.X *= vWaterAttenuation.X;
-            vSurfaceColor.Y *= vWaterAttenuation.Y;
-            vSurfaceColor.Z *= vWaterAttenuation.Z;
+            vSurfaceColor *= CVector4(vWaterAttenuation.X, vWaterAttenuation.Y, vWaterAttenuation.Z, 1.0);
 
             vSuns[0]->material()->diffuse() = vSurfaceColor;
         }
@@ -352,12 +366,11 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
         // Multiply fog color with sun intensity
         m_tFog.color() = m_tFog.color() * m_dSunIntensity;
 
-        m_tFog.color().X *= vWaterAttenuation.X;
-        m_tFog.color().Y *= vWaterAttenuation.Y;
-        m_tFog.color().Z *= vWaterAttenuation.Z;
+        m_tFog.color() *= vWaterAttenuation;
 
-        // Sky zenith follows its own base color, modulated like fog
-        Math::CVector3 vSkyBase = pContext->scene()->skyColor();
+        // Sky zenith follows its own base color, modulated like fog. The
+        // physical sky model ignores this value and computes the sky instead
+        Math::CVector3 vSkyBase = skyColor();
         vSkyZenithColor = QVector3D(vSkyBase.X * m_dSunIntensity, vSkyBase.Y * m_dSunIntensity, vSkyBase.Z * m_dSunIntensity);
 
         if (vSuns.count() > 0)

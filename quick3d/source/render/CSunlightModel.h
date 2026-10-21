@@ -1,14 +1,10 @@
 
 #pragma once
 
-// C++
-#include <cmath>
-
 // Application
 #include "CEnvironmentDefaults.h"
 #include "CAtmosphereOptics.h"
 #include "CVector3.h"
-#include "Angles.h"
 
 //-------------------------------------------------------------------------------------------------
 // Physical sunlight tint.
@@ -21,31 +17,42 @@
 // keyframed tint table.
 //-------------------------------------------------------------------------------------------------
 
-inline Math::CVector3 computeSunlightColor(double dSinElevation, double dOzoneAmount = DEFAULT_OZONE_AMOUNT)
+namespace CSunlightModel
 {
-    if (dSinElevation <= 0.0)
+
+/************************************************************************/
+/*!
+    Returns the direct sun color for \a dSunElevationSine, the sine of the sun
+    elevation above the horizon. Callers compute it as the dot product of the
+    normalized sun direction with the local up vector, which equals
+    sin(elevation) and cos(zenith) at once. Values at or below zero render
+    black, values above one are clamped.
+*/
+inline Math::CVector3 computeSunlightColor(double dSunElevationSine, double dOzoneAmount = EnvironmentDefaults::OzoneAmount)
+{
+    if (dSunElevationSine <= 0.0)
     {
         return Math::CVector3(0.0, 0.0, 0.0);
     }
 
-    if (dSinElevation > 1.0)
-    {
-        dSinElevation = 1.0;
-    }
+    dSunElevationSine = CAtmosphereOptics::clampSinElevation(dSunElevationSine);
+    dOzoneAmount = CAtmosphereOptics::clampOzoneAmount(dOzoneAmount);
 
     Math::CVector3 vTransmittance = CAtmosphereOptics::computeSunTransmittance(
-        dSinElevation,
-        DEFAULT_RAYLEIGH_SCALE_HEIGHT,
-        DEFAULT_RAYLEIGH_BETA_R,
-        DEFAULT_RAYLEIGH_BETA_G,
-        DEFAULT_RAYLEIGH_BETA_B,
-        DEFAULT_OZONE_BETA_R,
-        DEFAULT_OZONE_BETA_G,
-        DEFAULT_OZONE_BETA_B,
+        dSunElevationSine,
+        AtmospherePhysics::RayleighScaleHeight,
+        AtmospherePhysics::RayleighBetaR,
+        AtmospherePhysics::RayleighBetaG,
+        AtmospherePhysics::RayleighBetaB,
+        AtmospherePhysics::OzoneBetaR,
+        AtmospherePhysics::OzoneBetaG,
+        AtmospherePhysics::OzoneBetaB,
         dOzoneAmount);
 
     return Math::CVector3(
-        DEFAULT_SUN_RADIANCE_SCALE * vTransmittance.X,
-        DEFAULT_SUN_RADIANCE_SCALE * vTransmittance.Y,
-        DEFAULT_SUN_RADIANCE_SCALE * vTransmittance.Z);
+        AtmospherePhysics::SunRadianceScale * vTransmittance.X,
+        AtmospherePhysics::SunRadianceScale * vTransmittance.Y,
+        AtmospherePhysics::SunRadianceScale * vTransmittance.Z);
 }
+
+} // namespace CSunlightModel

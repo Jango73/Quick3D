@@ -1,6 +1,7 @@
 
 // Application
 #include "CRayleighSkyModel.h"
+#include "CAtmosphereOptics.h"
 #include "CEnvironmentDefaults.h"
 
 // Qt
@@ -15,15 +16,12 @@ void CRayleighSkyModel::setupUniforms(QOpenGLShaderProgram* pProgram, const QVec
 {
     CSkyModel::setupUniforms(pProgram, vSunDirection, dOzoneAmount);
 
-    if (dOzoneAmount < 0.0)
-    {
-        dOzoneAmount = 0.0;
-    }
+    dOzoneAmount = CAtmosphereOptics::clampOzoneAmount(dOzoneAmount);
 
-    pProgram->setUniformValue("u_sun_direction", vSunDirection);
-    pProgram->setUniformValue("u_rayleigh_beta", QVector3D(DEFAULT_RAYLEIGH_BETA_R, DEFAULT_RAYLEIGH_BETA_G, DEFAULT_RAYLEIGH_BETA_B));
-    pProgram->setUniformValue("u_rayleigh_scale_height", (GLfloat) DEFAULT_RAYLEIGH_SCALE_HEIGHT);
-    pProgram->setUniformValue("u_ozone_beta", QVector3D(DEFAULT_OZONE_BETA_R, DEFAULT_OZONE_BETA_G, DEFAULT_OZONE_BETA_B));
-    pProgram->setUniformValue("u_ozone_amount", (GLfloat) dOzoneAmount);
-    pProgram->setUniformValue("u_sky_exposure", (GLfloat) DEFAULT_SKY_EXPOSURE);
+    pProgram->setUniformValue(SkyUniforms::SunDirection, vSunDirection);
+    pProgram->setUniformValue(SkyUniforms::RayleighBeta, QVector3D(AtmospherePhysics::RayleighBetaR, AtmospherePhysics::RayleighBetaG, AtmospherePhysics::RayleighBetaB));
+    pProgram->setUniformValue(SkyUniforms::RayleighScaleHeight, (GLfloat) AtmospherePhysics::RayleighScaleHeight);
+    pProgram->setUniformValue(SkyUniforms::OzoneBeta, QVector3D(AtmospherePhysics::OzoneBetaR, AtmospherePhysics::OzoneBetaG, AtmospherePhysics::OzoneBetaB));
+    pProgram->setUniformValue(SkyUniforms::OzoneAmount, (GLfloat) dOzoneAmount);
+    pProgram->setUniformValue(SkyUniforms::SkyExposure, (GLfloat) EnvironmentDefaults::SkyExposure);
 }

@@ -20,11 +20,19 @@ class QUICK3D_EXPORT CRayleighSkyModel : public CSkyModel
 {
 public:
 
+    //-------------------------------------------------------------------------------------------------
+    // Getters
+    //-------------------------------------------------------------------------------------------------
+
     //! Returns the model name as written in scene XML files
-    QString name() const Q_DECL_OVERRIDE { return SKY_MODEL_PHYSICAL; }
+    QString name() const Q_DECL_OVERRIDE { return SkyModels::PhysicalName; }
 
     //! Returns the shader id selecting this model
-    int id() const Q_DECL_OVERRIDE { return SKY_MODEL_PHYSICAL_ID; }
+    int id() const Q_DECL_OVERRIDE { return SkyModels::PhysicalId; }
+
+    //-------------------------------------------------------------------------------------------------
+    // Control methods
+    //-------------------------------------------------------------------------------------------------
 
     //! Pushes the model uniforms for the given sun direction and ozone amount
     void setupUniforms(QOpenGLShaderProgram* pProgram, const QVector3D& vSunDirection, double dOzoneAmount) Q_DECL_OVERRIDE;

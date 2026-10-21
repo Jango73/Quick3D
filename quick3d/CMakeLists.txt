@@ -92,6 +92,7 @@ add_library(Quick3D SHARED
     source/render/C3DScenePhysics.cpp
     source/render/CAtmosphere.cpp
     source/render/CCamera.cpp
+    source/render/CEnvironment.cpp
     source/render/CFog.cpp
     source/render/CGLWidgetScene.cpp
     source/render/CLight.cpp
@@ -99,6 +100,7 @@ add_library(Quick3D SHARED
     source/render/CRessourcesManager.cpp
     source/render/CSkyBox.cpp
     source/render/CSkyModel.cpp
+    source/render/CSkyModelFactory.cpp
     source/render/CRayleighSkyModel.cpp
     source/render/CView.cpp
     source/render/CViewport.cpp

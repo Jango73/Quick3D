@@ -2,9 +2,16 @@
 // Qt
 #include <QFileDialog>
 #include <QColorDialog>
+#include <QComboBox>
+#include <QDialog>
+#include <QDoubleSpinBox>
+#include <QFormLayout>
 #include <QPushButton>
 #include <QRandomGenerator>
 #include <QKeyEvent>
+
+// Quick3D
+#include "CEnvironmentDefaults.h"
 
 // Quick3D
 #include "CConsoleBoard.h"
@@ -87,6 +94,7 @@ Quick3DTest::Quick3DTest(QString sSceneFileName, QWidget *parent, Qt::WFlags fla
 
     connect(ui.m_sTime, SIGNAL(valueChanged(int)), this, SLOT(onTimeChanged(int)));
     connect(ui.m_sFogLevel, SIGNAL(valueChanged(int)), this, SLOT(onFogLevelChanged(int)));
+    connect(ui.m_bEnvironment, SIGNAL(clicked()), this, SLOT(onEnvironmentClicked()));
 
     ui.m_sFogLevel->setGeometry(10, 20, 68, 20);
 
@@ -156,6 +164,8 @@ void Quick3DTest::loadScene(QString sFileName)
     LOG_METHOD_DEBUG("Instanciating scene...");
 
     m_pScene->clear();
+
+    m_pScene->resetEnvironmentToDefaults();
 
     m_pScene->viewports()[0] = new CViewport(m_pScene, false);
     m_pScene->viewports()[0]->setEnabled(true);
@@ -667,6 +677,99 @@ void Quick3DTest::onTimeChanged(int iValue)
 void Quick3DTest::onFogLevelChanged(int iValue)
 {
     m_pScene->setFogLevel(double(iValue) / 100.0);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void Quick3DTest::onEnvironmentClicked()
+{
+    QDialog tDialog(this);
+    tDialog.setWindowTitle("Environment");
+
+    QFormLayout* pLayout = new QFormLayout(&tDialog);
+
+    QComboBox* pSkyModel = new QComboBox(&tDialog);
+    pSkyModel->addItem(QString(SkyModels::PhysicalName));
+    pSkyModel->setCurrentText(m_pScene->skyModelName());
+    pLayout->addRow("Sky model", pSkyModel);
+
+    QDoubleSpinBox* pOzoneAmount = new QDoubleSpinBox(&tDialog);
+    pOzoneAmount->setRange(0.0, 4.0);
+    pOzoneAmount->setSingleStep(0.05);
+    pOzoneAmount->setDecimals(2);
+    pOzoneAmount->setValue(m_pScene->ozoneAmount());
+    pLayout->addRow("Ozone amount", pOzoneAmount);
+
+    QDoubleSpinBox* pAtmosphereAltitude = new QDoubleSpinBox(&tDialog);
+    pAtmosphereAltitude->setRange(1000.0, 1000000.0);
+    pAtmosphereAltitude->setSingleStep(1000.0);
+    pAtmosphereAltitude->setDecimals(0);
+    pAtmosphereAltitude->setValue(m_pScene->atmosphereAltitude());
+    pLayout->addRow("Atmosphere altitude", pAtmosphereAltitude);
+
+    QDoubleSpinBox* pFogMinimum = new QDoubleSpinBox(&tDialog);
+    pFogMinimum->setRange(0.0, 50000.0);
+    pFogMinimum->setSingleStep(10.0);
+    pFogMinimum->setDecimals(0);
+    pFogMinimum->setValue(m_pScene->fogMinimumDistance());
+    pLayout->addRow("Fog minimum distance", pFogMinimum);
+
+    QDoubleSpinBox* pUnderwaterFog = new QDoubleSpinBox(&tDialog);
+    pUnderwaterFog->setRange(0.0, 100000.0);
+    pUnderwaterFog->setSingleStep(10.0);
+    pUnderwaterFog->setDecimals(0);
+    pUnderwaterFog->setValue(m_pScene->underwaterFogDistance());
+    pLayout->addRow("Underwater fog distance", pUnderwaterFog);
+
+    QPushButton* pGlobalAmbientButton = new QPushButton("Choose...", &tDialog);
+    pLayout->addRow("Global ambient", pGlobalAmbientButton);
+
+    QPushButton* pSkyColorButton = new QPushButton("Choose...", &tDialog);
+    pLayout->addRow("Sky color", pSkyColorButton);
+
+    QPushButton* pFogColorButton = new QPushButton("Choose...", &tDialog);
+    pLayout->addRow("Fog color", pFogColorButton);
+
+    connect(pSkyModel, &QComboBox::currentTextChanged, [this](const QString& sName) { m_pScene->setSkyModel(sName); });
+    connect(pOzoneAmount, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this](double dValue) { m_pScene->setOzoneAmount(dValue); });
+    connect(pAtmosphereAltitude, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this](double dValue) { m_pScene->setAtmosphereAltitude(dValue); });
+    connect(pFogMinimum, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this](double dValue) { m_pScene->setFogMinimumDistance(dValue); });
+    connect(pUnderwaterFog, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this](double dValue) { m_pScene->setUnderwaterFogDistance(dValue); });
+
+    connect(pGlobalAmbientButton, &QPushButton::clicked, [this]()
+    {
+        Math::CVector3 vCurrent = m_pScene->globalAmbientColor();
+        QColor tChosen = QColorDialog::getColor(QColor(int(vCurrent.X * 255.0), int(vCurrent.Y * 255.0), int(vCurrent.Z * 255.0)), this, "Global ambient");
+
+        if (tChosen.isValid() == true)
+        {
+            m_pScene->setGlobalAmbientColor(Math::CVector3(double(tChosen.red()) / 255.0, double(tChosen.green()) / 255.0, double(tChosen.blue()) / 255.0));
+        }
+    });
+
+    connect(pSkyColorButton, &QPushButton::clicked, [this]()
+    {
+        Math::CVector3 vCurrent = m_pScene->skyColor();
+        QColor tChosen = QColorDialog::getColor(QColor(int(vCurrent.X * 255.0), int(vCurrent.Y * 255.0), int(vCurrent.Z * 255.0)), this, "Sky color");
+
+        if (tChosen.isValid() == true)
+        {
+            m_pScene->setSkyColor(Math::CVector3(double(tChosen.red()) / 255.0, double(tChosen.green()) / 255.0, double(tChosen.blue()) / 255.0));
+        }
+    });
+
+    connect(pFogColorButton, &QPushButton::clicked, [this]()
+    {
+        Math::CVector3 vCurrent = m_pScene->fogColor();
+        QColor tChosen = QColorDialog::getColor(QColor(int(vCurrent.X * 255.0), int(vCurrent.Y * 255.0), int(vCurrent.Z * 255.0)), this, "Fog color");
+
+        if (tChosen.isValid() == true)
+        {
+            m_pScene->setFogColor(Math::CVector3(double(tChosen.red()) / 255.0, double(tChosen.green()) / 255.0, double(tChosen.blue()) / 255.0));
+        }
+    });
+
+    tDialog.exec();
 }
 
 //-------------------------------------------------------------------------------------------------

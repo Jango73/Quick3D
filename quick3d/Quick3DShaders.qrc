@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
+        <file>resources/shaders/RayleighSky.inc.c</file>
         <file>resources/shaders/glsl1/VS_Standard.c</file>
         <file>resources/shaders/glsl1/FS_Standard.c</file>
         <file>resources/shaders/glsl1/FS_Special_Line.c</file>

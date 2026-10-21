@@ -2,6 +2,7 @@
 // Qt
 #include <QDir>
 #include <QFile>
+#include <QSet>
 #include <QTextStream>
 
 // qt-plus
@@ -250,6 +251,89 @@ QSP<CMeshGeometry> CRessourcesManager::loadMesh(const QString& sBaseFile, const 
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Expands #include "file" lines in \a sSource, resolved relative to the
+    folder of \a sFilePath. Included files expand recursively, already visited
+    files are skipped to break include cycles. Returns the expanded source.
+*/
+static QString expandShaderIncludes(const QString& sFilePath, const QString& sSource, QSet<QString>& sVisited)
+{
+    int iFolderEnd = sFilePath.lastIndexOf("/");
+
+    QString sFolder = (iFolderEnd >= 0) ? sFilePath.left(iFolderEnd) : QString(".");
+
+    QStringList lOutput;
+
+    QStringList lLines = sSource.split("\n");
+
+    foreach (const QString& sLine, lLines)
+    {
+        QString sTrimmed = sLine.trimmed();
+
+        if (sTrimmed.startsWith("#include") == true)
+        {
+            int iFirstQuote = sTrimmed.indexOf("\"");
+            int iLastQuote = sTrimmed.lastIndexOf("\"");
+
+            if (iFirstQuote >= 0 && iLastQuote > iFirstQuote)
+            {
+                QString sRelative = sTrimmed.mid(iFirstQuote + 1, iLastQuote - iFirstQuote - 1);
+
+                QStringList lParts = (sFolder + "/" + sRelative).split("/", Qt::SkipEmptyParts);
+                QStringList lNormalized;
+
+                foreach (const QString& sPart, lParts)
+                {
+                    if (sPart == ".")
+                    {
+                        continue;
+                    }
+                    else if (sPart == "..")
+                    {
+                        if (lNormalized.isEmpty() == false)
+                        {
+                            lNormalized.removeLast();
+                        }
+                    }
+                    else
+                    {
+                        lNormalized.append(sPart);
+                    }
+                }
+
+                QString sIncludedPath = lNormalized.join("/");
+
+                if (sVisited.contains(sIncludedPath) == false)
+                {
+                    sVisited.insert(sIncludedPath);
+
+                    QFile tIncludedFile(sIncludedPath);
+
+                    if (tIncludedFile.open(QIODevice::ReadOnly) == true)
+                    {
+                        QTextStream tIncludedStream(&tIncludedFile);
+                        QString sIncludedText = tIncludedStream.readAll();
+                        tIncludedFile.close();
+
+                        lOutput.append(expandShaderIncludes(sIncludedPath, sIncludedText, sVisited));
+                        continue;
+                    }
+                    else
+                    {
+                        LOG_WARNING(QString("CRessourcesManager::getShaderByFilePathName() : included shader %1 not found").arg(sIncludedPath));
+                    }
+                }
+
+                continue;
+            }
+        }
+
+        lOutput.append(sLine);
+    }
+
+    return lOutput.join("\n");
+}
+
 QString CRessourcesManager::getShaderByFilePathName(const QString& filePathName)
 {
     QHash<QString, QString>::iterator i = m_Shaders.find(filePathName);
@@ -267,6 +351,10 @@ QString CRessourcesManager::getShaderByFilePathName(const QString& filePathName)
         }
 
         inputFile.close();
+
+        QSet<QString> sVisited;
+        sVisited.insert(filePathName);
+        sText = expandShaderIncludes(filePathName, sText, sVisited);
 
         m_Shaders[filePathName] = sText;
     }

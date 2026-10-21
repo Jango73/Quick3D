@@ -107,6 +107,9 @@ private slots:
 
     //! The sky model factory builds the physical model and rejects the rest
     void testSkyModelFactoryBuildsPhysicalModel();
+
+    //! The physical sky model id matches the shared GLSL sky include
+    void testSkyModelIdMatchesShader();
 };
 
 //-------------------------------------------------------------------------------------------------

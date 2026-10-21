@@ -5,12 +5,17 @@
 
 // Qt
 #include <QtMath>
+#include <QFile>
 #include <QKeyEvent>
+#include <QRegularExpression>
+#include <QTextStream>
 
 // Application
 #include "CTestScene.h"
 #include "C3DScene.h"
+#include "CSkyModelFactory.h"
 #include "CSunlightModel.h"
+#include "CEnvironmentDefaults.h"
 #include "CAtmosphereOptics.h"
 #include "CVehicle.h"
 #include "CWheel.h"
@@ -1109,27 +1114,27 @@ void CTestScene::testEnvironmentDefaultsMatchConstants()
 {
     C3DScene cScene(false);
 
-    QCOMPARE(cScene.atmosphereAltitude(), DEFAULT_ATMOSPHERE_ALTITUDE);
-    QCOMPARE(cScene.fogMinimumDistance(), DEFAULT_FOG_MINIMUM_DISTANCE);
-    QCOMPARE(cScene.underwaterFogDistance(), DEFAULT_UNDERWATER_FOG_DISTANCE);
+    QCOMPARE(cScene.atmosphereAltitude(), EnvironmentDefaults::AtmosphereAltitude);
+    QCOMPARE(cScene.fogMinimumDistance(), EnvironmentDefaults::FogMinimumDistance);
+    QCOMPARE(cScene.underwaterFogDistance(), EnvironmentDefaults::UnderwaterFogDistance);
 
-    QCOMPARE(cScene.globalAmbientColor().X, DEFAULT_GLOBAL_AMBIENT_R);
-    QCOMPARE(cScene.globalAmbientColor().Y, DEFAULT_GLOBAL_AMBIENT_G);
-    QCOMPARE(cScene.globalAmbientColor().Z, DEFAULT_GLOBAL_AMBIENT_B);
+    QCOMPARE(cScene.globalAmbientColor().X, EnvironmentDefaults::GlobalAmbientR);
+    QCOMPARE(cScene.globalAmbientColor().Y, EnvironmentDefaults::GlobalAmbientG);
+    QCOMPARE(cScene.globalAmbientColor().Z, EnvironmentDefaults::GlobalAmbientB);
 
-    QCOMPARE(cScene.fogColor().X, DEFAULT_FOG_COLOR_R);
-    QCOMPARE(cScene.fogColor().Y, DEFAULT_FOG_COLOR_G);
-    QCOMPARE(cScene.fogColor().Z, DEFAULT_FOG_COLOR_B);
+    QCOMPARE(cScene.fogColor().X, EnvironmentDefaults::FogColorR);
+    QCOMPARE(cScene.fogColor().Y, EnvironmentDefaults::FogColorG);
+    QCOMPARE(cScene.fogColor().Z, EnvironmentDefaults::FogColorB);
 
-    QCOMPARE(cScene.skyColor().X, DEFAULT_SKY_COLOR_R);
-    QCOMPARE(cScene.skyColor().Y, DEFAULT_SKY_COLOR_G);
-    QCOMPARE(cScene.skyColor().Z, DEFAULT_SKY_COLOR_B);
+    QCOMPARE(cScene.skyColor().X, EnvironmentDefaults::SkyColorR);
+    QCOMPARE(cScene.skyColor().Y, EnvironmentDefaults::SkyColorG);
+    QCOMPARE(cScene.skyColor().Z, EnvironmentDefaults::SkyColorB);
 
-    QCOMPARE(cScene.ozoneAmount(), DEFAULT_OZONE_AMOUNT);
+    QCOMPARE(cScene.ozoneAmount(), EnvironmentDefaults::OzoneAmount);
 
-    QVERIFY2(cScene.skyModel() != nullptr, "Scene should own a sky model");
-    QCOMPARE(cScene.skyModelName(), QString(SKY_MODEL_PHYSICAL));
-    QCOMPARE(cScene.skyModelId(), SKY_MODEL_PHYSICAL_ID);
+    QVERIFY2(cScene.skyModel().data() != nullptr, "Scene should own a sky model");
+    QCOMPARE(cScene.skyModelName(), QString(SkyModels::PhysicalName));
+    QCOMPARE(cScene.skyModelId(), SkyModels::PhysicalId);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1161,7 +1166,7 @@ void CTestScene::testEnvironmentLoadsFromXmlNode()
     QCOMPARE(cScene.fogMinimumDistance(), 25.0);
     QCOMPARE(cScene.underwaterFogDistance(), 500.0);
     QCOMPARE(cScene.skyModelName(), QString("Physical"));
-    QCOMPARE(cScene.skyModelId(), SKY_MODEL_PHYSICAL_ID);
+    QCOMPARE(cScene.skyModelId(), SkyModels::PhysicalId);
     QCOMPARE(cScene.ozoneAmount(), 1.5);
 
     QCOMPARE(cScene.globalAmbientColor().X, 0.1);
@@ -1190,8 +1195,8 @@ void CTestScene::testUnknownSkyModelKeepsCurrentModel()
 
     cScene.setSkyModel("Bogus");
 
-    QVERIFY2(cScene.skyModel() != nullptr, "Scene should still own a sky model");
-    QCOMPARE(cScene.skyModelName(), QString(SKY_MODEL_PHYSICAL));
+    QVERIFY2(cScene.skyModel().data() != nullptr, "Scene should still own a sky model");
+    QCOMPARE(cScene.skyModelName(), QString(SkyModels::PhysicalName));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1203,15 +1208,38 @@ void CTestScene::testUnknownSkyModelKeepsCurrentModel()
 /***************************************************************************/
 void CTestScene::testSkyModelFactoryBuildsPhysicalModel()
 {
-    CSkyModel* pPhysical = CSkyModel::create("Physical");
+    QSP<CSkyModel> pPhysical = CSkyModelFactory::create("Physical");
 
-    QVERIFY2(pPhysical != nullptr, "Factory should build the physical model");
-    QCOMPARE(pPhysical->name(), QString(SKY_MODEL_PHYSICAL));
-    QCOMPARE(pPhysical->id(), SKY_MODEL_PHYSICAL_ID);
+    QVERIFY2(pPhysical.data() != nullptr, "Factory should build the physical model");
+    QCOMPARE(pPhysical->name(), QString(SkyModels::PhysicalName));
+    QCOMPARE(pPhysical->id(), SkyModels::PhysicalId);
 
-    delete pPhysical;
+    QVERIFY2(CSkyModelFactory::create("Bogus").data() == nullptr, "Factory should reject unknown models");
+}
 
-    QVERIFY2(CSkyModel::create("Bogus") == nullptr, "Factory should reject unknown models");
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+* \brief The physical sky model id matches the shared GLSL sky include.
+*
+* The C++ SkyModels::PhysicalId and the SKY_MODEL_PHYSICAL define in
+* RayleighSky.inc.c select the same shader branch, this test fails when the
+* two sides drift apart.
+*/
+/***************************************************************************/
+void CTestScene::testSkyModelIdMatchesShader()
+{
+    QFile tShader(":/resources/shaders/RayleighSky.inc.c");
+
+    QVERIFY2(tShader.open(QIODevice::ReadOnly) == true, "Shared sky shader include should be readable");
+
+    QTextStream tStream(&tShader);
+    QString sSource = tStream.readAll();
+
+    QRegularExpression tDefine(QString("#define\\s+SKY_MODEL_PHYSICAL\\s+%1\\b").arg(SkyModels::PhysicalId));
+
+    QVERIFY2(tDefine.match(sSource).hasMatch() == true, qPrintable(QString("Shader should define SKY_MODEL_PHYSICAL as %1").arg(SkyModels::PhysicalId)));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1223,7 +1251,7 @@ void CTestScene::testSkyModelFactoryBuildsPhysicalModel()
 /***************************************************************************/
 void CTestScene::testSunlightIsWarmWhiteAtNoon()
 {
-    Math::CVector3 vNoon = computeSunlightColor(1.0);
+    Math::CVector3 vNoon = CSunlightModel::computeSunlightColor(1.0);
 
     QVERIFY2(vNoon.X > 1.0 && vNoon.Y > 1.0 && vNoon.Z > 1.0, "Noon sun should stay bright");
     QVERIFY2(vNoon.X > vNoon.Y && vNoon.Y > vNoon.Z, "Noon sun should stay warm white");
@@ -1239,7 +1267,7 @@ void CTestScene::testSunlightIsWarmWhiteAtNoon()
 /***************************************************************************/
 void CTestScene::testSunlightTurnsRedAtHorizon()
 {
-    Math::CVector3 vHorizon = computeSunlightColor(0.02);
+    Math::CVector3 vHorizon = CSunlightModel::computeSunlightColor(0.02);
 
     QVERIFY2(vHorizon.X > vHorizon.Y && vHorizon.Y > vHorizon.Z, "Horizon sun should lose blue first");
     QVERIFY2(vHorizon.Z < 0.05, "Horizon sun should have almost no blue left");
@@ -1255,7 +1283,7 @@ void CTestScene::testSunlightTurnsRedAtHorizon()
 /***************************************************************************/
 void CTestScene::testSunlightIsBlackAtNight()
 {
-    Math::CVector3 vNight = computeSunlightColor(-0.2);
+    Math::CVector3 vNight = CSunlightModel::computeSunlightColor(-0.2);
 
     QCOMPARE(vNight.X, 0.0);
     QCOMPARE(vNight.Y, 0.0);
@@ -1276,70 +1304,107 @@ void CTestScene::testSunlightIsBlackAtNight()
 /***************************************************************************/
 void CTestScene::testHorizonSkyHasNoGreenCastWithOzone()
 {
-    double dViewPath = DEFAULT_RAYLEIGH_SCALE_HEIGHT * CAtmosphereOptics::computeAirmass(0.0);
-
-    double dSinElevations[] = { 0.02, 0.05, 0.1, 0.2, 0.5 };
-
-    for (unsigned int iIndex = 0; iIndex < sizeof(dSinElevations) / sizeof(dSinElevations[0]); iIndex++)
+    // Independent reference values for the horizon sky: sun transmittance
+    // times Rayleigh scattering share times view absorption, computed once
+    // from the published equations (Kasten-Young airmass with the nominal
+    // ozone column). Hardcoded so this test validates the implementation
+    // against fixed numbers instead of re-implementing the formula.
+    struct SkyReference
     {
-        double dSinSun = dSinElevations[iIndex];
+        double dSunElevationSine;
+        double dRed;
+        double dGreen;
+        double dBlue;
+    };
+
+    const SkyReference tReferences[] =
+    {
+        { 0.02, 0.141068, 0.017826, 0.001171 },
+        { 0.05, 0.254364, 0.072158, 0.014835 },
+        { 0.10, 0.379982, 0.186943, 0.083592 },
+        { 0.20, 0.496731, 0.352928, 0.265094 },
+        { 0.50, 0.594914, 0.541349, 0.576549 },
+    };
+
+    const double dTolerance = 0.002;
+
+    double dViewPath = AtmospherePhysics::RayleighScaleHeight * CAtmosphereOptics::computeAirmass(0.0);
+
+    QVERIFY2(qAbs(dViewPath - 303129.35) < 1.0, qPrintable(QString("Unexpected grazing view path %1").arg(dViewPath)));
+
+    for (unsigned int iIndex = 0; iIndex < sizeof(tReferences) / sizeof(tReferences[0]); iIndex++)
+    {
+        const SkyReference& tReference = tReferences[iIndex];
 
         Math::CVector3 vSun = CAtmosphereOptics::computeSunTransmittance(
-            dSinSun,
-            DEFAULT_RAYLEIGH_SCALE_HEIGHT,
-            DEFAULT_RAYLEIGH_BETA_R,
-            DEFAULT_RAYLEIGH_BETA_G,
-            DEFAULT_RAYLEIGH_BETA_B,
-            DEFAULT_OZONE_BETA_R,
-            DEFAULT_OZONE_BETA_G,
-            DEFAULT_OZONE_BETA_B,
-            DEFAULT_OZONE_AMOUNT);
+            tReference.dSunElevationSine,
+            AtmospherePhysics::RayleighScaleHeight,
+            AtmospherePhysics::RayleighBetaR,
+            AtmospherePhysics::RayleighBetaG,
+            AtmospherePhysics::RayleighBetaB,
+            AtmospherePhysics::OzoneBetaR,
+            AtmospherePhysics::OzoneBetaG,
+            AtmospherePhysics::OzoneBetaB,
+            EnvironmentDefaults::OzoneAmount);
 
         Math::CVector3 vShare = CAtmosphereOptics::computeScatteringShare(
-            DEFAULT_RAYLEIGH_BETA_R,
-            DEFAULT_RAYLEIGH_BETA_G,
-            DEFAULT_RAYLEIGH_BETA_B,
-            DEFAULT_OZONE_BETA_R,
-            DEFAULT_OZONE_BETA_G,
-            DEFAULT_OZONE_BETA_B,
-            DEFAULT_OZONE_AMOUNT);
+            AtmospherePhysics::RayleighBetaR,
+            AtmospherePhysics::RayleighBetaG,
+            AtmospherePhysics::RayleighBetaB,
+            AtmospherePhysics::OzoneBetaR,
+            AtmospherePhysics::OzoneBetaG,
+            AtmospherePhysics::OzoneBetaB,
+            EnvironmentDefaults::OzoneAmount);
 
         Math::CVector3 vExtinction = CAtmosphereOptics::computeExtinction(
-            DEFAULT_RAYLEIGH_BETA_R,
-            DEFAULT_RAYLEIGH_BETA_G,
-            DEFAULT_RAYLEIGH_BETA_B,
-            DEFAULT_OZONE_BETA_R,
-            DEFAULT_OZONE_BETA_G,
-            DEFAULT_OZONE_BETA_B,
-            DEFAULT_OZONE_AMOUNT);
+            AtmospherePhysics::RayleighBetaR,
+            AtmospherePhysics::RayleighBetaG,
+            AtmospherePhysics::RayleighBetaB,
+            AtmospherePhysics::OzoneBetaR,
+            AtmospherePhysics::OzoneBetaG,
+            AtmospherePhysics::OzoneBetaB,
+            EnvironmentDefaults::OzoneAmount);
 
         Math::CVector3 vSky(
             vSun.X * vShare.X * (1.0 - exp(-vExtinction.X * dViewPath)),
             vSun.Y * vShare.Y * (1.0 - exp(-vExtinction.Y * dViewPath)),
             vSun.Z * vShare.Z * (1.0 - exp(-vExtinction.Z * dViewPath)));
 
+        QVERIFY2(qAbs(vSky.X - tReference.dRed) < dTolerance, qPrintable(QString("Red mismatch at sun %1: %2 vs %3").arg(tReference.dSunElevationSine).arg(vSky.X).arg(tReference.dRed)));
+        QVERIFY2(qAbs(vSky.Y - tReference.dGreen) < dTolerance, qPrintable(QString("Green mismatch at sun %1: %2 vs %3").arg(tReference.dSunElevationSine).arg(vSky.Y).arg(tReference.dGreen)));
+        QVERIFY2(qAbs(vSky.Z - tReference.dBlue) < dTolerance, qPrintable(QString("Blue mismatch at sun %1: %2 vs %3").arg(tReference.dSunElevationSine).arg(vSky.Z).arg(tReference.dBlue)));
+
         QVERIFY2(vSky.X >= vSky.Y, "Ozone horizon sky should not peak in green");
 
-        if (dSinSun <= 0.05)
+        if (tReference.dSunElevationSine <= 0.05)
         {
             QVERIFY2(vSky.X > 2.0 * vSky.Y, "Grazing sun horizon should be strongly red");
             QVERIFY2(vSky.Z <= vSky.Y, "Grazing sun horizon should have almost no blue left");
         }
     }
 
+    // Without ozone the same product peaks in green: reference sun
+    // transmittance at 0.5 sine elevation with no ozone absorption
     Math::CVector3 vSunBare = CAtmosphereOptics::computeSunTransmittance(
         0.5,
-        DEFAULT_RAYLEIGH_SCALE_HEIGHT,
-        DEFAULT_RAYLEIGH_BETA_R,
-        DEFAULT_RAYLEIGH_BETA_G,
-        DEFAULT_RAYLEIGH_BETA_B,
-        DEFAULT_OZONE_BETA_R,
-        DEFAULT_OZONE_BETA_G,
-        DEFAULT_OZONE_BETA_B,
+        AtmospherePhysics::RayleighScaleHeight,
+        AtmospherePhysics::RayleighBetaR,
+        AtmospherePhysics::RayleighBetaG,
+        AtmospherePhysics::RayleighBetaB,
+        AtmospherePhysics::OzoneBetaR,
+        AtmospherePhysics::OzoneBetaG,
+        AtmospherePhysics::OzoneBetaB,
         0.0);
 
-    double dBareViewR = 1.0 - exp(-DEFAULT_RAYLEIGH_BETA_R * dViewPath);
-    double dBareViewG = 1.0 - exp(-DEFAULT_RAYLEIGH_BETA_G * dViewPath);
+    QVERIFY2(qAbs(vSunBare.X - 0.911680) < dTolerance, "Bare sun red mismatch");
+    QVERIFY2(qAbs(vSunBare.Y - 0.806362) < dTolerance, "Bare sun green mismatch");
+    QVERIFY2(qAbs(vSunBare.Z - 0.589965) < dTolerance, "Bare sun blue mismatch");
+
+    double dBareViewR = 1.0 - exp(-AtmospherePhysics::RayleighBetaR * dViewPath);
+    double dBareViewG = 1.0 - exp(-AtmospherePhysics::RayleighBetaG * dViewPath);
+
+    QVERIFY2(qAbs(dBareViewR - 0.827637) < dTolerance, "Bare view red absorption mismatch");
+    QVERIFY2(qAbs(dBareViewG - 0.983298) < dTolerance, "Bare view green absorption mismatch");
 
     QVERIFY2(vSunBare.Y * dBareViewG > vSunBare.X * dBareViewR, "Bare Rayleigh sky should peak in green");
 }
@@ -1359,7 +1424,7 @@ void CTestScene::testOzoneAmountClampsNegativeValues()
 
     QCOMPARE(cScene.ozoneAmount(), 0.0);
 
-    Math::CVector3 vNoon = computeSunlightColor(1.0, cScene.ozoneAmount());
+    Math::CVector3 vNoon = CSunlightModel::computeSunlightColor(1.0, cScene.ozoneAmount());
 
     QVERIFY2(vNoon.X > vNoon.Y && vNoon.Y > vNoon.Z, "Ozone free noon sun should stay warm white");
 }

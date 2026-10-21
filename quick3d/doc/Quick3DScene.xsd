@@ -413,15 +413,11 @@
       <xs:element type="ColorRGBType" name="SkyColor" maxOccurs="1" minOccurs="0"/>
       <xs:element type="ColorRGBType" name="FogColor" maxOccurs="1" minOccurs="0"/>
     </xs:sequence>
-    <xs:simpleContent>
-      <xs:extension base="xs:string">
-        <xs:attribute type="xs:float" name="AtmosphereAltitude" use="optional"/>
-        <xs:attribute type="xs:float" name="FogMinimumDistance" use="optional"/>
-        <xs:attribute type="xs:float" name="UnderwaterFogDistance" use="optional"/>
-        <xs:attribute type="xs:string" name="SkyModel" use="optional"/>
-        <xs:attribute type="xs:float" name="OzoneAmount" use="optional"/>
-      </xs:extension>
-    </xs:simpleContent>
+    <xs:attribute type="xs:float" name="AtmosphereAltitude" use="optional"/>
+    <xs:attribute type="xs:float" name="FogMinimumDistance" use="optional"/>
+    <xs:attribute type="xs:float" name="UnderwaterFogDistance" use="optional"/>
+    <xs:attribute type="xs:string" name="SkyModel" use="optional"/>
+    <xs:attribute type="xs:float" name="OzoneAmount" use="optional"/>
   </xs:complexType>
   <xs:complexType name="PhysicsType">
     <xs:simpleContent>

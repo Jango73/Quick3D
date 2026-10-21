@@ -37,7 +37,9 @@ QVector<QSP<CComponent> > CComponentLoader::load(const QString& sBaseFile, C3DSc
     QString sCamera4;
     QString sControlled;
 
-    pScene->resetEnvironmentToDefaults();
+    // Note: no implicit environment reset here. Callers reset the scene
+    // environment explicitly before loading, so a load never depends on a
+    // hidden double-initialization order with the C3DScene constructor
 
     foreach (CXMLNode xNode, tDoc.nodes())
     {

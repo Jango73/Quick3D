@@ -220,6 +220,35 @@
          </widget>
         </item>
         <item>
+         <widget class="QGroupBox" name="groupBox_Environment">
+          <property name="minimumSize">
+           <size>
+            <width>180</width>
+            <height>50</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Environment</string>
+          </property>
+          <widget class="QPushButton" name="m_bEnvironment">
+           <property name="geometry">
+            <rect>
+             <x>20</x>
+             <y>18</y>
+             <width>150</width>
+             <height>24</height>
+            </rect>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
+           <property name="text">
+            <string>Edit environment...</string>
+           </property>
+          </widget>
+         </widget>
+        </item>
+        <item>
          <widget class="QGroupBox" name="groupBox_3">
           <property name="minimumSize">
            <size>

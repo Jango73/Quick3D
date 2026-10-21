@@ -6,89 +6,119 @@
 //
 // Every default used when a scene XML file omits the <Environment> node or one
 // of its attributes lives here. Scene files override these values, engine code
-// only reads them through C3DScene members, never as literals.
-//-------------------------------------------------------------------------------------------------
-
-#define DEFAULT_ATMOSPHERE_ALTITUDE         100000.0
-#define DEFAULT_FOG_MINIMUM_DISTANCE        50.0
-#define DEFAULT_UNDERWATER_FOG_DISTANCE     1000.0
-
-#define DEFAULT_GLOBAL_AMBIENT_R            0.05
-#define DEFAULT_GLOBAL_AMBIENT_G            0.05
-#define DEFAULT_GLOBAL_AMBIENT_B            0.15
-
-#define DEFAULT_SKY_COLOR_R                 0.2
-#define DEFAULT_SKY_COLOR_G                 0.6
-#define DEFAULT_SKY_COLOR_B                 1.0
-
-#define DEFAULT_FOG_COLOR_R                 0.5
-#define DEFAULT_FOG_COLOR_G                 0.5
-#define DEFAULT_FOG_COLOR_B                 0.5
-
-//-------------------------------------------------------------------------------------------------
-// Underwater light absorption (Beer-Lambert law).
+// only reads them through CEnvironment, never as literals.
 //
-// Downwelling light decays exponentially with depth, independently per channel:
-// transmitted = surface * exp(-Kd * depth). Red disappears in the first meters,
-// blue persists down to about 200 meters, so the blue tint under water emerges
-// from the computation instead of a forced color. Values are diffuse attenuation
-// coefficients in m-1 for clear oceanic water (Jerlov type I).
+// Physics (AtmospherePhysics) and configuration (EnvironmentDefaults) stay in
+// separate namespaces so a tuning change cannot be mistaken for a physics
+// change. Sky model identity (SkyModels) and shader uniform names
+// (SkyUniforms) are shared by the C++ models and the GLSL sky code.
 //-------------------------------------------------------------------------------------------------
 
-#define DEFAULT_WATER_ATTENUATION_R         0.33
-#define DEFAULT_WATER_ATTENUATION_G         0.05
-#define DEFAULT_WATER_ATTENUATION_B         0.02
+namespace AtmospherePhysics
+{
 
 //-------------------------------------------------------------------------------------------------
-// Direct sunlight tint (Rayleigh scattering and ozone absorption).
-//
-// Surviving sunlight after crossing the atmosphere is computed as
-// tint = scale * exp(-(beta + ozoneAmount * ozoneBeta) * path), with path =
-// scale height * airmass.
-// Scattering removes blue faster than red, so a low sun turns orange then red
-// while a high sun stays warm white. Beta values are sea level Rayleigh
-// scattering coefficients in m-1. The radiance scale maps the physical
-// transmittance (0..1) to engine light units, tuned so noon matches the
-// previous look.
+// Rayleigh scattering and ozone absorption.
 //-------------------------------------------------------------------------------------------------
 
-#define DEFAULT_RAYLEIGH_BETA_R             5.8e-6
-#define DEFAULT_RAYLEIGH_BETA_G             13.5e-6
-#define DEFAULT_RAYLEIGH_BETA_B             33.1e-6
-#define DEFAULT_RAYLEIGH_SCALE_HEIGHT       7994.0
-#define DEFAULT_SUN_RADIANCE_SCALE          1.46
+// Sea level Rayleigh scattering coefficients in m-1
+constexpr double RayleighBetaR = 5.8e-6;
+constexpr double RayleighBetaG = 13.5e-6;
+constexpr double RayleighBetaB = 33.1e-6;
+constexpr double RayleighScaleHeight = 7994.0;
+constexpr double SunRadianceScale = 1.46;
 
-//-------------------------------------------------------------------------------------------------
-// Ozone absorption (Chappuis bands).
-//
+// Kasten and Young (1989) relative airmass coefficients. Single source of
+// truth shared by CAtmosphereOptics and the GLSL sky include, keep the GLSL
+// copy in sync when editing here
+constexpr double KastenYoungA = 0.50572;
+constexpr double KastenYoungB = 6.07995;
+constexpr double KastenYoungC = 1.6364;
+
 // Effective RGB-fitted ozone extinction in m-1, applied over the same analytic
 // slant path as Rayleigh scattering. The green channel absorbs the most since
 // the Chappuis peak near 600 nm falls between the green and red channels,
-// which removes the green horizon cast of a pure Rayleigh sky. The scene ozone
-// amount scales these values, 1.0 is the nominal column, 0.0 disables ozone.
+// which removes the green horizon cast of a pure Rayleigh sky
+constexpr double OzoneBetaR = 2.0e-6;
+constexpr double OzoneBetaG = 5.0e-6;
+constexpr double OzoneBetaB = 0.5e-6;
+
+// Underwater light absorption (Beer-Lambert law). Downwelling light decays
+// exponentially with depth, independently per channel: transmitted = surface *
+// exp(-Kd * depth). Red disappears in the first meters, blue persists down to
+// about 200 meters, so the blue tint under water emerges from the computation
+// instead of a forced color. Values are diffuse attenuation coefficients in
+// m-1 for clear oceanic water (Jerlov type I)
+constexpr double WaterAttenuationR = 0.33;
+constexpr double WaterAttenuationG = 0.05;
+constexpr double WaterAttenuationB = 0.02;
+
+} // namespace AtmospherePhysics
+
+namespace EnvironmentDefaults
+{
+
+//-------------------------------------------------------------------------------------------------
+// Scene configuration defaults.
 //-------------------------------------------------------------------------------------------------
 
-#define DEFAULT_OZONE_BETA_R                2.0e-6
-#define DEFAULT_OZONE_BETA_G                5.0e-6
-#define DEFAULT_OZONE_BETA_B                0.5e-6
-#define DEFAULT_OZONE_AMOUNT                1.0
+constexpr double AtmosphereAltitude = 100000.0;
+constexpr double FogMinimumDistance = 50.0;
+constexpr double UnderwaterFogDistance = 1000.0;
+
+constexpr double GlobalAmbientR = 0.05;
+constexpr double GlobalAmbientG = 0.05;
+constexpr double GlobalAmbientB = 0.15;
+
+constexpr double SkyColorR = 0.2;
+constexpr double SkyColorG = 0.6;
+constexpr double SkyColorB = 1.0;
+
+constexpr double FogColorR = 0.5;
+constexpr double FogColorG = 0.5;
+constexpr double FogColorB = 0.5;
+
+constexpr double OzoneAmount = 1.0;
+
+// Sky display exposure. The physical sky outputs small radiance values, this
+// exposure maps them to display range, calibrated so the noon zenith matches
+// the previous look
+constexpr double SkyExposure = 32.0;
+
+} // namespace EnvironmentDefaults
+
+namespace SkyModels
+{
 
 //-------------------------------------------------------------------------------------------------
-// Sky rendering model.
+// Sky rendering model identity.
 //
 // The scene XML selects the sky model by name. Only one model exists for now,
-// additional models add their own name, id and shader branch here.
+// additional models add their own name and id here. PhysicalId must match the
+// SKY_MODEL_PHYSICAL define in the shared GLSL sky include
+// (RayleighSky.inc.c), verified by CTestScene::testSkyModelIdMatchesShader.
 //-------------------------------------------------------------------------------------------------
 
-#define SKY_MODEL_PHYSICAL                  "Physical"
-#define SKY_MODEL_PHYSICAL_ID               0
-#define DEFAULT_SKY_MODEL                   SKY_MODEL_PHYSICAL
+constexpr const char* PhysicalName = "Physical";
+constexpr int PhysicalId = 0;
+constexpr const char* DefaultName = PhysicalName;
+
+} // namespace SkyModels
+
+namespace SkyUniforms
+{
 
 //-------------------------------------------------------------------------------------------------
-// Sky display exposure.
-//
-// The physical sky outputs small radiance values. This exposure maps them to
-// display range, calibrated so the noon zenith matches the previous look.
+// Shader uniform names shared by the C++ sky models and the GLSL sky code.
 //-------------------------------------------------------------------------------------------------
 
-#define DEFAULT_SKY_EXPOSURE                32.0
+constexpr const char* Model = "u_sky_model";
+constexpr const char* SunDirection = "u_sun_direction";
+constexpr const char* RayleighBeta = "u_rayleigh_beta";
+constexpr const char* RayleighScaleHeight = "u_rayleigh_scale_height";
+constexpr const char* OzoneBeta = "u_ozone_beta";
+constexpr const char* OzoneAmount = "u_ozone_amount";
+constexpr const char* SkyExposure = "u_sky_exposure";
+constexpr const char* SkyZenithColor = "u_sky_zenith_color";
+
+} // namespace SkyUniforms

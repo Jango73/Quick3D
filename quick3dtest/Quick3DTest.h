@@ -106,6 +106,7 @@ private slots:
     void onStreamView1Clicked();
     void onTimeChanged(int iValue);
     void onFogLevelChanged(int iValue);
+    void onEnvironmentClicked();
     void onFogColorClicked();
     void onFogColorChanged(const QColor& tColor);
     void onFogColorDialogClosed();

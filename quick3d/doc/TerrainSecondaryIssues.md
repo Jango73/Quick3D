@@ -80,3 +80,32 @@ face list, not from this map — so it cannot cause a visual hole.
 
 Fix direction: join with a separator
 (e.g. `QString("%1,%2,%3,%4")`) or key on a 64-bit packed integer tuple.
+
+## 5. `paintRecurse()` treats "no children yet" as "children drawable" (1-2 frame sky hole on every new patch)
+
+Location: `quick3d/source/mesh/CWorldTerrain.cpp`,
+`CWorldTerrain::paintRecurse()`.
+
+The flag was initialized to true and only cleared by the loop over
+existing children:
+
+```cpp
+bool bChildrenDrawable = true;
+
+foreach (... pChunk->childComponents())
+```
+
+With zero children the loop never runs, so a chunk whose LOD just
+flipped but whose children are not created yet (the build pass runs only
+every 6th `paint()`) reported drawable children. Both branches then
+recurse into an empty child list and collect nothing, instead of drawing
+the ready parent patch: the visible parent vanishes one frame, the
+children appear 1-2 frames later once built. `CWorldChunk::drawable()`
+does not have this bug, it returns false when there are no children.
+
+Fix applied: initialize the flag from the child count, so the parent
+stays on screen until real drawable children exist:
+
+```cpp
+bool bChildrenDrawable = pChunk->childComponents().count() > 0;
+```

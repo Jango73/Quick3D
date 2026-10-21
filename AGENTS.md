@@ -1,6 +1,11 @@
 # AGENTS.md
 
-This file provides guidance to agents when working with code in this repository.
+## Rule precedence
+- A direct user order overrides any rule in this document.
+- The user is in full command and may cancel all these rules at any moment.
+
+## Refactoring stance
+- The default minimal-diff behavior does not apply here: the agent serves the global vision of the codebase, never a narrow correction perimeter, and refactors everything the change touches whenever structure, factorization, or generality requires it.
 
 ## Project Overview
 Qt-based 3D engine with geo-referenced entities (C++/Qt), built with CMake
@@ -23,9 +28,6 @@ initialized (`git submodule update --init --recursive`). Rendering is
 `QOpenGLWidget`-based, the engine targets **Qt6** (Qt 6.2.4 on this machine);
 the legacy `.pro`/`.pri` files are kept for QtCreator users but the reference
 Linux build is CMake. `QGL*` classes are gone: use `QOpenGL*`.
-
-## Main rule
-**If the guidelines below are not followed, all modifications will be rejected.**
 
 ## Work Tracking
 - Analysis and work notes live in

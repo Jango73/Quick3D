@@ -705,7 +705,7 @@ void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRen
     CGeoloc gChunkPosition = pChunk->geoloc();
 
     bool bStayHere = enoughDetail(pChunk, pContext, iLevel);
-    bool bChildrenDrawable = true;
+    bool bChildrenDrawable = pChunk->childComponents().count() > 0;
 
     foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
     {

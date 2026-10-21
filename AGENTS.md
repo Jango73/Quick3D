@@ -59,6 +59,7 @@ Linux build is CMake. `QGL*` classes are gone: use `QOpenGL*`.
 - **WARNING/ERROR semantics**: `LOG_WARNING()` and `LOG_ERROR()` are human-facing alerts. They MUST stay short, actionable, and understandable without deep protocol knowledge.
 - **Diagnostic dumps**: Detailed diagnostics (mesh internals, face/vertex dumps, retry traces, step-by-step instrumentation) MUST use `LOG_DEBUG()`/`LOG_METHOD_DEBUG()` only, never warning or error level.
 - **TEXT literals**: Write log/UI messages directly as `QString`.
+- **Magic number**: NEVER introduce magic numbers or magic strings. Always declare reusable values in named constants.
 - **Declaration order**: Group declarations by type. 1: macros / 2: type definitions / 3: inline functions / 4: external functions / 5: other
 - **Function order**: DO NOT OVERUSE forward declarations. Define functions before they are used.
 - **I18n**: Write comments, console output and technical doc in english.

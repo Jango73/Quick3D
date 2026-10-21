@@ -7,6 +7,7 @@
 #include "CTestPhysics.h"
 #include "CTestVehicle.h"
 #include "CTestScene.h"
+#include "CTestTerrainSkirt.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -58,6 +59,11 @@ int CTestQuick3D::runAllTests()
 
     {
         CTestScene oTest;
+        iStatus |= QTest::qExec(&oTest);
+    }
+
+    {
+        CTestTerrainSkirt oTest;
         iStatus |= QTest::qExec(&oTest);
     }
 

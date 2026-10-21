@@ -17,6 +17,7 @@
 #include "CMaterial.h"
 #include "CHeightField.h"
 #include "CPerlin.h"
+#include "CPatchSkirtBuilder.h"
 
 //-------------------------------------------------------------------------------------------------
 // Forward declarations
@@ -99,6 +100,15 @@ public:
     //!
     const CMeshGeometry* mesh () const { return m_pMesh; }
 
+    //!
+    bool hasSkirt() const { return m_oSkirtRange.hasSkirt(); }
+
+    //! Returns the core grid vertex count, excluding appended skirt vertices
+    int coreVertexCount() const;
+
+    //!
+    const SPatchSkirtRange& skirtRange() const { return m_oSkirtRange; }
+
     //-------------------------------------------------------------------------------------------------
     // Inherited methods
     //-------------------------------------------------------------------------------------------------
@@ -165,6 +175,8 @@ protected:
     CMeshGeometry*                      m_pMesh;
     QVector<CMeshGeometry*>             m_vSeams;
     QMap<QString, int>                  m_mVerticesToFace;
+    SPatchSkirtParameters               m_oSkirtParameters;
+    SPatchSkirtRange                    m_oSkirtRange;
     int                                 m_iNumPoints;
     int                                 m_iLevel;
     int                                 m_iMaxLevel;

@@ -18,6 +18,8 @@ add_executable(Quick3DTest
     tests/CTestVehicle.h
     tests/CTestScene.cpp
     tests/CTestScene.h
+    tests/CTestTerrainSkirt.cpp
+    tests/CTestTerrainSkirt.h
     tests/CTestQuick3D.cpp
     tests/CTestQuick3D.h
     Quick3DTest.ui

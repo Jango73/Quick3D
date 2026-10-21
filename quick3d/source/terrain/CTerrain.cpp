@@ -244,21 +244,14 @@ double CTerrain::getHeightAt(const CGeoloc& gPosition, double* pRigidness)
             int iIndex3 = getPointIndexForXZ(iIterX + 1, iIterZ + 1);
             int iIndex4 = getPointIndexForXZ(iIterX + 0, iIterZ + 1);
 
+            int iCoreVertexCount = coreVertexCount();
+
             if (
-                    /*
-                        // Skirt
-                        iIndex1 >= 1 && iIndex2 >= 1 && iIndex3 >= 1 && iIndex4 >= 1 &&
-                        iIndex1 < m_pMesh->getVertices().count() - 1 &&
-                        iIndex2 < m_pMesh->getVertices().count() - 1 &&
-                        iIndex3 < m_pMesh->getVertices().count() - 1 &&
-                        iIndex4 < m_pMesh->getVertices().count() - 1
-                        */
-                    // No skirt
                     iIndex1 >= 0 && iIndex2 >= 0 && iIndex3 >= 0 && iIndex4 >= 0 &&
-                    iIndex1 < m_pMesh->vertices().count() &&
-                    iIndex2 < m_pMesh->vertices().count() &&
-                    iIndex3 < m_pMesh->vertices().count() &&
-                    iIndex4 < m_pMesh->vertices().count()
+                    iIndex1 < iCoreVertexCount &&
+                    iIndex2 < iCoreVertexCount &&
+                    iIndex3 < iCoreVertexCount &&
+                    iIndex4 < iCoreVertexCount
                     )
             {
                 CVector3 v1(m_pMesh->vertices()[iIndex1].position());
@@ -312,18 +305,8 @@ void CTerrain::work()
 
     CPerlin* pPerlin = CPerlin::getInstance();
 
-    // Initial patch
-    if (m_bIsWater == false && m_iLevel < m_iMaxLevel / 2)
-    {
-        // Skirt
-        // m_pMesh->createQuadPatch(m_iNumPoints, 1);
-        // m_iNumPoints += 2;
-        m_pMesh->createQuadPatch(m_iNumPoints, 0);
-    }
-    else
-    {
-        m_pMesh->createQuadPatch(m_iNumPoints, 0);
-    }
+    // Initial patch grid, skirts are appended by CPatchSkirtBuilder at the end of work()
+    m_pMesh->createQuadPatch(m_iNumPoints, 0);
 
     buildVerticesToFaceMap();
 
@@ -352,22 +335,6 @@ void CTerrain::work()
         {
             gPosition = pMaterial->transformGeoloc(gPosition);
         }
-
-        /*
-        // Skirt
-        if (m_bIsWater == false && m_iLevel < m_iMaxLevel / 2)
-        {
-            if (
-                gPosition.Latitude < geoloc().Latitude - m_gSize.Latitude * 0.5 ||
-                gPosition.Latitude > geoloc().Latitude + m_gSize.Latitude * 0.5 ||
-                gPosition.Longitude < geoloc().Longitude - m_gSize.Longitude * 0.5 ||
-                gPosition.Longitude > geoloc().Longitude + m_gSize.Longitude * 0.5
-                )
-            {
-                gPosition.Altitude = -m_gSize.Longitude * 100.0;
-            }
-        }
-        */
 
         CAxis aTopocentricAxis = gPosition.getTopocentricAxis();
 
@@ -401,7 +368,7 @@ void CTerrain::work()
         if (m_pHeights != nullptr)
         {
             // This test is important: with non-generated terrain, we don't want to load too much data in RAM
-            // We therefore get an altitude only for levels that are close to sea (x < niveau max / 2)
+            // We therefore get an altitude only for levels that are close to sea (x < max level / 2)
 
             if (m_pHeights->isGenerated() || m_iLevel < m_iMaxLevel / 2)
             {
@@ -531,6 +498,23 @@ void CTerrain::work()
     // Update mesh
     m_pMesh->setGeometryDirty(true);
 
+    // Append the tucked skirt after all core faces are final, water stays flat
+    if (m_bIsWater == false)
+    {
+        m_oSkirtRange = CPatchSkirtBuilder::buildSkirt(m_pMesh, m_iNumPoints, m_oSkirtParameters);
+
+        if (m_oSkirtRange.hasSkirt())
+        {
+            m_pMesh->computeNormals();
+            m_pMesh->setGeometryDirty(true);
+        }
+
+        if (m_bStopRequested)
+        {
+            return;
+        }
+    }
+
     // Terrain is ready
     m_bOK = true;
 
@@ -591,6 +575,27 @@ RayTracingResult CTerrain::intersect(Math::CRay3 ray)
     return RayTracingResult(Q3D_INFINITY);
 }
 
+/************************************************************************/
+
+/*!
+    Returns the core grid vertex count, excluding appended skirt vertices. \br\br
+    Height, ray and physics queries use this limit so skirts stay invisible to them.
+*/
+int CTerrain::coreVertexCount() const
+{
+    if (m_oSkirtRange.hasSkirt())
+    {
+        return m_oSkirtRange.CoreVertexCount;
+    }
+
+    if (m_pMesh != nullptr && m_pMesh->vertices().count() > 0)
+    {
+        return m_pMesh->vertices().count();
+    }
+
+    return m_iNumPoints * m_iNumPoints;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 void CTerrain::buildVerticesToFaceMap()
@@ -627,6 +632,7 @@ void CTerrain::dump(QTextStream& stream, int iIdent)
     dumpIndented(stream, iIdent, QString("Num. points : %1").arg(m_iNumPoints));
     dumpIndented(stream, iIdent, QString("Level : %1").arg(m_iLevel));
     dumpIndented(stream, iIdent, QString("Max level : %1").arg(m_iMaxLevel));
+    dumpIndented(stream, iIdent, QString("Skirt vertices : %1").arg(m_oSkirtRange.SkirtVertexCount));
     dumpIndented(stream, iIdent, QString("Mesh :"));
 
     dumpOpenBlock(stream, iIdent); iIdent++;

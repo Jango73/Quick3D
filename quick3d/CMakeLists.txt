@@ -68,6 +68,7 @@ add_library(Quick3D SHARED
     source/mesh/CMeshGeometry.cpp
     source/mesh/CMeshInstance.cpp
     source/mesh/COBJLoader.cpp
+    source/mesh/CPatchSkirtBuilder.cpp
     source/mesh/CParticle.cpp
     source/mesh/CParticleSystem.cpp
     source/mesh/CQ3DLoader.cpp

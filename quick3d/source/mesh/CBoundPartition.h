@@ -168,7 +168,7 @@ protected:
                 {
                     for (int iX = 0; iX < 2; iX++)
                     {
-                        // Définition de la boite englobante de la partition enfant
+                        // Definition of the child partition bounding box
                         Math::CVector3 vMinimum;
                         Math::CVector3 vMaximum;
 
@@ -180,7 +180,7 @@ protected:
                         vMaximum.Y = partition.bounds().minimum().Y + ((double) (iY + 1) * dNormalizedSizeY);
                         vMaximum.Z = partition.bounds().minimum().Z + ((double) (iZ + 1) * dNormalizedSizeZ);
 
-                        // Addition of the child partition
+                        // Append the child partition
                         CBoundPartition<T> bpChild = CBoundPartition<T>(CBoundingBox(vMinimum, vMaximum));
 
                         createPartitionsInternal(bpChild, iLevel + 1);

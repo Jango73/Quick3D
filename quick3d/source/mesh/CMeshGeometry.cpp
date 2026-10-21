@@ -22,6 +22,7 @@ CMeshGeometry::CMeshGeometry(C3DScene* pScene, double dMaxDistance, bool bUseSpa
     : m_pScene(pScene)
     , m_dMaxDistance(dMaxDistance)
     , m_iGLType(GL_TRIANGLES)
+    , m_iCoreVertexCount(-1)
     , m_bUseSpacePartitionning(bUseSpacePartitionning)
     , m_bAutomaticBounds(true)
     , m_bGeometryDirty(true)
@@ -86,11 +87,24 @@ void CMeshGeometry::setGeometryDirty(bool bDirty)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Records how many leading vertices are core grid data, the rest is patch extension. \br\br
+    Ray queries skip faces touching extension vertices so skirts stay invisible to them.
+*/
+void CMeshGeometry::setCoreVertexCount(int iCount)
+{
+    m_iCoreVertexCount = iCount;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CMeshGeometry::clear()
 {
     m_vVertices.clear();
     m_vFaces.clear();
     m_vVertexGroups.clear();
+
+    m_iCoreVertexCount = -1;
 
     m_bGeometryDirty = true;
 }
@@ -509,6 +523,30 @@ int CMeshGeometry::triangleCountForFaces(const QVector<int>& vFaceIndices)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Returns true when \a rFace references a vertex at or after \a iCoreVertexCount. \br\br
+    A negative count disables the test and every face is core data.
+*/
+static bool faceTouchesExtension(const CFace& rFace, int iCoreVertexCount)
+{
+    if (iCoreVertexCount < 0)
+    {
+        return false;
+    }
+
+    foreach (int iVertexIndex, rFace.indices())
+    {
+        if (iVertexIndex >= iCoreVertexCount)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CMeshGeometry::computeNormals()
 {
     if (m_iGLType == GL_POINTS)
@@ -530,9 +568,15 @@ void CMeshGeometry::computeNormals()
             // Computation of the polygon normal vector
             m_vFaces[FaceIndex].computeNormal();
 
+            bool bSkirtFace = faceTouchesExtension(m_vFaces[FaceIndex], m_iCoreVertexCount);
+
             // Processing of each polygon vertex
             foreach (int VertexIndex, m_vFaces[FaceIndex].indices())
             {
+                // Extension faces never alter core normals, otherwise patch
+                // borders darken from the skirt walls hanging below them
+                if (bSkirtFace && VertexIndex < m_iCoreVertexCount) continue;
+
                 m_vVertices[VertexIndex].normal() += m_vFaces[FaceIndex].normal();
                 m_vVertices[VertexIndex].tangent() += m_vFaces[FaceIndex].tangent();
                 m_vVertices[VertexIndex].normalDivider() += 1.0;
@@ -1420,6 +1464,8 @@ RayTracingResult CMeshGeometry::intersect(CComponent* pContainer, CRay3 rGlobalR
         {
             for (int iFaceIndex = 0; iFaceIndex < m_vFaces.count(); iFaceIndex++)
             {
+                if (faceTouchesExtension(m_vFaces[iFaceIndex], m_iCoreVertexCount)) continue;
+
                 if (m_vFaces[iFaceIndex].indices().count() > 2)
                 {
                     for (int iVertIndex = 2; iVertIndex < m_vFaces[iFaceIndex].indices().count(); iVertIndex++)
@@ -1463,6 +1509,8 @@ Math::RayTracingResult CMeshGeometry::intersectPartitionData(CComponent* pContai
 
         if (iFaceIndex < m_vFaces.count() && m_vFaces[iFaceIndex].indices().count() > 2)
         {
+            if (faceTouchesExtension(m_vFaces[iFaceIndex], m_iCoreVertexCount)) return dReturnResult;
+
             for (int iVertIndex = 2; iVertIndex < m_vFaces[iFaceIndex].indices().count(); iVertIndex++)
             {
                 int i1 = m_vFaces[iFaceIndex].indices()[0];

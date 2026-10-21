@@ -64,6 +64,12 @@ public:
     //!
     void setGeometryDirty(bool bDirty);
 
+    //! Records how many leading vertices are core grid data, the rest is patch extension
+    void setCoreVertexCount(int iCount);
+
+    //! Returns the recorded core vertex count, -1 when the whole mesh is core data
+    int coreVertexCount() const { return m_iCoreVertexCount; }
+
     //-------------------------------------------------------------------------------------------------
     // Getters
     //-------------------------------------------------------------------------------------------------
@@ -142,7 +148,7 @@ public:
     //!
     void update(double dDeltaTime);
 
-    //! Met à jour les buffers de géométrie OpenGL
+    //! Updates the OpenGL geometry buffers
     void checkAndUpdateGeometry();
 
     //! Draws the object
@@ -240,6 +246,7 @@ protected:
     QMap<QString, QString>          m_mDynTexUpdaters;          // Components that update dynamic textures
     double                          m_dMaxDistance;             // Maximum distance at which this mesh is visible
     int                             m_iGLType;
+    int                             m_iCoreVertexCount;         // Leading core vertices, -1 when all core
     bool                            m_bUseSpacePartitionning;   // If true, polygons are partitioned
     bool                            m_bAutomaticBounds;
     bool                            m_bGeometryDirty;           // If true, normals and partitions mush be computed

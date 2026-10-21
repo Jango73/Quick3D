@@ -429,8 +429,14 @@ bool CWorldChunk::terrainGrid(QVector<float>& outHeights, int& outSampleCount) c
 
     const CMeshGeometry* pMesh = pTerrain->mesh();
     int iPoints = pTerrain->numPoints();
+    int iCoreVertexCount = pTerrain->coreVertexCount();
 
-    if (pMesh == nullptr || iPoints < 2 || pMesh->vertices().count() != iPoints * iPoints)
+    if (pMesh == nullptr || iPoints < 2 || iCoreVertexCount != iPoints * iPoints)
+    {
+        return false;
+    }
+
+    if (pMesh->vertices().count() < iCoreVertexCount)
     {
         return false;
     }

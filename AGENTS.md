@@ -18,11 +18,7 @@ Qt-based 3D engine with geo-referenced entities (C++/Qt), built with CMake for Q
 Fresh clones have empty `qt-plus/` and `third/zlib/` until submodules are initialized (`git submodule update --init --recursive`). Rendering is `QOpenGLWidget`-based, the engine targets **Qt6** (Qt 6.2.4 on this machine); the legacy `.pro`/`.pri` files are kept for QtCreator users but the reference Linux build is CMake. `QGL*` classes are gone: use `QOpenGL*`.
 
 ## Release vs debug
-- Build in RELEASE mode. DEBUG is used when tracking bugs (hence its name) : either when debug logs or an attachement with a debugger is needed.
-
-## Work Tracking
-- Analysis and work notes, if any, live in `quick3d/doc/`.
-- Keep these files up to date while working.
+- Work and build in RELEASE mode. DEBUG is used when tracking bugs (hence its name) : either when debug logs or an attachement with a debugger is needed.
 
 ## Communication Guidelines
 - NEVER use emojis in responses.
@@ -109,6 +105,10 @@ Never leave a blank line in the commit message: lines follow each other directly
 
 ## Documentation
 - Build setup of the engine: `README.md`, `quick3d/doc/` (`Quick3D.qdocconf`, `Quick3DScene.xsd`), `qt-plus/README.md`
+
+## Work Tracking
+- Analysis and work notes, if any, live in `quick3d/doc/`.
+- Keep these files up to date while working.
 
 **Core Components:**
 - **qt-plus** (`qt-plus/source/cpp`): Shared Qt utility library (logging, XML, singletons, interpolation, geo tools, web, QML tree). Git submodule.

@@ -5,12 +5,16 @@
 // Std
 #include <algorithm>
 
+// Qt
+#include <QSet>
+
 // Application
 #include "C3DScene.h"
 #include "CGeoFrame.h"
 #include "CComponentFactory.h"
 #include "CWorkerManager.h"
 #include "CWorldTerrain.h"
+#include "CRenderLayer.h"
 #include "CTreeGenerator.h"
 #include "CTiledMaterial.h"
 #include "CGeneratedField.h"
@@ -282,6 +286,40 @@ void CWorldTerrain::paint(CRenderContext* pContext)
 
     paintRecurse(vChunkCollect, pContext, m_pRoot, m_iLevels, QSP<CWorldChunk>());
 
+    // TEMP-PROBE partition overlap: counts chunks collected in both layer passes
+    {
+        static QSet<const CWorldChunk*> s_tFarCollect;
+        static int s_iProbeCalls = 0;
+
+        int iLayer = (pContext != nullptr && pContext->camera() != nullptr) ? pContext->camera()->currentPaintLayer() : -1;
+
+        if (iLayer == RENDER_LAYER_FAR)
+        {
+            s_tFarCollect.clear();
+
+            foreach (QSP<CWorldChunk> pChunk, vChunkCollect)
+            {
+                if (pChunk != nullptr) s_tFarCollect.insert(pChunk.data());
+            }
+        }
+        else if (iLayer == RENDER_LAYER_CLOSE)
+        {
+            int iDuplicates = 0;
+
+            foreach (QSP<CWorldChunk> pChunk, vChunkCollect)
+            {
+                if (pChunk != nullptr && s_tFarCollect.contains(pChunk.data())) iDuplicates++;
+            }
+
+            s_iProbeCalls++;
+
+            if (s_iProbeCalls % 60 == 0)
+            {
+                LOG_DEBUG(QString("LayerPartitionProbe : far %1 close %2 both %3").arg(s_tFarCollect.count()).arg(vChunkCollect.count()).arg(iDuplicates));
+            }
+        }
+    }
+
     std::sort(vChunkCollect.begin(), vChunkCollect.end());
 
     foreach (QSP<CWorldChunk> pChunk, vChunkCollect)
@@ -290,10 +328,6 @@ void CWorldTerrain::paint(CRenderContext* pContext)
 
         pChunk->paint(pContext);
     }
-
-    // Note: main thread only, height field bodies are never added or removed
-    // during a physics step, which runs from updateScene()
-    syncPhysicsHeightfields();
 
     // Garbage collection
 
@@ -313,6 +347,12 @@ void CWorldTerrain::paint(CRenderContext* pContext)
 */
 void CWorldTerrain::update(double dDeltaTime)
 {
+    Q_UNUSED(dDeltaTime);
+
+    // Note: once per frame from updateScene(), never from the per-layer
+    // paint passes. Main thread only, height field bodies are never added
+    // or removed during a physics step, which runs from updateScene()
+    syncPhysicsHeightfields();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -692,6 +732,112 @@ void CWorldTerrain::collectFallbackChunk(QVector<QSP<CWorldChunk> >& vChunkColle
 
 //-------------------------------------------------------------------------------------------------
 
+//! Depth margin covering point-sprite bushes, culled on the generous chunk box instead of their own bounds
+static const double LayerPartitionVegetationMargin = 5.0;
+
+/***************************************************************************/
+/*!
+    Expands the camera-space depth interval [\a dDepthMin, \a dDepthMax] with the
+    sphere centered on \a vCenter with radius \a dRadius. \br\br
+    \a mCameraMatrix is the render context internal camera matrix, the same frame
+    the per-geometry draw test uses, so the forward axis matches the layer depth
+    planes exactly.
+*/
+/***************************************************************************/
+static void expandLayerDepthInterval(double& dDepthMin, double& dDepthMax, const Math::CMatrix4& mCameraMatrix, const CVector3& vCenter, double dRadius)
+{
+    CVector3 vPosition = mCameraMatrix * vCenter;
+
+    if (vPosition.Z - dRadius < dDepthMin) dDepthMin = vPosition.Z - dRadius;
+    if (vPosition.Z + dRadius > dDepthMax) dDepthMax = vPosition.Z + dRadius;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Tells whether \a pChunk contributes nothing to the layer pass in \a pContext. \br\br
+    The interval is the camera-space forward depth of the chunk in the same frame the
+    per-geometry draw test uses (CMeshGeometry::paint through CCamera::contains()):
+    the layer depth planes clip on this axis, so collect and drawing speak the same
+    language. In the far pass chunks fully inside the close range are skipped, in the
+    close pass chunks fully outside it are skipped. Chunks spanning the close far plane
+    are kept in both passes.
+*/
+bool CWorldTerrain::skipChunkForLayerPass(QSP<CWorldChunk> pChunk, CRenderContext* pContext)
+{
+    if (pChunk == nullptr || pContext == nullptr || pContext->camera() == nullptr) return false;
+
+    int iLayer = pContext->camera()->currentPaintLayer();
+
+    if (iLayer != RENDER_LAYER_FAR && iLayer != RENDER_LAYER_CLOSE) return false;
+
+    double dCloseFar = pContext->camera()->closeLayerFar();
+
+    if (dCloseFar <= 0.0) return false;
+
+    Math::CMatrix4 mCameraMatrix = pContext->internalCameraMatrix();
+
+    double dDepthMin = Q3D_INFINITY;
+    double dDepthMax = -Q3D_INFINITY;
+
+    // The transform-space geoloc/size are tile-mapped by the material and must
+    // not be used here: the original geoloc/size stay in absolute coordinates.
+    // This surface sphere covers unbuilt chunks, whose exact bounds are unknown
+    CGeoloc gCenter = pChunk->originalGeoloc();
+    CGeoloc gSize = pChunk->originalSize();
+
+    CGeoloc gCornerA(
+            gCenter.Latitude - gSize.Latitude * 0.5,
+            gCenter.Longitude - gSize.Longitude * 0.5,
+            gCenter.Altitude);
+    CGeoloc gCornerB(
+            gCenter.Latitude + gSize.Latitude * 0.5,
+            gCenter.Longitude + gSize.Longitude * 0.5,
+            gCenter.Altitude);
+
+    expandLayerDepthInterval(
+                dDepthMin,
+                dDepthMax,
+                mCameraMatrix,
+                gCenter.toVector3(),
+                gCornerA.distanceTo(gCornerB) * 0.5 + LayerPartitionVegetationMargin
+                );
+
+    // Exact bounds the drawing uses, covering relief the surface sphere ignores
+    if (pChunk->terrain() != nullptr && pChunk->terrain()->isOK())
+    {
+        CBoundingBox tBounds = pChunk->terrain()->worldBounds();
+
+        expandLayerDepthInterval(dDepthMin, dDepthMax, mCameraMatrix, tBounds.center(), tBounds.radius());
+    }
+
+    if (pChunk->water() != nullptr && pChunk->water()->isOK())
+    {
+        CBoundingBox tBounds = pChunk->water()->worldBounds();
+
+        expandLayerDepthInterval(dDepthMin, dDepthMax, mCameraMatrix, tBounds.center(), tBounds.radius());
+    }
+
+    foreach (CBoundedMeshInstances* pBoundedMeshes, pChunk->meshes())
+    {
+        if (pBoundedMeshes != nullptr)
+        {
+            CBoundingBox tBounds = pBoundedMeshes->worldBounds();
+
+            expandLayerDepthInterval(dDepthMin, dDepthMax, mCameraMatrix, tBounds.center(), tBounds.radius());
+        }
+    }
+
+    if (iLayer == RENDER_LAYER_FAR)
+    {
+        return dDepthMax < dCloseFar;
+    }
+
+    return dDepthMin > dCloseFar;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 /*!
     Called by paint() to collect the chunks to draw for \a pChunk and its children. \br\br
     \a pFallbackChunk is the closest ready ancestor of \a pChunk: when neither
@@ -701,6 +847,8 @@ void CWorldTerrain::collectFallbackChunk(QVector<QSP<CWorldChunk> >& vChunkColle
 void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRenderContext* pContext, QSP<CWorldChunk> pChunk, int iLevel, QSP<CWorldChunk> pFallbackChunk)
 {
     if (pChunk == nullptr) return;
+
+    if (skipChunkForLayerPass(pChunk, pContext)) return;
 
     CGeoloc gChunkPosition = pChunk->geoloc();
 
@@ -853,12 +1001,13 @@ void CWorldTerrain::syncPhysicsHeightfieldsRecurse(QSP<CWorldChunk> pChunk)
 
     m_pScene->ensurePhysicsReference(pChunk->geoloc());
 
-    QVector<float> vGrid;
-    int iPoints = 0;
-
-    if (pChunk->terrainGrid(vGrid, iPoints) == true)
+    if (chunkHeightfieldIndex(pChunk) < 0)
     {
-        if (chunkHeightfieldIndex(pChunk) < 0)
+        // Not registered yet: copy the grid once and register it
+        QVector<float> vGrid;
+        int iPoints = 0;
+
+        if (pChunk->terrainGrid(vGrid, iPoints) == true)
         {
             SGeoFrame cFrame = CGeoFrame::heightfieldFrame(
                 pChunk->geoloc(),
@@ -876,9 +1025,14 @@ void CWorldTerrain::syncPhysicsHeightfieldsRecurse(QSP<CWorldChunk> pChunk)
 
             setChunkHeightfieldIndex(pChunk, iHeightfield);
         }
+        else
+        {
+            removeChunkHeightfield(pChunk);
+        }
     }
-    else
+    else if (pChunk->terrainGridReady() == false)
     {
+        // Already registered: cheap liveness check only, no grid copy
         removeChunkHeightfield(pChunk);
     }
 

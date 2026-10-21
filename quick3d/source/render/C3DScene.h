@@ -388,6 +388,9 @@ protected:
     //!
     static void getLightsRecurse(QVector<QSP<CLight> >& vLights, QSP<CComponent> pComponent);
 
+    //! Paints visible components accepted by pFilter (all when null), timing each class under sPrefix
+    void paintComponentsTimed(CRenderContext* pContext, const CRenderFilter* pFilter, const QString& sPrefix);
+
     //!
     static void getLightsByTagRecurse(QVector<QSP<CLight> >& vLights, const QString &sTag, QSP<CComponent> pComponent);
 

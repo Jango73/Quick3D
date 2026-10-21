@@ -13,6 +13,9 @@
 // Quick3D
 #include "CEnvironmentDefaults.h"
 
+// qt-plus
+#include "CTimeSampler.h"
+
 // Quick3D
 #include "CConsoleBoard.h"
 #include "CQ3DConstants.h"
@@ -326,7 +329,10 @@ void Quick3DTest::onTimer()
         m_pScene->updateScene(dDeltaTime);
         m_pView->update(dDeltaTime);
 
-        ui.m_lInfo->setText(m_pScene->debugInfo());
+        {
+            CScopedTimeSample tUiSample(QString("Frame_SetText"));
+            ui.m_lInfo->setText(m_pScene->debugInfo());
+        }
 
         if (m_bCheckRender == true)
         {

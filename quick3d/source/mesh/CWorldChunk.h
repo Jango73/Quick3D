@@ -147,6 +147,10 @@ public:
     //! on the main thread and read a worker built mesh like paint() does.
     bool terrainGrid(QVector<float>& outHeights, int& outSampleCount) const;
 
+    //! Tells whether a grid copy would succeed, without copying anything. \br\br
+    //! Cheap liveness check for callers that already hold a registered grid.
+    bool terrainGridReady() const;
+
     //!
     CBoundingBox createBoundsForTerrain(CGeoloc gPosition, CGeoloc gSize, double dAltitudeFactor = 1.0);
 

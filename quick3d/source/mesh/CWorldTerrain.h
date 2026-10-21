@@ -150,6 +150,9 @@ protected:
     //! Collects the chunks to draw, falling back to the closest ready ancestor
     void paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRenderContext* pContext, QSP<CWorldChunk> pChunk, int iLevel, QSP<CWorldChunk> pFallbackChunk);
 
+    //! Returns true when \a pChunk lies fully outside the range of the layer pass in \a pContext and contributes nothing to it
+    bool skipChunkForLayerPass(QSP<CWorldChunk> pChunk, CRenderContext* pContext);
+
     //! Collects the fallback chunk when nothing finer can be drawn
     void collectFallbackChunk(QVector<QSP<CWorldChunk> >& vChunkCollect, CRenderContext* pContext, QSP<CWorldChunk> pFallbackChunk);
 

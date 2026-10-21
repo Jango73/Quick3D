@@ -5,6 +5,7 @@
 
 // Qt
 #include <QtOpenGL>
+#include <QElapsedTimer>
 
 // qt-plus
 #include "CLogger.h"
@@ -36,6 +37,10 @@
 //-------------------------------------------------------------------------------------------------
 
 using namespace Math;
+
+//-------------------------------------------------------------------------------------------------
+
+static const char* PaintClassSamplePrefix = "Paint_";
 
 //-------------------------------------------------------------------------------------------------
 
@@ -649,20 +654,7 @@ CPhysicsWorld* C3DScene::physicsWorld()
 */
 void C3DScene::paintComponents(CRenderContext* pContext)
 {
-    foreach(QSP<CComponent> pComponent, m_vComponents)
-    {
-        if (pComponent->isVisible())
-        {
-            pComponent->paint(pContext);
-            pComponent->postPaint(pContext);
-        }
-    }
-
-#ifdef DRAW_BY_MATERIAL
-    pContext->meshByMaterial()->paint(pContext);
-#endif
-
-    m_pSegments->paint(pContext, nullptr);
+    paintComponentsTimed(pContext, nullptr, QString(PaintClassSamplePrefix));
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -672,12 +664,32 @@ void C3DScene::paintComponents(CRenderContext* pContext)
 */
 void C3DScene::paintLayerComponents(CRenderContext* pContext, const CRenderFilter& tFilter)
 {
+    paintComponentsTimed(pContext, &tFilter, QString(PaintClassSamplePrefix));
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Paints visible components accepted by \a pFilter (all when \a pFilter is null),
+    timing each component class under \a sPrefix. \br\br
+    Timings group locally per class and flush once per class, so the shared
+    sampler mutex is never held inside the component loop.
+*/
+void C3DScene::paintComponentsTimed(CRenderContext* pContext, const CRenderFilter* pFilter, const QString& sPrefix)
+{
+    QMap<QString, qint64> mClassTimesNs;
+
     foreach(QSP<CComponent> pComponent, m_vComponents)
     {
-        if (pComponent->isVisible() && tFilter.accept(pComponent.data()))
+        if (pComponent->isVisible() && (pFilter == nullptr || pFilter->accept(pComponent.data())))
         {
+            QElapsedTimer tTimer;
+            tTimer.start();
+
             pComponent->paint(pContext);
             pComponent->postPaint(pContext);
+
+            mClassTimesNs[pComponent->getClassName()] += tTimer.nsecsElapsed();
         }
     }
 
@@ -686,6 +698,11 @@ void C3DScene::paintLayerComponents(CRenderContext* pContext, const CRenderFilte
 #endif
 
     m_pSegments->paint(pContext, nullptr);
+
+    foreach (const QString& sName, mClassTimesNs.keys())
+    {
+        CTimeSampler::getInstance()->addSampleTime(sPrefix + sName, mClassTimesNs.value(sName));
+    }
 }
 
 //-------------------------------------------------------------------------------------------------

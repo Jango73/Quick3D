@@ -139,6 +139,12 @@ public:
     //! Returns the maximum visibility distance of objects (used by projection matrix)
     double maxDistance() const { return m_dMaxDistance; }
 
+    //! Returns the layer painted by the current render pass (RENDER_LAYER_CLOSE/FAR), -1 outside a layer pass
+    int currentPaintLayer() const { return m_iCurrentPaintLayer; }
+
+    //! Returns the far plane of the close layer conditioned for the current frame
+    double closeLayerFar() const { return m_dCloseLayerFar; }
+
     //-------------------------------------------------------------------------------------------------
     // Overridden methods
     //-------------------------------------------------------------------------------------------------
@@ -218,7 +224,9 @@ protected:
     double                  m_dFOV;
     double                  m_dFocus;
     double                  m_dGain;
+    int                     m_iCurrentPaintLayer;
     double                  m_dMinDistance;
     double                  m_dMaxDistance;
+    double                  m_dCloseLayerFar;
     QVector<Math::CPlane3>  m_pFrustumPlanes;
 };

@@ -409,15 +409,11 @@ void CWorldChunk::clearTerrain()
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Copies the terrain altitude grid when ready, row 0 is the north edge. \br\br
-    Returns false when no finished terrain mesh is available, callers run
-    on the main thread and read a worker built mesh like paint() does.
+    Tells whether a grid copy would succeed, without copying anything. \br\br
+    Cheap liveness check for callers that already hold a registered grid.
 */
-bool CWorldChunk::terrainGrid(QVector<float>& outHeights, int& outSampleCount) const
+bool CWorldChunk::terrainGridReady() const
 {
-    outHeights.clear();
-    outSampleCount = 0;
-
     // Note: local shared copy, the terrain worker owns the mesh writes and
     // isOK() is only set once its work() method has finished
     QSP<CTerrain> pTerrain = m_pTerrain;
@@ -440,6 +436,31 @@ bool CWorldChunk::terrainGrid(QVector<float>& outHeights, int& outSampleCount) c
     {
         return false;
     }
+
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Copies the terrain altitude grid when ready, row 0 is the north edge. \br\br
+    Returns false when no finished terrain mesh is available, callers run
+    on the main thread and read a worker built mesh like paint() does.
+*/
+bool CWorldChunk::terrainGrid(QVector<float>& outHeights, int& outSampleCount) const
+{
+    outHeights.clear();
+    outSampleCount = 0;
+
+    if (terrainGridReady() == false)
+    {
+        return false;
+    }
+
+    QSP<CTerrain> pTerrain = m_pTerrain;
+
+    const CMeshGeometry* pMesh = pTerrain->mesh();
+    int iPoints = pTerrain->numPoints();
 
     outSampleCount = iPoints;
     outHeights.reserve(iPoints * iPoints);

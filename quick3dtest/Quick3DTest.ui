@@ -199,6 +199,9 @@
            <string>Fog</string>
           </property>
           <widget class="QSlider" name="m_sFogLevel">
+           <property name="maximum">
+            <number>100</number>
+           </property>
            <property name="geometry">
             <rect>
              <x>20</x>

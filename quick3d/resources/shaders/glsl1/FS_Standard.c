@@ -77,6 +77,7 @@ uniform float           u_wave_amplitude;
 
 uniform int             u_fog_enable;
 uniform float           u_fog_distance;
+uniform float           u_fog_level;
 uniform vec3            u_fog_color;
 uniform vec3            u_sky_zenith_color;
 uniform vec3            u_sun_color;
@@ -124,6 +125,12 @@ float pixelDistanceY = 0.01;
 #define TM_MIN          0.05
 #define pi              3.1415926535
 #define PI              pi
+#define SUN_DISC_SHARP_EXPONENT   1000.0
+#define SUN_DISC_BLURRY_EXPONENT  32.0
+#define SUN_DISC_BLURRY_DIM_FACTOR 0.35
+#define SUN_GLOW_SHARP_FACTOR     0.25
+#define SUN_GLOW_BLURRY_FACTOR    0.5
+#define FOG_DENSE_FALLOFF_EXPONENT 0.5
 
 //-------------------------------------------------------------------------------------------------
 // Math functions
@@ -630,8 +637,12 @@ vec3 lightRays(vec3 origin, vec3 direction, vec2 xy)
             {
                 vec3 lightDirection = normalize(u_light_position[index] - origin);
                 float amount = max(dot(direction, lightDirection), 0.0);
-                color += (u_light_color[index] * amount * amount * 0.25) * gAtmosphereFactor;
-                color += (u_light_color[index] * min(pow(amount, 1000.0), 1.0));
+                float sunBlur = clamp(u_fog_level, 0.0, 1.0);
+                float sunDiscExponent = mix(SUN_DISC_SHARP_EXPONENT, SUN_DISC_BLURRY_EXPONENT, sunBlur);
+                float sunDiscDim = mix(1.0, SUN_DISC_BLURRY_DIM_FACTOR, sunBlur);
+                float sunGlowFactor = mix(SUN_GLOW_SHARP_FACTOR, SUN_GLOW_BLURRY_FACTOR, sunBlur);
+                color += (u_light_color[index] * amount * amount * sunGlowFactor) * gAtmosphereFactor;
+                color += (u_light_color[index] * min(pow(amount, sunDiscExponent), 1.0) * sunDiscDim);
                 distanceFactor = 1.0;
             }
 
@@ -949,7 +960,8 @@ vec4 computeLinearFog(vec4 color)
 
     // Compute fog factor based on distance and atmosphere
     float fogFactor = clamp(((fogDistance - vo_distance) / fogDistance), 0.0, 1.0);
-    fogFactor = (1.0 - fogFactor) * gAtmosphereFactor;
+    float fogDensity = mix(1.0, FOG_DENSE_FALLOFF_EXPONENT, clamp(u_fog_level, 0.0, 1.0));
+    fogFactor = pow(1.0 - fogFactor, fogDensity) * gAtmosphereFactor;
 
     // Compute attenuated sun color
     float average = (0.2125 * u_sun_color.r) + (0.7154 * u_sun_color.g) + (0.0721 * u_sun_color.b);

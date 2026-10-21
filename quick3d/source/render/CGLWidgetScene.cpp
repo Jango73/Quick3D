@@ -16,6 +16,7 @@ using namespace Math;
 //-------------------------------------------------------------------------------------------------
 
 #define ATMOSPHERE_ALTITUDE     100000.0
+#define FOG_MINIMUM_DISTANCE    50.0
 
 //-------------------------------------------------------------------------------------------------
 
@@ -277,6 +278,7 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QOpenGLShaderPro
         pProgram->setUniformValue("u_fog_enable", (GLint) m_tFog.enabled() ? 1 : 0);
         pProgram->setUniformValue("u_fog_distance", (GLfloat) m_tFog.distance());
         pProgram->setUniformValue("u_fog_color", QVector3D(m_tFog.color().X, m_tFog.color().Y, m_tFog.color().Z));
+        pProgram->setUniformValue("u_fog_level", (GLfloat) m_tFog.level());
         pProgram->setUniformValue("u_sky_zenith_color", vSkyZenithColor);
         pProgram->setUniformValue("u_sun_color", vSunColor);
     }
@@ -314,7 +316,9 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
         if (dAtmosphereFactor > 1.0) dAtmosphereFactor = 1.0;
 
         // Compute fog distance
-        m_tFog.distance() = (1.0 - m_tFog.level()) * pContext->camera()->maxDistance();
+        double dFogDistance = (1.0 - m_tFog.level()) * pContext->camera()->maxDistance();
+        if (dFogDistance < FOG_MINIMUM_DISTANCE) dFogDistance = FOG_MINIMUM_DISTANCE;
+        m_tFog.distance() = dFogDistance;
 
         // Underwater fog
         if (pContext->camera()->geoloc().Altitude < 0.0)

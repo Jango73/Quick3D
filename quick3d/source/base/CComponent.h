@@ -30,6 +30,7 @@
 #include "CRenderContext.h"
 #include "CBoundingBox.h"
 #include "CHeightField.h"
+#include "CRenderLayer.h"
 #include "CTexture.h"
 
 //-------------------------------------------------------------------------------------------------
@@ -191,6 +192,9 @@ public:
 
     //! Is the object a camera?
     virtual bool isCamera() const { return false; }
+
+    //! Returns the bit mask of render layers this object belongs to, one bit per layer
+    virtual int renderLayers() const { return RENDER_LAYER_ALL; }
 
     //! Is the object a light?
     virtual bool isLight() const { return false; }

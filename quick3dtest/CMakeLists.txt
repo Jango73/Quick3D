@@ -18,6 +18,8 @@ add_executable(Quick3DTest
     tests/CTestVehicle.h
     tests/CTestScene.cpp
     tests/CTestScene.h
+    tests/CTestRenderLayer.cpp
+    tests/CTestRenderLayer.h
     tests/CTestTerrainSkirt.cpp
     tests/CTestTerrainSkirt.h
     tests/CTestQuick3D.cpp

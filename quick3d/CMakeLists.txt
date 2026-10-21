@@ -120,6 +120,7 @@ add_library(Quick3D SHARED
     source/utils/CImageUtilities.cpp
     source/utils/CPreferencesManager.cpp
     source/utils/CQuick3DUtilities.cpp
+    source/utils/CRenderLayer.cpp
     source/utils/CRemoteControlHandler.cpp
     source/utils/CRemoteControlServer.cpp
     source/utils/CUtility.cpp

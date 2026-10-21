@@ -550,6 +550,29 @@ void C3DScene::paintComponents(CRenderContext* pContext)
 //-------------------------------------------------------------------------------------------------
 
 /*!
+    Paints the components accepted by \a tFilter, using \a pContext.
+*/
+void C3DScene::paintLayerComponents(CRenderContext* pContext, const CRenderFilter& tFilter)
+{
+    foreach(QSP<CComponent> pComponent, m_vComponents)
+    {
+        if (pComponent->isVisible() && tFilter.accept(pComponent.data()))
+        {
+            pComponent->paint(pContext);
+            pComponent->postPaint(pContext);
+        }
+    }
+
+#ifdef DRAW_BY_MATERIAL
+    pContext->meshByMaterial()->paint(pContext);
+#endif
+
+    m_pSegments->paint(pContext, nullptr);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
     Paints all components that cast shadows, using \a pContext.
 */
 void C3DScene::paintShadowCastingComponents(CRenderContext* pContext)

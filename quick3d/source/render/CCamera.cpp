@@ -11,6 +11,7 @@
 #include "C3DScene.h"
 #include "CGLWidgetScene.h"
 #include "CRenderContext.h"
+#include "CRenderLayer.h"
 #include "CImageUtilities.h"
 
 //-------------------------------------------------------------------------------------------------
@@ -265,21 +266,32 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     if (bForceWideFOV) dFOV = DEFAULT_FOV;
     if (bForceSmallFOV) dFOV = SMALL_FOV;
 
-    double dMinDistance = geoloc().Altitude / 8.0;
-    if (geoloc().Altitude < 20000.0) dMinDistance = 0.1;
-    if (dMinDistance < 0.1) dMinDistance = 0.1;
+    double dAspectRatio = (double) iWidth / (double) iHeight;
 
-    double dMaxDistance = geoloc().Altitude * 40.0;
-    if (dMaxDistance < 100000.0) dMaxDistance = 100000.0;
+    // Jointly conditioned layer depth ranges: the close far plane always
+    // overlaps the far near plane, so every distance is covered by at least
+    // one layer and nothing is ever clipped between the planes
+    CRenderLayerStack tLayerStack = CRenderLayerStack::createDefault();
+    tLayerStack.conditionLayers(geoloc().Altitude);
 
-    m_dMinDistance = dMinDistance;
-    m_dMaxDistance = dMaxDistance;
+    SRenderDepthRange tFarRange = tLayerStack.layers().first().range();
+
+    foreach (const CRenderLayer& tLayer, tLayerStack.layers())
+    {
+        if (tLayer.layer() == RENDER_LAYER_FAR)
+        {
+            tFarRange = tLayer.range();
+        }
+    }
+
+    m_dMinDistance = tFarRange.m_dNear;
+    m_dMaxDistance = tFarRange.m_dFar;
 
     // For tests
     if (bOverlook)
     {
         m_dMaxDistance = geoloc().getPlanetRadius() * 2.0;
-        m_dMinDistance = dMaxDistance / 100.0;
+        m_dMinDistance = m_dMaxDistance / 100.0;
     }
 
     CVector3 vCamPos = worldPosition();
@@ -288,7 +300,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     QMatrix4x4 mCameraMatrix = CCamera::getQtCameraMatrix(vCamPos - pScene->worldOrigin(), vCamRot);
     QMatrix4x4 mCameraProjection = CCamera::getQtProjectionMatrix(
                 dFOV,
-                (double) iWidth / (double) iHeight,
+                dAspectRatio,
                 m_dMinDistance,
                 m_dMaxDistance
                 );
@@ -307,7 +319,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
 
         mCameraProjection = CCamera::getQtProjectionMatrix(
                     pScene->overlookFOV(),
-                    (double) iWidth / (double) iHeight,
+                    dAspectRatio,
                     m_dMinDistance,
                     m_dMaxDistance
                     );
@@ -325,7 +337,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
                 this
                 );
 
-    computeFrustum(Math::Angles::toRad(dFOV), (double) iWidth / (double) iHeight, m_dMinDistance, m_dMaxDistance);
+    computeFrustum(Math::Angles::toRad(dFOV), dAspectRatio, m_dMinDistance, m_dMaxDistance);
 
     //-------------------------------------------------------------------------------------------------
     // Update objects
@@ -353,14 +365,77 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     glCullFace(GL_BACK);
 
     //-------------------------------------------------------------------------------------------------
-    // Lights
-
+    // Render objects, one pass per layer, farthest first
+    //
+    // Fog and lights are scene-wide: they are set up once from the full far
+    // range. Recomputing them per layer would shrink the fog distance to the
+    // close range and white out the foreground.
     pScene->setupLights(&Context);
 
-    //-------------------------------------------------------------------------------------------------
-    // Render objects
+    if (bOverlook)
+    {
+        pScene->paintComponents(&Context);
+    }
+    else
+    {
+        bool bFirstLayer = true;
 
-    pScene->paintComponents(&Context);
+        foreach (const CRenderLayer& tLayer, tLayerStack.layers())
+        {
+            SRenderDepthRange tRange = tLayer.range();
+
+            if (bFirstLayer)
+            {
+                bFirstLayer = false;
+            }
+            else
+            {
+                glClear(GL_DEPTH_BUFFER_BIT);
+            }
+
+            m_dMinDistance = tRange.m_dNear;
+            m_dMaxDistance = tRange.m_dFar;
+
+            QMatrix4x4 mLayerProjection = CCamera::getQtProjectionMatrix(
+                        dFOV,
+                        dAspectRatio,
+                        tRange.m_dNear,
+                        tRange.m_dFar
+                        );
+
+            CMatrix4 mLayerInternalProjection = CMatrix4::fromQtMatrix(mLayerProjection);
+
+            CRenderContext tLayerContext(
+                        mLayerProjection, mCameraMatrix,
+                        mShadowProjectionMatrix, mShadowMatrix,
+                        m_mInternalCameraMatrix,
+                        mLayerInternalProjection,
+                        pScene,
+                        this
+                        );
+
+            if (bForceIR)
+            {
+                tLayerContext.bUseIR = true;
+            }
+
+            computeFrustum(Math::Angles::toRad(dFOV), dAspectRatio, tRange.m_dNear, tRange.m_dFar);
+
+            pScene->paintLayerComponents(&tLayerContext, *tLayer.filter());
+
+            Context.tStatistics.m_iNumMeshesDrawn += tLayerContext.tStatistics.m_iNumMeshesDrawn;
+            Context.tStatistics.m_iNumPolysDrawn += tLayerContext.tStatistics.m_iNumPolysDrawn;
+            Context.tStatistics.m_iNumChunksDrawn += tLayerContext.tStatistics.m_iNumChunksDrawn;
+            Context.tStatistics.m_iNumFrustumTests += tLayerContext.tStatistics.m_iNumFrustumTests;
+            Context.tStatistics.m_iNumRayIntersectionTests += tLayerContext.tStatistics.m_iNumRayIntersectionTests;
+        }
+
+        // Restore the main range on the camera once all layers are painted
+        m_dMinDistance = tFarRange.m_dNear;
+        m_dMaxDistance = tFarRange.m_dFar;
+
+        computeFrustum(Math::Angles::toRad(dFOV), dAspectRatio, m_dMinDistance, m_dMaxDistance);
+    }
 
     //-------------------------------------------------------------------------------------------------
     // OpenGL settings

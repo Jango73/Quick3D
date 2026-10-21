@@ -41,7 +41,7 @@ public:
     //! Updates this object using the elapsed time since last update
     virtual void update(double dDeltaTime) Q_DECL_OVERRIDE;
 
-    //! Dans cette méthode, l'objet doit faire son rendu
+    //! Renders this object
     virtual void paint(CRenderContext* pContext) Q_DECL_OVERRIDE;
 
     //!

@@ -47,7 +47,7 @@ public:
     // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Active ce matériau pour le rendu
+    //! Activates this material for rendering
     virtual QOpenGLShaderProgram* activate(CRenderContext* pContext);
 
     //! Returns the altitude at the given geolocation

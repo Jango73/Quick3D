@@ -284,6 +284,9 @@ public:
     //! Paints all components, using \a pContext.
     void paintComponents(CRenderContext* pContext);
 
+    //! Paints the components accepted by \a tFilter, using \a pContext.
+    void paintLayerComponents(CRenderContext* pContext, const CRenderFilter& tFilter);
+
     //! Paints all components that cast shadows, using \a pContext.
     void paintShadowCastingComponents(CRenderContext* pContext);
 

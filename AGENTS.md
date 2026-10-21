@@ -18,7 +18,7 @@ Qt-based 3D engine with geo-referenced entities (C++/Qt), built with CMake for Q
 Fresh clones have empty `qt-plus/` and `third/zlib/` until submodules are initialized (`git submodule update --init --recursive`). Rendering is `QOpenGLWidget`-based, the engine targets **Qt6** (Qt 6.2.4 on this machine); the legacy `.pro`/`.pri` files are kept for QtCreator users but the reference Linux build is CMake. `QGL*` classes are gone: use `QOpenGL*`.
 
 ## Work Tracking
-- Analysis and work notes live in `quick3d/doc/` (currently `TerrainHolesAnalysis.md`, `TerrainSecondaryIssues.md`).
+- Analysis and work notes, if any, live in `quick3d/doc/`.
 - Keep these files up to date while working.
 
 ## Communication Guidelines

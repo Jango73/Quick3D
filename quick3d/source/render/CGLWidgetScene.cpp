@@ -1,6 +1,7 @@
 
 // qt-plus
 #include "CLogger.h"
+#include "CTimeSampler.h"
 
 // Application
 #include "CVector3.h"
@@ -24,6 +25,7 @@ CGLWidgetScene::CGLWidgetScene(bool bForDisplay)
 {
     QSurfaceFormat tFormat;
     tFormat.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+    tFormat.setSwapInterval(1);
     tFormat.setDepthBufferSize(24);
     tFormat.setStencilBufferSize(8);
     setFormat(tFormat);
@@ -58,6 +60,7 @@ void CGLWidgetScene::paintGL()
 {
     if (m_bForDisplay)
     {
+        CScopedTimeSample tPaintSample(QString("PaintGL"));
         m_tStatistics.reset();
 
         makeCurrentRenderingContext();

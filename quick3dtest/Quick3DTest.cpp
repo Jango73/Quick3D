@@ -44,6 +44,12 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
+static const int FrameTimerPollIntervalMs = 5;
+static const double MaximumFrameRateFps = 60.0;
+static const double MinimumFrameDurationS = 1.0 / MaximumFrameRateFps;
+
+//-------------------------------------------------------------------------------------------------
+
 #if QT_VERSION >= 0x050000
 Quick3DTest::Quick3DTest(QString sSceneFileName, QWidget *parent)
     : QMainWindow(parent)
@@ -135,7 +141,8 @@ Quick3DTest::Quick3DTest(QString sSceneFileName, QWidget *parent, Qt::WFlags fla
 
     m_tPreviousTime = QDateTime::currentDateTime();
 
-    m_tTimer.start(5);
+    m_tTimer.setTimerType(Qt::PreciseTimer);
+    m_tTimer.start(FrameTimerPollIntervalMs);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -300,6 +307,20 @@ void Quick3DTest::onTimer()
     {
         QDateTime tCurrentTime = QDateTime::currentDateTime();
         double dDeltaTime = double(m_tPreviousTime.msecsTo(tCurrentTime)) / 1000.0;
+
+        if (dDeltaTime < MinimumFrameDurationS)
+        {
+            int iRemainingMs = int((MinimumFrameDurationS - dDeltaTime) * 1000.0);
+
+            if (iRemainingMs < 1)
+            {
+                iRemainingMs = 1;
+            }
+
+            m_tTimer.start(iRemainingMs);
+            return;
+        }
+
         m_tPreviousTime = tCurrentTime;
 
         m_pScene->updateScene(dDeltaTime);
@@ -453,7 +474,7 @@ void Quick3DTest::onTimer()
         }
     }
 
-    m_tTimer.start();
+    m_tTimer.start(FrameTimerPollIntervalMs);
 }
 
 //-------------------------------------------------------------------------------------------------

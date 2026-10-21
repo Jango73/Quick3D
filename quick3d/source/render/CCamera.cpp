@@ -138,6 +138,13 @@ void CCamera::loadParameters(const QString& sBaseFile, const CXMLNode& xComponen
 
 void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV, bool bForceSmallFOV, bool bForceIR, bool bOverlook)
 {
+    if (pScene == nullptr || pViewport == nullptr)
+    {
+        return;
+    }
+
+    CScopedTimeSample tRenderSample(QString("Camera_Render"));
+
     //-------------------------------------------------------------------------------------------------
     // OpenGL settings
 
@@ -154,6 +161,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
 
     if (pScene->shaderQuality() >= 0.90)
     {
+        CScopedTimeSample tShadowSample(QString("Camera_ShadowPass"));
         pScene->setRenderingShadows(true);
 
         if (vSuns.count() > 0 && vSuns[0]->castShadows())
@@ -342,12 +350,15 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     //-------------------------------------------------------------------------------------------------
     // Update objects
 
-    foreach(QSP<CComponent> pComponent, pScene->components())
     {
-        if (pComponent->isVisible())
+        CScopedTimeSample tUpdateSample(QString("Camera_UpdateObjects"));
+        foreach(QSP<CComponent> pComponent, pScene->components())
         {
-            pComponent->updateContext(&Context);
-            pComponent->updateItems(pScene);
+            if (pComponent->isVisible())
+            {
+                pComponent->updateContext(&Context);
+                pComponent->updateItems(pScene);
+            }
         }
     }
 
@@ -370,7 +381,13 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     // Fog and lights are scene-wide: they are set up once from the full far
     // range. Recomputing them per layer would shrink the fog distance to the
     // close range and white out the foreground.
-    pScene->setupLights(&Context);
+    {
+        CScopedTimeSample tLightsSample(QString("Camera_SetupLights"));
+        pScene->setupLights(&Context);
+    }
+
+    {
+        CScopedTimeSample tLayersSample(QString("Camera_LayerPasses"));
 
     if (bOverlook)
     {
@@ -436,6 +453,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
 
         computeFrustum(Math::Angles::toRad(dFOV), dAspectRatio, m_dMinDistance, m_dMaxDistance);
     }
+    } // Camera_LayerPasses
 
     //-------------------------------------------------------------------------------------------------
     // OpenGL settings

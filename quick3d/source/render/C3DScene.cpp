@@ -9,6 +9,7 @@
 // qt-plus
 #include "CLogger.h"
 #include "CMemoryMonitor.h"
+#include "CTimeSampler.h"
 
 // Application
 #include "C3DScene.h"
@@ -567,6 +568,9 @@ void C3DScene::getLightsByTagRecurse(QVector<QSP<CLight> >& vLights, const QStri
 */
 void C3DScene::updateScene(double dDeltaTimeS)
 {
+    CTimeSampler::getInstance()->beginFrame();
+    CScopedTimeSample tTotalSample(QString("UpdateScene"));
+
     m_FPS.append(1.0 / dDeltaTimeS);
 
     dDeltaTimeS = Angles::clipDouble(dDeltaTimeS, 0.0, 1.0);
@@ -578,6 +582,7 @@ void C3DScene::updateScene(double dDeltaTimeS)
 
     if (m_pController != nullptr)
     {
+        CScopedTimeSample tSample(QString("Update_Controller"));
         m_pController->update(dDeltaTimeS);
     }
 
@@ -586,21 +591,33 @@ void C3DScene::updateScene(double dDeltaTimeS)
         dDeltaTimeS = 0.0;
     }
 
-    ensureVehiclePhysics();
-
-    stepPhysics(dDeltaTimeS);
-
-    foreach (QSP<CComponent> pComponent, m_vComponents)
     {
-        pComponent->update(dDeltaTimeS);
+        CScopedTimeSample tSample(QString("Update_VehiclePhysics"));
+        ensureVehiclePhysics();
+
+        stepPhysics(dDeltaTimeS);
     }
 
-    foreach (QSP<CComponent> pComponent, m_vComponents)
     {
-        pComponent->postUpdate(dDeltaTimeS);
+        CScopedTimeSample tSample(QString("Update_Components"));
+        foreach (QSP<CComponent> pComponent, m_vComponents)
+        {
+            pComponent->update(dDeltaTimeS);
+        }
     }
 
-    CPhysicalComponent::computeCollisions(m_vComponents, dDeltaTimeS);
+    {
+        CScopedTimeSample tSample(QString("Update_PostUpdate"));
+        foreach (QSP<CComponent> pComponent, m_vComponents)
+        {
+            pComponent->postUpdate(dDeltaTimeS);
+        }
+    }
+
+    {
+        CScopedTimeSample tSample(QString("Update_Collisions"));
+        CPhysicalComponent::computeCollisions(m_vComponents, dDeltaTimeS);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------

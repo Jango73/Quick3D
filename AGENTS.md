@@ -8,31 +8,17 @@
 - The default minimal-diff behavior does not apply here: the agent serves the global vision of the codebase, never a narrow correction perimeter, and refactors everything the change touches whenever structure, factorization, or generality requires it.
 
 ## Project Overview
-Qt-based 3D engine with geo-referenced entities (C++/Qt), built with CMake
-for Qt6 (see `README.md`). Layout:
-- `qt-plus/` (git submodule): shared Qt utility library (`CLogger`, `CXMLNode`,
-  `CSingleton`, `CInterpolator`, geotools, ...). Engine equivalent of a commons
-  module — check here first before adding helpers.
-- `quick3d/` (engine library): `source/` (`animation`, `base`, `components`,
-  `input`, `math`, `mesh`, `render`, `terrain`, `utils`, `zip`), shaders in
-  `Quick3DShaders.qrc`, docs in `quick3d/doc/`.
-- `quick3dtest/` (test/demo application): GUI (`Quick3DTest.ui`), `main.cpp`
-  (`--scene`, `run-tests`), scenes/models/textures in `quick3dtest/bin/`.
-- `third/`: vendored third-party code (`SFML-1.6`, `unzip11`, `zlib` as git
-  submodule). Do not add new third-party dependencies without asking.
-- `quick3d/blender/`: Blender Q3D export script (Python, existing exception to
-  the C++ rule below).
+Qt-based 3D engine with geo-referenced entities (C++/Qt), built with CMake for Qt6 (see `README.md`). Layout:
+- `qt-plus/` (git submodule): shared Qt utility library (`CLogger`, `CXMLNode`, `CSingleton`, `CInterpolator`, geotools, ...). Engine equivalent of a commons module — check here first before adding helpers.
+- `quick3d/` (engine library): `source/` (`animation`, `base`, `components`, `input`, `math`, `mesh`, `render`, `terrain`, `utils`, `zip`), shaders in `Quick3DShaders.qrc`, docs in `quick3d/doc/`.
+- `quick3dtest/` (test/demo application): GUI (`Quick3DTest.ui`), `main.cpp` (`--scene`, `run-tests`), scenes/models/textures in `quick3dtest/bin/`.
+- `third/`: vendored third-party code (`SFML-1.6`, `unzip11`, `zlib` as git submodule). Do not add new third-party dependencies without asking.
+- `quick3d/blender/`: Blender Q3D export script (Python, existing exception to the C++ rule below).
 
-Fresh clones have empty `qt-plus/` and `third/zlib/` until submodules are
-initialized (`git submodule update --init --recursive`). Rendering is
-`QOpenGLWidget`-based, the engine targets **Qt6** (Qt 6.2.4 on this machine);
-the legacy `.pro`/`.pri` files are kept for QtCreator users but the reference
-Linux build is CMake. `QGL*` classes are gone: use `QOpenGL*`.
+Fresh clones have empty `qt-plus/` and `third/zlib/` until submodules are initialized (`git submodule update --init --recursive`). Rendering is `QOpenGLWidget`-based, the engine targets **Qt6** (Qt 6.2.4 on this machine); the legacy `.pro`/`.pri` files are kept for QtCreator users but the reference Linux build is CMake. `QGL*` classes are gone: use `QOpenGL*`.
 
 ## Work Tracking
-- Analysis and work notes live in
-  `quick3d/doc/` (currently `TerrainHolesAnalysis.md`,
-  `TerrainSecondaryIssues.md`).
+- Analysis and work notes live in `quick3d/doc/` (currently `TerrainHolesAnalysis.md`, `TerrainSecondaryIssues.md`).
 - Keep these files up to date while working.
 
 ## Communication Guidelines
@@ -87,47 +73,30 @@ Linux build is CMake. `QGL*` classes are gone: use `QOpenGL*`.
 - **File size**: Keep source files under 1000 lines; split by responsibility before crossing this limit.
 - **Vocabulary**:
   - NEVER use abbreviations; ALWAYS use full words (acronyms are OK).
-  - No figurative language: respect the repository vocabulary, use every word
-    in its primary (literal) sense. Name things for what they are, not for
-    what they resemble.
+  - No figurative language: respect the repository vocabulary, use every word in its primary (literal) sense. Name things for what they are, not for what they resemble.
   - No "directory" : use "folder".
   - Fixed-width types (`U8/I8`, `U16/I16`, `U32/I32`, `U64/I64`, `F32`, `F64`) in persistent data (Q3D format, height-field files), not register-sized `INT/UINT`.
 
 ### Commit message
-The agent always signs its commits: append a last line `Agent: <agent-name>`
-(for example `Agent: opencode/muse-spark`) so authorship stays identifiable
-in the log, whatever the commit prefix above. Never leave a blank line in
-the commit message: lines follow each other directly.
+The agent always signs its commits: append a last line `Agent: <agent-name>` (for example `Agent: opencode/muse-spark`) so authorship stays identifiable in the log, whatever the commit prefix above. Never leave a blank line in the commit message: lines follow each other directly.
 
 ## Common Build Commands
-- Dependencies: `./scripts/linux/deps.sh` (submodules + apt/dnf/pacman packages;
-  needs `sudo`, which prompts for a password here)
-- Build (shadow, like `galman`): `./scripts/linux/build.sh [--debug|--release]`
-  (`cmake -S . -B build-<debug|release> -G Ninja`, then `cmake --build`).
-  Builds `qt-plus`, then `Quick3D`, then `Quick3DTest`.
+- Dependencies: `./scripts/linux/deps.sh` (submodules + apt/dnf/pacman packages; needs `sudo`, which prompts for a password here)
+- Build (shadow, like `galman`): `./scripts/linux/build.sh [--debug|--release]` (`cmake -S . -B build-<debug|release> -G Ninja`, then `cmake --build`). Builds `qt-plus`, then `Quick3D`, then `Quick3DTest`.
 - Clean: `./scripts/linux/clean.sh [--debug|--release|--all]`
-- Run the test app: `./scripts/linux/run.sh [--debug|--release] [-- <args>]`
-  (logs to `tmp/run.log`), or directly
-  `build-<debug|release>/quick3dtest/Quick3DTest[d] [--scene <file>]`, or
-  `... run-tests` for the headless unit tests (`QT_QPA_PLATFORM=offscreen`
-  works headless).
+- Run the test app: `./scripts/linux/run.sh [--debug|--release] [-- <args>]` (logs to `tmp/run.log`), or directly `build-<debug|release>/quick3dtest/Quick3DTest[d] [--scene <file>]`, or `... run-tests` for the headless unit tests (`QT_QPA_PLATFORM=offscreen` works headless).
 
 ## Tool Execution Policy
-- `tmp/` at the repo root is the folder for temporary/scratch files. It is
-  gitignored; scripts must create it (`mkdir -p`) if missing.
-- Never write scratch/generated artifacts into the repo without asking;
-  keep the tree clean (`build-debug/`, `build-release/`, `tmp/` are gitignored).
-- `sudo` prompts for a password on this machine: never assume elevation works;
-  ask the user to run installs themselves or explicitly approve.
+- `tmp/` at the repo root is the folder for temporary/scratch files. It is gitignored; scripts must create it (`mkdir -p`) if missing.
+- Never write scratch/generated artifacts into the repo without asking; keep the tree clean (`build-debug/`, `build-release/`, `tmp/` are gitignored).
+- `sudo` prompts for a password on this machine: never assume elevation works; ask the user to run installs themselves or explicitly approve.
 - Run builds sequentially, not in parallel.
 
 ## Debug output
-- Engine logging goes through `CLogger` (qt-plus). `Quick3DTest run-tests`
-  exercises components without opening the GUI.
+- Engine logging goes through `CLogger` (qt-plus). `Quick3DTest run-tests` exercises components without opening the GUI.
 
 ## Documentation
-- Build setup of the engine: `README.md`, `quick3d/doc/`
-  (`Quick3D.qdocconf`, `Quick3DScene.xsd`), `qt-plus/README.md`
+- Build setup of the engine: `README.md`, `quick3d/doc/` (`Quick3D.qdocconf`, `Quick3DScene.xsd`), `qt-plus/README.md`
 
 **Core Components:**
 - **qt-plus** (`qt-plus/source/cpp`): Shared Qt utility library (logging, XML, singletons, interpolation, geo tools, web, QML tree). Git submodule.

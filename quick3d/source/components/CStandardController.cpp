@@ -6,6 +6,7 @@
 #include "CVector3.h"
 #include "CAxis.h"
 #include "C3DScene.h"
+#include "CCamera.h"
 #include "CStandardController.h"
 
 //-------------------------------------------------------------------------------------------------
@@ -265,7 +266,7 @@ void CStandardController::update(double dDeltaTime)
             // Following is used when rotation is absolute
             // m_pRotationTarget->setRotation(Axis(vRotation).transferTo(Axis(m_pRotationTarget->rotation())).eulerAngles());
 
-            pRotationTarget->setRotation(pRotationTarget->rotation() + vRotation);
+            pRotationTarget->setRotation(CCamera::limit(pRotationTarget->rotation() + vRotation));
         }
         else if (m_bLookDown)
         {
@@ -274,7 +275,7 @@ void CStandardController::update(double dDeltaTime)
             // Following is used when rotation is absolute
             // m_pRotationTarget->setRotation(Axis(vRotation).transferTo(Axis(m_pRotationTarget->rotation())).eulerAngles());
 
-            pRotationTarget->setRotation(pRotationTarget->rotation() + vRotation);
+            pRotationTarget->setRotation(CCamera::limit(pRotationTarget->rotation() + vRotation));
         }
     }
 }
@@ -425,8 +426,8 @@ void CStandardController::mouseMoveEvent(QMouseEvent* event)
                 CVector3 vRotationX = CVector3(dDeltaX * 0.005, 0.0, 0.0);
                 CVector3 vRotationY = CVector3(0.0, dDeltaY * 0.005, 0.0);
 
-                pLookTarget->setRotation(pLookTarget->rotation() + vRotationX);
-                pLookTarget->setRotation(pLookTarget->rotation() + vRotationY);
+                pLookTarget->setRotation(CCamera::limit(pLookTarget->rotation() + vRotationX));
+                pLookTarget->setRotation(CCamera::limit(pLookTarget->rotation() + vRotationY));
 
                 /*
                 // Following is used when rotation is absolute

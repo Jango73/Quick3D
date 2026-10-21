@@ -3,6 +3,7 @@
 #include "CAxis.h"
 
 #include "C3DScene.h"
+#include "CCamera.h"
 #include "CCartoController.h"
 
 //-------------------------------------------------------------------------------------------------
@@ -118,8 +119,8 @@ void CCartoController::mouseMoveEvent(QMouseEvent* event)
             CVector3 vRotationX = CVector3(dDeltaX * 0.005, 0.0, 0.0);
             CVector3 vRotationY = CVector3(0.0, dDeltaY * 0.005, 0.0);
 
-            m_rRotationTarget.component()->setRotation(m_rRotationTarget.component()->rotation() + vRotationX);
-            m_rRotationTarget.component()->setRotation(m_rRotationTarget.component()->rotation() + vRotationY);
+            m_rRotationTarget.component()->setRotation(CCamera::limit(m_rRotationTarget.component()->rotation() + vRotationX));
+            m_rRotationTarget.component()->setRotation(CCamera::limit(m_rRotationTarget.component()->rotation() + vRotationY));
         }
     }
 

@@ -132,7 +132,7 @@ public:
     void setPosition(Math::CVector3 vPosition);
 
     //! Sets the original rotation as euler angles
-    void setRotation(Math::CVector3 vRotation);
+    virtual void setRotation(Math::CVector3 vRotation);
 
     //! Sets the original scale
     void setScale(Math::CVector3 vScale);

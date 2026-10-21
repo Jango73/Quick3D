@@ -48,6 +48,9 @@ public:
     //!
     void setLightingDistance(double value) { m_dLightingDistance = value; }
 
+    //! Sets the rotation as euler angles, without camera pitch limit
+    virtual void setRotation(Math::CVector3 vRotation) Q_DECL_OVERRIDE;
+
     //-------------------------------------------------------------------------------------------------
     // Getters
     //-------------------------------------------------------------------------------------------------

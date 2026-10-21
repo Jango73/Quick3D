@@ -24,6 +24,12 @@ private slots:
 
     //! Distinct screen points produce distinct rays
     void testDistinctPointsGiveDistinctRays();
+
+    //! Camera pitch is limited to +-89 degrees, lights are not limited
+    void testPitchIsLimited();
+
+    //! limit helper caps free-look pitch, preserves other axes
+    void testLimitCapsViewPitch();
 };
 
 //-------------------------------------------------------------------------------------------------

@@ -2,6 +2,7 @@
 // Quick3D
 #include "C3DScene.h"
 #include "CCamera.h"
+#include "CLight.h"
 #include "CViewport.h"
 
 // Application
@@ -124,6 +125,63 @@ void CTestCamera::testDistinctPointsGiveDistinctRays()
 
     QVERIFY(tLeft.vNormal.X != tRight.vNormal.X || tLeft.vNormal.Y != tRight.vNormal.Y || tLeft.vNormal.Z != tRight.vNormal.Z);
     QVERIFY(tLeft.vNormal.X != tCenter.vNormal.X || tLeft.vNormal.Y != tCenter.vNormal.Y || tLeft.vNormal.Z != tCenter.vNormal.Z);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+* \brief Camera pitch stays within +-89 degrees, other axes and lights untouched.
+*/
+/***************************************************************************/
+void CTestCamera::testPitchIsLimited()
+{
+    C3DScene* pScene = nullptr;
+    QSP<CCamera> pCamera;
+    buildViewportAtOrigin(pScene, pCamera);
+
+    const double dMaxPitch = Angles::toRad(CCamera::MaxPitchDegrees);
+
+    // Pitch above limit is capped, yaw and roll are preserved
+    pCamera->setRotation(CVector3(Angles::toRad(100.0), 0.5, 0.25));
+    QCOMPARE(pCamera->rotation().X, dMaxPitch);
+    QCOMPARE(pCamera->rotation().Y, 0.5);
+    QCOMPARE(pCamera->rotation().Z, 0.25);
+
+    // Pitch below limit is capped
+    pCamera->setRotation(CVector3(Angles::toRad(-100.0), 0.0, 0.0));
+    QCOMPARE(pCamera->rotation().X, -dMaxPitch);
+
+    // Pitch within limits is preserved
+    pCamera->setRotation(CVector3(Angles::toRad(45.0), 0.0, 0.0));
+    QCOMPARE(pCamera->rotation().X, Angles::toRad(45.0));
+
+    // Lights bypass the limit since shadow lights aim downwards
+    QSP<CCamera> pLight(new CLight(pScene));
+    pLight->setRotation(CVector3(Angles::toRad(100.0), 0.0, 0.0));
+    QCOMPARE(pLight->rotation().X, Angles::toRad(100.0));
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+* \brief limit caps free-look pitch used by controllers, other axes pass through.
+*/
+/***************************************************************************/
+void CTestCamera::testLimitCapsViewPitch()
+{
+    const double dMaxPitch = Angles::toRad(CCamera::MaxPitchDegrees);
+
+    // Free-look increments beyond the limit are capped
+    QCOMPARE(CCamera::limit(CVector3(Angles::toRad(100.0), 0.5, 0.25)).X, dMaxPitch);
+    QCOMPARE(CCamera::limit(CVector3(Angles::toRad(-100.0), 0.0, 0.0)).X, -dMaxPitch);
+
+    // Angles within limits pass through untouched, other axes preserved
+    CVector3 vFree = CCamera::limit(CVector3(Angles::toRad(45.0), 0.5, 0.25));
+    QCOMPARE(vFree.X, Angles::toRad(45.0));
+    QCOMPARE(vFree.Y, 0.5);
+    QCOMPARE(vFree.Z, 0.25);
 }
 
 //-------------------------------------------------------------------------------------------------

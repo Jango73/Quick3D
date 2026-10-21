@@ -88,6 +88,36 @@ CCamera& CCamera::operator = (const CCamera& target)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Sets the rotation as euler angles. \br\br
+    Pitch (X axis) is limited to +- MaxPitchDegrees to prevent flipping upside down. \br\br
+    \a vRotation is specified in radians.
+*/
+void CCamera::setRotation(CVector3 vRotation)
+{
+    CComponent::setRotation(limit(vRotation));
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Returns the rotation limited to +- MaxPitchDegrees on the pitch (X) axis. \br\br
+    Controllers use this helper before rotating their target, since the target
+    carrying the view is not always a camera. \br\br
+    \a vRotation is specified in radians.
+*/
+CVector3 CCamera::limit(CVector3 vRotation)
+{
+    const double dMaxPitchRadians = Math::Angles::toRad(MaxPitchDegrees);
+
+    vRotation.X = Math::Angles::clipAngleRadianPIMinusPI(vRotation.X);
+    vRotation.X = Math::Angles::clipDouble(vRotation.X, -dMaxPitchRadians, dMaxPitchRadians);
+
+    return vRotation;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CCamera::loadParameters(const QString& sBaseFile, const CXMLNode& xComponent)
 {
     CPhysicalComponent::loadParameters(sBaseFile, xComponent);
@@ -363,7 +393,7 @@ void CCamera::renderDepth_RayTraced
 
     CGeoloc gReference = geoloc();
 
-    // Create polygons in local 3D space and viewed from top (X et Z)
+    // Create polygons in local 3D space and viewed from top (X and Z)
     for (QVector<CGeoZone>::iterator gZone = tParams.m_vZones.begin(); gZone != tParams.m_vZones.end(); gZone++)
     {
         (*gZone).getLocalPoints().clear();
@@ -490,7 +520,7 @@ void CCamera::renderDepth_CubeMapped
 
         CGeoloc gReference = geoloc();
 
-        // Création des polygones de zone dans le repère 3D local vu de dessus (X et Z)
+        // Build zone polygons in the local 3D frame viewed from above (X and Z)
         for (QVector<CGeoZone>::iterator gZone = tParams.m_vZones.begin(); gZone != tParams.m_vZones.end(); gZone++)
         {
             // gZone.getLocalPoints().clear();
@@ -504,7 +534,7 @@ void CCamera::renderDepth_CubeMapped
         }
 
         // Computation of the size of a mini-render
-        // A revoir car ce calcul suppose que la matrice demandée fait 360°x180°
+        // To review since this computation assumes the requested matrix spans 360 by 180 degrees
 
         /*
         int iRenderMapSize = RENDER_MAP_SIZE_WIDTH_MIN;
@@ -521,7 +551,7 @@ void CCamera::renderDepth_CubeMapped
         }
         */
 
-        int iRenderMapSize = 265;	// Puissance de deux
+        int iRenderMapSize = 265;	// Power of two
 
         LOG_METHOD_DEBUG(
                     QString("Rendering %1 x %2 image tiles of %3 pixels resolution")
@@ -535,13 +565,13 @@ void CCamera::renderDepth_CubeMapped
         double dFOV_Tilt = 180.0 / (double) RENDER_SUBDIVISIONS_TILT;
         double dFOV_Ratio = dFOV_Tilt / dFOV_Pan;
 
-        // Définition de la taille du viewport
+        // Define the viewport size
         QSize sMapSize(iRenderMapSize, (int) ((double) iRenderMapSize * dFOV_Ratio));
 
         // Vector holding the size of a cube-map image
         CVector2 vMapSize((double) sMapSize.width(), (double) sMapSize.height());
 
-        // Sauvegarde des paramètres de la caméra
+        // Save the camera settings
         QRect rOldGeometry = pGLWidgetScene->geometry();
         CViewport* pOldViewport = pGLWidgetScene->viewports()[0];
         CViewport* pNewViewport = new CViewport(pGLWidgetScene);
@@ -550,7 +580,7 @@ void CCamera::renderDepth_CubeMapped
         CVector3 vCameraHeading(0.0, Math::Angles::toRad(tParams.m_dCameraTrueHeadingDegrees), 0.0);
         double dOldFOV = m_dFOV;
 
-        // Création du viewport pour le rendu de la scène
+        // Create the viewport used to render the scene
         pGLWidgetScene->setGeometry(0, 0, sMapSize.width(), sMapSize.height());
         pGLWidgetScene->viewports()[0] = pNewViewport;
         pGLWidgetScene->viewports()[0]->setSize(vMapSize);
@@ -560,14 +590,14 @@ void CCamera::renderDepth_CubeMapped
         pGLWidgetScene->setShaderQuality(0.0);
         pGLWidgetScene->updateScene(1.0);
 
-        // Création du cube-map de référence
+        // Create the reference cube-map
         QImage imgImage(QSize(sMapSize.width() * RENDER_SUBDIVISIONS_PAN, sMapSize.height() * RENDER_SUBDIVISIONS_TILT), QImage::Format_RGB888);
 
         STOP_SAMPLE("CCamera::renderDepth_CubeMapped:prepare");
 
         START_SAMPLE("CCamera::renderDepth_CubeMapped:render");
 
-        // Réglage du FOV caméra horizontal (le FOV vertical est fonction de la taille du viewport)
+        // Set the horizontal camera FOV (vertical FOV follows the viewport size)
         m_dFOV = dFOV_Tilt;
 
         double dHalfFOV_Pan = dFOV_Pan * 0.5;
@@ -587,10 +617,10 @@ void CCamera::renderDepth_CubeMapped
                 dCurrentPan += dHalfFOV_Pan;
                 dCurrentTilt += dHalfFOV_Tilt;
 
-                // Récupération de la rotation de l'image courante
+                // Get the rotation of the current image
                 CVector3 vCurrentRotationRadians = CVector3(Math::Angles::toRad(dCurrentTilt), Math::Angles::toRad(dCurrentPan), 0.0);
 
-                // Calcul des angles finaux de la caméra via un axe
+                // Compute the final camera angles through an axis
                 Math::CAxis anAxis;
                 anAxis = anAxis.rotate(vCurrentRotationRadians);
                 anAxis = anAxis.rotate(CVector3(0.0, vCameraAttitude.Y, 0.0));
@@ -598,13 +628,13 @@ void CCamera::renderDepth_CubeMapped
                 anAxis = anAxis.rotate(CVector3(0.0, 0.0, vCameraAttitude.Z));
                 anAxis = anAxis.rotate(vCameraHeading);
 
-                // Application des angles de l'axe à la caméra
+                // Apply the axis angles to the camera
                 setRotation(anAxis.eulerAngles());
 
                 // OpenGL rendering
                 pGLWidgetScene->paintGL();
 
-                // Copie de l'image rendue dans l'image complète
+                // Copy the rendered image into the full image
                 CImageUtilities::blitWhole(
                             imgImage,
                             QPoint(sMapSize.width() * iPanIndex, sMapSize.height() * iTiltIndex),
@@ -617,10 +647,10 @@ void CCamera::renderDepth_CubeMapped
 
         START_SAMPLE("CCamera::renderDepth_CubeMapped:postprocess");
 
-        // Pour tests : sauvegarde de l'image finale telle que rendue par OpenGL
+        // For tests: save the final image as rendered by OpenGL
         // imgImage.save("d:\\Pano.png");
 
-        // Récupération des distances
+        // Collect the distances
         for (int iTilt = 0; iTilt < tParams.m_sResolution.height(); iTilt++)
         {
             for (int iPan = 0; iPan < tParams.m_sResolution.width(); iPan++)
@@ -633,7 +663,7 @@ void CCamera::renderDepth_CubeMapped
                 double dCurrentPan = dPanNormalized * (tParams.m_vEndPanTiltDegrees.Y - tParams.m_vStartPanTiltDegrees.Y);
                 double dCurrentTilt = dTiltNormalized * (tParams.m_vEndPanTiltDegrees.X - tParams.m_vStartPanTiltDegrees.X);
 
-                // Ajustements
+                // Adjustments
                 dCurrentPan = dCurrentPan + tParams.m_vStartPanTiltDegrees.Y;
                 dCurrentTilt = dCurrentTilt + tParams.m_vStartPanTiltDegrees.X;
 
@@ -661,7 +691,7 @@ void CCamera::renderDepth_CubeMapped
                     // Get the pixel, contains the distance and viewing angle
                     QRgb rgbPixel = imgImage.pixel((int) vCoords.X, (int) vCoords.Y);
 
-                    // 0xFF = infini
+                    // 0xFF = infinity
                     if ((rgbPixel & 0xFF) == 0xFF)
                     {
                         dDistance = -1.0;
@@ -740,18 +770,18 @@ void CCamera::computeFrustum(double dVerticalFOV, double dAspectRatio, double dM
 {
     Q_UNUSED(dAspectRatio);
 
-    // Remise à zéro des plans du frustum (pyramide de visualisation)
+    // Reset the frustum planes (visualization pyramid)
     m_pFrustumPlanes.clear();
 
     double dHorizontalFOV = dVerticalFOV;
 
-    // Création des matrices de rotation des plans
+    // Create the plane rotation matrices
     CMatrix4 mRotateY1 = CMatrix4().makeRotation(CVector3(0.0, dHorizontalFOV *  1.0, 0.0));
     CMatrix4 mRotateY2 = CMatrix4().makeRotation(CVector3(0.0, dHorizontalFOV * -1.0, 0.0));
     CMatrix4 mRotateX1 = CMatrix4().makeRotation(CVector3(dVerticalFOV *  1.0, 0.0, 0.0));
     CMatrix4 mRotateX2 = CMatrix4().makeRotation(CVector3(dVerticalFOV * -1.0, 0.0, 0.0));
 
-    // Création des vecteurs normaux des plans
+    // Create the plane normal vectors
     CVector3 v1(-1.0,  0.0,  0.0);
     CVector3 v2( 1.0,  0.0,  0.0);
     CVector3 v3( 0.0,  1.0,  0.0);
@@ -793,7 +823,7 @@ bool CCamera::contains(const CBoundingBox& bounds) const
 
 QMatrix4x4 CCamera::getQtProjectionMatrix(double dVerticalFOV, double dAspectRatio, double dMinDistance, double dMaxDistance)
 {
-    // Création d'uine matrice de projection Qt
+    // Create a Qt projection matrix
     QMatrix4x4 mMatrix;
 
     mMatrix.setToIdentity();
@@ -807,7 +837,7 @@ QMatrix4x4 CCamera::getQtProjectionMatrix(double dVerticalFOV, double dAspectRat
 
 QMatrix4x4 CCamera::getQtCameraMatrix(CVector3 vPosition, CVector3 vRotation)
 {
-    // Création d'une matrice de transformation Qt avec vPosition et vRotation
+    // Create a Qt transform matrix from vPosition and vRotation
 
     QMatrix4x4 mMatrix;
 
@@ -831,8 +861,8 @@ CMatrix4 CCamera::getInternalProjectionMatrix(double dVerticalFOV, double dAspec
 
 CMatrix4 CCamera::getInternalCameraMatrix(CVector3 vPosition, CVector3 vRotation)
 {
-    // Création d'une matrice de transformation interne avec vPosition et vRotation
-    // Utilisée pour les tests d'intersection BoundingBox/Frustum entre autres
+    // Create an internal transform matrix from vPosition and vRotation
+    // Used for BoundingBox/Frustum intersection tests among others
 
     CMatrix4 mMatrix;
 

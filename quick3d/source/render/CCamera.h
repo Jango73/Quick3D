@@ -76,6 +76,9 @@ class QUICK3D_EXPORT CCamera : public CPhysicalComponent
 {
 public:
 
+    //! Maximum camera pitch in degrees, prevents flipping upside down
+    static constexpr double MaxPitchDegrees = 89.0;
+
     //-------------------------------------------------------------------------------------------------
     // Constructors and destructor
     //-------------------------------------------------------------------------------------------------
@@ -110,6 +113,12 @@ public:
 
     //! Sets the maximum visibility distance of objects (used by projection matrix)
     void setMaxDistance(double dValue) { m_dMaxDistance = dValue; }
+
+    //! Sets the rotation as euler angles, pitch is limited to +- MaxPitchDegrees
+    virtual void setRotation(Math::CVector3 vRotation) Q_DECL_OVERRIDE;
+
+    //! Returns the rotation limited to +- MaxPitchDegrees on the pitch (X) axis
+    static Math::CVector3 limit(Math::CVector3 vRotation);
 
     //-------------------------------------------------------------------------------------------------
     // Getters

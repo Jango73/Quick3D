@@ -48,6 +48,18 @@ CLight::~CLight()
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Sets the rotation as euler angles. \br\br
+    Lights bypass the camera pitch limit since shadow lights aim downwards. \br\br
+    \a vRotation is specified in radians.
+*/
+void CLight::setRotation(Math::CVector3 vRotation)
+{
+    CComponent::setRotation(vRotation);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 CLight& CLight::operator = (const CLight& target)
 {
     CCamera::operator = (target);

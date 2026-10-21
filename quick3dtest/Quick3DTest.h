@@ -18,6 +18,7 @@
 
 class CRemoteControlServer;
 class CUiRemoteControlHandler;
+class QColorDialog;
 
 class Quick3DTest : public QMainWindow
 {
@@ -105,6 +106,12 @@ private slots:
     void onStreamView1Clicked();
     void onTimeChanged(int iValue);
     void onFogLevelChanged(int iValue);
+    void onFogColorClicked();
+    void onFogColorChanged(const QColor& tColor);
+    void onFogColorDialogClosed();
+    void onSkyColorClicked();
+    void onSkyColorChanged(const QColor& tColor);
+    void onSkyColorDialogClosed();
     void onWindLevelChanged(int iValue);
     void onShaderQualityChanged(int iValue);
     void onTerrainResChanged(int iValue);
@@ -139,4 +146,6 @@ protected:
     int                             m_iCheckRenderFrames;
     CUiRemoteControlHandler*        m_pRemoteHandler;
     CRemoteControlServer*           m_pRemoteServer;
+    QColorDialog*                   m_pFogColorDialog;
+    QColorDialog*                   m_pSkyColorDialog;
 };

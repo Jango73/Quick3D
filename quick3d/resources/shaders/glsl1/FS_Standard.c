@@ -78,6 +78,7 @@ uniform float           u_wave_amplitude;
 uniform int             u_fog_enable;
 uniform float           u_fog_distance;
 uniform vec3            u_fog_color;
+uniform vec3            u_sky_zenith_color;
 uniform vec3            u_sun_color;
 
 uniform int             u_IR_enable;
@@ -341,7 +342,7 @@ float random(vec2 p)
     // Most (all?) known transcendental numbers will (generally) work.
     const vec2 r = vec2(
                 23.1406926327792690,	// e^pi (Gelfond's constant)
-                2.6651441426902251		// 2^sqrt(2) (Gelfond–Schneider constant)
+                2.6651441426902251		// 2^sqrt(2) (Gelfondï¿½Schneider constant)
                 );
 
     return fract(cos(mod(123456789.0, 1e-7 + 256.0 * dot(p,r))));
@@ -692,7 +693,7 @@ vec4 lightFlares(vec3 lightPosition, vec3 pixelPosition, vec4 lightColor, float 
 vec3 getSkyAt(vec3 origin, vec3 direction, vec2 xy)
 {
     vec3 earthDirection = normalize(-u_world_origin - origin);
-    vec3 zenithColor = u_fog_color;
+    vec3 zenithColor = u_sky_zenith_color;
     vec3 horizonColor = u_sun_color;
     vec3 earthGlowColor = vec3(0.5, 0.75, 1.0);
     float earthGlowAmount = max(dot(direction, earthDirection), 0.0);
@@ -957,7 +958,7 @@ vec4 computeLinearFog(vec4 color)
     // vec3 sun_light = average;
 
     // Compute color, mix between fog color and sun color
-    vec3 fogColor = mix(u_fog_color, sunLight * 0.75, fogFactor);
+    vec3 fogColor = mix(sunLight * 0.75, u_fog_color, fogFactor);
 
     // Attenuate if IR
     if (bool(u_IR_enable)) fogColor *= 0.6;

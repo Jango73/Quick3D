@@ -1,6 +1,8 @@
 
 // Qt
 #include <QFileDialog>
+#include <QColorDialog>
+#include <QPushButton>
 #include <QRandomGenerator>
 #include <QKeyEvent>
 
@@ -49,6 +51,8 @@ Quick3DTest::Quick3DTest(QString sSceneFileName, QWidget *parent, Qt::WFlags fla
     , m_iCheckRenderFrames(0)
     , m_pRemoteHandler(nullptr)
     , m_pRemoteServer(nullptr)
+    , m_pFogColorDialog(nullptr)
+    , m_pSkyColorDialog(nullptr)
 {
     // CConsoleBoard::getInstance()->start();
 
@@ -84,6 +88,18 @@ Quick3DTest::Quick3DTest(QString sSceneFileName, QWidget *parent, Qt::WFlags fla
 
     connect(ui.m_sTime, SIGNAL(valueChanged(int)), this, SLOT(onTimeChanged(int)));
     connect(ui.m_sFogLevel, SIGNAL(valueChanged(int)), this, SLOT(onFogLevelChanged(int)));
+
+    ui.m_sFogLevel->setGeometry(10, 20, 68, 20);
+
+    QPushButton* pFogColorButton = new QPushButton("Color", ui.groupBox_2);
+    pFogColorButton->setGeometry(82, 18, 46, 22);
+    pFogColorButton->setFocusPolicy(Qt::NoFocus);
+    connect(pFogColorButton, SIGNAL(clicked()), this, SLOT(onFogColorClicked()));
+
+    QPushButton* pSkyColorButton = new QPushButton("Sky", ui.groupBox_2);
+    pSkyColorButton->setGeometry(130, 18, 46, 22);
+    pSkyColorButton->setFocusPolicy(Qt::NoFocus);
+    connect(pSkyColorButton, SIGNAL(clicked()), this, SLOT(onSkyColorClicked()));
     connect(ui.m_sWindLevel, SIGNAL(valueChanged(int)), this, SLOT(onWindLevelChanged(int)));
     connect(ui.m_sShaderQuality, SIGNAL(valueChanged(int)), this, SLOT(onShaderQualityChanged(int)));
     connect(ui.m_sTerrainRes, SIGNAL(valueChanged(int)), this, SLOT(onTerrainResChanged(int)));
@@ -657,6 +673,106 @@ void Quick3DTest::onTimeChanged(int iValue)
 void Quick3DTest::onFogLevelChanged(int iValue)
 {
     m_pScene->setFogLevel(double(iValue) / 100.0);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void Quick3DTest::onFogColorClicked()
+{
+    if (m_pFogColorDialog != nullptr)
+    {
+        m_pFogColorDialog->raise();
+        m_pFogColorDialog->activateWindow();
+        return;
+    }
+
+    Math::CVector3 vCurrent = m_pScene->fogColor();
+
+    m_pFogColorDialog = new QColorDialog(
+        QColor(int(vCurrent.X * 255.0), int(vCurrent.Y * 255.0), int(vCurrent.Z * 255.0)),
+        this);
+
+    m_pFogColorDialog->setOption(QColorDialog::DontUseNativeDialog, true);
+    m_pFogColorDialog->setWindowTitle("Fog color");
+
+    connect(m_pFogColorDialog, SIGNAL(currentColorChanged(const QColor&)), this, SLOT(onFogColorChanged(const QColor&)));
+    connect(m_pFogColorDialog, SIGNAL(finished(int)), this, SLOT(onFogColorDialogClosed()));
+
+    m_pFogColorDialog->show();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void Quick3DTest::onFogColorChanged(const QColor& tColor)
+{
+    if (tColor.isValid())
+    {
+        m_pScene->setFogColor(Math::CVector3(
+            double(tColor.red()) / 255.0,
+            double(tColor.green()) / 255.0,
+            double(tColor.blue()) / 255.0));
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void Quick3DTest::onFogColorDialogClosed()
+{
+    if (m_pFogColorDialog != nullptr)
+    {
+        m_pFogColorDialog->deleteLater();
+        m_pFogColorDialog = nullptr;
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void Quick3DTest::onSkyColorClicked()
+{
+    if (m_pSkyColorDialog != nullptr)
+    {
+        m_pSkyColorDialog->raise();
+        m_pSkyColorDialog->activateWindow();
+        return;
+    }
+
+    Math::CVector3 vCurrent = m_pScene->skyColor();
+
+    m_pSkyColorDialog = new QColorDialog(
+        QColor(int(vCurrent.X * 255.0), int(vCurrent.Y * 255.0), int(vCurrent.Z * 255.0)),
+        this);
+
+    m_pSkyColorDialog->setOption(QColorDialog::DontUseNativeDialog, true);
+    m_pSkyColorDialog->setWindowTitle("Sky zenith color");
+
+    connect(m_pSkyColorDialog, SIGNAL(currentColorChanged(const QColor&)), this, SLOT(onSkyColorChanged(const QColor&)));
+    connect(m_pSkyColorDialog, SIGNAL(finished(int)), this, SLOT(onSkyColorDialogClosed()));
+
+    m_pSkyColorDialog->show();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void Quick3DTest::onSkyColorChanged(const QColor& tColor)
+{
+    if (tColor.isValid())
+    {
+        m_pScene->setSkyColor(Math::CVector3(
+            double(tColor.red()) / 255.0,
+            double(tColor.green()) / 255.0,
+            double(tColor.blue()) / 255.0));
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void Quick3DTest::onSkyColorDialogClosed()
+{
+    if (m_pSkyColorDialog != nullptr)
+    {
+        m_pSkyColorDialog->deleteLater();
+        m_pSkyColorDialog = nullptr;
+    }
 }
 
 //-------------------------------------------------------------------------------------------------

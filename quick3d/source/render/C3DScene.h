@@ -83,6 +83,12 @@ public:
     void setFogLevel(double value);
 
     //!
+    void setFogColor(const Math::CVector3& vColor);
+
+    //!
+    void setSkyColor(const Math::CVector3& vColor);
+
+    //!
     void setWindLevel(double value);
 
     //!
@@ -178,6 +184,12 @@ public:
 
     //!
     CFog& fog() { return m_tFog; }
+
+    //! Returns the user-set base fog color, before sun intensity is applied
+    Math::CVector3 fogColor() const { return m_vFogBaseColor; }
+
+    //! Returns the user-set base sky zenith color, before sun intensity is applied
+    Math::CVector3 skyColor() const { return m_vSkyBaseColor; }
 
     //!
     double time() const { return m_dTime; }
@@ -361,6 +373,8 @@ protected:
     QTime                                   m_tTimeOfDay;
     CAverager<double>                       m_FPS;
     CFog                                    m_tFog;
+    Math::CVector3                          m_vFogBaseColor;
+    Math::CVector3                          m_vSkyBaseColor;
     CInterpolator<Math::CVector4>           m_iSunColor;
     bool                                    m_bForDisplay;
     bool                                    m_bFrustumCheck;

@@ -277,6 +277,7 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QOpenGLShaderPro
         pProgram->setUniformValue("u_fog_enable", (GLint) m_tFog.enabled() ? 1 : 0);
         pProgram->setUniformValue("u_fog_distance", (GLfloat) m_tFog.distance());
         pProgram->setUniformValue("u_fog_color", QVector3D(m_tFog.color().X, m_tFog.color().Y, m_tFog.color().Z));
+        pProgram->setUniformValue("u_sky_zenith_color", vSkyZenithColor);
         pProgram->setUniformValue("u_sun_color", vSunColor);
     }
 
@@ -289,7 +290,7 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
 {
     if (m_bForDisplay)
     {
-        m_tFog.color() = CVector3(0.2, 0.6, 1.0);
+        m_tFog.color() = m_vFogBaseColor;
 
         double dNormalizedTime = fabs(((double) m_tTimeOfDay.secsTo(QTime(0, 0, 0)) /  86400.0));
         double dSunAngle = (dNormalizedTime * -360.0) + 180.0;
@@ -342,6 +343,10 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
 
         // Multiply fog color with sun intensity
         m_tFog.color() = m_tFog.color() * m_dSunIntensity;
+
+        // Sky zenith follows its own base color, modulated like fog
+        Math::CVector3 vSkyBase = pContext->scene()->skyColor();
+        vSkyZenithColor = QVector3D(vSkyBase.X * m_dSunIntensity, vSkyBase.Y * m_dSunIntensity, vSkyBase.Z * m_dSunIntensity);
 
         if (vSuns.count() > 0)
         {

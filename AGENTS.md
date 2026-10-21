@@ -17,6 +17,9 @@ Qt-based 3D engine with geo-referenced entities (C++/Qt), built with CMake for Q
 
 Fresh clones have empty `qt-plus/` and `third/zlib/` until submodules are initialized (`git submodule update --init --recursive`). Rendering is `QOpenGLWidget`-based, the engine targets **Qt6** (Qt 6.2.4 on this machine); the legacy `.pro`/`.pri` files are kept for QtCreator users but the reference Linux build is CMake. `QGL*` classes are gone: use `QOpenGL*`.
 
+## Release vs debug
+- Build in RELEASE mode. DEBUG is used when tracking bugs (hence its name) : either when debug logs or an attachement with a debugger is needed.
+
 ## Work Tracking
 - Analysis and work notes, if any, live in `quick3d/doc/`.
 - Keep these files up to date while working.
@@ -78,7 +81,16 @@ Fresh clones have empty `qt-plus/` and `third/zlib/` until submodules are initia
   - Fixed-width types (`U8/I8`, `U16/I16`, `U32/I32`, `U64/I64`, `F32`, `F64`) in persistent data (Q3D format, height-field files), not register-sized `INT/UINT`.
 
 ### Commit message
-The agent always signs its commits: append a last line `Agent: <agent-name>` (for example `Agent: opencode/muse-spark`) so authorship stays identifiable in the log, whatever the commit prefix above. Never leave a blank line in the commit message: lines follow each other directly.
+Describe the changes in a short sentence.
+
+Test: append a second line with the test results: `Tests: <passed>/<total>`
+Omit the line only when no test ran.
+
+Sign: append a last line `Agent: <agent-name>`
+(for example `Agent: opencode/muse-spark`) so authorship stays identifiable
+in the log, whatever the commit prefix above.
+
+Never leave a blank line in the commit message: lines follow each other directly.
 
 ## Common Build Commands
 - Dependencies: `./scripts/linux/deps.sh` (submodules + apt/dnf/pacman packages; needs `sudo`, which prompts for a password here)

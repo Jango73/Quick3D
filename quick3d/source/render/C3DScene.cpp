@@ -179,6 +179,9 @@ void C3DScene::init(QVector<QSP<CComponent> > vComponents)
     m_tFog.level() = 0.0;
     m_tFog.color() = CVector3(0.5, 0.5, 0.5);
 
+    m_vFogBaseColor = CVector3(0.5, 0.5, 0.5);
+    m_vSkyBaseColor = CVector3(0.2, 0.6, 1.0);
+
     m_iSunColor.clear();
     m_iSunColor.addValue( 0.00, CVector4(0.0, 0.0, 0.0, 1.0));
     m_iSunColor.addValue( 0.50, CVector4(1.1, 0.5, 0.4, 1.0));
@@ -315,6 +318,28 @@ void C3DScene::setTimeOfDay(QTime value)
 void C3DScene::setFogLevel(double value)
 {
     m_tFog.level() = value;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Sets the base fog color to \a vColor. The scene still modulates it with
+    sun intensity every frame, so this is the daytime reference tint.
+*/
+void C3DScene::setFogColor(const Math::CVector3& vColor)
+{
+    m_vFogBaseColor = vColor;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Sets the base sky zenith color to \a vColor. The scene still modulates it with
+    sun intensity every frame, so this is the daytime reference tint.
+*/
+void C3DScene::setSkyColor(const Math::CVector3& vColor)
+{
+    m_vSkyBaseColor = vColor;
 }
 
 //-------------------------------------------------------------------------------------------------

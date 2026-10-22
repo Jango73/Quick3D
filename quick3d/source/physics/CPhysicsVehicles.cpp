@@ -158,8 +158,12 @@ int CPhysicsWorld::addVehicle(const Math::CVector3& vChassisHalfExtentsM, double
         JPH::WheelSettingsWV* pWheelSettings = new JPH::WheelSettingsWV();
 
         // Note: wheel positions arrive in the vehicle origin frame, the
-        // constraint expects them in the body center frame
-        pWheelSettings->mPosition = CPhysicsJolt::toJolt(cWheel.m_vPosition - vCenterOffsetM);
+        // constraint expects them in the body center frame. Jolt hangs the
+        // wheel below a chassis hardpoint along -Y, so the attachment sits
+        // one mid travel above the declared wheel center: at mid travel the
+        // simulated wheel center matches the authored position.
+        double dSuspMidM = 0.5 * (cWheel.m_dSuspensionMinLengthM + cWheel.m_dSuspensionMaxLengthM);
+        pWheelSettings->mPosition = CPhysicsJolt::toJolt(cWheel.m_vPosition - vCenterOffsetM + Math::CVector3(0.0, dSuspMidM, 0.0));
         pWheelSettings->mSuspensionMinLength = float(cWheel.m_dSuspensionMinLengthM);
         pWheelSettings->mSuspensionMaxLength = float(cWheel.m_dSuspensionMaxLengthM);
         pWheelSettings->mSuspensionSpring.mFrequency = float(cWheel.m_dSuspensionFrequencyHz);

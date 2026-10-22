@@ -17,8 +17,8 @@ namespace
 {
     const double PHYSICS_STEP_S = 1.0 / 60.0;
     const int PHYSICS_MAX_STEPS_PER_FRAME = 4;
-    const double PHYSICS_GROUND_RAY_HEIGHT_M = 50.0;
-    const double PHYSICS_GROUND_RAY_LENGTH_M = 200.0;
+    const double PHYSICS_GROUND_RAY_HEIGHT_M = 500.0;
+    const double PHYSICS_GROUND_RAY_LENGTH_M = 700.0;
     const double PHYSICS_GROUND_SNAP_ABOVE_M = 20.0;
 }
 
@@ -100,14 +100,16 @@ bool C3DScene::attachVehicleToPhysics(QSP<CVehicle> pVehicle)
     CVector3 vReferenceECEF = m_gPhysicsReference.toVector3();
     CVector3 vLocalPositionM = pVehicle->geoloc().toVector3() - vReferenceECEF;
 
-    // Note: authored axles sit low for the arcade pose, lift the spawn so
-    // tires touch at mid suspension travel instead of ejecting the chassis.
+    // Note: the attachment is one mid travel above the declared wheel center,
+    // at mid travel the wheel center matches the authored position and the
+    // tire touches one radius below it. Lifting the spawn by radius minus the
+    // authored center height starts the chassis at its equilibrium pose.
     // The pose stays level by construction, lifting along the reference up.
     double dLiftM = 0.0;
 
     foreach (const CVehicleWheel& cWheel, vPhysicsWheels)
     {
-        double dWheelLiftM = cWheel.m_dRadiusM + 0.5 * (cWheel.m_dSuspensionMinLengthM + cWheel.m_dSuspensionMaxLengthM) - cWheel.m_vPosition.Y;
+        double dWheelLiftM = cWheel.m_dRadiusM - cWheel.m_vPosition.Y;
 
         if (dWheelLiftM > dLiftM)
         {
@@ -162,10 +164,12 @@ void C3DScene::detachVehicleFromPhysics(QSP<CVehicle> pVehicle)
 /*!
     Attaches grounded root vehicles to the physics world. \br\br
     A candidate needs active physics, wheels and no attached body yet. A
-    registered height field must reach it first: a downward terrain ray in
-    the physics frame decides, the arcade path keeps unattached vehicles
-    grounded meanwhile. A close spawn snaps to the measured ground before
-    the body is created.
+    registered height field must reach it first: a terrain ray in the
+    physics frame decides, the arcade path keeps unattached vehicles
+    grounded meanwhile. The segment spans 200 m below to 500 m above the
+    vehicle, a vehicle buried under coarse ground still resolves instead of
+    wobbling in arcade mode forever. A close spawn snaps to the measured
+    ground before the body is created.
 */
 void C3DScene::ensureVehiclePhysics()
 {

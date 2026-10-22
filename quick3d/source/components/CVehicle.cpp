@@ -383,7 +383,8 @@ bool CVehicle::hasWheels()
 
 /*!
     Builds one physics wheel per CWheel child, in child order. \br\br
-    The suspension attachment point is the wheel center: the spring travel
+    The declared position is the wheel center at mid suspension travel: the
+    Jolt attachment hardpoint sits one mid travel above it, the spring travel
     below and above it maps to the suspension length range.
 */
 QVector<CVehicleWheel> CVehicle::buildPhysicsWheels() const

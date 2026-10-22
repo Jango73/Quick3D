@@ -422,27 +422,27 @@ class Export_q3d(bpy.types.Operator, ExportHelper):
 
     filename_ext = ".q3d"
 
-    rot_x90 = BoolProperty(name="Convert to Y-up",
+    rot_x90: BoolProperty(name="Convert to Y-up",
             description="Rotate 90 degrees around X to convert to y-up",
             default=True,
             )
-    world_space = BoolProperty(name="Export into Worldspace",
+    world_space: BoolProperty(name="Export into Worldspace",
             description="Transform the Vertexcoordinates into Worldspace",
             default=False,
             )
-    apply_modifiers = BoolProperty(name="Apply Modifiers",
+    apply_modifiers: BoolProperty(name="Apply Modifiers",
             description="Applies the Modifiers",
             default=True,
             )
-    range_start = IntProperty(name='Start Frame',
+    range_start: IntProperty(name='Start Frame',
             description='First frame to use for Export',
             default=1,
             )
-    range_end = IntProperty(name='End Frame',
+    range_end: IntProperty(name='End Frame',
             description='Last frame to use for Export',
             default=250,
             )
-    sampling = EnumProperty(name='Sampling',
+    sampling: EnumProperty(name='Sampling',
             description='Sampling --> frames per sample (0.1 yields 10 samples per frame)',
             items=(('0.01', '0.01', ''),
                    ('0.05', '0.05', ''),

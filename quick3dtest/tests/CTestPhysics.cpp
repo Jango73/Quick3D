@@ -135,7 +135,10 @@ void CTestPhysics::testUnknownBodyReportsFailure()
 
 /***************************************************************************/
 /*!
-* \brief A chassis dropped on its wheels settles on the suspension travel.
+* \brief A chassis dropped on its wheels settles on the suspension travel. \br\br
+* The declared wheel position is the wheel center at mid travel, the Jolt
+* hardpoint sits one mid travel above it, so the body rests near radius
+* minus the declared center height plus the compressed travel.
 */
 /***************************************************************************/
 void CTestPhysics::testVehicleSettlesOnSuspension()
@@ -157,7 +160,7 @@ void CTestPhysics::testVehicleSettlesOnSuspension()
     Math::CVector3 vRest;
 
     QVERIFY(oWorld.vehiclePosition(iVehicle, vRest) == true);
-    QVERIFY(vRest.Y > 0.8 && vRest.Y < 1.3);
+    QVERIFY(vRest.Y > 0.4 && vRest.Y < 1.0);
 
     for (int iWheel = 0; iWheel < 4; iWheel++)
     {

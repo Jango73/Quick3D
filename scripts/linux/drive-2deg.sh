@@ -4,6 +4,12 @@
 # disappearance at high speed: stop is explicit (latitude read on /vehicle),
 # never a judgement call, with a safety timeout that always releases keys.
 # Usage: ./scripts/linux/drive-2deg.sh [--build debug|release] [--speed N] [--stop LAT] [--timeout S]
+# Environment assumptions (overridable, defaults in brackets):
+# - Q3D_REMOTE_PORT: HTTP remote control port, passed to the app [8181].
+# - DISPLAY: X display used for the headed run [:1].
+# - fuser: used to free the remote port before launch.
+# - python3: used to parse the string-only JSON produced by CXMLNode
+#   (scalars come back as strings, e.g. "latitude":"21.5", "ok":"true").
 set -u
 
 SCRIPT_FOLDER="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -26,47 +32,48 @@ done
 BUILD_FOLDER="${PROJECT_ROOT_FOLDER}/build-${BUILD_TYPE}"
 BINARY="${BUILD_FOLDER}/quick3dtest/Quick3DTest"
 SCENE="${BUILD_FOLDER}/quick3dtest/Quick3DDrive.xml"
-PORT=8181
+PORT="${Q3D_REMOTE_PORT:-8181}"
+HEADED_DISPLAY="${DISPLAY:-:1}"
 VEHICLE="Man1"
 PROGRESS="${PROJECT_ROOT_FOLDER}/tmp/drive-progress.log"
 REPORT="${PROJECT_ROOT_FOLDER}/tmp/drive-2deg-report.txt"
 
-command -v curl >/dev/null || { echo "curl manquant"; exit 1; }
-command -v python3 >/dev/null || { echo "python3 manquant"; exit 1; }
-command -v fuser >/dev/null || { echo "fuser manquant"; exit 1; }
-[[ -x "${BINARY}" ]] || { echo "binaire absent: ${BINARY}"; exit 1; }
-[[ -f "${SCENE}" ]] || { echo "scene absente: ${SCENE} (rebuild pour mirror bin/)"; exit 1; }
+command -v curl >/dev/null || { echo "missing curl"; exit 1; }
+command -v python3 >/dev/null || { echo "missing python3"; exit 1; }
+command -v fuser >/dev/null || { echo "missing fuser"; exit 1; }
+[[ -x "${BINARY}" ]] || { echo "missing binary: ${BINARY}"; exit 1; }
+[[ -f "${SCENE}" ]] || { echo "missing scene: ${SCENE} (rebuild to mirror bin/)"; exit 1; }
 mkdir -p "${PROJECT_ROOT_FOLDER}/tmp"
 
 api() {
   curl -s -m 10 "http://127.0.0.1:${PORT}$1"
 }
 
-echo "[drive] lancement Quick3DTest --scene Quick3DDrive.xml --check-render (port ${PORT})"
+echo "[drive] starting Quick3DTest --scene Quick3DDrive.xml --check-render (port ${PORT})"
 fuser -k ${PORT}/tcp 2>/dev/null
 sleep 1
 rm -f "${PROGRESS}"
 cd "${BUILD_FOLDER}/quick3dtest" || exit 1
-setsid env QUICK3D_ENDLESS=1 Q3D_REMOTE_PORT=${PORT} DISPLAY=:1 \
+setsid env QUICK3D_ENDLESS=1 Q3D_REMOTE_PORT=${PORT} DISPLAY=${HEADED_DISPLAY} \
   "${BINARY}" --scene Quick3DDrive.xml --check-render >/dev/null 2>&1 < /dev/null &
 APP_PID=$!
 trap 'kill ${APP_PID} 2>/dev/null' EXIT
 cd "${PROJECT_ROOT_FOLDER}" || exit 1
 
-echo "[drive] attente HTTP" | tee "${PROGRESS}"
+echo "[drive] waiting for HTTP" | tee "${PROGRESS}"
 for i in $(seq 1 60); do
   api "/" >/dev/null 2>&1 && break
   sleep 2
 done
 
 START=$(api "/vehicle?name=${VEHICLE}" || true)
-echo "${START}" | grep -q '"ok":"true"' || { echo "scene non chargee: ${START}"; exit 1; }
+echo "${START}" | grep -q '"ok":"true"' || { echo "scene not loaded: ${START}"; exit 1; }
 echo "[drive] start ${START}" | tee -a "${PROGRESS}"
 echo "[drive] select $(api "/select?name=${VEHICLE}")" | tee -a "${PROGRESS}"
 echo "[drive] view $(api "/view?name=Man1.Head")" | tee -a "${PROGRESS}"
 echo "[drive] speed $(api "/speed?value=${SPEED}")" | tee -a "${PROGRESS}"
 api "/key?code=Z&action=press" >/dev/null
-echo "[drive] Z maintenu, cap 22.1, timeout ${TIMEOUT}s" | tee -a "${PROGRESS}"
+echo "[drive] Z held, stop latitude ${STOP_LAT}, timeout ${TIMEOUT}s" | tee -a "${PROGRESS}"
 
 ELAPSED=0
 while [[ ${ELAPSED} -lt ${TIMEOUT} ]]; do

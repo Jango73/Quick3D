@@ -76,26 +76,26 @@ public:
 //-------------------------------------------------------------------------------------------------
 
 //! Outcome of one mesh geometry paint test during a layer pass, retained for engine snapshots
-struct SMeshDrawInfo
+struct MESH_DRAW_INFO
 {
-    QString container;
-    QString name;
-    int layer;
-    double distance;
-    double centerX;
-    double centerY;
-    double centerZ;
-    double radius;
-    double boxMinX;
-    double boxMinY;
-    double boxMinZ;
-    double boxMaxX;
-    double boxMaxY;
-    double boxMaxZ;
-    double maxDistance;
-    bool frustum;
-    bool inRange;
-    bool drawn;
+    QString m_sContainer;
+    QString m_sName;
+    int     m_iLayer;
+    double  m_dDistance;
+    double  m_dCenterX;
+    double  m_dCenterY;
+    double  m_dCenterZ;
+    double  m_dRadius;
+    double  m_dBoxMinX;
+    double  m_dBoxMinY;
+    double  m_dBoxMinZ;
+    double  m_dBoxMaxX;
+    double  m_dBoxMaxY;
+    double  m_dBoxMaxZ;
+    double  m_dMaxDistance;
+    bool    m_bFrustum;
+    bool    m_bInRange;
+    bool    m_bDrawn;
 
     //! Returns the mesh draw outcome as a node, JSON through CXMLNode
     CXMLNode snapshotNode() const;
@@ -104,14 +104,14 @@ struct SMeshDrawInfo
 //-------------------------------------------------------------------------------------------------
 
 //! Last painted frame info for one layer pass, retained for engine snapshots
-struct SLayerFrameInfo
+struct LAYER_FRAME_INFO
 {
-    int layer;
-    double nearPlane;
-    double farPlane;
-    bool truncated;
-    C3DSceneStatistics statistics;
-    QVector<SMeshDrawInfo> draws;
+    int                     m_iLayer;
+    double                  m_dNearPlane;
+    double                  m_dFarPlane;
+    bool                    m_bTruncated;
+    C3DSceneStatistics      m_tStatistics;
+    QVector<MESH_DRAW_INFO> m_vDraws;
 
     //! Returns the layer frame info as a node, JSON through CXMLNode
     CXMLNode snapshotNode() const;
@@ -194,14 +194,14 @@ public:
     double closeLayerFar() const { return m_dCloseLayerFar; }
 
     //! Returns the per-layer info retained from the last painted frame, copy under lock
-    QVector<SLayerFrameInfo> lastLayerFrames() const;
+    QVector<LAYER_FRAME_INFO> lastLayerFrames() const;
 
     //! Tells whether the running layer pass already dropped mesh draw outcomes
     bool meshDrawTruncated() const;
 
     //! Records one mesh geometry paint outcome for the current layer pass, retained for snapshots. \br\br
     //! Beyond MaxMeshDraws outcomes are dropped and the truncation flag is set, surfaced in the snapshot.
-    void recordMeshDraw(const SMeshDrawInfo& tDraw);
+    void recordMeshDraw(const MESH_DRAW_INFO& tDraw);
 
     //-------------------------------------------------------------------------------------------------
     // Overridden methods
@@ -297,8 +297,8 @@ protected:
     double                  m_dMaxDistance;
     double                  m_dCloseLayerFar;
     QVector<Math::CPlane3>  m_pFrustumPlanes;
-    QVector<SLayerFrameInfo> m_vLastLayerFrames;
-    QVector<SMeshDrawInfo>  m_vCurrentMeshDraws; ///< Mesh outcomes of the running layer pass
+    QVector<LAYER_FRAME_INFO> m_vLastLayerFrames;
+    QVector<MESH_DRAW_INFO>  m_vCurrentMeshDraws; ///< Mesh outcomes of the running layer pass
     bool                    m_bMeshDrawTruncated; ///< True when the running pass dropped outcomes beyond MaxMeshDraws
     mutable QMutex          m_mSnapshotMutex; ///< Guards the retained frame diagnostics across render and snapshot threads
 };

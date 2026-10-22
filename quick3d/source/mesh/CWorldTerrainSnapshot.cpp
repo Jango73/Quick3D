@@ -34,15 +34,15 @@ using namespace Math;
     Returns the chunk identity as a node, JSON through CXMLNode.
 */
 /***************************************************************************/
-CXMLNode SCollectedChunkInfo::snapshotNode() const
+CXMLNode COLLECTED_CHUNK_INFO::snapshotNode() const
 {
     CXMLNode xNode("chunks");
 
-    xNode.attributes()["address"] = address;
-    xNode.attributes()["latitude"] = QString::number(latitude, 'g', 10);
-    xNode.attributes()["longitude"] = QString::number(longitude, 'g', 10);
-    xNode.attributes()["sizelatitude"] = QString::number(sizeLatitude, 'g', 10);
-    xNode.attributes()["sizelongitude"] = QString::number(sizeLongitude, 'g', 10);
+    xNode.attributes()["address"] = m_sAddress;
+    xNode.attributes()["latitude"] = QString::number(m_dLatitude, 'g', 10);
+    xNode.attributes()["longitude"] = QString::number(m_dLongitude, 'g', 10);
+    xNode.attributes()["sizelatitude"] = QString::number(m_dSizeLatitude, 'g', 10);
+    xNode.attributes()["sizelongitude"] = QString::number(m_dSizeLongitude, 'g', 10);
 
     return xNode;
 }
@@ -52,19 +52,19 @@ CXMLNode SCollectedChunkInfo::snapshotNode() const
     Returns the level readiness as a node, JSON through CXMLNode.
 */
 /***************************************************************************/
-CXMLNode SChunkPathInfo::snapshotNode() const
+CXMLNode CHUNK_PATH_INFO::snapshotNode() const
 {
     CXMLNode xNode("path");
 
-    xNode.attributes()["level"] = QString::number(level);
-    xNode.attributes()["latitude"] = QString::number(latitude, 'g', 10);
-    xNode.attributes()["longitude"] = QString::number(longitude, 'g', 10);
-    xNode.attributes()["sizelatitude"] = QString::number(sizeLatitude, 'g', 10);
-    xNode.attributes()["sizelongitude"] = QString::number(sizeLongitude, 'g', 10);
-    xNode.attributes()["selfready"] = selfReady == true ? "true" : "false";
-    xNode.attributes()["children"] = QString::number(childCount);
-    xNode.attributes()["drawable"] = QString::number(drawableChildren);
-    xNode.attributes()["stay"] = stay == true ? "true" : "false";
+    xNode.attributes()["level"] = QString::number(m_iLevel);
+    xNode.attributes()["latitude"] = QString::number(m_dLatitude, 'g', 10);
+    xNode.attributes()["longitude"] = QString::number(m_dLongitude, 'g', 10);
+    xNode.attributes()["sizelatitude"] = QString::number(m_dSizeLatitude, 'g', 10);
+    xNode.attributes()["sizelongitude"] = QString::number(m_dSizeLongitude, 'g', 10);
+    xNode.attributes()["selfready"] = m_bSelfReady == true ? "true" : "false";
+    xNode.attributes()["children"] = QString::number(m_iChildCount);
+    xNode.attributes()["drawable"] = QString::number(m_iDrawableChildren);
+    xNode.attributes()["stay"] = m_bStay == true ? "true" : "false";
 
     return xNode;
 }
@@ -79,25 +79,25 @@ CXMLNode SChunkPathInfo::snapshotNode() const
 */
 void CWorldTerrain::recordCameraPath(const CGeoloc& gCamera)
 {
-    QVector<SChunkPathInfo> vPath;
+    QVector<CHUNK_PATH_INFO> vPath;
 
     QSP<CWorldChunk> pChunk = m_pRoot;
     int iLevel = m_iLevels;
 
     while (pChunk != nullptr && iLevel >= 0)
     {
-        SChunkPathInfo tInfo;
-        tInfo.level = iLevel;
-        tInfo.latitude = pChunk->geoloc().Latitude;
-        tInfo.longitude = pChunk->geoloc().Longitude;
-        tInfo.sizeLatitude = pChunk->size().Latitude;
-        tInfo.sizeLongitude = pChunk->size().Longitude;
+        CHUNK_PATH_INFO tInfo;
+        tInfo.m_iLevel = iLevel;
+        tInfo.m_dLatitude = pChunk->geoloc().Latitude;
+        tInfo.m_dLongitude = pChunk->geoloc().Longitude;
+        tInfo.m_dSizeLatitude = pChunk->size().Latitude;
+        tInfo.m_dSizeLongitude = pChunk->size().Longitude;
         SChildStatistics tStats = pChunk->childStatistics();
 
-        tInfo.selfReady = pChunk->terrain() != nullptr && pChunk->terrain()->isOK();
-        tInfo.childCount = tStats.childCount;
-        tInfo.drawableChildren = tStats.drawableChildren;
-        tInfo.stay = enoughDetail(pChunk, gCamera, iLevel);
+        tInfo.m_bSelfReady = pChunk->terrain() != nullptr && pChunk->terrain()->isOK();
+        tInfo.m_iChildCount = tStats.childCount;
+        tInfo.m_iDrawableChildren = tStats.drawableChildren;
+        tInfo.m_bStay = enoughDetail(pChunk, gCamera, iLevel);
 
         QSP<CWorldChunk> pNext;
 
@@ -132,7 +132,7 @@ void CWorldTerrain::recordCameraPath(const CGeoloc& gCamera)
     Returns the per-layer chunk identities retained from the last paint.
 */
 /***************************************************************************/
-QMap<int, QVector<SCollectedChunkInfo> > CWorldTerrain::lastCollectedChunks() const
+QMap<int, QVector<COLLECTED_CHUNK_INFO> > CWorldTerrain::lastCollectedChunks() const
 {
     QMutexLocker tLocker(&m_mSnapshotMutex);
 
@@ -144,7 +144,7 @@ QMap<int, QVector<SCollectedChunkInfo> > CWorldTerrain::lastCollectedChunks() co
     Returns the quadtree readiness retained from the last paint.
 */
 /***************************************************************************/
-QVector<SChunkPathInfo> CWorldTerrain::lastCameraPath() const
+QVector<CHUNK_PATH_INFO> CWorldTerrain::lastCameraPath() const
 {
     QMutexLocker tLocker(&m_mSnapshotMutex);
 
@@ -170,8 +170,8 @@ CGeoloc CWorldTerrain::lastCameraGeoloc() const
 /***************************************************************************/
 CXMLNode CWorldTerrain::snapshotNode()
 {
-    QMap<int, QVector<SCollectedChunkInfo> > mCollected;
-    QVector<SChunkPathInfo> vPath;
+    QMap<int, QVector<COLLECTED_CHUNK_INFO> > mCollected;
+    QVector<CHUNK_PATH_INFO> vPath;
 
     {
         QMutexLocker tLocker(&m_mSnapshotMutex);
@@ -189,7 +189,7 @@ CXMLNode CWorldTerrain::snapshotNode()
 
         xLayer.attributes()["layer"] = QString::number(iLayer);
 
-        foreach (const SCollectedChunkInfo& tChunk, mCollected[iLayer])
+        foreach (const COLLECTED_CHUNK_INFO& tChunk, mCollected[iLayer])
         {
             xLayer << tChunk.snapshotNode();
         }
@@ -197,7 +197,7 @@ CXMLNode CWorldTerrain::snapshotNode()
         xNode << xLayer;
     }
 
-    foreach (const SChunkPathInfo& tLevel, vPath)
+    foreach (const CHUNK_PATH_INFO& tLevel, vPath)
     {
         xNode << tLevel.snapshotNode();
     }

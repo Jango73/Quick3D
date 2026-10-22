@@ -611,25 +611,25 @@ void CMeshGeometry::paint(CRenderContext* pContext, CComponent* pContainer)
                 bFrustumCheck = true;
             }
 
-            SMeshDrawInfo tDraw;
-            tDraw.container = QString::number(quintptr(pContainer), 16);
-            tDraw.name = pContainer->qualifiedName();
-            tDraw.layer = pContext->camera()->currentPaintLayer();
-            tDraw.distance = vPosition.magnitude();
-            tDraw.centerX = vPosition.X;
-            tDraw.centerY = vPosition.Y;
-            tDraw.centerZ = vPosition.Z;
-            tDraw.radius = dRadius;
-            tDraw.maxDistance = m_dMaxDistance;
-            tDraw.frustum = bInFrustum;
-            tDraw.inRange = bInRange;
-            tDraw.drawn = bFrustumCheck;
-            tDraw.boxMinX = vPosition.X - dRadius;
-            tDraw.boxMinY = vPosition.Y - dRadius;
-            tDraw.boxMinZ = vPosition.Z - dRadius;
-            tDraw.boxMaxX = vPosition.X + dRadius;
-            tDraw.boxMaxY = vPosition.Y + dRadius;
-            tDraw.boxMaxZ = vPosition.Z + dRadius;
+            MESH_DRAW_INFO tDraw;
+            tDraw.m_sContainer = QString::number(quintptr(pContainer), 16);
+            tDraw.m_sName = pContainer->qualifiedName();
+            tDraw.m_iLayer = pContext->camera()->currentPaintLayer();
+            tDraw.m_dDistance = vPosition.magnitude();
+            tDraw.m_dCenterX = vPosition.X;
+            tDraw.m_dCenterY = vPosition.Y;
+            tDraw.m_dCenterZ = vPosition.Z;
+            tDraw.m_dRadius = dRadius;
+            tDraw.m_dMaxDistance = m_dMaxDistance;
+            tDraw.m_bFrustum = bInFrustum;
+            tDraw.m_bInRange = bInRange;
+            tDraw.m_bDrawn = bFrustumCheck;
+            tDraw.m_dBoxMinX = vPosition.X - dRadius;
+            tDraw.m_dBoxMinY = vPosition.Y - dRadius;
+            tDraw.m_dBoxMinZ = vPosition.Z - dRadius;
+            tDraw.m_dBoxMaxX = vPosition.X + dRadius;
+            tDraw.m_dBoxMaxY = vPosition.Y + dRadius;
+            tDraw.m_dBoxMaxZ = vPosition.Z + dRadius;
 
             pContext->camera()->recordMeshDraw(tDraw);
         }

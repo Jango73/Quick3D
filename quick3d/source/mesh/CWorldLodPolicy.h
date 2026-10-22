@@ -21,8 +21,14 @@ class QUICK3D_EXPORT CWorldLodPolicy
 {
 public:
 
+    //! Children created by one subdivision: the only complete child set
+    static constexpr int FullChildCount = 4;
+
+    //! Camera distance in ground diagonals under which a chunk stays needed, keeping nearby chunks behind the camera alive for rotations
+    static constexpr double NeededRangeFactor = 2.0;
+
     //-------------------------------------------------------------------------------------------------
-    // Types
+    // Enums
     //-------------------------------------------------------------------------------------------------
 
     //! Draw decision for one chunk in its current state
@@ -60,21 +66,4 @@ public:
 
     //! Tells whether two ground extents overlap: two collected chunks sharing ground mean double draw
     static bool extentsOverlap(const CGeoloc& gCenterA, const CGeoloc& gSizeA, const CGeoloc& gCenterB, const CGeoloc& gSizeB);
-
-    //-------------------------------------------------------------------------------------------------
-    // Constants
-    //-------------------------------------------------------------------------------------------------
-
-    //! Children created by one subdivision: the only complete child set
-    static constexpr int FullChildCount = 4;
-
-    //! Camera distance in ground diagonals under which a chunk stays needed, keeping nearby chunks behind the camera alive for rotations
-    static constexpr double NeededRangeFactor = 2.0;
-
-    //-------------------------------------------------------------------------------------------------
-    // Properties
-    //-------------------------------------------------------------------------------------------------
-
-protected:
-
 };

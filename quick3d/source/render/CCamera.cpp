@@ -100,7 +100,7 @@ CCamera& CCamera::operator = (const CCamera& target)
     Returns the per-layer info retained from the last painted frame.
 */
 /***************************************************************************/
-QVector<SLayerFrameInfo> CCamera::lastLayerFrames() const
+QVector<LAYER_FRAME_INFO> CCamera::lastLayerFrames() const
 {
     QMutexLocker tLocker(&m_mSnapshotMutex);
 
@@ -124,7 +124,7 @@ bool CCamera::meshDrawTruncated() const
     Records one mesh geometry paint outcome for the current layer pass.
 */
 /***************************************************************************/
-void CCamera::recordMeshDraw(const SMeshDrawInfo& tDraw)
+void CCamera::recordMeshDraw(const MESH_DRAW_INFO& tDraw)
 {
     QMutexLocker tLocker(&m_mSnapshotMutex);
 
@@ -512,16 +512,16 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
 
             m_iCurrentPaintLayer = -1;
 
-            SLayerFrameInfo tFrameInfo;
-            tFrameInfo.layer = tLayer.layer();
-            tFrameInfo.nearPlane = tRange.m_dNear;
-            tFrameInfo.farPlane = tRange.m_dFar;
-            tFrameInfo.statistics = tLayerContext.tStatistics;
+            LAYER_FRAME_INFO tFrameInfo;
+            tFrameInfo.m_iLayer = tLayer.layer();
+            tFrameInfo.m_dNearPlane = tRange.m_dNear;
+            tFrameInfo.m_dFarPlane = tRange.m_dFar;
+            tFrameInfo.m_tStatistics = tLayerContext.tStatistics;
 
             {
                 QMutexLocker tLocker(&m_mSnapshotMutex);
-                tFrameInfo.draws = m_vCurrentMeshDraws;
-                tFrameInfo.truncated = m_bMeshDrawTruncated;
+                tFrameInfo.m_vDraws = m_vCurrentMeshDraws;
+                tFrameInfo.m_bTruncated = m_bMeshDrawTruncated;
                 m_vLastLayerFrames.append(tFrameInfo);
             }
 
@@ -764,28 +764,28 @@ void CCamera::dump(QTextStream& stream, int iIdent)
     Returns the mesh draw outcome as a node, JSON through CXMLNode.
 */
 /***************************************************************************/
-CXMLNode SMeshDrawInfo::snapshotNode() const
+CXMLNode MESH_DRAW_INFO::snapshotNode() const
 {
     CXMLNode xNode("draws");
 
-    xNode.attributes()["container"] = container;
-    xNode.attributes()["name"] = name;
-    xNode.attributes()["layer"] = QString::number(layer);
-    xNode.attributes()["distance"] = QString::number(distance, 'g', 10);
-    xNode.attributes()["centerx"] = QString::number(centerX, 'g', 10);
-    xNode.attributes()["centery"] = QString::number(centerY, 'g', 10);
-    xNode.attributes()["centerz"] = QString::number(centerZ, 'g', 10);
-    xNode.attributes()["radius"] = QString::number(radius, 'g', 10);
-    xNode.attributes()["boxminx"] = QString::number(boxMinX, 'g', 10);
-    xNode.attributes()["boxminy"] = QString::number(boxMinY, 'g', 10);
-    xNode.attributes()["boxminz"] = QString::number(boxMinZ, 'g', 10);
-    xNode.attributes()["boxmaxx"] = QString::number(boxMaxX, 'g', 10);
-    xNode.attributes()["boxmaxy"] = QString::number(boxMaxY, 'g', 10);
-    xNode.attributes()["boxmaxz"] = QString::number(boxMaxZ, 'g', 10);
-    xNode.attributes()["maxdistance"] = QString::number(maxDistance, 'g', 10);
-    xNode.attributes()["frustum"] = frustum == true ? "true" : "false";
-    xNode.attributes()["inrange"] = inRange == true ? "true" : "false";
-    xNode.attributes()["drawn"] = drawn == true ? "true" : "false";
+    xNode.attributes()["container"] = m_sContainer;
+    xNode.attributes()["name"] = m_sName;
+    xNode.attributes()["layer"] = QString::number(m_iLayer);
+    xNode.attributes()["distance"] = QString::number(m_dDistance, 'g', 10);
+    xNode.attributes()["centerx"] = QString::number(m_dCenterX, 'g', 10);
+    xNode.attributes()["centery"] = QString::number(m_dCenterY, 'g', 10);
+    xNode.attributes()["centerz"] = QString::number(m_dCenterZ, 'g', 10);
+    xNode.attributes()["radius"] = QString::number(m_dRadius, 'g', 10);
+    xNode.attributes()["boxminx"] = QString::number(m_dBoxMinX, 'g', 10);
+    xNode.attributes()["boxminy"] = QString::number(m_dBoxMinY, 'g', 10);
+    xNode.attributes()["boxminz"] = QString::number(m_dBoxMinZ, 'g', 10);
+    xNode.attributes()["boxmaxx"] = QString::number(m_dBoxMaxX, 'g', 10);
+    xNode.attributes()["boxmaxy"] = QString::number(m_dBoxMaxY, 'g', 10);
+    xNode.attributes()["boxmaxz"] = QString::number(m_dBoxMaxZ, 'g', 10);
+    xNode.attributes()["maxdistance"] = QString::number(m_dMaxDistance, 'g', 10);
+    xNode.attributes()["frustum"] = m_bFrustum == true ? "true" : "false";
+    xNode.attributes()["inrange"] = m_bInRange == true ? "true" : "false";
+    xNode.attributes()["drawn"] = m_bDrawn == true ? "true" : "false";
 
     return xNode;
 }
@@ -797,20 +797,20 @@ CXMLNode SMeshDrawInfo::snapshotNode() const
     Returns the layer frame info as a node, JSON through CXMLNode.
 */
 /***************************************************************************/
-CXMLNode SLayerFrameInfo::snapshotNode() const
+CXMLNode LAYER_FRAME_INFO::snapshotNode() const
 {
     CXMLNode xNode("layers");
 
-    xNode.attributes()["layer"] = QString::number(layer);
-    xNode.attributes()["near"] = QString::number(nearPlane, 'g', 10);
-    xNode.attributes()["far"] = QString::number(farPlane, 'g', 10);
-    xNode.attributes()["truncated"] = truncated == true ? "true" : "false";
+    xNode.attributes()["layer"] = QString::number(m_iLayer);
+    xNode.attributes()["near"] = QString::number(m_dNearPlane, 'g', 10);
+    xNode.attributes()["far"] = QString::number(m_dFarPlane, 'g', 10);
+    xNode.attributes()["truncated"] = m_bTruncated == true ? "true" : "false";
 
-    CXMLNode xStatistics = statistics.snapshotNode();
+    CXMLNode xStatistics = m_tStatistics.snapshotNode();
     xStatistics.setTag("statistics");
     xNode << xStatistics;
 
-    foreach (const SMeshDrawInfo& tDraw, draws)
+    foreach (const MESH_DRAW_INFO& tDraw, m_vDraws)
     {
         xNode << tDraw.snapshotNode();
     }
@@ -834,7 +834,7 @@ CXMLNode CCamera::snapshotNode()
     xNode.attributes()["far"] = QString::number(m_dMaxDistance, 'g', 10);
     xNode.attributes()["closelayerfar"] = QString::number(m_dCloseLayerFar, 'g', 10);
 
-    foreach (const SLayerFrameInfo& tLayer, lastLayerFrames())
+    foreach (const LAYER_FRAME_INFO& tLayer, lastLayerFrames())
     {
         xNode << tLayer.snapshotNode();
     }

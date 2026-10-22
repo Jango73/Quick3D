@@ -1,6 +1,11 @@
 #include "CWorldLodPolicy.h"
 
-/***************************************************************************/
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Decides what one chunk draws from its readiness: four ready children hand
+    over to them, otherwise the ready self draws, else nothing draws here.
+*/
 CWorldLodPolicy::ELodDrawDecision CWorldLodPolicy::decideDraw(bool bSelfReady, int iReadyChildren, int iChildCount)
 {
     if (allChildrenReady(iReadyChildren, iChildCount))
@@ -16,31 +21,51 @@ CWorldLodPolicy::ELodDrawDecision CWorldLodPolicy::decideDraw(bool bSelfReady, i
     return LodDrawNothing;
 }
 
-/***************************************************************************/
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Tells whether the four children are all ready, the only hand-over case.
+*/
 bool CWorldLodPolicy::allChildrenReady(int iReadyChildren, int iChildCount)
 {
     return iChildCount == FullChildCount && iReadyChildren == FullChildCount;
 }
 
-/***************************************************************************/
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Tells whether the child set is partial, neither empty nor complete: never a valid subdivision.
+*/
 bool CWorldLodPolicy::hasPartialChildren(int iChildCount)
 {
     return iChildCount > 0 && iChildCount < FullChildCount;
 }
 
-/***************************************************************************/
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Tells whether \a iLevel is one of the two coarsest levels, never destroyed.
+*/
 bool CWorldLodPolicy::isProtectedLevel(int iLevel, int iMaxLevels)
 {
     return iLevel >= iMaxLevels - 1;
 }
 
-/***************************************************************************/
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Tells whether a node may destroy its patch: covered by children, unprotected, unneeded.
+*/
 bool CWorldLodPolicy::mayDestroySelf(bool bCovered, int iLevel, int iMaxLevels, bool bNeeded)
 {
     return bCovered && isProtectedLevel(iLevel, iMaxLevels) == false && bNeeded == false;
 }
 
-/***************************************************************************/
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Returns the ground diagonal in meters under which a chunk is needed by the camera.
+*/
 double CWorldLodPolicy::neededRange(const CGeoloc& gSize)
 {
     CGeoloc gCornerA(gSize.Latitude * -0.5, gSize.Longitude * -0.5, 0.0);
@@ -49,13 +74,21 @@ double CWorldLodPolicy::neededRange(const CGeoloc& gSize)
     return gCornerA.distanceTo(gCornerB) * NeededRangeFactor;
 }
 
-/***************************************************************************/
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Tells whether \a gCamera needs the ground extent: inside or close enough to draw it soon.
+*/
 bool CWorldLodPolicy::isNeeded(const CGeoloc& gCenter, const CGeoloc& gSize, const CGeoloc& gCamera)
 {
     return (gCenter.toVector3() - gCamera.toVector3()).magnitude() < neededRange(gSize);
 }
 
-/***************************************************************************/
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Tells whether two ground extents overlap: two collected chunks sharing ground mean double draw.
+*/
 bool CWorldLodPolicy::extentsOverlap(const CGeoloc& gCenterA, const CGeoloc& gSizeA, const CGeoloc& gCenterB, const CGeoloc& gSizeB)
 {
     if (qAbs(gCenterA.Latitude - gCenterB.Latitude) >= (gSizeA.Latitude + gSizeB.Latitude) * 0.5) return false;

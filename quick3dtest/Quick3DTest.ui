@@ -589,9 +589,9 @@
             <height>60</height>
            </size>
           </property>
-          <property name="title">
-           <string>Switch control to</string>
-          </property>
+           <property name="title">
+            <string>Switch control to</string>
+           </property>
            <widget class="QComboBox" name="m_cbControllable">
             <property name="geometry">
              <rect>
@@ -605,13 +605,13 @@
           </widget>
          </item>
          <item>
-           <widget class="QGroupBox" name="groupBox_Frame">
-            <property name="minimumSize">
-             <size>
-              <width>264</width>
-              <height>50</height>
-             </size>
-            </property>
+          <widget class="QGroupBox" name="groupBox_Frame">
+           <property name="minimumSize">
+            <size>
+             <width>264</width>
+             <height>50</height>
+            </size>
+           </property>
            <property name="title">
             <string>Frame</string>
            </property>
@@ -634,38 +634,38 @@
              <bool>true</bool>
             </property>
            </widget>
-            <widget class="QPushButton" name="m_bStep">
-             <property name="geometry">
-              <rect>
-               <x>94</x>
-               <y>18</y>
-               <width>78</width>
-               <height>24</height>
-              </rect>
-             </property>
-             <property name="focusPolicy">
-              <enum>Qt::NoFocus</enum>
-             </property>
-             <property name="text">
-              <string>Step</string>
-             </property>
-            </widget>
-            <widget class="QPushButton" name="m_bSnapshot">
-             <property name="geometry">
-              <rect>
-               <x>178</x>
-               <y>18</y>
-               <width>78</width>
-               <height>24</height>
-              </rect>
-             </property>
-             <property name="focusPolicy">
-              <enum>Qt::NoFocus</enum>
-             </property>
-             <property name="text">
-              <string>Snapshot</string>
-             </property>
-            </widget>
+           <widget class="QPushButton" name="m_bStep">
+            <property name="geometry">
+             <rect>
+              <x>94</x>
+              <y>18</y>
+              <width>78</width>
+              <height>24</height>
+             </rect>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
+            <property name="text">
+             <string>Step</string>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="m_bSnapshot">
+            <property name="geometry">
+             <rect>
+              <x>178</x>
+              <y>18</y>
+              <width>78</width>
+              <height>24</height>
+             </rect>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
+            <property name="text">
+             <string>Snapshot</string>
+            </property>
+           </widget>
           </widget>
          </item>
          <item>

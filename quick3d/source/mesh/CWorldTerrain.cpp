@@ -288,18 +288,18 @@ void CWorldTerrain::paint(CRenderContext* pContext)
 
     int iPaintLayer = (pContext != nullptr && pContext->camera() != nullptr) ? pContext->camera()->currentPaintLayer() : -1;
 
-    QVector<SCollectedChunkInfo> vCollected;
+    QVector<COLLECTED_CHUNK_INFO> vCollected;
 
     foreach (QSP<CWorldChunk> pCollected, vChunkCollect)
     {
         if (pCollected == nullptr) continue;
 
-        SCollectedChunkInfo tInfo;
-        tInfo.address = QString::number(quintptr(pCollected.data()), 16);
-        tInfo.latitude = pCollected->geoloc().Latitude;
-        tInfo.longitude = pCollected->geoloc().Longitude;
-        tInfo.sizeLatitude = pCollected->size().Latitude;
-        tInfo.sizeLongitude = pCollected->size().Longitude;
+        COLLECTED_CHUNK_INFO tInfo;
+        tInfo.m_sAddress = QString::number(quintptr(pCollected.data()), 16);
+        tInfo.m_dLatitude = pCollected->geoloc().Latitude;
+        tInfo.m_dLongitude = pCollected->geoloc().Longitude;
+        tInfo.m_dSizeLatitude = pCollected->size().Latitude;
+        tInfo.m_dSizeLongitude = pCollected->size().Longitude;
         vCollected.append(tInfo);
     }
 

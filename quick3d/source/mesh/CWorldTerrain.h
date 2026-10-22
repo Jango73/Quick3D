@@ -62,13 +62,13 @@ public:
 //-------------------------------------------------------------------------------------------------
 
 //! Identity of one chunk collected by the last paint of a layer pass, for engine snapshots
-struct SCollectedChunkInfo
+struct COLLECTED_CHUNK_INFO
 {
-    QString address;
-    double latitude;
-    double longitude;
-    double sizeLatitude;
-    double sizeLongitude;
+    QString m_sAddress;
+    double  m_dLatitude;
+    double  m_dLongitude;
+    double  m_dSizeLatitude;
+    double  m_dSizeLongitude;
 
     //! Returns the chunk identity as a node, JSON through CXMLNode
     CXMLNode snapshotNode() const;
@@ -77,17 +77,17 @@ struct SCollectedChunkInfo
 //-------------------------------------------------------------------------------------------------
 
 //! Readiness of one quadtree level on the camera path, for engine snapshots
-struct SChunkPathInfo
+struct CHUNK_PATH_INFO
 {
-    int level;
-    double latitude;
-    double longitude;
-    double sizeLatitude;
-    double sizeLongitude;
-    bool selfReady;
-    int childCount;
-    int drawableChildren;
-    bool stay;
+    int     m_iLevel;
+    double  m_dLatitude;
+    double  m_dLongitude;
+    double  m_dSizeLatitude;
+    double  m_dSizeLongitude;
+    bool    m_bSelfReady;
+    int     m_iChildCount;
+    int     m_iDrawableChildren;
+    bool    m_bStay;
 
     //! Returns the level readiness as a node, JSON through CXMLNode
     CXMLNode snapshotNode() const;
@@ -136,10 +136,10 @@ public:
     QVector<QSP<CComponent> >& generators() { return m_vGenerators; }
 
     //! Returns the per-layer chunk identities retained from the last paint, copy under lock
-    QMap<int, QVector<SCollectedChunkInfo> > lastCollectedChunks() const;
+    QMap<int, QVector<COLLECTED_CHUNK_INFO> > lastCollectedChunks() const;
 
     //! Returns the quadtree readiness retained from the last paint, copy under lock
-    QVector<SChunkPathInfo> lastCameraPath() const;
+    QVector<CHUNK_PATH_INFO> lastCameraPath() const;
 
     //! Returns the camera position retained from the last paint, copy under lock
     CGeoloc lastCameraGeoloc() const;
@@ -296,8 +296,8 @@ protected:
     QSP<CMaterial>              m_pMaterial;
     QVector<QSP<CComponent> >   m_vGenerators;
     QMap<const CWorldChunk*, int> m_mPhysicsHeightfields; ///< Chunk to height field ids, owned here not in the mesh
-    QMap<int, QVector<SCollectedChunkInfo> > m_mLastCollectedChunks; ///< Layer pass to identities of its last painted chunks
-    QVector<SChunkPathInfo>     m_vLastCameraPath; ///< Quadtree readiness on the camera path, recorded by the last paint
+    QMap<int, QVector<COLLECTED_CHUNK_INFO> > m_mLastCollectedChunks; ///< Layer pass to identities of its last painted chunks
+    QVector<CHUNK_PATH_INFO>     m_vLastCameraPath; ///< Quadtree readiness on the camera path, recorded by the last paint
     CGeoloc                     m_gLastCameraGeoloc; ///< Camera position retained from the last paint, for snapshots
     mutable QMutex              m_mSnapshotMutex; ///< Guards the retained snapshot state across render and snapshot threads
 };

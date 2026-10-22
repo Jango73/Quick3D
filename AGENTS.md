@@ -148,6 +148,13 @@ in the log, whatever the commit prefix above.
 
 Never leave a blank line in the commit message: lines follow each other directly.
 
+## Code review
+- When the user asks for a code review, review the target commit or commit range for OOP compliance, factorization, absence of duplicated code, and compliance with the Architecture and Reuse Rules plus the Coding Conventions of this document.
+- Write the findings in english in a dedicated file under `quick3d/doc/` (for example `quick3d/doc/Review-<hash>.md`).
+- Do not wrap issue lines at 80 characters: one issue uses one full line, however long the line is.
+- Group issues by criticality under `Critical`, `Major`, and `Minor` headings.
+- Give every issue a sequential number, a `file:line` location, and a checkbox (for example `- [ ] #12 \`quick3d/source/mesh/CWorldTerrain.cpp:1098\` — description`).
+
 ## Common Build Commands
 - Dependencies: `./scripts/linux/deps.sh` (submodules + apt/dnf/pacman packages; needs `sudo`, which prompts for a password here)
 - Build (shadow, like `galman`): `./scripts/linux/build.sh [--debug|--release]` (`cmake -S . -B build-<debug|release> -G Ninja`, then `cmake --build`). Builds `qt-plus`, then `Quick3D`, then `Quick3DTest`.

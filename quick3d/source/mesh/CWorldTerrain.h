@@ -95,6 +95,21 @@ struct CHUNK_PATH_INFO
 
 //-------------------------------------------------------------------------------------------------
 
+//! Identity of one height field registered in the physics world, for engine snapshots
+struct REGISTERED_HEIGHTFIELD_INFO
+{
+    int     m_iHeightfield;
+    double  m_dLatitude;
+    double  m_dLongitude;
+    double  m_dSizeLatitude;
+    double  m_dSizeLongitude;
+
+    //! Returns the height field identity as a node, JSON through CXMLNode
+    CXMLNode snapshotNode() const;
+};
+
+//-------------------------------------------------------------------------------------------------
+
 class QUICK3D_EXPORT CWorldTerrain : public CComponent, public CHeightField
 {
 public:
@@ -143,6 +158,9 @@ public:
 
     //! Returns the camera position retained from the last paint, copy under lock
     CGeoloc lastCameraGeoloc() const;
+
+    //! Returns the physics height field identities retained from the last sync, copy under lock
+    QVector<REGISTERED_HEIGHTFIELD_INFO> lastHeightfields() const;
 
     //-------------------------------------------------------------------------------------------------
     // Overridden methods
@@ -241,8 +259,8 @@ protected:
     //! Registers ready chunk grids as physics height fields, drops stale ones
     void syncPhysicsHeightfields();
 
-    //!
-    void syncPhysicsHeightfieldsRecurse(QSP<CWorldChunk> pChunk);
+    //! Registers the finest ready grid below \a pChunk included, true when every quadrant below holds a grid or is empty
+    bool syncPhysicsHeightfieldsRecurse(QSP<CWorldChunk> pChunk);
 
     //! Removes the physics height field of \a pChunk when registered
     void removeChunkHeightfield(QSP<CWorldChunk> pChunk);
@@ -298,6 +316,7 @@ protected:
     QMap<const CWorldChunk*, int> m_mPhysicsHeightfields; ///< Chunk to height field ids, owned here not in the mesh
     QMap<int, QVector<COLLECTED_CHUNK_INFO> > m_mLastCollectedChunks; ///< Layer pass to identities of its last painted chunks
     QVector<CHUNK_PATH_INFO>     m_vLastCameraPath; ///< Quadtree readiness on the camera path, recorded by the last paint
+    QVector<REGISTERED_HEIGHTFIELD_INFO> m_vLastHeightfields; ///< Physics height field identities, recorded by the last sync
     CGeoloc                     m_gLastCameraGeoloc; ///< Camera position retained from the last paint, for snapshots
     mutable QMutex              m_mSnapshotMutex; ///< Guards the retained snapshot state across render and snapshot threads
 };

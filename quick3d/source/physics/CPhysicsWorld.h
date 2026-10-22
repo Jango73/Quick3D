@@ -209,6 +209,9 @@ private:
     //! Runs \a cReader under a read lock on the chassis body, false for an unknown vehicle
     bool withLockedChassisBody(int iVehicle, const std::function<void(const JPH::Body&)>& cReader) const;
 
+    //! Wakes every vehicle chassis, ground changes never leave sleepers floating on vanished support
+    void activateVehicles();
+
     //! Links a chassis body to its owned vehicle constraint
     struct CVehicleRecord
     {

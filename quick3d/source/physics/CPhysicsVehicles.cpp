@@ -363,6 +363,24 @@ bool CPhysicsWorld::removeVehicle(int iVehicle)
 //-------------------------------------------------------------------------------------------------
 
 /*!
+    Wakes every vehicle chassis, ground changes never leave sleepers floating on vanished support
+*/
+void CPhysicsWorld::activateVehicles()
+{
+    if (isReady() == false)
+    {
+        return;
+    }
+
+    foreach (const CVehicleRecord& cRecord, m_vVehicles)
+    {
+        m_pPhysicsSystem->GetBodyInterface().ActivateBody(JPH::BodyID(cRecord.m_uChassisBody));
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
     Sets normalized driver inputs, clamped to [-1, 1] for forward and right, [0, 1] for brakes
 */
 bool CPhysicsWorld::setVehicleDriverInput(int iVehicle, double dForwardNorm, double dRightNorm, double dBrakeNorm, double dHandBrakeNorm)

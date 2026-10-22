@@ -205,6 +205,10 @@ bool CPhysicsWorld::removeHeightfield(int iHeightfield)
 
     m_mHeightfields.remove(iHeightfield);
 
+    // Note: Jolt never wakes a sleeper when its support vanishes, without
+    // activation a parked chassis floats forever over the new ground
+    activateVehicles();
+
     return true;
 }
 

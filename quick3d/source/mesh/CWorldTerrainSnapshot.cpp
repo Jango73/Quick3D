@@ -71,6 +71,26 @@ CXMLNode CHUNK_PATH_INFO::snapshotNode() const
 
 //-------------------------------------------------------------------------------
 
+/***************************************************************************/
+/*!
+    Returns the height field identity as a node, JSON through CXMLNode.
+*/
+/***************************************************************************/
+CXMLNode REGISTERED_HEIGHTFIELD_INFO::snapshotNode() const
+{
+    CXMLNode xNode("heightfields");
+
+    xNode.attributes()["id"] = QString::number(m_iHeightfield);
+    xNode.attributes()["latitude"] = QString::number(m_dLatitude, 'g', 10);
+    xNode.attributes()["longitude"] = QString::number(m_dLongitude, 'g', 10);
+    xNode.attributes()["sizelatitude"] = QString::number(m_dSizeLatitude, 'g', 10);
+    xNode.attributes()["sizelongitude"] = QString::number(m_dSizeLongitude, 'g', 10);
+
+    return xNode;
+}
+
+//-------------------------------------------------------------------------------
+
 /*!
     Records the quadtree readiness on the path from the root to \a gCamera, retained for snapshots. \br\br
     Descent follows the child containing the camera like the paint recursion does:
@@ -165,6 +185,18 @@ CGeoloc CWorldTerrain::lastCameraGeoloc() const
 
 /***************************************************************************/
 /*!
+    Returns the physics height field identities retained from the last sync.
+*/
+/***************************************************************************/
+QVector<REGISTERED_HEIGHTFIELD_INFO> CWorldTerrain::lastHeightfields() const
+{
+    QMutexLocker tLocker(&m_mSnapshotMutex);
+
+    return m_vLastHeightfields;
+}
+
+/***************************************************************************/
+/*!
     Returns the last collect counts and the quadtree readiness on the camera path as a node, JSON through CXMLNode.
 */
 /***************************************************************************/
@@ -172,11 +204,13 @@ CXMLNode CWorldTerrain::snapshotNode()
 {
     QMap<int, QVector<COLLECTED_CHUNK_INFO> > mCollected;
     QVector<CHUNK_PATH_INFO> vPath;
+    QVector<REGISTERED_HEIGHTFIELD_INFO> vHeightfields;
 
     {
         QMutexLocker tLocker(&m_mSnapshotMutex);
         mCollected = m_mLastCollectedChunks;
         vPath = m_vLastCameraPath;
+        vHeightfields = m_vLastHeightfields;
     }
 
     CXMLNode xNode("terrain");
@@ -200,6 +234,11 @@ CXMLNode CWorldTerrain::snapshotNode()
     foreach (const CHUNK_PATH_INFO& tLevel, vPath)
     {
         xNode << tLevel.snapshotNode();
+    }
+
+    foreach (const REGISTERED_HEIGHTFIELD_INFO& tHeightfield, vHeightfields)
+    {
+        xNode << tHeightfield.snapshotNode();
     }
 
     return xNode;

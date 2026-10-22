@@ -45,29 +45,81 @@ void CWorldTerrain::syncPhysicsHeightfields()
     }
 
     syncPhysicsHeightfieldsRecurse(m_pRoot);
+
+    // Retain a snapshot-safe copy of the registry, chunk pointers never leave the sync
+    QVector<REGISTERED_HEIGHTFIELD_INFO> vHeightfields;
+
+    foreach (const CWorldChunk* pChunk, m_mPhysicsHeightfields.keys())
+    {
+        if (pChunk == nullptr)
+        {
+            continue;
+        }
+
+        REGISTERED_HEIGHTFIELD_INFO tInfo;
+        tInfo.m_iHeightfield = m_mPhysicsHeightfields.value(pChunk, -1);
+        tInfo.m_dLatitude = pChunk->geoloc().Latitude;
+        tInfo.m_dLongitude = pChunk->geoloc().Longitude;
+        tInfo.m_dSizeLatitude = pChunk->size().Latitude;
+        tInfo.m_dSizeLongitude = pChunk->size().Longitude;
+        vHeightfields.append(tInfo);
+    }
+
+    {
+        QMutexLocker tLocker(&m_mSnapshotMutex);
+        m_vLastHeightfields = vHeightfields;
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Registers \a pChunk 's grid once its terrain is ready, drops the height
-    field when the grid is gone, then visits child chunks
+    Registers the finest ready grid below \a pChunk included as a physics height field, drops stale ones. \br\br
+    Returns true when every quadrant below \a pChunk included holds a physics grid or is empty: a covered zone stays out of the physics world so a single level carries each ground, like the draw collect and the height queries. A coarse grid stays registered while any quadrant below still needs it, coarse aliasing never perches vehicles above the drawn ground and no quadrant is ever left without ground.
 */
-void CWorldTerrain::syncPhysicsHeightfieldsRecurse(QSP<CWorldChunk> pChunk)
+bool CWorldTerrain::syncPhysicsHeightfieldsRecurse(QSP<CWorldChunk> pChunk)
 {
     if (pChunk == nullptr || m_pScene == nullptr)
     {
-        return;
+        return false;
     }
 
     CPhysicsWorld* pWorld = m_pScene->physicsWorld();
 
     if (pWorld == nullptr)
     {
-        return;
+        return false;
     }
 
     m_pScene->ensurePhysicsReference(pChunk->geoloc());
+
+    int iChildCount = 0;
+    bool bChildrenCovered = true;
+
+    foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
+    {
+        QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
+
+        if (pChild == nullptr)
+        {
+            continue;
+        }
+
+        iChildCount++;
+
+        if (syncPhysicsHeightfieldsRecurse(pChild) == false && pChild->isEmpty() == false)
+        {
+            bChildrenCovered = false;
+        }
+    }
+
+    if (iChildCount == CWorldLodPolicy::FullChildCount && bChildrenCovered == true)
+    {
+        // Every quadrant carries its own grid below, the own grid stays out of the physics world
+        removeChunkHeightfield(pChunk);
+
+        return true;
+    }
 
     if (chunkHeightfieldIndex(pChunk) < 0)
     {
@@ -92,27 +144,25 @@ void CWorldTerrain::syncPhysicsHeightfieldsRecurse(QSP<CWorldChunk> pChunk)
             }
 
             setChunkHeightfieldIndex(pChunk, iHeightfield);
+
+            return iHeightfield >= 0;
         }
         else
         {
             removeChunkHeightfield(pChunk);
+
+            return false;
         }
     }
     else if (pChunk->terrainGridReady() == false)
     {
         // Already registered: cheap liveness check only, no grid copy
         removeChunkHeightfield(pChunk);
+
+        return false;
     }
 
-    foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
-    {
-        QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
-
-        if (pChild != nullptr)
-        {
-            syncPhysicsHeightfieldsRecurse(pChild);
-        }
-    }
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------

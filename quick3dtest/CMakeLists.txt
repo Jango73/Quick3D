@@ -2,6 +2,8 @@ add_executable(Quick3DTest
     main.cpp
     Quick3DTest.cpp
     Quick3DTest.h
+    Quick3DTestFrame.cpp
+    Quick3DTestRemote.cpp
     CUiRemoteControlHandler.cpp
     CUiRemoteControlHandler.h
     tests/CTestFixture.cpp

@@ -66,6 +66,7 @@ add_library(Quick3D SHARED
     source/mesh/CMesh.cpp
     source/mesh/CMeshByMaterial.cpp
     source/mesh/CMeshGeometry.cpp
+    source/mesh/CMeshGeometryBuilders.cpp
     source/mesh/CMeshInstance.cpp
     source/mesh/COBJLoader.cpp
     source/mesh/CPatchSkirtBuilder.cpp
@@ -86,13 +87,19 @@ add_library(Quick3D SHARED
     source/mesh/CWorldChunk.cpp
     source/mesh/CWorldLodPolicy.cpp
     source/mesh/CWorldTerrain.cpp
+    source/mesh/CWorldTerrainBuild.cpp
+    source/mesh/CWorldTerrainGarbage.cpp
+    source/mesh/CWorldTerrainPhysics.cpp
+    source/mesh/CWorldTerrainSnapshot.cpp
     source/physics/CPhysicsHeightfields.cpp
     source/physics/CPhysicsVehicles.cpp
     source/physics/CPhysicsWorld.cpp
     source/render/C3DScene.cpp
     source/render/C3DScenePhysics.cpp
+    source/render/C3DSceneStatistics.cpp
     source/render/CAtmosphere.cpp
     source/render/CCamera.cpp
+    source/render/CCameraDepth.cpp
     source/render/CEnvironment.cpp
     source/render/CFog.cpp
     source/render/CGLWidgetScene.cpp
@@ -123,6 +130,8 @@ add_library(Quick3D SHARED
     source/utils/CImageFilter.cpp
     source/utils/CImageFilter_Matrix.cpp
     source/utils/CImageUtilities.cpp
+    source/utils/CJsonBuilder.cpp
+    source/utils/CLogFloodGate.cpp
     source/utils/CPreferencesManager.cpp
     source/utils/CQuick3DUtilities.cpp
     source/utils/CRenderLayer.cpp

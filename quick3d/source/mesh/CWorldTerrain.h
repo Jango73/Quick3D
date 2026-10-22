@@ -5,6 +5,8 @@
 #include <QImage>
 #include <QDateTime>
 #include <QString>
+#include <QMutex>
+#include <QMutexLocker>
 
 // Application
 #include "quick3d_global.h"
@@ -69,15 +71,7 @@ struct SCollectedChunkInfo
     double sizeLongitude;
 
     //! Returns the chunk identity as a JSON object
-    QString snapshotJson() const
-    {
-        return QString("{\"address\":\"%1\",\"latitude\":%2,\"longitude\":%3,\"sizelatitude\":%4,\"sizelongitude\":%5}")
-            .arg(address)
-            .arg(latitude, 0, 'g', 10)
-            .arg(longitude, 0, 'g', 10)
-            .arg(sizeLatitude, 0, 'g', 10)
-            .arg(sizeLongitude, 0, 'g', 10);
-    }
+    QString snapshotJson() const;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -96,20 +90,7 @@ struct SChunkPathInfo
     bool stay;
 
     //! Returns the level readiness as a JSON object
-    QString snapshotJson() const
-    {
-        return QString("{\"level\":%1,\"latitude\":%2,\"longitude\":%3,\"sizelatitude\":%4,\"sizelongitude\":%5,"
-            "\"selfready\":%6,\"children\":%7,\"drawable\":%8,\"stay\":%9}")
-            .arg(level)
-            .arg(latitude, 0, 'g', 10)
-            .arg(longitude, 0, 'g', 10)
-            .arg(sizeLatitude, 0, 'g', 10)
-            .arg(sizeLongitude, 0, 'g', 10)
-            .arg(selfReady == true ? "true" : "false")
-            .arg(childCount)
-            .arg(drawableChildren)
-            .arg(stay == true ? "true" : "false");
-    }
+    QString snapshotJson() const;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -153,6 +134,15 @@ public:
 
     //!
     QVector<QSP<CComponent> >& generators() { return m_vGenerators; }
+
+    //! Returns the per-layer chunk identities retained from the last paint, copy under lock
+    QMap<int, QVector<SCollectedChunkInfo> > lastCollectedChunks() const;
+
+    //! Returns the quadtree readiness retained from the last paint, copy under lock
+    QVector<SChunkPathInfo> lastCameraPath() const;
+
+    //! Returns the camera position retained from the last paint, copy under lock
+    CGeoloc lastCameraGeoloc() const;
 
     //-------------------------------------------------------------------------------------------------
     // Overridden methods
@@ -227,6 +217,9 @@ protected:
     //! Creates the terrain and water patches of \a pChunk when missing
     void ensureChunkTerrain(QSP<CWorldChunk> pChunk, int iLevel);
 
+    //! Makes \a pChunk drawable and queues its detail work, the single owner of parent-cover creation for build and garbage passes
+    void ensureChunkCover(QSP<CWorldChunk> pChunk, int iLevel);
+
     //! Tells whether \a gCamera stands inside the ground extent of \a pChunk
     bool isCoveringChunk(QSP<CWorldChunk> pChunk, const CGeoloc& gCamera) const;
 
@@ -241,6 +234,9 @@ protected:
 
     //!
     void collectGarbageRecurse(QSP<CWorldChunk> pChunk, int iLevel);
+
+    //! Applies the LOD policy bottom-up with the camera retained from the last paint
+    void collectGarbageRecurse(QSP<CWorldChunk> pChunk, int iLevel, const CGeoloc& gCamera);
 
     //! Registers ready chunk grids as physics height fields, drops stale ones
     void syncPhysicsHeightfields();
@@ -267,6 +263,22 @@ protected:
     void flattenRecurse(QSP<CWorldChunk> pChunk, const CGeoloc& gPosition, double dRadius_m);
 
     //-------------------------------------------------------------------------------------------------
+    // Constants
+    //-------------------------------------------------------------------------------------------------
+
+    //! Water patch resolution relative to the terrain resolution
+    static constexpr double WaterResolutionFactor = 0.75;
+
+    //! Child quadrant origin offset as a fraction of the parent extent
+    static constexpr double ChildQuarterOffset = 0.25;
+
+    //! Opposite child quadrant origin offset as a fraction of the parent extent
+    static constexpr double ChildThreeQuarterOffset = 0.75;
+
+    //! Child extent and subdivision origin as a fraction of the parent extent
+    static constexpr double ChildHalfFraction = 0.50;
+
+    //-------------------------------------------------------------------------------------------------
     // Properties
     //-------------------------------------------------------------------------------------------------
 
@@ -285,7 +297,7 @@ protected:
     QVector<QSP<CComponent> >   m_vGenerators;
     QMap<const CWorldChunk*, int> m_mPhysicsHeightfields; ///< Chunk to height field ids, owned here not in the mesh
     QMap<int, QVector<SCollectedChunkInfo> > m_mLastCollectedChunks; ///< Layer pass to identities of its last painted chunks
-    QMap<int, int> m_mLastOverlapCount; ///< Layer pass to same-pass ground overlaps in its last painted chunks
     QVector<SChunkPathInfo>     m_vLastCameraPath; ///< Quadtree readiness on the camera path, recorded by the last paint
     CGeoloc                     m_gLastCameraGeoloc; ///< Camera position retained from the last paint, for snapshots
+    mutable QMutex              m_mSnapshotMutex; ///< Guards the retained snapshot state across render and snapshot threads
 };

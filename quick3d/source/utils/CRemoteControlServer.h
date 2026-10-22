@@ -17,7 +17,7 @@
 //! HTTP server driving the application through a remote control handler. \br\br
 //! This class knows HTTP and JSON only, it never touches the scene or the
 //! views directly: every action goes through the handler, which lives in the
-    //! user interface thread. Served endpoints are /key, /vehicle, /select, /view, /speed and /snapshot.
+//! user interface thread. Served endpoints are /key, /vehicle, /select, /view, /speed and /snapshot.
 class QUICK3D_EXPORT CRemoteControlServer : public CHTTPServer
 {
     Q_OBJECT
@@ -78,11 +78,20 @@ protected:
     //! Serves /snapshot, result as JSON in \a sResponse
     void serveSnapshot(QString& sResponse);
 
+    //! Checks the handler, false with \a sResponse set to the error envelope
+    bool requireHandler(QString& sResponse) const;
+
     //! Checks the name argument and the handler, false with \a sResponse set to the error envelope
     bool requireHandlerName(const QMap<QString, QString>& mArguments, QString& sName, QString& sResponse) const;
 
     //! Invokes the bool handler \a pMethod with \a sName, writes the ok envelope to \a sResponse
     bool invokeHandlerBool(const char* pMethod, const QString& sName, QString& sResponse, const char* pError) const;
+
+    //! Invokes the string handler \a pMethod with \a sName, writes its payload or the error envelope to \a sResponse
+    bool invokeHandlerString(const char* pMethod, const QString& sName, QString& sResponse, const char* pError) const;
+
+    //! Invokes the string handler \a pMethod with no argument, writes its payload or the error envelope to \a sResponse
+    bool invokeHandlerString(const char* pMethod, QString& sResponse, const char* pError) const;
 
     //-------------------------------------------------------------------------------------------------
     // Properties

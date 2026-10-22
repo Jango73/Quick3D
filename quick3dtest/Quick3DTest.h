@@ -67,6 +67,31 @@ public:
     QString engineSnapshotJson();
 
     //-------------------------------------------------------------------------------------------------
+    // Constants
+    //-------------------------------------------------------------------------------------------------
+
+    //! Folder holding engine snapshots, resolved against the binary folder like scenes and models
+    static constexpr const char* SnapshotsFolderName = "snapshots";
+
+    //! Snapshot file name without extension: snapshot-YYYYMMDD-hhmmss-f<frame>
+    static constexpr const char* SnapshotFilePattern = "snapshot-%1-f%2";
+
+    //! Snapshot file name timestamp format
+    static constexpr const char* SnapshotStampFormat = "yyyyMMdd-hhmmss";
+
+    //! Snapshot file name attempts before giving up on a unique name
+    static constexpr int MaxSnapshotAttempts = 1000;
+
+    //! Frame timer poll interval in milliseconds
+    static constexpr int FrameTimerPollIntervalMs = 5;
+
+    //! Maximum frame rate in frames per second
+    static constexpr double MaximumFrameRateFps = 60.0;
+
+    //! Minimum frame duration in seconds, derived from the maximum frame rate
+    static constexpr double MinimumFrameDurationS = 1.0 / MaximumFrameRateFps;
+
+    //-------------------------------------------------------------------------------------------------
     // Protected methods
     //-------------------------------------------------------------------------------------------------
 

@@ -27,6 +27,13 @@
 class C3DScene;
 class CWorldTerrain;
 
+//! Child readiness counts of one chunk, computed owner-side in a single walk
+struct SChildStatistics
+{
+    int childCount;
+    int drawableChildren;
+};
+
 //-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT CWorldChunk : public CWorker, public CComponent, public CHeightField
@@ -141,6 +148,12 @@ public:
 
     //!
     bool isEmpty();
+
+    //! Counts the child chunks and how many of them are drawable, owner-side in a single walk
+    SChildStatistics childStatistics();
+
+    //! Tells whether this chunk or any node below it is queued or running in the worker manager, one manager lock
+    bool subtreeHasWorker();
 
     //! Copies the terrain altitude grid when ready, row 0 is the north edge. \br\br
     //! Returns false when no finished terrain mesh is available, callers run

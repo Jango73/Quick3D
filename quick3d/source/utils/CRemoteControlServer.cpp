@@ -7,6 +7,7 @@
 #include "CLogger.h"
 
 // Application
+#include "CJsonBuilder.h"
 #include "CRemoteControlServer.h"
 
 //-------------------------------------------------------------------------------------------------
@@ -190,9 +191,14 @@ void CRemoteControlServer::serveKey(const QMap<QString, QString>& mArguments, QS
     int iKey = keyFromName(mArguments.value("code"));
     int iAction = actionFromName(mArguments.value("action"));
 
-    if (iKey < 0 || iAction < 0 || m_pHandler.isNull() == true)
+    if (iKey < 0 || iAction < 0)
     {
-        sResponse = "{\"ok\":false,\"error\":\"unknown key, action or missing handler\"}";
+        sResponse = CJsonBuilder::errorResponse("unknown key or action");
+        return;
+    }
+
+    if (requireHandler(sResponse) == false)
+    {
         return;
     }
 
@@ -203,7 +209,7 @@ void CRemoteControlServer::serveKey(const QMap<QString, QString>& mArguments, QS
         Q_ARG(int, iKey),
         Q_ARG(int, iAction));
 
-    sResponse = bResult == true ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"key rejected\"}";
+    sResponse = bResult == true ? CJsonBuilder::okResponse() : CJsonBuilder::errorResponse("key rejected");
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -220,13 +226,7 @@ void CRemoteControlServer::serveVehicle(const QMap<QString, QString>& mArguments
         return;
     }
 
-    QString sStatus;
-
-    QMetaObject::invokeMethod(m_pHandler, "vehicleStatus", Qt::BlockingQueuedConnection,
-        Q_RETURN_ARG(QString, sStatus),
-        Q_ARG(QString, sName));
-
-    sResponse = sStatus.isEmpty() == true ? "{\"ok\":false,\"error\":\"no status\"}" : sStatus;
+    invokeHandlerString("vehicleStatus", sName, sResponse, "no status");
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -273,9 +273,14 @@ void CRemoteControlServer::serveSpeed(const QMap<QString, QString>& mArguments, 
     bool bParsed = false;
     int iValue = mArguments.value("value").toInt(&bParsed);
 
-    if (bParsed == false || m_pHandler.isNull() == true)
+    if (bParsed == false)
     {
-        sResponse = "{\"ok\":false,\"error\":\"missing value or handler\"}";
+        sResponse = CJsonBuilder::errorResponse("missing value");
+        return;
+    }
+
+    if (requireHandler(sResponse) == false)
+    {
         return;
     }
 
@@ -285,7 +290,7 @@ void CRemoteControlServer::serveSpeed(const QMap<QString, QString>& mArguments, 
         Q_RETURN_ARG(bool, bResult),
         Q_ARG(int, iValue));
 
-    sResponse = bResult == true ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"speed rejected\"}";
+    sResponse = bResult == true ? CJsonBuilder::okResponse() : CJsonBuilder::errorResponse("speed rejected");
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -295,18 +300,30 @@ void CRemoteControlServer::serveSpeed(const QMap<QString, QString>& mArguments, 
 */
 void CRemoteControlServer::serveSnapshot(QString& sResponse)
 {
-    if (m_pHandler.isNull() == true)
+    if (requireHandler(sResponse) == false)
     {
-        sResponse = "{\"ok\":false,\"error\":\"missing handler\"}";
         return;
     }
 
-    QString sSnapshot;
+    invokeHandlerString("engineSnapshot", sResponse, "no snapshot");
+}
 
-    QMetaObject::invokeMethod(m_pHandler, "engineSnapshot", Qt::BlockingQueuedConnection,
-        Q_RETURN_ARG(QString, sSnapshot));
+//-------------------------------------------------------------------------------------------------
 
-    sResponse = sSnapshot.isEmpty() == true ? "{\"ok\":false,\"error\":\"no snapshot\"}" : sSnapshot;
+/***************************************************************************/
+/*!
+    Checks the handler, false with \a sResponse set to the error envelope.
+*/
+/***************************************************************************/
+bool CRemoteControlServer::requireHandler(QString& sResponse) const
+{
+    if (m_pHandler.isNull() == true)
+    {
+        sResponse = CJsonBuilder::errorResponse("missing handler");
+        return false;
+    }
+
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -318,13 +335,13 @@ bool CRemoteControlServer::requireHandlerName(const QMap<QString, QString>& mArg
 {
     sName = mArguments.value("name");
 
-    if (sName.isEmpty() == true || m_pHandler.isNull() == true)
+    if (sName.isEmpty() == true)
     {
-        sResponse = "{\"ok\":false,\"error\":\"missing name or handler\"}";
+        sResponse = CJsonBuilder::errorResponse("missing name");
         return false;
     }
 
-    return true;
+    return requireHandler(sResponse);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -340,7 +357,46 @@ bool CRemoteControlServer::invokeHandlerBool(const char* pMethod, const QString&
         Q_RETURN_ARG(bool, bResult),
         Q_ARG(QString, sName));
 
-    sResponse = bResult == true ? "{\"ok\":true}" : QString("{\"ok\":false,\"error\":\"%1\"}").arg(pError);
+    sResponse = bResult == true ? CJsonBuilder::okResponse() : CJsonBuilder::errorResponse(pError);
 
     return bResult;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+    Invokes the string handler \a pMethod with \a sName.
+*/
+/***************************************************************************/
+bool CRemoteControlServer::invokeHandlerString(const char* pMethod, const QString& sName, QString& sResponse, const char* pError) const
+{
+    QString sPayload;
+
+    QMetaObject::invokeMethod(m_pHandler, pMethod, Qt::BlockingQueuedConnection,
+        Q_RETURN_ARG(QString, sPayload),
+        Q_ARG(QString, sName));
+
+    sResponse = sPayload.isEmpty() == true ? CJsonBuilder::errorResponse(pError) : sPayload;
+
+    return sPayload.isEmpty() == false;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+    Invokes the string handler \a pMethod with no argument.
+*/
+/***************************************************************************/
+bool CRemoteControlServer::invokeHandlerString(const char* pMethod, QString& sResponse, const char* pError) const
+{
+    QString sPayload;
+
+    QMetaObject::invokeMethod(m_pHandler, pMethod, Qt::BlockingQueuedConnection,
+        Q_RETURN_ARG(QString, sPayload));
+
+    sResponse = sPayload.isEmpty() == true ? CJsonBuilder::errorResponse(pError) : sPayload;
+
+    return sPayload.isEmpty() == false;
 }

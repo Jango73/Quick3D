@@ -1,6 +1,9 @@
 
 #pragma once
 
+// Application
+#include "quick3d_global.h"
+
 // qt-plus
 #include "CXMLNode.h"
 
@@ -11,9 +14,20 @@ class C3DScene;
 
 //-------------------------------------------------------------------------------------------------
 
-class ILoadable
+class QUICK3D_EXPORT ILoadable
 {
 public:
+
+    //-------------------------------------------------------------------------------------------------
+    // Constructors and destructor
+    //-------------------------------------------------------------------------------------------------
+
+    //! Destructor
+    virtual ~ILoadable() {}
+
+    //-------------------------------------------------------------------------------------------------
+    // Control methods
+    //-------------------------------------------------------------------------------------------------
 
     //! Loads the object's properties from a CXMLNode
     virtual void loadParameters(const QString& sBaseFile, const CXMLNode& xComponent) = 0;

@@ -1,6 +1,13 @@
 
-#ifndef ILOGGER_H
-#define ILOGGER_H
+#pragma once
+
+// Application
+#include "quick3d_global.h"
+
+// Qt
+#include <QString>
+
+//-------------------------------------------------------------------------------------------------
 
 enum ELogLevel
 {
@@ -12,13 +19,24 @@ enum ELogLevel
 	llAlways
 };
 
-//! Définit une interface de log
-class ILogger
+//-------------------------------------------------------------------------------------------------
+
+//! Defines a logging interface
+class QUICK3D_EXPORT ILogger
 {
 public:
 
-	virtual void log(ELogLevel eLevel, const QString& sText, const QString& sToken = "") = 0;
-	virtual void logBuffer(ELogLevel eLevel, const char* pBuffer, int iSize) = 0;
-};
+    //-------------------------------------------------------------------------------------------------
+    // Constructors and destructor
+    //-------------------------------------------------------------------------------------------------
 
-#endif // ILOGGER_H
+    //! Destructor
+    virtual ~ILogger() {}
+
+    //-------------------------------------------------------------------------------------------------
+    // Control methods
+    //-------------------------------------------------------------------------------------------------
+
+    virtual void log(ELogLevel eLevel, const QString& sText, const QString& sToken = "") = 0;
+    virtual void logBuffer(ELogLevel eLevel, const char* pBuffer, int iSize) = 0;
+};

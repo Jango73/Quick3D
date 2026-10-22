@@ -30,6 +30,9 @@ public:
     //! Removes a worker from the pool
     bool containsWorker(CWorker* pWorker);
 
+    //! Tells whether any of \a vWorkers is in the pool, one lock for the whole batch
+    bool containsAnyWorker(const QVector<CWorker*>& vWorkers);
+
     //! Returns the number of workers currently in the pool
     int pendingWorkerCount();
 

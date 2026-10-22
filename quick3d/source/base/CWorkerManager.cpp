@@ -40,11 +40,38 @@ CWorkerManager::~CWorkerManager()
 
 //-------------------------------------------------------------------------------------------------
 
+/***************************************************************************/
+/*!
+    Tells whether any of \a vWorkers is in the pool.
+*/
+/***************************************************************************/
 bool CWorkerManager::containsWorker(CWorker* pWorker)
 {
     QMutexLocker locker(&m_mMutex);
 
     return m_vWorkers.contains(pWorker);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+    Tells whether any of \a vWorkers is in the pool, one lock for the whole batch.
+*/
+/***************************************************************************/
+bool CWorkerManager::containsAnyWorker(const QVector<CWorker*>& vWorkers)
+{
+    QMutexLocker locker(&m_mMutex);
+
+    foreach (CWorker* pWorker, vWorkers)
+    {
+        if (m_vWorkers.contains(pWorker) == true)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //-------------------------------------------------------------------------------------------------

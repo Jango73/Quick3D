@@ -19,7 +19,13 @@ CWorldLodPolicy::ELodDrawDecision CWorldLodPolicy::decideDraw(bool bSelfReady, i
 /***************************************************************************/
 bool CWorldLodPolicy::allChildrenReady(int iReadyChildren, int iChildCount)
 {
-    return iChildCount == 4 && iReadyChildren == 4;
+    return iChildCount == FullChildCount && iReadyChildren == FullChildCount;
+}
+
+/***************************************************************************/
+bool CWorldLodPolicy::hasPartialChildren(int iChildCount)
+{
+    return iChildCount > 0 && iChildCount < FullChildCount;
 }
 
 /***************************************************************************/
@@ -33,10 +39,6 @@ bool CWorldLodPolicy::mayDestroySelf(bool bCovered, int iLevel, int iMaxLevels, 
 {
     return bCovered && isProtectedLevel(iLevel, iMaxLevels) == false && bNeeded == false;
 }
-
-//! Camera distance in ground diagonals under which a chunk stays needed,
-//! keeping nearby chunks behind the camera alive for rotations
-static const double NeededRangeFactor = 2.0;
 
 /***************************************************************************/
 double CWorldLodPolicy::neededRange(const CGeoloc& gSize)

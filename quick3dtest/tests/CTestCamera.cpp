@@ -14,6 +14,24 @@ using namespace Math;
 
 //-------------------------------------------------------------------------------------------------
 
+//! Frustum field of view in degrees shared by every frustum test
+static const double TestFrustumFOVDegrees = 60.0;
+
+//! Frustum aspect ratio shared by the single-aspect frustum tests
+static const double TestFrustumAspect = 16.0 / 9.0;
+
+//! Frustum near plane in meters shared by every frustum test
+static const double TestFrustumNearMeters = 0.1;
+
+//! Frustum far plane in meters shared by every frustum test
+static const double TestFrustumFarMeters = 1000.0;
+
+//! Sphere radius in meters probing near-plane spanning and behind-camera rejection
+static const double TestSphereRadiusMeters = 5.0;
+
+//! Normalized-device-coordinate band skipped in the projection comparison, plane conventions may differ there
+static const double TestBoundaryBand = 0.9;
+
 /*!
 * \brief Builds a camera-space frustum matching the render path units.
 * \details computeFrustum takes radians like CCamera::render, the projection
@@ -208,10 +226,10 @@ void CTestCamera::testFrustumKeepsSphereSpanningNearPlane()
     QSP<CCamera> pCamera;
     buildViewportAtOrigin(pScene, pCamera);
 
-    buildFrustum(*pCamera, 60.0, 16.0 / 9.0, 0.1, 1000.0);
+    buildFrustum(*pCamera, TestFrustumFOVDegrees, TestFrustumAspect, TestFrustumNearMeters, TestFrustumFarMeters);
 
     // Sphere centered 0.5 m ahead with a 5 m radius spans the 0.1 m near plane
-    QVERIFY(pCamera->contains(CVector3(0.0, 0.0, 0.5), 5.0));
+    QVERIFY(pCamera->contains(CVector3(0.0, 0.0, 0.5), TestSphereRadiusMeters));
 
     // Sphere containing the camera position is kept
     QVERIFY(pCamera->contains(CVector3(0.0, 0.0, 0.0), 100.0));
@@ -229,9 +247,9 @@ void CTestCamera::testFrustumRejectsSphereBehindCamera()
     QSP<CCamera> pCamera;
     buildViewportAtOrigin(pScene, pCamera);
 
-    buildFrustum(*pCamera, 60.0, 16.0 / 9.0, 0.1, 1000.0);
+    buildFrustum(*pCamera, TestFrustumFOVDegrees, TestFrustumAspect, TestFrustumNearMeters, TestFrustumFarMeters);
 
-    QVERIFY(pCamera->contains(CVector3(0.0, 0.0, -50.0), 5.0) == false);
+    QVERIFY(pCamera->contains(CVector3(0.0, 0.0, -50.0), TestSphereRadiusMeters) == false);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -250,14 +268,14 @@ void CTestCamera::testFrustumKeepsEveryProjectedPoint()
     QSP<CCamera> pCamera;
     buildViewportAtOrigin(pScene, pCamera);
 
-    const double dFOVDegrees = 60.0;
-    const double dAspects[] = { 1.0, 4.0 / 3.0, 16.0 / 9.0, 21.0 / 9.0 };
+    const double dFOVDegrees = TestFrustumFOVDegrees;
+    const double dAspects[] = { 1.0, 4.0 / 3.0, TestFrustumAspect, 21.0 / 9.0 };
 
     for (unsigned int iAspect = 0; iAspect < sizeof(dAspects) / sizeof(dAspects[0]); iAspect++)
     {
-        buildFrustum(*pCamera, dFOVDegrees, dAspects[iAspect], 0.1, 1000.0);
+        buildFrustum(*pCamera, dFOVDegrees, dAspects[iAspect], TestFrustumNearMeters, TestFrustumFarMeters);
 
-        QMatrix4x4 mProjection = CCamera::getQtProjectionMatrix(dFOVDegrees, dAspects[iAspect], 0.1, 1000.0);
+        QMatrix4x4 mProjection = CCamera::getQtProjectionMatrix(dFOVDegrees, dAspects[iAspect], TestFrustumNearMeters, TestFrustumFarMeters);
 
         for (double dAzimuthDeg = -75.0; dAzimuthDeg <= 75.0; dAzimuthDeg += 3.0)
         {
@@ -282,7 +300,7 @@ void CTestCamera::testFrustumKeepsEveryProjectedPoint()
                 const double dNz = vClip.z() / vClip.w();
 
                 // Skip the boundary band, plane conventions may differ there
-                if (qAbs(dNx) > 0.9 || qAbs(dNy) > 0.9 || qAbs(dNz) > 0.9) continue;
+                if (qAbs(dNx) > TestBoundaryBand || qAbs(dNy) > TestBoundaryBand || qAbs(dNz) > TestBoundaryBand) continue;
 
                 const bool bVisible = qAbs(dNx) <= 1.0 && qAbs(dNy) <= 1.0 && qAbs(dNz) <= 1.0;
 

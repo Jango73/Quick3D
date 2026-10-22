@@ -29,6 +29,29 @@ class C3DScene;
 
 //-------------------------------------------------------------------------------------------------
 
+//! Returns true when \a rFace references a vertex at or after \a iCoreVertexCount. \br\br
+//! A negative count disables the test and every face is core data. \br\br
+//! Shared by the geometry processing and builders translation units of CMeshGeometry.
+static inline bool faceTouchesExtension(const CFace& rFace, int iCoreVertexCount)
+{
+    if (iCoreVertexCount < 0)
+    {
+        return false;
+    }
+
+    foreach (int iVertexIndex, rFace.indices())
+    {
+        if (iVertexIndex >= iCoreVertexCount)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 class QUICK3D_EXPORT CMeshGeometry : public QSharedData, public CBoundPartitioned<int>, public CDumpable
 {
     DECLARE_MEMORY_MONITORED

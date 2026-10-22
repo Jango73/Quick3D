@@ -3,6 +3,8 @@
 
 // Qt
 #include <QMatrix4x4>
+#include <QMutex>
+#include <QMutexLocker>
 
 // Application
 #include "quick3d_global.h"
@@ -96,24 +98,7 @@ struct SMeshDrawInfo
     bool drawn;
 
     //! Returns the mesh draw outcome as a JSON object
-    QString snapshotJson() const
-    {
-        return QString("{\"container\":\"%1\",\"name\":\"%2\",\"layer\":%3,\"distance\":%4,"
-            "\"center\":[%5,%6,%7],\"radius\":%8,\"boxmin\":[%9,%10,%11],\"boxmax\":[%12,%13,%14],\"maxdistance\":%15,"
-            "\"frustum\":%16,\"inrange\":%17,\"drawn\":%18}")
-            .arg(container)
-            .arg(name)
-            .arg(layer)
-            .arg(distance, 0, 'g', 10)
-            .arg(centerX, 0, 'g', 10).arg(centerY, 0, 'g', 10).arg(centerZ, 0, 'g', 10)
-            .arg(radius, 0, 'g', 10)
-            .arg(boxMinX, 0, 'g', 10).arg(boxMinY, 0, 'g', 10).arg(boxMinZ, 0, 'g', 10)
-            .arg(boxMaxX, 0, 'g', 10).arg(boxMaxY, 0, 'g', 10).arg(boxMaxZ, 0, 'g', 10)
-            .arg(maxDistance, 0, 'g', 10)
-            .arg(frustum == true ? "true" : "false")
-            .arg(inRange == true ? "true" : "false")
-            .arg(drawn == true ? "true" : "false");
-    }
+    QString snapshotJson() const;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -124,33 +109,12 @@ struct SLayerFrameInfo
     int layer;
     double nearPlane;
     double farPlane;
+    bool truncated;
     C3DSceneStatistics statistics;
     QVector<SMeshDrawInfo> draws;
 
     //! Returns the layer frame info as a JSON object
-    QString snapshotJson() const
-    {
-        QString sDraws = "[";
-
-        bool bFirst = true;
-
-        foreach (const SMeshDrawInfo& tDraw, draws)
-        {
-            if (bFirst == false) sDraws += ",";
-            bFirst = false;
-
-            sDraws += tDraw.snapshotJson();
-        }
-
-        sDraws += "]";
-
-        return QString("{\"layer\":%1,\"near\":%2,\"far\":%3,\"statistics\":%4,\"draws\":%5}")
-            .arg(layer)
-            .arg(nearPlane, 0, 'g', 10)
-            .arg(farPlane, 0, 'g', 10)
-            .arg(statistics.snapshotJson())
-            .arg(sDraws);
-    }
+    QString snapshotJson() const;
 };
 
 class QUICK3D_EXPORT CCamera : public CPhysicalComponent
@@ -159,6 +123,9 @@ public:
 
     //! Maximum camera pitch in degrees, prevents flipping upside down
     static constexpr double MaxPitchDegrees = 89.0;
+
+    //! Maximum mesh draw outcomes retained per layer pass, beyond this snapshots truncate
+    static constexpr int MaxMeshDraws = 2048;
 
     //-------------------------------------------------------------------------------------------------
     // Constructors and destructor
@@ -226,17 +193,15 @@ public:
     //! Returns the far plane of the close layer conditioned for the current frame
     double closeLayerFar() const { return m_dCloseLayerFar; }
 
-    //! Returns the per-layer info retained from the last painted frame
-    QVector<SLayerFrameInfo> lastLayerFrames() const { return m_vLastLayerFrames; }
+    //! Returns the per-layer info retained from the last painted frame, copy under lock
+    QVector<SLayerFrameInfo> lastLayerFrames() const;
 
-    //! Records one mesh geometry paint outcome for the current layer pass, retained for snapshots
-    void recordMeshDraw(const SMeshDrawInfo& tDraw)
-    {
-        if (m_vCurrentMeshDraws.count() < 2048)
-        {
-            m_vCurrentMeshDraws.append(tDraw);
-        }
-    }
+    //! Tells whether the running layer pass already dropped mesh draw outcomes
+    bool meshDrawTruncated() const;
+
+    //! Records one mesh geometry paint outcome for the current layer pass, retained for snapshots. \br\br
+    //! Beyond MaxMeshDraws outcomes are dropped and the truncation flag is set, surfaced in the snapshot.
+    void recordMeshDraw(const SMeshDrawInfo& tDraw);
 
     //-------------------------------------------------------------------------------------------------
     // Overridden methods
@@ -312,6 +277,13 @@ public:
     Math::CRay3 screenPointToWorldRay(CViewport* pViewport, Math::CVector2 vPoint);
 
     //-------------------------------------------------------------------------------------------------
+    // Constants
+    //-------------------------------------------------------------------------------------------------
+
+    //! Shadow map frame buffer resolution in pixels per side
+    static constexpr int ShadowMapResolution = 2048;
+
+    //-------------------------------------------------------------------------------------------------
     // Properties
     //-------------------------------------------------------------------------------------------------
 
@@ -327,4 +299,6 @@ protected:
     QVector<Math::CPlane3>  m_pFrustumPlanes;
     QVector<SLayerFrameInfo> m_vLastLayerFrames;
     QVector<SMeshDrawInfo>  m_vCurrentMeshDraws; ///< Mesh outcomes of the running layer pass
+    bool                    m_bMeshDrawTruncated; ///< True when the running pass dropped outcomes beyond MaxMeshDraws
+    mutable QMutex          m_mSnapshotMutex; ///< Guards the retained frame diagnostics across render and snapshot threads
 };

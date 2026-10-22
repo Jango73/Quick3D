@@ -1,5 +1,4 @@
-#ifndef CWORLDLODPOLICY_H
-#define CWORLDLODPOLICY_H
+#pragma once
 
 #include "quick3d_global.h"
 #include "CGeoloc.h"
@@ -44,6 +43,9 @@ public:
     //! Tells whether the four children are all ready, the only hand-over case
     static bool allChildrenReady(int iReadyChildren, int iChildCount);
 
+    //! Tells whether the child set is partial, neither empty nor complete: never a valid subdivision
+    static bool hasPartialChildren(int iChildCount);
+
     //! Tells whether \a iLevel is one of the two coarsest levels, never destroyed
     static bool isProtectedLevel(int iLevel, int iMaxLevels);
 
@@ -60,11 +62,19 @@ public:
     static bool extentsOverlap(const CGeoloc& gCenterA, const CGeoloc& gSizeA, const CGeoloc& gCenterB, const CGeoloc& gSizeB);
 
     //-------------------------------------------------------------------------------------------------
+    // Constants
+    //-------------------------------------------------------------------------------------------------
+
+    //! Children created by one subdivision: the only complete child set
+    static constexpr int FullChildCount = 4;
+
+    //! Camera distance in ground diagonals under which a chunk stays needed, keeping nearby chunks behind the camera alive for rotations
+    static constexpr double NeededRangeFactor = 2.0;
+
+    //-------------------------------------------------------------------------------------------------
     // Properties
     //-------------------------------------------------------------------------------------------------
 
 protected:
 
 };
-
-#endif // CWORLDLODPOLICY_H

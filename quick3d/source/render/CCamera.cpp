@@ -7,6 +7,7 @@
 #include "CTimeSampler.h"
 
 // Application
+#include "CJsonBuilder.h"
 #include "CCamera.h"
 #include "C3DScene.h"
 #include "CGLWidgetScene.h"
@@ -55,6 +56,7 @@ CCamera::CCamera(C3DScene* pScene)
     , m_dMinDistance(0.0)
     , m_dMaxDistance(0.0)
     , m_dCloseLayerFar(-1.0)
+    , m_bMeshDrawTruncated(false)
 {
     setName("Camera");
     setRaytracable(false);
@@ -83,15 +85,58 @@ CCamera& CCamera::operator = (const CCamera& target)
     m_dFOV              = target.m_dFOV;
     m_dFocus            = target.m_dFocus;
     m_dGain             = target.m_dGain;
-    m_iCurrentPaintLayer = target.m_iCurrentPaintLayer;
     m_dMinDistance      = target.m_dMinDistance;
     m_dMaxDistance      = target.m_dMaxDistance;
     m_dCloseLayerFar    = target.m_dCloseLayerFar;
     m_pFrustumPlanes    = target.m_pFrustumPlanes;
-    m_vLastLayerFrames  = target.m_vLastLayerFrames;
-    m_vCurrentMeshDraws = target.m_vCurrentMeshDraws;
+    m_iCurrentPaintLayer = -1;
 
     return *this;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+    Returns the per-layer info retained from the last painted frame.
+*/
+/***************************************************************************/
+QVector<SLayerFrameInfo> CCamera::lastLayerFrames() const
+{
+    QMutexLocker tLocker(&m_mSnapshotMutex);
+
+    return m_vLastLayerFrames;
+}
+
+/***************************************************************************/
+/*!
+    Tells whether the running layer pass already dropped mesh draw outcomes.
+*/
+/***************************************************************************/
+bool CCamera::meshDrawTruncated() const
+{
+    QMutexLocker tLocker(&m_mSnapshotMutex);
+
+    return m_bMeshDrawTruncated;
+}
+
+/***************************************************************************/
+/*!
+    Records one mesh geometry paint outcome for the current layer pass.
+*/
+/***************************************************************************/
+void CCamera::recordMeshDraw(const SMeshDrawInfo& tDraw)
+{
+    QMutexLocker tLocker(&m_mSnapshotMutex);
+
+    if (m_vCurrentMeshDraws.count() < MaxMeshDraws)
+    {
+        m_vCurrentMeshDraws.append(tDraw);
+    }
+    else
+    {
+        m_bMeshDrawTruncated = true;
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -209,7 +254,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
 
             pLight->material()->enableFrameBuffer();
 
-            glViewport(0, 0, 2048, 2048);
+            glViewport(0, 0, ShadowMapResolution, ShadowMapResolution);
 
             glClearColor(1.0, 1.0, 1.0, 1.0);
             glClearStencil(0);
@@ -457,7 +502,12 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
             computeFrustum(Math::Angles::toRad(dFOV), dAspectRatio, tRange.m_dNear, tRange.m_dFar);
 
             m_iCurrentPaintLayer = tLayer.layer();
-            m_vCurrentMeshDraws.clear();
+
+            {
+                QMutexLocker tLocker(&m_mSnapshotMutex);
+                m_vCurrentMeshDraws.clear();
+                m_bMeshDrawTruncated = false;
+            }
 
             pScene->paintLayerComponents(&tLayerContext, *tLayer.filter());
 
@@ -468,38 +518,12 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
             tFrameInfo.nearPlane = tRange.m_dNear;
             tFrameInfo.farPlane = tRange.m_dFar;
             tFrameInfo.statistics = tLayerContext.tStatistics;
-            tFrameInfo.draws = m_vCurrentMeshDraws;
-            m_vLastLayerFrames.append(tFrameInfo);
 
-            // TEMP-PROBE draw starvation: chunks collected but nothing rasterized
             {
-                static bool s_bEverDrew = false;
-
-                int iTests = tLayerContext.tStatistics.m_iNumFrustumTests;
-                int iPassed = tLayerContext.tStatistics.m_iNumFrustumPassed;
-                int iChunks = tLayerContext.tStatistics.m_iNumChunksDrawn;
-                int iMeshes = tLayerContext.tStatistics.m_iNumMeshesDrawn;
-                int iPolys = tLayerContext.tStatistics.m_iNumPolysDrawn;
-
-                if (iPolys > 0)
-                {
-                    s_bEverDrew = true;
-                }
-                else if (iChunks > 0 && iMeshes == 0 && s_bEverDrew)
-                {
-                    LOG_DEBUG(QString("LayerDrawStarved : layer %1 tests %2 passed %3 outofrange %4 chunks %5 meshes %6 near %7 far %8 cam %9 / %10 / %11")
-                        .arg(tLayer.name())
-                        .arg(iTests)
-                        .arg(iPassed)
-                        .arg(tLayerContext.tStatistics.m_iNumFrustumOutOfRange)
-                        .arg(iChunks)
-                        .arg(iMeshes)
-                        .arg(tRange.m_dNear)
-                        .arg(tRange.m_dFar)
-                        .arg(geoloc().Latitude)
-                        .arg(geoloc().Longitude)
-                        .arg(geoloc().Altitude));
-                }
+                QMutexLocker tLocker(&m_mSnapshotMutex);
+                tFrameInfo.draws = m_vCurrentMeshDraws;
+                tFrameInfo.truncated = m_bMeshDrawTruncated;
+                m_vLastLayerFrames.append(tFrameInfo);
             }
 
             Context.tStatistics.m_iNumMeshesDrawn += tLayerContext.tStatistics.m_iNumMeshesDrawn;
@@ -532,391 +556,6 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     pScene->m_tStatistics.m_iNumChunksDrawn += Context.tStatistics.m_iNumChunksDrawn;
     pScene->m_tStatistics.m_iNumFrustumTests += Context.tStatistics.m_iNumFrustumTests;
     pScene->m_tStatistics.m_iNumRayIntersectionTests += Context.tStatistics.m_iNumRayIntersectionTests;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void CCamera::renderDepth_RayTraced
-(
-        C3DScene* pScene,
-        double dMaxDistance,
-        CPanoramicMatrixParams& tParams,
-        IProgressListener* pProgressListener
-        )
-{
-    pScene->setWorldOrigin(worldPosition());
-
-    CGeoloc gReference = geoloc();
-
-    // Create polygons in local 3D space and viewed from top (X and Z)
-    for (QVector<CGeoZone>::iterator gZone = tParams.m_vZones.begin(); gZone != tParams.m_vZones.end(); gZone++)
-    {
-        (*gZone).getLocalPoints().clear();
-
-        foreach (const CGeoloc& gPoint, (*gZone).getPoints())
-        {
-            CVector3 vPoint = gPoint.toVector3(gReference);
-            (*gZone).getLocalPoints().append(CVector2(vPoint.X, vPoint.Z));
-        }
-    }
-
-    for (int iTilt = 0; iTilt < tParams.m_sResolution.height(); iTilt++)
-    {
-        if (pProgressListener != nullptr)
-        {
-            double dPercent = (((double) (iTilt * tParams.m_sResolution.width())) / (double) (tParams.m_sResolution.width() * tParams.m_sResolution.height())) * 100.0;
-            pProgressListener->notifyProgress("", dPercent);
-        }
-
-        for (int iPan = 0; iPan < tParams.m_sResolution.width(); iPan++)
-        {
-            double dPanNormalized = (double) iPan / (double) tParams.m_sResolution.width();
-            double dTiltNormalized = (double) iTilt / (double) tParams.m_sResolution.height();
-
-            double dCurrentPan = Math::Angles::toRad(tParams.m_vStartPanTiltDegrees.Y + (dPanNormalized * (tParams.m_vEndPanTiltDegrees.Y - tParams.m_vStartPanTiltDegrees.Y)));
-            double dCurrentTilt = Math::Angles::toRad(tParams.m_vStartPanTiltDegrees.X + (dTiltNormalized * (tParams.m_vEndPanTiltDegrees.X - tParams.m_vStartPanTiltDegrees.X)));
-
-            // Create the ray for the current pixel
-            CRay3 rCameraRay;
-
-            // Ray points to +Z
-            rCameraRay.vOrigin = CVector3(0.0, 0.0, 0.0);
-            rCameraRay.vNormal = CVector3(0.0, 0.0, 1.0);
-
-            // Apply current angles to ray
-            rCameraRay = CMatrix4().makeRotation(CVector3(dCurrentTilt, 0.0, 0.0)) * rCameraRay;
-            rCameraRay = CMatrix4().makeRotation(CVector3(0.0, dCurrentPan, 0.0)) * rCameraRay;
-
-            // Apply camera transform to ray
-            rCameraRay = worldTransform() * rCameraRay;
-
-            // Initialize tracing distance
-            RayTracingResult dResult(Q3D_INFINITY);
-
-            foreach (QSP<CComponent> pComponent, pScene->components())
-            {
-                // Is the component subject to ray-tracing?
-                if (pComponent->isVisible() && pComponent->isRaytracable())
-                {
-                    RayTracingResult dNewResult = pComponent->intersect(rCameraRay);
-
-                    // Keep the returned distance if less than the one already computed
-                    if (dNewResult.m_dDistance < dResult.m_dDistance)
-                    {
-                        dResult = dNewResult;
-                    }
-                }
-            }
-
-            CGeoZone::EGeoZoneFlag eDetectionFlag = CGeoZone::gzfUnknown;
-            int iDotRayNormal = 0;
-
-            if (dResult.m_dDistance >= 0.0 && dResult.m_dDistance < Q3D_INFINITY && dResult.m_dDistance < dMaxDistance)
-            {
-                CVector3 vIntersectionPoint3D = rCameraRay.vOrigin + rCameraRay.vNormal * dResult.m_dDistance;
-                CGeoloc gIntersectionPoint(vIntersectionPoint3D);
-                CVector3 vLocalIntersectionPoint3D = gIntersectionPoint.toVector3(gReference);
-
-                // Get the current flag for detection zones
-                eDetectionFlag = categorizePointFromZones(
-                            tParams.m_vZones,
-                            CVector2(vLocalIntersectionPoint3D.X, vLocalIntersectionPoint3D.Z)
-                            );
-
-                iDotRayNormal = (int) (rCameraRay.vNormal.dot(dResult.m_vNormal) * -255.0);
-                iDotRayNormal = Math::Angles::clipInt(iDotRayNormal, 0, 255);
-            }
-            else
-            {
-                dResult.m_dDistance = -1.0;
-            }
-
-            // Fill matrices
-            tParams.m_vDetection.append((char) eDetectionFlag);
-            tParams.m_vEdges.append((char) iDotRayNormal);
-            tParams.m_vDepth.append(dResult.m_dDistance);
-        }
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
-
-QImage getFrameBuffer(CGLWidgetScene* pScene, QSize sSize)
-{
-    QImage imgFrame(sSize, QImage::Format_RGB888);
-
-    glReadPixels(0, 0, sSize.width(), sSize.height(), GL_RGB, GL_UNSIGNED_BYTE, imgFrame.bits());
-
-    return imgFrame.mirrored(false, true);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-#define RENDER_MAP_SIZE_WIDTH_MIN		32
-#define RENDER_MAP_SIZE_WIDTH_MAX		512
-
-// Do not lower the following numbers, resulting matrix will be deformed otherwise
-#define RENDER_SUBDIVISIONS_PAN			32
-#define RENDER_SUBDIVISIONS_TILT		16
-
-void CCamera::renderDepth_CubeMapped
-(
-        C3DScene* pScene,
-        double dMaxDistance,
-        CPanoramicMatrixParams& tParams,
-        IProgressListener* pProgressListener
-        )
-{
-    CGLWidgetScene* pGLWidgetScene = dynamic_cast<CGLWidgetScene*>(pScene);
-
-    if (pGLWidgetScene != nullptr)
-    {
-        START_SAMPLE("CCamera::renderDepth_CubeMapped:prepare");
-
-        CGeoloc gReference = geoloc();
-
-        // Build zone polygons in the local 3D frame viewed from above (X and Z)
-        for (QVector<CGeoZone>::iterator gZone = tParams.m_vZones.begin(); gZone != tParams.m_vZones.end(); gZone++)
-        {
-            // gZone.getLocalPoints().clear();
-            (*gZone).getLocalPoints().clear();
-
-            foreach (const CGeoloc& gPoint, (*gZone).getPoints())
-            {
-                CVector3 vPoint = gPoint.toVector3(gReference);
-                (*gZone).getLocalPoints().append(CVector2(vPoint.X, vPoint.Z));
-            }
-        }
-
-        // Computation of the size of a mini-render
-        // To review since this computation assumes the requested matrix spans 360 by 180 degrees
-
-        /*
-        int iRenderMapSize = RENDER_MAP_SIZE_WIDTH_MIN;
-
-        while (iRenderMapSize < RENDER_MAP_SIZE_WIDTH_MAX)
-        {
-            if (RENDER_SUBDIVISIONS_PAN * iRenderMapSize >= tParams.m_sResolution.width() &&
-                RENDER_SUBDIVISIONS_TILT * iRenderMapSize >= tParams.m_sResolution.height())
-            {
-                break;
-            }
-
-            iRenderMapSize *= 2;
-        }
-        */
-
-        int iRenderMapSize = 265;	// Power of two
-
-        LOG_METHOD_DEBUG(
-                    QString("Rendering %1 x %2 image tiles of %3 pixels resolution")
-                    .arg(RENDER_SUBDIVISIONS_PAN)
-                    .arg(RENDER_SUBDIVISIONS_TILT)
-                    .arg(iRenderMapSize)
-                    );
-
-        // Computation of the FOVs
-        double dFOV_Pan = 360.0 / (double) RENDER_SUBDIVISIONS_PAN;
-        double dFOV_Tilt = 180.0 / (double) RENDER_SUBDIVISIONS_TILT;
-        double dFOV_Ratio = dFOV_Tilt / dFOV_Pan;
-
-        // Define the viewport size
-        QSize sMapSize(iRenderMapSize, (int) ((double) iRenderMapSize * dFOV_Ratio));
-
-        // Vector holding the size of a cube-map image
-        CVector2 vMapSize((double) sMapSize.width(), (double) sMapSize.height());
-
-        // Save the camera settings
-        QRect rOldGeometry = pGLWidgetScene->geometry();
-        CViewport* pOldViewport = pGLWidgetScene->viewports()[0];
-        CViewport* pNewViewport = new CViewport(pGLWidgetScene);
-        CVector3 vCameraInitialRotation = rotation();
-        CVector3 vCameraAttitude = tParams.m_vAttitude.degreesToRadians() * -1.0;
-        CVector3 vCameraHeading(0.0, Math::Angles::toRad(tParams.m_dCameraTrueHeadingDegrees), 0.0);
-        double dOldFOV = m_dFOV;
-
-        // Create the viewport used to render the scene
-        pGLWidgetScene->setGeometry(0, 0, sMapSize.width(), sMapSize.height());
-        pGLWidgetScene->viewports()[0] = pNewViewport;
-        pGLWidgetScene->viewports()[0]->setSize(vMapSize);
-        pGLWidgetScene->viewports()[0]->setCamera(QSP<CCamera>(this));
-        pGLWidgetScene->viewports()[0]->setEnabled(true);
-        pGLWidgetScene->setDepthComputing(true);
-        pGLWidgetScene->setShaderQuality(0.0);
-        pGLWidgetScene->updateScene(1.0);
-
-        // Create the reference cube-map
-        QImage imgImage(QSize(sMapSize.width() * RENDER_SUBDIVISIONS_PAN, sMapSize.height() * RENDER_SUBDIVISIONS_TILT), QImage::Format_RGB888);
-
-        STOP_SAMPLE("CCamera::renderDepth_CubeMapped:prepare");
-
-        START_SAMPLE("CCamera::renderDepth_CubeMapped:render");
-
-        // Set the horizontal camera FOV (vertical FOV follows the viewport size)
-        m_dFOV = dFOV_Tilt;
-
-        double dHalfFOV_Pan = dFOV_Pan * 0.5;
-        double dHalfFOV_Tilt = dFOV_Tilt * 0.5;
-
-        // Rendering of each image portion
-        for (int iTiltIndex = 0; iTiltIndex < RENDER_SUBDIVISIONS_TILT; iTiltIndex++)
-        {
-            for (int iPanIndex = 0; iPanIndex < RENDER_SUBDIVISIONS_PAN; iPanIndex++)
-            {
-                double dCurrentPan = (360.0 / RENDER_SUBDIVISIONS_PAN) * (double) iPanIndex;
-                double dCurrentTilt = (180.0 / RENDER_SUBDIVISIONS_TILT) * (double) iTiltIndex;
-
-                dCurrentPan -= 180.0;
-                dCurrentTilt -= 90.0;
-
-                dCurrentPan += dHalfFOV_Pan;
-                dCurrentTilt += dHalfFOV_Tilt;
-
-                // Get the rotation of the current image
-                CVector3 vCurrentRotationRadians = CVector3(Math::Angles::toRad(dCurrentTilt), Math::Angles::toRad(dCurrentPan), 0.0);
-
-                // Compute the final camera angles through an axis
-                Math::CAxis anAxis;
-                anAxis = anAxis.rotate(vCurrentRotationRadians);
-                anAxis = anAxis.rotate(CVector3(0.0, vCameraAttitude.Y, 0.0));
-                anAxis = anAxis.rotate(CVector3(vCameraAttitude.X, 0.0, 0.0));
-                anAxis = anAxis.rotate(CVector3(0.0, 0.0, vCameraAttitude.Z));
-                anAxis = anAxis.rotate(vCameraHeading);
-
-                // Apply the axis angles to the camera
-                setRotation(anAxis.eulerAngles());
-
-                // OpenGL rendering
-                pGLWidgetScene->paintGL();
-
-                // Copy the rendered image into the full image
-                CImageUtilities::blitWhole(
-                            imgImage,
-                            QPoint(sMapSize.width() * iPanIndex, sMapSize.height() * iTiltIndex),
-                            getFrameBuffer(pGLWidgetScene, sMapSize)
-                            );
-            }
-        }
-
-        STOP_SAMPLE("CCamera::renderDepth_CubeMapped:render");
-
-        START_SAMPLE("CCamera::renderDepth_CubeMapped:postprocess");
-
-        // For tests: save the final image as rendered by OpenGL
-        // imgImage.save("d:\\Pano.png");
-
-        // Collect the distances
-        for (int iTilt = 0; iTilt < tParams.m_sResolution.height(); iTilt++)
-        {
-            for (int iPan = 0; iPan < tParams.m_sResolution.width(); iPan++)
-            {
-                // Computation of the current pan and tilt in image space
-
-                double dPanNormalized = (double) iPan / (double) tParams.m_sResolution.width();
-                double dTiltNormalized = (double) iTilt / (double) tParams.m_sResolution.height();
-
-                double dCurrentPan = dPanNormalized * (tParams.m_vEndPanTiltDegrees.Y - tParams.m_vStartPanTiltDegrees.Y);
-                double dCurrentTilt = dTiltNormalized * (tParams.m_vEndPanTiltDegrees.X - tParams.m_vStartPanTiltDegrees.X);
-
-                // Adjustments
-                dCurrentPan = dCurrentPan + tParams.m_vStartPanTiltDegrees.Y;
-                dCurrentTilt = dCurrentTilt + tParams.m_vStartPanTiltDegrees.X;
-
-                dCurrentPan += 180.0;
-                dCurrentTilt += 90.0;
-
-                dCurrentPan = Math::Angles::clipAngleDegree(dCurrentPan);
-                dCurrentTilt = Math::Angles::clipAngleDegree(dCurrentTilt);
-
-                dCurrentPan = (dCurrentPan / 360.0) * imgImage.width();
-                dCurrentTilt = (dCurrentTilt / 180.0) * imgImage.height();
-
-                CVector2 vCoords(dCurrentPan, dCurrentTilt);
-
-                // Initialize output data
-                double dDistance = -1.0;
-                CGeoZone::EGeoZoneFlag eDetectionFlag = CGeoZone::gzfUnknown;
-                int iDotRayNormal = -127;
-
-                if (
-                        vCoords.X >= 0.0 && vCoords.X < (double) imgImage.width() &&
-                        vCoords.Y >= 0.0 && vCoords.Y < (double) imgImage.height()
-                        )
-                {
-                    // Get the pixel, contains the distance and viewing angle
-                    QRgb rgbPixel = imgImage.pixel((int) vCoords.X, (int) vCoords.Y);
-
-                    // 0xFF = infinity
-                    if ((rgbPixel & 0xFF) == 0xFF)
-                    {
-                        dDistance = -1.0;
-                    }
-                    else
-                    {
-                        // Get the distance
-                        dDistance = ((double) ((rgbPixel >> 16) & 0xFF) / 255.0) * 10000.0;
-
-                        // Dot product between "view" vector and terrain normal vector
-                        // In other words, terrain incidence angle
-                        iDotRayNormal = (rgbPixel >> 8) & 0xFF;
-
-                        // Here we work in the topocentric frame
-
-                        // Compute current pan and tilt in camera space
-                        dCurrentPan = Math::Angles::toRad(tParams.m_vStartPanTiltDegrees.Y + (dPanNormalized * (tParams.m_vEndPanTiltDegrees.Y - tParams.m_vStartPanTiltDegrees.Y)));
-                        dCurrentTilt = Math::Angles::toRad(tParams.m_vStartPanTiltDegrees.X + (dTiltNormalized * (tParams.m_vEndPanTiltDegrees.X - tParams.m_vStartPanTiltDegrees.X)));
-
-                        // Create the ray for the current point
-                        CRay3 rCameraRay;
-
-                        // The ray points to +Z
-                        rCameraRay.vOrigin = CVector3(0.0, 0.0, 0.0);
-                        rCameraRay.vNormal = CVector3(0.0, 0.0, 1.0);
-
-                        // Apply the current euler angles to the ray
-                        rCameraRay = CMatrix4().makeRotation(CVector3(dCurrentTilt, 0.0, 0.0)) * rCameraRay;
-                        rCameraRay = CMatrix4().makeRotation(CVector3(0.0, dCurrentPan, 0.0)) * rCameraRay;
-
-                        // Apply the camera's heading to the ray
-                        rCameraRay = CMatrix4().makeRotation(vCameraHeading) * rCameraRay;
-
-                        // Compute the intersection point
-                        CVector3 vIntersectionPoint3D = rCameraRay.vOrigin + rCameraRay.vNormal * dDistance;
-
-                        // Get the flag related to detection zones
-                        eDetectionFlag = categorizePointFromZones(
-                                    tParams.m_vZones,
-                                    CVector2(vIntersectionPoint3D.X, vIntersectionPoint3D.Z)
-                                    );
-                    }
-                }
-
-                // Fill the matrices
-                tParams.m_vDetection.append((char) eDetectionFlag);
-                tParams.m_vEdges.append((char) iDotRayNormal);
-                tParams.m_vDepth.append(dDistance);
-            }
-        }
-
-        STOP_SAMPLE("CCamera::renderDepth_CubeMapped:postprocess");
-
-        START_SAMPLE("CCamera::renderDepth_CubeMapped:cleanup");
-
-        // Get the scene settings
-        pGLWidgetScene->setGeometry(rOldGeometry);
-        pGLWidgetScene->viewports()[0] = pOldViewport;
-        pGLWidgetScene->setDepthComputing(false);
-        pGLWidgetScene->setShaderQuality(0.5);
-
-        // Restore camera settings
-        setRotation(vCameraInitialRotation);
-        m_dFOV = dOldFOV;
-
-        // Destroy the temporary viewport
-        delete pNewViewport;
-
-        STOP_SAMPLE("CCamera::renderDepth_CubeMapped:cleanup");
-    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1121,21 +760,68 @@ void CCamera::dump(QTextStream& stream, int iIdent)
 /*!
     Returns a JSON document with the camera state and the per-layer info of the last painted frame.
 */
-QString CCamera::snapshotJson()
+/***************************************************************************/
+/*!
+    Returns the mesh draw outcome as a JSON object.
+*/
+/***************************************************************************/
+QString SMeshDrawInfo::snapshotJson() const
 {
-    QString sLayers = "[";
+    return QString("{\"container\":\"%1\",\"name\":\"%2\",\"layer\":%3,\"distance\":%4,"
+        "\"center\":[%5,%6,%7],\"radius\":%8,\"boxmin\":[%9,%10,%11],\"boxmax\":[%12,%13,%14],\"maxdistance\":%15,"
+        "\"frustum\":%16,\"inrange\":%17,\"drawn\":%18}")
+        .arg(container)
+        .arg(name)
+        .arg(layer)
+        .arg(distance, 0, 'g', 10)
+        .arg(centerX, 0, 'g', 10).arg(centerY, 0, 'g', 10).arg(centerZ, 0, 'g', 10)
+        .arg(radius, 0, 'g', 10)
+        .arg(boxMinX, 0, 'g', 10).arg(boxMinY, 0, 'g', 10).arg(boxMinZ, 0, 'g', 10)
+        .arg(boxMaxX, 0, 'g', 10).arg(boxMaxY, 0, 'g', 10).arg(boxMaxZ, 0, 'g', 10)
+        .arg(maxDistance, 0, 'g', 10)
+        .arg(frustum == true ? "true" : "false")
+        .arg(inRange == true ? "true" : "false")
+        .arg(drawn == true ? "true" : "false");
+}
 
-    bool bFirst = true;
+//-------------------------------------------------------------------------------------------------
 
-    foreach (const SLayerFrameInfo& tLayer, m_vLastLayerFrames)
+/***************************************************************************/
+/*!
+    Returns the layer frame info as a JSON object.
+*/
+/***************************************************************************/
+QString SLayerFrameInfo::snapshotJson() const
+{
+    QStringList vDraws;
+
+    foreach (const SMeshDrawInfo& tDraw, draws)
     {
-        if (bFirst == false) sLayers += ",";
-        bFirst = false;
-
-        sLayers += tLayer.snapshotJson();
+        vDraws.append(tDraw.snapshotJson());
     }
 
-    sLayers += "]";
+    return QString("{\"layer\":%1,\"near\":%2,\"far\":%3,\"truncated\":%4,\"statistics\":%5,\"draws\":%6}")
+        .arg(layer)
+        .arg(nearPlane, 0, 'g', 10)
+        .arg(farPlane, 0, 'g', 10)
+        .arg(truncated == true ? "true" : "false")
+        .arg(statistics.snapshotJson())
+        .arg(CJsonBuilder::joinArray(vDraws));
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Returns a JSON document with the camera state and the per-layer info of the last painted frame.
+*/
+QString CCamera::snapshotJson()
+{
+    QStringList vLayers;
+
+    foreach (const SLayerFrameInfo& tLayer, lastLayerFrames())
+    {
+        vLayers.append(tLayer.snapshotJson());
+    }
 
     return QString("{%1,\"fov\":%2,\"near\":%3,\"far\":%4,\"closelayerfar\":%5,\"layers\":%6}")
         .arg(snapshotBaseJson())
@@ -1143,5 +829,5 @@ QString CCamera::snapshotJson()
         .arg(m_dMinDistance, 0, 'g', 10)
         .arg(m_dMaxDistance, 0, 'g', 10)
         .arg(m_dCloseLayerFar, 0, 'g', 10)
-        .arg(sLayers);
+        .arg(CJsonBuilder::joinArray(vLayers));
 }

@@ -339,6 +339,70 @@ bool CWorldChunk::isEmpty()
 
 //-------------------------------------------------------------------------------------------------
 
+/***************************************************************************/
+/*!
+    Counts the child chunks and how many of them are drawable.
+*/
+/***************************************************************************/
+SChildStatistics CWorldChunk::childStatistics()
+{
+    SChildStatistics tStats;
+
+    tStats.childCount = 0;
+    tStats.drawableChildren = 0;
+
+    foreach (QSP<CComponent> pChildComponent, m_vChildren)
+    {
+        QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
+
+        if (pChild == nullptr) continue;
+
+        tStats.childCount++;
+
+        if (pChild->drawable() == true)
+        {
+            tStats.drawableChildren++;
+        }
+    }
+
+    return tStats;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Gathers \a pChunk and every node below it as plain workers, owner-side walk with no manager call.
+*/
+static void gatherSubtreeWorkers(CWorldChunk* pChunk, QVector<CWorker*>& vWorkers)
+{
+    if (pChunk == nullptr) return;
+
+    vWorkers.append(pChunk);
+
+    foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
+    {
+        gatherSubtreeWorkers(QSP_CAST(CWorldChunk, pChildComponent).data(), vWorkers);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+    Tells whether this chunk or any node below it is queued or running in the worker manager.
+*/
+/***************************************************************************/
+bool CWorldChunk::subtreeHasWorker()
+{
+    QVector<CWorker*> vWorkers;
+
+    gatherSubtreeWorkers(this, vWorkers);
+
+    return CWorkerManager::getInstance()->containsAnyWorker(vWorkers);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 CBoundingBox CWorldChunk::createBoundsForTerrain(CGeoloc gPosition, CGeoloc gSize, double dAltitudeFactor)
 {
     // Compute minimum and maximum altitude

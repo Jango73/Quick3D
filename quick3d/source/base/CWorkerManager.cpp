@@ -49,6 +49,28 @@ bool CWorkerManager::containsWorker(CWorker* pWorker)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Returns the number of workers currently in the pool.
+*/
+int CWorkerManager::pendingWorkerCount()
+{
+    QMutexLocker locker(&m_mMutex);
+
+    return m_vWorkers.count();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Returns a JSON document with the pending worker count.
+*/
+QString CWorkerManager::snapshotJson()
+{
+    return QString("{\"class\":\"CWorkerManager\",\"pendingworkers\":%1}").arg(pendingWorkerCount());
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CWorkerManager::addWorker(CWorker* pWorker)
 {
     QMutexLocker locker(&m_mMutex);

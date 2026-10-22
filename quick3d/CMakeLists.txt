@@ -84,6 +84,7 @@ add_library(Quick3D SHARED
     source/mesh/CWater.cpp
     source/mesh/CWaterMaterial.cpp
     source/mesh/CWorldChunk.cpp
+    source/mesh/CWorldLodPolicy.cpp
     source/mesh/CWorldTerrain.cpp
     source/physics/CPhysicsHeightfields.cpp
     source/physics/CPhysicsVehicles.cpp

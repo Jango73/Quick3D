@@ -17,6 +17,7 @@
 #include "quick3d_global.h"
 #include "CQ3DConstants.h"
 #include "ILoadable.h"
+#include "ISnapshotable.h"
 #include "CNamed.h"
 #include "CParented.h"
 #include "CExpendable.h"
@@ -80,6 +81,7 @@ class QUICK3D_EXPORT CComponent
         , public CExpendable
         , public CDumpable
         , public ILoadable
+        , public ISnapshotable
 {
     DECLARE_MEMORY_MONITORED
 
@@ -361,6 +363,13 @@ public:
     virtual void dump(QTextStream& stream, int iIdent) Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
+    // Snapshot methods
+    //-------------------------------------------------------------------------------------------------
+
+    //! Returns a JSON document with the object's class and qualified name
+    virtual QString snapshotJson() Q_DECL_OVERRIDE;
+
+    //-------------------------------------------------------------------------------------------------
     // Static methods
     //-------------------------------------------------------------------------------------------------
 
@@ -384,6 +393,9 @@ private:
     Math::CVector3              m_vRotationMaximum;             // Maximum rotation
 
 protected:
+
+    //! Returns the shared class, name and geoloc fields used by snapshotJson() overrides
+    QString snapshotBaseJson();
 
     QString                     m_sTag;                         // User defined tag
     C3DScene*                   m_pScene;                       // The scene to which the object belongs

@@ -45,4 +45,10 @@ public:
 
     //! Injects a key event (Qt::Key value) with \a iAction (0 = press, 1 = release, 2 = click), returns \c true on success
     Q_INVOKABLE virtual bool sendKey(int iKey, int iAction) = 0;
+
+    //! Sets the move speed slider to \a iValue (0 to 100) through the user interface, returns \c true on success
+    Q_INVOKABLE virtual bool setMoveSpeed(int iValue) = 0;
+
+    //! Returns a JSON document with the full engine state for the current frame
+    Q_INVOKABLE virtual QString engineSnapshot() = 0;
 };

@@ -4,6 +4,7 @@
 // Qt
 #include <QImage>
 #include <QDateTime>
+#include <QString>
 
 // Application
 #include "quick3d_global.h"
@@ -54,6 +55,61 @@ public:
     double                      m_dSpread;
     CGenerateFunction*          m_pFunction;
     QVector<CMeshInstance*>     m_vMeshes;
+};
+
+//-------------------------------------------------------------------------------------------------
+
+//! Identity of one chunk collected by the last paint of a layer pass, for engine snapshots
+struct SCollectedChunkInfo
+{
+    QString address;
+    double latitude;
+    double longitude;
+    double sizeLatitude;
+    double sizeLongitude;
+
+    //! Returns the chunk identity as a JSON object
+    QString snapshotJson() const
+    {
+        return QString("{\"address\":\"%1\",\"latitude\":%2,\"longitude\":%3,\"sizelatitude\":%4,\"sizelongitude\":%5}")
+            .arg(address)
+            .arg(latitude, 0, 'g', 10)
+            .arg(longitude, 0, 'g', 10)
+            .arg(sizeLatitude, 0, 'g', 10)
+            .arg(sizeLongitude, 0, 'g', 10);
+    }
+};
+
+//-------------------------------------------------------------------------------------------------
+
+//! Readiness of one quadtree level on the camera path, for engine snapshots
+struct SChunkPathInfo
+{
+    int level;
+    double latitude;
+    double longitude;
+    double sizeLatitude;
+    double sizeLongitude;
+    bool selfReady;
+    int childCount;
+    int drawableChildren;
+    bool stay;
+
+    //! Returns the level readiness as a JSON object
+    QString snapshotJson() const
+    {
+        return QString("{\"level\":%1,\"latitude\":%2,\"longitude\":%3,\"sizelatitude\":%4,\"sizelongitude\":%5,"
+            "\"selfready\":%6,\"children\":%7,\"drawable\":%8,\"stay\":%9}")
+            .arg(level)
+            .arg(latitude, 0, 'g', 10)
+            .arg(longitude, 0, 'g', 10)
+            .arg(sizeLatitude, 0, 'g', 10)
+            .arg(sizeLongitude, 0, 'g', 10)
+            .arg(selfReady == true ? "true" : "false")
+            .arg(childCount)
+            .arg(drawableChildren)
+            .arg(stay == true ? "true" : "false");
+    }
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -135,6 +191,9 @@ public:
     //! Dumps contents to a stream
     virtual void dump(QTextStream& stream, int iIdent);
 
+    //! Returns a JSON document with the last collect counts and the quadtree readiness on the camera path
+    virtual QString snapshotJson() Q_DECL_OVERRIDE;
+
     //-------------------------------------------------------------------------------------------------
     // Protected methods
     //-------------------------------------------------------------------------------------------------
@@ -147,14 +206,17 @@ protected:
     //!
     bool enoughDetail(QSP<CWorldChunk> pChunk, CRenderContext* pContext, int iLevel);
 
-    //! Collects the chunks to draw, falling back to the closest ready ancestor
-    void paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRenderContext* pContext, QSP<CWorldChunk> pChunk, int iLevel, QSP<CWorldChunk> pFallbackChunk);
+    //! Returns \c true when \a iLevel is enough detail for \a pChunk seen from \a gCamera
+    bool enoughDetail(QSP<CWorldChunk> pChunk, const CGeoloc& gCamera, int iLevel);
+
+    //! Records the quadtree readiness on the path from the root to \a gCamera, retained for snapshots
+    void recordCameraPath(const CGeoloc& gCamera);
+
+    //! Collects the chunks to draw, one level per zone following the LOD policy
+    void paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRenderContext* pContext, QSP<CWorldChunk> pChunk, int iLevel);
 
     //! Returns true when \a pChunk lies fully outside the range of the layer pass in \a pContext and contributes nothing to it
     bool skipChunkForLayerPass(QSP<CWorldChunk> pChunk, CRenderContext* pContext);
-
-    //! Collects the fallback chunk when nothing finer can be drawn
-    void collectFallbackChunk(QVector<QSP<CWorldChunk> >& vChunkCollect, CRenderContext* pContext, QSP<CWorldChunk> pFallbackChunk);
 
     //! Queues chunk detail work once its terrain is ready
     void requestChunkDetailWork(QSP<CWorldChunk> pChunk);
@@ -162,14 +224,23 @@ protected:
     //!
     void buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pContext, int iLevel);
 
+    //! Creates the terrain and water patches of \a pChunk when missing
+    void ensureChunkTerrain(QSP<CWorldChunk> pChunk, int iLevel);
+
+    //! Tells whether \a gCamera stands inside the ground extent of \a pChunk
+    bool isCoveringChunk(QSP<CWorldChunk> pChunk, const CGeoloc& gCamera) const;
+
     //!
     double getHeightAtRecurse(const CGeoloc& gPosition, QSP<CWorldChunk> pChunk, double* pRigidness = nullptr);
+
+    //! Destroys the terrain, water and height field of a chunk and every node below it
+    void destroyChunkSubtree(QSP<CWorldChunk> pChunk);
 
     //!
     void collectGarbage();
 
     //!
-    void collectGarbageRecurse(QSP<CWorldChunk> pChunk);
+    void collectGarbageRecurse(QSP<CWorldChunk> pChunk, int iLevel);
 
     //! Registers ready chunk grids as physics height fields, drops stale ones
     void syncPhysicsHeightfields();
@@ -213,4 +284,8 @@ protected:
     QSP<CMaterial>              m_pMaterial;
     QVector<QSP<CComponent> >   m_vGenerators;
     QMap<const CWorldChunk*, int> m_mPhysicsHeightfields; ///< Chunk to height field ids, owned here not in the mesh
+    QMap<int, QVector<SCollectedChunkInfo> > m_mLastCollectedChunks; ///< Layer pass to identities of its last painted chunks
+    QMap<int, int> m_mLastOverlapCount; ///< Layer pass to same-pass ground overlaps in its last painted chunks
+    QVector<SChunkPathInfo>     m_vLastCameraPath; ///< Quadtree readiness on the camera path, recorded by the last paint
+    CGeoloc                     m_gLastCameraGeoloc; ///< Camera position retained from the last paint, for snapshots
 };

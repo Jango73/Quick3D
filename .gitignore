@@ -71,6 +71,7 @@ Makefile.*
 *.blend1
 
 # Project specific
+/snapshots/
 /tmp/
 /build/
 /bin/*.xml

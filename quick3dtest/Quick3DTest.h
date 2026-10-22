@@ -57,8 +57,14 @@ public:
     //! Posts a key event (Qt::Key value, 0 = press, 1 = release, 2 = click) to the 3D view, returns true on success
     bool postKeyToView(int iKey, int iAction);
 
+    //! Sets the move speed slider like a user drag, returns true on success
+    bool setMoveSpeedSlider(int iValue);
+
     //! Returns a JSON document describing the vehicle named sName
     QString vehicleStatusJson(const QString& sName);
+
+    //! Returns a JSON document with the full engine state for the current frame
+    QString engineSnapshotJson();
 
     //-------------------------------------------------------------------------------------------------
     // Protected methods
@@ -118,6 +124,9 @@ private slots:
     void onViews1IndexChanged(const QString&);
     void onControllableIndexChanged(const QString& sName);
     void onResetClicked();
+    void onPauseToggled(bool bChecked);
+    void onStepClicked();
+    void onSnapshotClicked();
     void onDebugClicked();
     void onBoundsOnlyClicked();
     void onNormalsOnlyClicked();
@@ -142,6 +151,8 @@ protected:
     bool                            m_bRun;
     bool                            m_bCheckRender;
     int                             m_iCheckRenderFrames;
+    int                             m_iFrames;
+    int                             m_iSingleSteps;
     CUiRemoteControlHandler*        m_pRemoteHandler;
     CRemoteControlServer*           m_pRemoteServer;
     QColorDialog*                   m_pFogColorDialog;

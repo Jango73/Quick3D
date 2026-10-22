@@ -2,6 +2,7 @@
 // Application
 #include "CTrajectorable.h"
 #include "CMesh.h"
+#include "C3DScene.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -44,4 +45,37 @@ void CTrajectorable::resetTrajectory()
 
     setGeoloc(m_tTrajectory.position());
     setRotation(m_tTrajectory.rotation());
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Returns a JSON document with the movement state (geoloc from the base, rotation, speeds).
+*/
+QString CTrajectorable::snapshotJson()
+{
+    return QString("{%1,%2}").arg(snapshotBaseJson()).arg(snapshotMovementJson());
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Returns the shared rotation and speed fields used by snapshotJson() overrides.
+*/
+QString CTrajectorable::snapshotMovementJson() const
+{
+    Math::CVector3 vRotation = rotation();
+
+    bool bControlled = m_pScene != nullptr
+        && m_pScene->controller() != nullptr
+        && m_pController != nullptr
+        && m_pScene->controller() == m_pController;
+
+    return QString("\"rotationx\":%1,\"rotationy\":%2,\"rotationz\":%3,\"speedms\":%4,\"turnspeedds\":%5,\"controlled\":%6")
+        .arg(vRotation.X, 0, 'g', 10)
+        .arg(vRotation.Y, 0, 'g', 10)
+        .arg(vRotation.Z, 0, 'g', 10)
+        .arg(m_dSpeedMS, 0, 'g', 10)
+        .arg(m_dTurnSpeedDS, 0, 'g', 10)
+        .arg(bControlled == true ? "true" : "false");
 }

@@ -513,7 +513,7 @@
 
         <Component Name="Man1" Class="CMan">
             <Geoloc Latitude="19.237731" Longitude="10.896700" Altitude="0.0" />
-            <Rotation x="0.0" y="180.0" z="0.0" />
+            <Rotation x="0.0" y="60.0" z="0.0" />
             <Physics PhysicsActive="1" MassKG="80" Drag="0.01" Friction="2.0" />
             <Component Name="Head" Class="CCamera">
                 <Position x="0.0" y="1.8" z="0.0" />
@@ -586,7 +586,7 @@
         </Component>
 
         <Component Name="VBCI" Class="CTerrestrialVehicle">
-            <Geoloc Latitude="19.237738" Longitude="10.896701" Altitude="0.0" />
+            <Geoloc Latitude="19.237738" Longitude="10.896606" Altitude="0.0" />
             <Rotation x="0.0" y="0.0" z="0.0" />
             <Mesh Name="models/VBCI.q3d">
                 <Bounds>

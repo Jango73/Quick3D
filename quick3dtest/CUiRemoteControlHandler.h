@@ -49,6 +49,12 @@ public:
     //! Injects a key event (Qt::Key value) with \a iAction (0 = press, 1 = release, 2 = click), returns \c true on success
     virtual bool sendKey(int iKey, int iAction) Q_DECL_OVERRIDE;
 
+    //! Sets the move speed slider to \a iValue through the main window, returns \c true on success
+    virtual bool setMoveSpeed(int iValue) Q_DECL_OVERRIDE;
+
+    //! Returns a JSON document with the full engine state for the current frame
+    virtual QString engineSnapshot() Q_DECL_OVERRIDE;
+
 protected:
 
     //-------------------------------------------------------------------------------------------------

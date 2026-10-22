@@ -1,6 +1,9 @@
 
 // Qt
 #include <QFileDialog>
+#include <QFile>
+#include <QDir>
+#include <QDateTime>
 #include <QColorDialog>
 #include <QComboBox>
 #include <QDialog>
@@ -65,6 +68,8 @@ Quick3DTest::Quick3DTest(QString sSceneFileName, QWidget *parent, Qt::WFlags fla
     , m_bRun(true)
     , m_bCheckRender(false)
     , m_iCheckRenderFrames(0)
+    , m_iFrames(0)
+    , m_iSingleSteps(0)
     , m_pRemoteHandler(nullptr)
     , m_pRemoteServer(nullptr)
     , m_pFogColorDialog(nullptr)
@@ -132,6 +137,11 @@ Quick3DTest::Quick3DTest(QString sSceneFileName, QWidget *parent, Qt::WFlags fla
     connect(ui.m_chkEdit, SIGNAL(clicked()), this, SLOT(onEditClicked()));
 
     connect(ui.m_bReset, SIGNAL(clicked()), this, SLOT(onResetClicked()));
+    connect(ui.m_bPause, SIGNAL(toggled(bool)), this, SLOT(onPauseToggled(bool)));
+    connect(ui.m_bStep, SIGNAL(clicked()), this, SLOT(onStepClicked()));
+    connect(ui.m_bSnapshot, SIGNAL(clicked()), this, SLOT(onSnapshotClicked()));
+
+    ui.m_bStep->setEnabled(false);
 
     loadScene(QCoreApplication::applicationDirPath() + "/" + sSceneFileName);
 
@@ -311,6 +321,12 @@ void Quick3DTest::onTimer()
         QDateTime tCurrentTime = QDateTime::currentDateTime();
         double dDeltaTime = double(m_tPreviousTime.msecsTo(tCurrentTime)) / 1000.0;
 
+        // Stepped frames advance a fixed quantum: wall-clock time kept flowing while paused
+        if (m_iSingleSteps > 0)
+        {
+            dDeltaTime = MinimumFrameDurationS;
+        }
+
         if (dDeltaTime < MinimumFrameDurationS)
         {
             int iRemainingMs = int((MinimumFrameDurationS - dDeltaTime) * 1000.0);
@@ -326,6 +342,8 @@ void Quick3DTest::onTimer()
 
         m_tPreviousTime = tCurrentTime;
 
+        m_iFrames++;
+
         m_pScene->updateScene(dDeltaTime);
         m_pView->update(dDeltaTime);
 
@@ -338,7 +356,7 @@ void Quick3DTest::onTimer()
         {
             m_iCheckRenderFrames++;
 
-            if (m_iCheckRenderFrames >= 600)
+            if (m_iCheckRenderFrames >= 600 && qEnvironmentVariableIsSet("QUICK3D_ENDLESS") == false)
             {
                 QImage tFrameBuffer = m_pScene->grabFramebuffer();
                 tFrameBuffer.save(QCoreApplication::applicationDirPath() + "/../../tmp/check-render-full.png");
@@ -477,6 +495,17 @@ void Quick3DTest::onTimer()
 
                 QApplication::quit();
             }
+        }
+    }
+
+    if (m_iSingleSteps > 0)
+    {
+        m_iSingleSteps--;
+
+        if (m_iSingleSteps == 0)
+        {
+            m_bRun = false;
+            ui.m_bPause->setChecked(true);
         }
     }
 
@@ -1088,6 +1117,18 @@ bool Quick3DTest::postKeyToView(int iKey, int iAction)
 //-------------------------------------------------------------------------------------------------
 
 /*!
+    Sets the move speed slider like a user drag, returns true on success
+*/
+bool Quick3DTest::setMoveSpeedSlider(int iValue)
+{
+    ui.m_sMoveSpeed->setValue(qBound(ui.m_sMoveSpeed->minimum(), iValue, ui.m_sMoveSpeed->maximum()));
+
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
     Returns a JSON document describing the vehicle named sName
 */
 QString Quick3DTest::vehicleStatusJson(const QString& sName)
@@ -1098,6 +1139,7 @@ QString Quick3DTest::vehicleStatusJson(const QString& sName)
     }
 
     QSP<CVehicle> pVehicle;
+    QSP<CComponent> pFoundComponent;
 
     foreach (QSP<CComponent> pComponent, m_pScene->components())
     {
@@ -1105,6 +1147,7 @@ QString Quick3DTest::vehicleStatusJson(const QString& sName)
 
         if (pFound != nullptr)
         {
+            pFoundComponent = pFound;
             pVehicle = QSP_CAST(CVehicle, pFound);
             break;
         }
@@ -1112,7 +1155,17 @@ QString Quick3DTest::vehicleStatusJson(const QString& sName)
 
     if (pVehicle == nullptr)
     {
-        return "{\"ok\":false,\"error\":\"vehicle not found\"}";
+        // Non-vehicle components (Man1 is a CTrajectorable) still report their position
+        if (pFoundComponent == nullptr)
+        {
+            return "{\"ok\":false,\"error\":\"vehicle not found\"}";
+        }
+
+        CGeoloc gGeoloc = pFoundComponent->geoloc();
+
+        return QString("{\"ok\":true,\"name\":\"%1\",\"physics\":false,\"latitude\":%2,\"longitude\":%3,\"altitude\":%4}")
+            .arg(pFoundComponent->name())
+            .arg(gGeoloc.Latitude, 0, 'g', 10).arg(gGeoloc.Longitude, 0, 'g', 10).arg(gGeoloc.Altitude, 0, 'g', 10);
     }
 
     CGeoloc gGeoloc = pVehicle->geoloc();
@@ -1155,6 +1208,70 @@ QString Quick3DTest::vehicleStatusJson(const QString& sName)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Returns a JSON document with the full engine state for the current frame.
+    Each object serializes its own state through ISnapshotable, this method only assembles the parts.
+*/
+QString Quick3DTest::engineSnapshotJson()
+{
+    if (m_pScene == nullptr)
+    {
+        return "{\"ok\":false,\"error\":\"no scene\"}";
+    }
+
+    QSP<CCamera> pCamera;
+
+    if (m_pScene->viewports().count() > 0)
+    {
+        pCamera = m_pScene->viewports()[0]->camera();
+    }
+
+    if (pCamera == nullptr)
+    {
+        return "{\"ok\":false,\"error\":\"no camera\"}";
+    }
+
+    QString sControlled = ui.m_cbControllable != nullptr ? ui.m_cbControllable->currentText() : QString();
+    QString sVehicle = QString("null");
+
+    if (sControlled.isEmpty() == false)
+    {
+        foreach (QSP<CComponent> pComponent, m_pScene->components())
+        {
+            QSP<CComponent> pFound = pComponent->findComponent(sControlled);
+
+            if (pFound != nullptr)
+            {
+                sVehicle = pFound->snapshotJson();
+                break;
+            }
+        }
+    }
+
+    QString sTerrain = QString("null");
+
+    foreach (QSP<CComponent> pComponent, m_pScene->components())
+    {
+        QSP<CWorldTerrain> pTerrain = QSP_CAST(CWorldTerrain, pComponent);
+
+        if (pTerrain != nullptr)
+        {
+            sTerrain = pTerrain->snapshotJson();
+            break;
+        }
+    }
+
+    return QString("{\"ok\":true,\"frame\":%1,\"paused\":%2,\"camera\":%3,\"vehicle\":%4,\"terrain\":%5,\"workers\":%6}")
+        .arg(m_iFrames)
+        .arg(m_bRun == false ? "true" : "false")
+        .arg(pCamera->snapshotJson())
+        .arg(sVehicle)
+        .arg(sTerrain)
+        .arg(CWorkerManager::getInstance()->snapshotJson());
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void Quick3DTest::onResetClicked()
 {
     foreach (QSP<CComponent> pComponent, m_pScene->components())
@@ -1168,6 +1285,70 @@ void Quick3DTest::onResetClicked()
                 pVehicle->resetTrajectory();
             }
         }
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Pauses or resumes the frame loop through the Pause toggle button.
+*/
+void Quick3DTest::onPauseToggled(bool bChecked)
+{
+    m_iSingleSteps = 0;
+    m_bRun = bChecked == false;
+    ui.m_bStep->setEnabled(bChecked);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Advances a single frame while paused, stays paused afterwards.
+*/
+void Quick3DTest::onStepClicked()
+{
+    if (m_bRun == false && m_iSingleSteps == 0)
+    {
+        m_iSingleSteps = 1;
+        m_bRun = true;
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Dumps the engine snapshot to a uniquely named file, never overwriting. \br\br
+    Files land in the snapshots/ folder of the working folder as
+    snapshot-YYYYMMDD-hhmmss-f<frame>.json, with a counter suffix when the
+    name is already taken.
+*/
+void Quick3DTest::onSnapshotClicked()
+{
+    QDir().mkpath("snapshots");
+
+    QString sStamp = QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss");
+    QString sUnique = QString("snapshots/snapshot-%1-f%2.json").arg(sStamp).arg(m_iFrames);
+
+    int iAttempt = 0;
+
+    while (QFile::exists(sUnique) && iAttempt < 1000)
+    {
+        iAttempt++;
+        sUnique = QString("snapshots/snapshot-%1-f%2-%3.json").arg(sStamp).arg(m_iFrames).arg(iAttempt);
+    }
+
+    QFile cFile(sUnique);
+
+    if (cFile.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        cFile.write(engineSnapshotJson().toUtf8());
+        cFile.close();
+
+        LOG_METHOD_INFO(QString("Snapshot saved to %1").arg(sUnique));
+    }
+    else
+    {
+        LOG_METHOD_ERROR(QString("Snapshot dump failed for %1").arg(sUnique));
     }
 }
 

@@ -1558,13 +1558,72 @@ void CMeshGeometry::paint(CRenderContext* pContext, CComponent* pContainer)
 
             pContext->tStatistics.m_iNumFrustumTests++;
 
-            if (
-                    pContext->camera()->contains(vPosition, dRadius) &&
-                    vPosition.magnitude() < m_dMaxDistance
-                    )
+            bool bInFrustum = pContext->camera()->contains(vPosition, dRadius);
+            bool bInRange = vPosition.magnitude() < m_dMaxDistance;
+
+            if (bInFrustum)
+            {
+                if (bInRange)
+                {
+                    pContext->tStatistics.m_iNumFrustumPassed++;
+                }
+                else
+                {
+                    pContext->tStatistics.m_iNumFrustumOutOfRange++;
+                }
+            }
+
+            if (bInFrustum && bInRange)
             {
                 bFrustumCheck = true;
             }
+
+            SMeshDrawInfo tDraw;
+            tDraw.container = QString::number(quintptr(pContainer), 16);
+            tDraw.name = pContainer != nullptr ? pContainer->qualifiedName() : QString();
+            tDraw.layer = pContext->camera()->currentPaintLayer();
+            tDraw.distance = vPosition.magnitude();
+            tDraw.centerX = vPosition.X;
+            tDraw.centerY = vPosition.Y;
+            tDraw.centerZ = vPosition.Z;
+            tDraw.radius = dRadius;
+            tDraw.maxDistance = m_dMaxDistance;
+            tDraw.frustum = bInFrustum;
+            tDraw.inRange = bInRange;
+            tDraw.drawn = bFrustumCheck;
+
+            CBoundingBox bWorld = pContainer->worldBounds();
+            Math::CVector3 vMin = bWorld.minimum();
+            Math::CVector3 vMax = bWorld.maximum();
+            bool bFirstCorner = true;
+
+            for (int iCorner = 0; iCorner < 8; iCorner++)
+            {
+                Math::CVector3 vCorner(
+                    (iCorner & 1) != 0 ? vMax.X : vMin.X,
+                    (iCorner & 2) != 0 ? vMax.Y : vMin.Y,
+                    (iCorner & 4) != 0 ? vMax.Z : vMin.Z);
+                Math::CVector3 vCam = pContext->internalCameraMatrix() * vCorner;
+
+                if (bFirstCorner == true)
+                {
+                    tDraw.boxMinX = tDraw.boxMaxX = vCam.X;
+                    tDraw.boxMinY = tDraw.boxMaxY = vCam.Y;
+                    tDraw.boxMinZ = tDraw.boxMaxZ = vCam.Z;
+                    bFirstCorner = false;
+                }
+                else
+                {
+                    if (vCam.X < tDraw.boxMinX) tDraw.boxMinX = vCam.X;
+                    if (vCam.Y < tDraw.boxMinY) tDraw.boxMinY = vCam.Y;
+                    if (vCam.Z < tDraw.boxMinZ) tDraw.boxMinZ = vCam.Z;
+                    if (vCam.X > tDraw.boxMaxX) tDraw.boxMaxX = vCam.X;
+                    if (vCam.Y > tDraw.boxMaxY) tDraw.boxMaxY = vCam.Y;
+                    if (vCam.Z > tDraw.boxMaxZ) tDraw.boxMaxZ = vCam.Z;
+                }
+            }
+
+            pContext->camera()->recordMeshDraw(tDraw);
         }
         else
         {

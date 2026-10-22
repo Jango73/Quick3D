@@ -83,3 +83,33 @@ bool CUiRemoteControlHandler::sendKey(int iKey, int iAction)
 
     return m_pWindow->postKeyToView(iKey, iAction);
 }
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Sets the move speed slider to \a iValue, returns \c true on success.
+*/
+bool CUiRemoteControlHandler::setMoveSpeed(int iValue)
+{
+    if (m_pWindow.isNull() == true)
+    {
+        return false;
+    }
+
+    return m_pWindow->setMoveSpeedSlider(iValue);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Returns a JSON document with the full engine state for the current frame.
+*/
+QString CUiRemoteControlHandler::engineSnapshot()
+{
+    if (m_pWindow.isNull() == true)
+    {
+        return "{\"ok\":false,\"error\":\"no window\"}";
+    }
+
+    return m_pWindow->engineSnapshotJson();
+}

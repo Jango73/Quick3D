@@ -181,3 +181,4 @@ Never leave a blank line in the commit message: lines follow each other directly
 1. Reproduce headless first when possible: `Quick3DTest run-tests`.
 2. For terrain LOD/patch issues, read `quick3d/doc/TerrainHolesAnalysis.md` before re-investigating: the worker-scheduler starvation, the missing `paintRecurse()` fallback, and the premature child-pruning mechanisms are already documented there.
 3. This machine has Qt 6.2 (system packages + `qmake6`); the reference build is CMake + Ninja via `scripts/linux/`.
+4. To reproduce a user problem, drive the UI through the HTTP remote control server (`CRemoteControlServer`, port 8181 or `Q3D_REMOTE_PORT`): `/key?code=Z&action=press|release|click`, `/select`, `/view`, `/vehicle`. Never call quick3d internal APIs directly to simulate user input; the repro path must match what the user does.

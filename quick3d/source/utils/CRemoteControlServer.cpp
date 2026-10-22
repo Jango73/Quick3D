@@ -91,10 +91,18 @@ void CRemoteControlServer::getContent(CWebContext& tContext, QString& sHead, QSt
     {
         serveView(tContext.m_mArguments, sCustomResponse);
     }
+    else if (sEndpoint == "speed")
+    {
+        serveSpeed(tContext.m_mArguments, sCustomResponse);
+    }
+    else if (sEndpoint == "snapshot")
+    {
+        serveSnapshot(sCustomResponse);
+    }
     else
     {
         sCustomResponseMIME = "text/plain";
-        sCustomResponse = "Quick3D remote control: /key?code=H&action=press|release|click /vehicle?name=Visitor2 /select?name=Visitor2 /view?name=Driver";
+        sCustomResponse = "Quick3D remote control: /key?code=H&action=press|release|click /vehicle?name=Visitor2 /select?name=Visitor2 /view?name=Driver /speed?value=50 /snapshot";
     }
 }
 
@@ -253,6 +261,52 @@ void CRemoteControlServer::serveView(const QMap<QString, QString>& mArguments, Q
     }
 
     invokeHandlerBool("selectView", sName, sResponse, "view not selected");
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Serves /speed from \a mArguments, result as JSON in \a sResponse.
+*/
+void CRemoteControlServer::serveSpeed(const QMap<QString, QString>& mArguments, QString& sResponse)
+{
+    bool bParsed = false;
+    int iValue = mArguments.value("value").toInt(&bParsed);
+
+    if (bParsed == false || m_pHandler.isNull() == true)
+    {
+        sResponse = "{\"ok\":false,\"error\":\"missing value or handler\"}";
+        return;
+    }
+
+    bool bResult = false;
+
+    QMetaObject::invokeMethod(m_pHandler, "setMoveSpeed", Qt::BlockingQueuedConnection,
+        Q_RETURN_ARG(bool, bResult),
+        Q_ARG(int, iValue));
+
+    sResponse = bResult == true ? "{\"ok\":true}" : "{\"ok\":false,\"error\":\"speed rejected\"}";
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Serves /snapshot, result as JSON in \a sResponse.
+*/
+void CRemoteControlServer::serveSnapshot(QString& sResponse)
+{
+    if (m_pHandler.isNull() == true)
+    {
+        sResponse = "{\"ok\":false,\"error\":\"missing handler\"}";
+        return;
+    }
+
+    QString sSnapshot;
+
+    QMetaObject::invokeMethod(m_pHandler, "engineSnapshot", Qt::BlockingQueuedConnection,
+        Q_RETURN_ARG(QString, sSnapshot));
+
+    sResponse = sSnapshot.isEmpty() == true ? "{\"ok\":false,\"error\":\"no snapshot\"}" : sSnapshot;
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -585,3 +585,36 @@ CBoundingBox CVehicle::firstMeshBounds() const
 
     return CBoundingBox();
 }
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Returns a JSON document with the movement state plus physics registration, wheels and contacts.
+*/
+QString CVehicle::snapshotJson()
+{
+    int iContacts = -1;
+
+    if (hasPhysicsVehicle() == true)
+    {
+        iContacts = 0;
+
+        QVector<QSP<CWheel> > vWheels = wheels();
+
+        for (int iWheel = 0; iWheel < vWheels.count(); iWheel++)
+        {
+            if (m_pPhysicsWorld->vehicleWheelHasContact(m_iPhysicsVehicle, iWheel) == true)
+            {
+                iContacts++;
+            }
+        }
+    }
+
+    return QString("{%1,%2,\"physics\":%3,\"handbrake\":%4,\"wheels\":%5,\"contacts\":%6}")
+        .arg(snapshotBaseJson())
+        .arg(snapshotMovementJson())
+        .arg(hasPhysicsVehicle() == true ? "true" : "false")
+        .arg(isHandBrakeEngaged() == true ? "true" : "false")
+        .arg(wheels().count())
+        .arg(iContacts);
+}

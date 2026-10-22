@@ -17,7 +17,7 @@
 //! HTTP server driving the application through a remote control handler. \br\br
 //! This class knows HTTP and JSON only, it never touches the scene or the
 //! views directly: every action goes through the handler, which lives in the
-//! user interface thread. Served endpoints are /key, /vehicle, /select and /view.
+    //! user interface thread. Served endpoints are /key, /vehicle, /select, /view, /speed and /snapshot.
 class QUICK3D_EXPORT CRemoteControlServer : public CHTTPServer
 {
     Q_OBJECT
@@ -71,6 +71,12 @@ protected:
 
     //! Serves /view from \a mArguments, result as JSON in \a sResponse
     void serveView(const QMap<QString, QString>& mArguments, QString& sResponse);
+
+    //! Serves /speed from \a mArguments, result as JSON in \a sResponse
+    void serveSpeed(const QMap<QString, QString>& mArguments, QString& sResponse);
+
+    //! Serves /snapshot, result as JSON in \a sResponse
+    void serveSnapshot(QString& sResponse);
 
     //! Checks the name argument and the handler, false with \a sResponse set to the error envelope
     bool requireHandlerName(const QMap<QString, QString>& mArguments, QString& sName, QString& sResponse) const;

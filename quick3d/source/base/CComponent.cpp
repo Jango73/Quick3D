@@ -1165,6 +1165,31 @@ void CComponent::dump(QTextStream& stream, int iIdent)
 
 //-------------------------------------------------------------------------------------------------
 
+/*!
+    Returns a JSON document with the object's class and qualified name.
+*/
+QString CComponent::snapshotJson()
+{
+    return QString("{%1}").arg(snapshotBaseJson());
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Returns the shared class, name and geoloc fields used by snapshotJson() overrides.
+*/
+QString CComponent::snapshotBaseJson()
+{
+    return QString("\"class\":\"%1\",\"name\":\"%2\",\"latitude\":%3,\"longitude\":%4,\"altitude\":%5")
+        .arg(getClassName())
+        .arg(qualifiedName())
+        .arg(m_gGeoloc.Latitude, 0, 'g', 10)
+        .arg(m_gGeoloc.Longitude, 0, 'g', 10)
+        .arg(m_gGeoloc.Altitude, 0, 'g', 10);
+}
+
+//-------------------------------------------------------------------------------------------------
+
 void CComponent::incComponentCounter(QString sClassName)
 {
     if (m_mComponentCounter.contains(sClassName) == false)

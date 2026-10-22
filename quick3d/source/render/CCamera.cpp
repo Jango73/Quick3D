@@ -88,6 +88,8 @@ CCamera& CCamera::operator = (const CCamera& target)
     m_dMaxDistance      = target.m_dMaxDistance;
     m_dCloseLayerFar    = target.m_dCloseLayerFar;
     m_pFrustumPlanes    = target.m_pFrustumPlanes;
+    m_vLastLayerFrames  = target.m_vLastLayerFrames;
+    m_vCurrentMeshDraws = target.m_vCurrentMeshDraws;
 
     return *this;
 }
@@ -291,6 +293,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
 
     m_dCloseLayerFar = -1.0;
     m_iCurrentPaintLayer = -1;
+    m_vLastLayerFrames.clear();
 
     foreach (const CRenderLayer& tLayer, tLayerStack.layers())
     {
@@ -454,10 +457,50 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
             computeFrustum(Math::Angles::toRad(dFOV), dAspectRatio, tRange.m_dNear, tRange.m_dFar);
 
             m_iCurrentPaintLayer = tLayer.layer();
+            m_vCurrentMeshDraws.clear();
 
             pScene->paintLayerComponents(&tLayerContext, *tLayer.filter());
 
             m_iCurrentPaintLayer = -1;
+
+            SLayerFrameInfo tFrameInfo;
+            tFrameInfo.layer = tLayer.layer();
+            tFrameInfo.nearPlane = tRange.m_dNear;
+            tFrameInfo.farPlane = tRange.m_dFar;
+            tFrameInfo.statistics = tLayerContext.tStatistics;
+            tFrameInfo.draws = m_vCurrentMeshDraws;
+            m_vLastLayerFrames.append(tFrameInfo);
+
+            // TEMP-PROBE draw starvation: chunks collected but nothing rasterized
+            {
+                static bool s_bEverDrew = false;
+
+                int iTests = tLayerContext.tStatistics.m_iNumFrustumTests;
+                int iPassed = tLayerContext.tStatistics.m_iNumFrustumPassed;
+                int iChunks = tLayerContext.tStatistics.m_iNumChunksDrawn;
+                int iMeshes = tLayerContext.tStatistics.m_iNumMeshesDrawn;
+                int iPolys = tLayerContext.tStatistics.m_iNumPolysDrawn;
+
+                if (iPolys > 0)
+                {
+                    s_bEverDrew = true;
+                }
+                else if (iChunks > 0 && iMeshes == 0 && s_bEverDrew)
+                {
+                    LOG_DEBUG(QString("LayerDrawStarved : layer %1 tests %2 passed %3 outofrange %4 chunks %5 meshes %6 near %7 far %8 cam %9 / %10 / %11")
+                        .arg(tLayer.name())
+                        .arg(iTests)
+                        .arg(iPassed)
+                        .arg(tLayerContext.tStatistics.m_iNumFrustumOutOfRange)
+                        .arg(iChunks)
+                        .arg(iMeshes)
+                        .arg(tRange.m_dNear)
+                        .arg(tRange.m_dFar)
+                        .arg(geoloc().Latitude)
+                        .arg(geoloc().Longitude)
+                        .arg(geoloc().Altitude));
+                }
+            }
 
             Context.tStatistics.m_iNumMeshesDrawn += tLayerContext.tStatistics.m_iNumMeshesDrawn;
             Context.tStatistics.m_iNumPolysDrawn += tLayerContext.tStatistics.m_iNumPolysDrawn;
@@ -1071,4 +1114,34 @@ void CCamera::dump(QTextStream& stream, int iIdent)
     dumpIndented(stream, iIdent, QString("Max distance : %1").arg(m_dMaxDistance));
 
     CPhysicalComponent::dump(stream, iIdent);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Returns a JSON document with the camera state and the per-layer info of the last painted frame.
+*/
+QString CCamera::snapshotJson()
+{
+    QString sLayers = "[";
+
+    bool bFirst = true;
+
+    foreach (const SLayerFrameInfo& tLayer, m_vLastLayerFrames)
+    {
+        if (bFirst == false) sLayers += ",";
+        bFirst = false;
+
+        sLayers += tLayer.snapshotJson();
+    }
+
+    sLayers += "]";
+
+    return QString("{%1,\"fov\":%2,\"near\":%3,\"far\":%4,\"closelayerfar\":%5,\"layers\":%6}")
+        .arg(snapshotBaseJson())
+        .arg(m_dFOV, 0, 'g', 10)
+        .arg(m_dMinDistance, 0, 'g', 10)
+        .arg(m_dMaxDistance, 0, 'g', 10)
+        .arg(m_dCloseLayerFar, 0, 'g', 10)
+        .arg(sLayers);
 }

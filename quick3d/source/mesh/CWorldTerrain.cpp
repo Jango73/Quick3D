@@ -14,6 +14,7 @@
 #include "CComponentFactory.h"
 #include "CWorkerManager.h"
 #include "CWorldTerrain.h"
+#include "CWorldLodPolicy.h"
 #include "CRenderLayer.h"
 #include "CTreeGenerator.h"
 #include "CTiledMaterial.h"
@@ -284,12 +285,38 @@ void CWorldTerrain::paint(CRenderContext* pContext)
 
     QVector<QSP<CWorldChunk> > vChunkCollect;
 
-    paintRecurse(vChunkCollect, pContext, m_pRoot, m_iLevels, QSP<CWorldChunk>());
+    paintRecurse(vChunkCollect, pContext, m_pRoot, m_iLevels);
+
+    int iPaintLayer = (pContext != nullptr && pContext->camera() != nullptr) ? pContext->camera()->currentPaintLayer() : -1;
+
+    QVector<SCollectedChunkInfo>& vCollected = m_mLastCollectedChunks[iPaintLayer];
+    vCollected.clear();
+
+    foreach (QSP<CWorldChunk> pCollected, vChunkCollect)
+    {
+        if (pCollected == nullptr) continue;
+
+        SCollectedChunkInfo tInfo;
+        tInfo.address = QString::number(quintptr(pCollected.data()), 16);
+        tInfo.latitude = pCollected->geoloc().Latitude;
+        tInfo.longitude = pCollected->geoloc().Longitude;
+        tInfo.sizeLatitude = pCollected->size().Latitude;
+        tInfo.sizeLongitude = pCollected->size().Longitude;
+        vCollected.append(tInfo);
+    }
+
+    if (pContext != nullptr && pContext->camera() != nullptr)
+    {
+        m_gLastCameraGeoloc = pContext->camera()->geoloc();
+        recordCameraPath(m_gLastCameraGeoloc);
+    }
 
     // TEMP-PROBE partition overlap: counts chunks collected in both layer passes
     {
         static QSet<const CWorldChunk*> s_tFarCollect;
         static int s_iProbeCalls = 0;
+        static bool s_bEverCollected = false;
+        static int s_iEmptyPairs = 0;
 
         int iLayer = (pContext != nullptr && pContext->camera() != nullptr) ? pContext->camera()->currentPaintLayer() : -1;
 
@@ -311,16 +338,51 @@ void CWorldTerrain::paint(CRenderContext* pContext)
                 if (pChunk != nullptr && s_tFarCollect.contains(pChunk.data())) iDuplicates++;
             }
 
+            // Every empty far+close pair after the first success is a total
+            // disappearance: log the event itself, sampling would miss brief ones
+            if (s_tFarCollect.isEmpty() && vChunkCollect.isEmpty())
+            {
+                if (s_bEverCollected)
+                {
+                    s_iEmptyPairs++;
+
+                    LOG_DEBUG(QString("LayerPartitionEmptyPair : count %1").arg(s_iEmptyPairs));
+                }
+            }
+            else
+            {
+                s_bEverCollected = true;
+            }
+
             s_iProbeCalls++;
 
             if (s_iProbeCalls % 60 == 0)
             {
-                LOG_DEBUG(QString("LayerPartitionProbe : far %1 close %2 both %3").arg(s_tFarCollect.count()).arg(vChunkCollect.count()).arg(iDuplicates));
+                LOG_DEBUG(QString("LayerPartitionProbe : far %1 close %2 both %3 empty %4").arg(s_tFarCollect.count()).arg(vChunkCollect.count()).arg(iDuplicates).arg(s_iEmptyPairs));
             }
         }
     }
 
     std::sort(vChunkCollect.begin(), vChunkCollect.end());
+
+    // Proof of single-level collect: count same-pass ground overlaps, two
+    // collected chunks sharing ground mean the same zone drawn twice
+    int iOverlaps = 0;
+
+    for (int iA = 0; iA < vChunkCollect.count(); iA++)
+    {
+        for (int iB = iA + 1; iB < vChunkCollect.count(); iB++)
+        {
+            if (CWorldLodPolicy::extentsOverlap(
+                        vChunkCollect[iA]->originalGeoloc(), vChunkCollect[iA]->originalSize(),
+                        vChunkCollect[iB]->originalGeoloc(), vChunkCollect[iB]->originalSize()))
+            {
+                iOverlaps++;
+            }
+        }
+    }
+
+    m_mLastOverlapCount[iPaintLayer] = iOverlaps;
 
     foreach (QSP<CWorldChunk> pChunk, vChunkCollect)
     {
@@ -397,13 +459,27 @@ void CWorldTerrain::buildRoot(CRenderContext* pContext)
 */
 bool CWorldTerrain::enoughDetail(QSP<CWorldChunk> pChunk, CRenderContext* pContext, int iLevel)
 {
+    if (pChunk == nullptr || pContext == nullptr || pContext->camera() == nullptr) return true;
+
+    return enoughDetail(pChunk, pContext->camera()->geoloc(), iLevel);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Returns \c true when \a iLevel is enough detail for \a pChunk seen from \a gCamera.
+*/
+bool CWorldTerrain::enoughDetail(QSP<CWorldChunk> pChunk, const CGeoloc& gCamera, int iLevel)
+{
+    if (pChunk == nullptr) return true;
+
     // double dDistance = (pContext->camera()->getWorldPosition() - pChunk->getWorldBounds().center()).getMagnitude();
     // return pChunk->getWorldBounds().radius() / dDistance < 2.0;
 
     // if (iLevel > m_iLevels - (m_iLevels / 5)) return false;
 
     return (
-                pChunk->worldBounds().containsSpherical(pContext->camera()->geoloc()) == false ||
+                pChunk->worldBounds().containsSpherical(gCamera) == false ||
                 iLevel == 0
                 )
             && iLevel < m_iLevels;
@@ -444,6 +520,110 @@ void CWorldTerrain::requestChunkDetailWork(QSP<CWorldChunk> pChunk)
 //-------------------------------------------------------------------------------------------------
 
 /*!
+    Creates the terrain and water patches of \a pChunk when missing. \br\br
+    Shared by the stay branch and the covering branch of buildRecurse(): both
+    need a drawable patch, the stay branch as the final level of detail, the
+    covering branch as fallback cover while the finer subdivision finishes.
+*/
+void CWorldTerrain::ensureChunkTerrain(QSP<CWorldChunk> pChunk, int iLevel)
+{
+    if (pChunk == nullptr) return;
+
+    // Create terrain for the chunk if needed
+    if (pChunk->terrain() == nullptr)
+    {
+        CGeoloc gOriginalChunkPosition = pChunk->originalGeoloc();
+        CGeoloc gOriginalChunkSize = pChunk->originalSize();
+
+        CGeoloc gChunkPosition = pChunk->geoloc();
+        CGeoloc gChunkSize = pChunk->size();
+
+        LOG_METHOD_DEBUG(QString("Creating terrain for tile at lat %1, lon %2, level %3")
+                  .arg(gChunkPosition.Latitude)
+                  .arg(gChunkPosition.Longitude)
+                  .arg(iLevel)
+                  );
+
+        QSP<CTerrain> pTerrain = QSP<CTerrain>(new CTerrain(
+                    m_pScene,
+                    m_pHeights,
+                    gOriginalChunkPosition,
+                    gOriginalChunkSize,
+                    gChunkPosition,
+                    gChunkSize,
+                    m_iTerrainResolution,
+                    iLevel,
+                    m_iLevels,
+                    false,
+                    m_bGenerateNow
+                    ));
+
+        pTerrain->setMaterial(m_pMaterial);
+        pTerrain->setInheritTransform(false);
+        pTerrain->setGeoloc(gChunkPosition);
+        pTerrain->computeWorldTransform();
+        pChunk->setTerrain(pTerrain, m_bGenerateNow);
+
+        if (m_bGenerateNow == false)
+        {
+            CTiledMaterial* pTiled = dynamic_cast<CTiledMaterial*>(m_pMaterial.data());
+
+            if (pTiled == nullptr)
+            {
+                QSP<CTerrain> pWater = QSP<CTerrain>(new CTerrain(
+                            m_pScene,
+                            m_pHeights,
+                            gOriginalChunkPosition,
+                            gOriginalChunkSize,
+                            gChunkPosition,
+                            gChunkSize,
+                            (int) ((double) m_iTerrainResolution * 0.75),
+                            iLevel,
+                            m_iLevels,
+                            true,
+                            m_bGenerateNow
+                            ));
+
+                pWater->setInheritTransform(false);
+                pWater->setGeoloc(gChunkPosition);
+                pWater->computeWorldTransform();
+                pChunk->setWater(pWater);
+            }
+        }
+
+        pChunk->setUsedNow();
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Tells whether \a gCamera stands inside the ground extent of \a pChunk. \br\br
+    Uses the original geoloc and size, which stay in absolute coordinates: the
+    transform-space geoloc and size are tile-mapped by the material and must
+    not be used for coverage tests, like skipChunkForLayerPass() does.
+*/
+bool CWorldTerrain::isCoveringChunk(QSP<CWorldChunk> pChunk, const CGeoloc& gCamera) const
+{
+    if (pChunk == nullptr) return false;
+
+    CGeoloc gCenter = pChunk->originalGeoloc();
+    CGeoloc gSize = pChunk->originalSize();
+
+    double dHalfLatitude = gSize.Latitude * 0.5;
+    double dHalfLongitude = gSize.Longitude * 0.5;
+
+    if (gCamera.Latitude < gCenter.Latitude - dHalfLatitude) return false;
+    if (gCamera.Latitude > gCenter.Latitude + dHalfLatitude) return false;
+    if (gCamera.Longitude < gCenter.Longitude - dHalfLongitude) return false;
+    if (gCamera.Longitude > gCenter.Longitude + dHalfLongitude) return false;
+
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
     Called by paint() to build necessary terrain patches given the camera location. \br\br
     \a pChunk is any chunk in the chunk tree of the terrain. \br
     \a pContext is the rendering context. \br
@@ -457,7 +637,6 @@ void CWorldTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pConte
     CGeoloc gOriginalChunkSize = pChunk->originalSize();
 
     CGeoloc gChunkPosition = pChunk->geoloc();
-    CGeoloc gChunkSize = pChunk->size();
 
     // Decide whether this level of detail is enough
     bool bStayHere = enoughDetail(pChunk, pContext, iLevel);
@@ -473,71 +652,41 @@ void CWorldTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pConte
         }
     }
 
+    // A partial child set is never valid: subdivision creates four children,
+    // removals drop the whole set. Repair here so the recreate block below
+    // heals the zone through fresh builds instead of latching on coarse.
+    if (pChunk->childComponents().count() > 0 && pChunk->childComponents().count() < 4)
+    {
+        for (int iIndex = 0; iIndex < pChunk->childComponents().count(); iIndex++)
+        {
+            QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChunk->childComponents()[iIndex]);
+
+            destroyChunkSubtree(pChild);
+
+            pChunk->childComponents().remove(iIndex);
+            iIndex--;
+        }
+    }
+
     if (bStayHere)
     {
-        // Create terrain for the chunk if needed
-        if (pChunk->terrain() == nullptr)
-        {
-            LOG_METHOD_DEBUG(QString("Creating terrain for tile at lat %1, lon %2, level %3")
-                      .arg(gChunkPosition.Latitude)
-                      .arg(gChunkPosition.Longitude)
-                      .arg(iLevel)
-                      );
-
-            QSP<CTerrain> pTerrain = QSP<CTerrain>(new CTerrain(
-                        m_pScene,
-                        m_pHeights,
-                        gOriginalChunkPosition,
-                        gOriginalChunkSize,
-                        gChunkPosition,
-                        gChunkSize,
-                        m_iTerrainResolution,
-                        iLevel,
-                        m_iLevels,
-                        false,
-                        m_bGenerateNow
-                        ));
-
-            pTerrain->setMaterial(m_pMaterial);
-            pTerrain->setInheritTransform(false);
-            pTerrain->setGeoloc(gChunkPosition);
-            pTerrain->computeWorldTransform();
-            pChunk->setTerrain(pTerrain, m_bGenerateNow);
-
-            if (m_bGenerateNow == false)
-            {
-                CTiledMaterial* pTiled = dynamic_cast<CTiledMaterial*>(m_pMaterial.data());
-
-                if (pTiled == nullptr)
-                {
-                    QSP<CTerrain> pWater = QSP<CTerrain>(new CTerrain(
-                                m_pScene,
-                                m_pHeights,
-                                gOriginalChunkPosition,
-                                gOriginalChunkSize,
-                                gChunkPosition,
-                                gChunkSize,
-                                (int) ((double) m_iTerrainResolution * 0.75),
-                                iLevel,
-                                m_iLevels,
-                                true,
-                                m_bGenerateNow
-                                ));
-
-                    pWater->setInheritTransform(false);
-                    pWater->setGeoloc(gChunkPosition);
-                    pWater->computeWorldTransform();
-                    pChunk->setWater(pWater);
-                }
-            }
-
-            pChunk->setUsedNow();
-        }
+        ensureChunkTerrain(pChunk, iLevel);
 
         requestChunkDetailWork(pChunk);
     }
     else
     {
+        // A chunk covering the camera builds its own patch while the finer
+        // subdivision below finishes: the paint recursion then collects the
+        // closest ready ancestor instead of leaving a hole. Only the covering
+        // column pays this, the far field keeps subdividing without building.
+        if (pContext->camera() != nullptr && isCoveringChunk(pChunk, pContext->camera()->geoloc()))
+        {
+            ensureChunkTerrain(pChunk, iLevel);
+
+            requestChunkDetailWork(pChunk);
+        }
+
         // Create sub chunks if required
         if (pChunk->childComponents().count() == 0)
         {
@@ -707,31 +856,6 @@ void CWorldTerrain::buildRecurse(QSP<CWorldChunk> pChunk, CRenderContext* pConte
 
 //-------------------------------------------------------------------------------------------------
 
-/*!
-    Collects \a pFallbackChunk for drawing when nothing finer is available. \br\br
-    \a pFallbackChunk is the closest ready ancestor: drawing it covers the
-    area with coarser data instead of leaving a hole. It is skipped when null
-    or already collected from a sibling subtree.
-*/
-void CWorldTerrain::collectFallbackChunk(QVector<QSP<CWorldChunk> >& vChunkCollect, CRenderContext* pContext, QSP<CWorldChunk> pFallbackChunk)
-{
-    if (pFallbackChunk == nullptr) return;
-
-    pFallbackChunk->setDistance(
-                (
-                    pFallbackChunk->geoloc().toVector3() -
-                    pContext->camera()->geoloc().toVector3()
-                    )
-                .magnitude()
-                );
-
-    if (vChunkCollect.contains(pFallbackChunk)) return;
-
-    vChunkCollect.append(pFallbackChunk);
-}
-
-//-------------------------------------------------------------------------------------------------
-
 //! Depth margin covering point-sprite bushes, culled on the generous chunk box instead of their own bounds
 static const double LayerPartitionVegetationMargin = 5.0;
 
@@ -839,12 +963,63 @@ bool CWorldTerrain::skipChunkForLayerPass(QSP<CWorldChunk> pChunk, CRenderContex
 //-------------------------------------------------------------------------------------------------
 
 /*!
+    Records the quadtree readiness on the path from the root to \a gCamera, retained for snapshots. \br\br
+    Descent follows the child containing the camera like the paint recursion does:
+    the first level with no ready chunk and no drawable child on this path is
+    where the frame gives up and falls back.
+*/
+void CWorldTerrain::recordCameraPath(const CGeoloc& gCamera)
+{
+    m_vLastCameraPath.clear();
+
+    QSP<CWorldChunk> pChunk = m_pRoot;
+    int iLevel = m_iLevels;
+
+    while (pChunk != nullptr && iLevel >= 0)
+    {
+        SChunkPathInfo tInfo;
+        tInfo.level = iLevel;
+        tInfo.latitude = pChunk->geoloc().Latitude;
+        tInfo.longitude = pChunk->geoloc().Longitude;
+        tInfo.sizeLatitude = pChunk->size().Latitude;
+        tInfo.sizeLongitude = pChunk->size().Longitude;
+        tInfo.selfReady = pChunk->terrain() != nullptr && pChunk->terrain()->isOK();
+        tInfo.childCount = pChunk->childComponents().count();
+        tInfo.drawableChildren = 0;
+        tInfo.stay = enoughDetail(pChunk, gCamera, iLevel);
+
+        QSP<CWorldChunk> pNext;
+
+        foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
+        {
+            QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
+
+            if (pChild == nullptr) continue;
+
+            if (pChild->drawable()) tInfo.drawableChildren++;
+
+            if (pNext == nullptr && pChild->worldBounds().containsSpherical(gCamera))
+            {
+                pNext = pChild;
+            }
+        }
+
+        m_vLastCameraPath.append(tInfo);
+
+        pChunk = pNext;
+        iLevel--;
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
     Called by paint() to collect the chunks to draw for \a pChunk and its children. \br\br
     \a pFallbackChunk is the closest ready ancestor of \a pChunk: when neither
     the chunk nor its children can be drawn yet, it is collected instead of
     leaving a hole. Finer data always wins over this fallback on later frames.
 */
-void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRenderContext* pContext, QSP<CWorldChunk> pChunk, int iLevel, QSP<CWorldChunk> pFallbackChunk)
+void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRenderContext* pContext, QSP<CWorldChunk> pChunk, int iLevel)
 {
     if (pChunk == nullptr) return;
 
@@ -852,110 +1027,90 @@ void CWorldTerrain::paintRecurse(QVector<QSP<CWorldChunk> >& vChunkCollect, CRen
 
     CGeoloc gChunkPosition = pChunk->geoloc();
 
-    bool bStayHere = enoughDetail(pChunk, pContext, iLevel);
-    bool bChildrenDrawable = pChunk->childComponents().count() > 0;
+    int iChildCount = 0;
+    int iReadyChildren = 0;
 
     foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
     {
         QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 
-        if (pChild == nullptr || pChild->drawable() == false)
+        if (pChild == nullptr) continue;
+
+        iChildCount++;
+
+        if (pChild->drawable())
         {
-            bChildrenDrawable = false;
-            break;
+            iReadyChildren++;
         }
     }
 
     bool bSelfReady = pChunk->terrain() && pChunk->terrain()->isOK();
 
-    QSP<CWorldChunk> pReadyAncestor = pFallbackChunk;
-
-    if (bSelfReady)
+    // One zone is drawn by exactly one level: the node asks the LOD policy.
+    // A self draw never descends, a hand-over never draws self: the same
+    // ground is never collected twice, no fallback is ever needed.
+    switch (CWorldLodPolicy::decideDraw(bSelfReady, iReadyChildren, iChildCount))
     {
-        pReadyAncestor = pChunk;
-    }
-
-    if (bStayHere)
+    case CWorldLodPolicy::LodHandToChildren:
     {
-        if (bSelfReady)
+        // Four children ready: they partition the zone, never draw self
+        foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
         {
-            pChunk->setDistance(
-                        (
-                            gChunkPosition.toVector3() -
-                            pContext->camera()->geoloc().toVector3()
-                            )
-                        .magnitude()
-                        );
+            QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 
-            // Paint this chunk
-            vChunkCollect.append(pChunk);
-
-            // Get rid of unneeded water
-            if (pChunk->water() != nullptr && pChunk->terrain()->allHeightsOverSea())
-            {
-                pChunk->setWater(QSP<CTerrain>());
-            }
-
-            // Get rid of empty nodes
-            for (int iIndex = 0; iIndex < pChunk->childComponents().count(); iIndex++)
-            {
-                QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChunk->childComponents()[iIndex]);
-
-                if (pChild != nullptr && pChild->isEmpty())
-                {
-                    pChunk->childComponents().remove(iIndex);
-                    iIndex--;
-                }
-            }
-        }
-        else if (bChildrenDrawable)
-        {
-            // Paint children
-            foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
-            {
-                QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
-
-                paintRecurse(vChunkCollect, pContext, pChild, iLevel - 1, pReadyAncestor);
-            }
-        }
-        else
-        {
-            // Neither this patch nor the children are ready: draw the closest
-            // ready ancestor instead of leaving a hole
-            collectFallbackChunk(vChunkCollect, pContext, pReadyAncestor);
+            paintRecurse(vChunkCollect, pContext, pChild, iLevel - 1);
         }
     }
-    else
-    {
-        if (bChildrenDrawable)
-        {
-            // Paint children
-            foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
-            {
-                QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
+    break;
 
-                paintRecurse(vChunkCollect, pContext, pChild, iLevel - 1, pReadyAncestor);
+    case CWorldLodPolicy::LodDrawSelf:
+    {
+        // Children incomplete: draw the own patch, do not descend
+        pChunk->setDistance(
+                    (
+                        gChunkPosition.toVector3() -
+                        pContext->camera()->geoloc().toVector3()
+                        )
+                    .magnitude()
+                    );
+
+        // Paint this chunk
+        vChunkCollect.append(pChunk);
+
+        // Get rid of unneeded water
+        if (pChunk->water() != nullptr && pChunk->terrain()->allHeightsOverSea())
+        {
+            pChunk->setWater(QSP<CTerrain>());
+        }
+
+        // Get rid of empty nodes
+        for (int iIndex = 0; iIndex < pChunk->childComponents().count(); iIndex++)
+        {
+            QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChunk->childComponents()[iIndex]);
+
+            if (pChild != nullptr && pChild->isEmpty())
+            {
+                pChunk->childComponents().remove(iIndex);
+                iIndex--;
             }
         }
-        else if (bSelfReady)
-        {
-            pChunk->setDistance(
-                        (
-                            gChunkPosition.toVector3() -
-                            pContext->camera()->geoloc().toVector3()
-                            )
-                        .magnitude()
-                        );
+    }
+    break;
 
-            // Paint this chunk
-            vChunkCollect.append(pChunk);
-        }
-        else
+    default:
+    {
+        // Nothing ready here: visit the ready children, they may cover part of the zone
+        foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
         {
-            // Children wanted but not ready, and this patch is not ready
-            // either: draw the closest ready ancestor instead of a hole
-            collectFallbackChunk(vChunkCollect, pContext, pReadyAncestor);
+            QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
+
+            if (pChild != nullptr && pChild->drawable())
+            {
+                paintRecurse(vChunkCollect, pContext, pChild, iLevel - 1);
+            }
         }
+    }
+    break;
     }
 }
 
@@ -1142,41 +1297,142 @@ void CWorldTerrain::clearPhysicsHeightfields()
 //-------------------------------------------------------------------------------------------------
 
 /*!
+    Tells whether \a pChunk or any node below it is queued or running in the worker manager
+*/
+static bool subtreeHasWorker(QSP<CWorldChunk> pChunk)
+{
+    if (pChunk == nullptr) return false;
+
+    if (CWorkerManager::getInstance()->containsWorker(pChunk.data())) return true;
+
+    foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
+    {
+        if (subtreeHasWorker(QSP_CAST(CWorldChunk, pChildComponent))) return true;
+    }
+
+    return false;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Destroys the terrain, water and height field of \a pChunk and every node below it
+*/
+void CWorldTerrain::destroyChunkSubtree(QSP<CWorldChunk> pChunk)
+{
+    if (pChunk == nullptr) return;
+
+    foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
+    {
+        destroyChunkSubtree(QSP_CAST(CWorldChunk, pChildComponent));
+    }
+
+    removeChunkHeightfield(pChunk);
+
+    pChunk->clearLinks(m_pScene);
+    pChunk->clearTerrain();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
     Called by paint in order to collect any useless chunks.
 */
 void CWorldTerrain::collectGarbage()
 {
     if (m_pRoot != nullptr)
     {
-        collectGarbageRecurse(m_pRoot);
+        collectGarbageRecurse(m_pRoot, m_iLevels);
     }
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Destroys \a pChunk 's terrain if it has not been used since 60 seconds and collects garbage on child chunks.
+    Applies the LOD policy bottom-up: a node covered by four ready children
+    loses its patch, unused children of a covering node go away. \br\br
+    \a iLevel is the depth of \a pChunk in the chunk tree.
 */
-void CWorldTerrain::collectGarbageRecurse(QSP<CWorldChunk> pChunk)
+void CWorldTerrain::collectGarbageRecurse(QSP<CWorldChunk> pChunk, int iLevel)
 {
+    if (pChunk == nullptr) return;
+
     foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
     {
         QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
 
         if (pChild != nullptr)
         {
-            collectGarbageRecurse(pChild);
+            collectGarbageRecurse(pChild, iLevel - 1);
         }
     }
 
-    if (pChunk->terrain() != nullptr)
-    {
-        if (pChunk->isExpendable())
-        {
-            removeChunkHeightfield(pChunk);
+    int iChildCount = 0;
+    int iReadyChildren = 0;
+    bool bChildrenGoingAway = pChunk->childComponents().count() > 0;
 
-            pChunk->clearLinks(m_pScene);
-            pChunk->clearTerrain();
+    foreach (QSP<CComponent> pChildComponent, pChunk->childComponents())
+    {
+        QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChildComponent);
+
+        if (pChild == nullptr) continue;
+
+        iChildCount++;
+
+        if (pChild->drawable())
+        {
+            iReadyChildren++;
+        }
+
+        // Going away means nobody needs the zone: out of range, or dead weight.
+        // Workers in flight keep their subtree, and needed children stay.
+        bool bChildNeeded = CWorldLodPolicy::isNeeded(pChild->originalGeoloc(), pChild->originalSize(), m_gLastCameraGeoloc);
+
+        if ((bChildNeeded == false || pChild->isEmpty()) == false || subtreeHasWorker(pChild))
+        {
+            bChildrenGoingAway = false;
+        }
+    }
+
+    bool bAllChildrenReady = CWorldLodPolicy::allChildrenReady(iReadyChildren, iChildCount);
+    bool bCovered = bAllChildrenReady || iChildCount == 0;
+    bool bNeeded = CWorldLodPolicy::isNeeded(pChunk->originalGeoloc(), pChunk->originalSize(), m_gLastCameraGeoloc);
+
+    // R2: covered and out of range, the own patch may go unless protected.
+    // Only the patch is freed, the tree links stay. No timer: needed is the
+    // policy visibility, useless patches go on the next garbage pass.
+    if (pChunk->terrain() != nullptr
+        && CWorldLodPolicy::mayDestroySelf(bCovered, iLevel, m_iLevels, bNeeded))
+    {
+        removeChunkHeightfield(pChunk);
+
+        pChunk->clearTerrain();
+    }
+
+    bool bSelfReady = pChunk->terrain() != nullptr && pChunk->terrain()->isOK();
+
+    // R3: unneeded children go away, the parent covers them
+    if (bAllChildrenReady == false && bChildrenGoingAway)
+    {
+        if (bSelfReady == false && bNeeded)
+        {
+            // Parent cover missing but needed: rebuild it, prune the children on a later pass
+            ensureChunkTerrain(pChunk, iLevel);
+
+            requestChunkDetailWork(pChunk);
+        }
+        else
+        {
+            // Parent covers, or nobody needs the zone: prune
+            for (int iIndex = 0; iIndex < pChunk->childComponents().count(); iIndex++)
+            {
+                QSP<CWorldChunk> pChild = QSP_CAST(CWorldChunk, pChunk->childComponents()[iIndex]);
+
+                destroyChunkSubtree(pChild);
+
+                pChunk->childComponents().remove(iIndex);
+                iIndex--;
+            }
         }
     }
 }
@@ -1356,4 +1612,57 @@ void CWorldTerrain::dump(QTextStream& stream, int iIdent)
     }
 
     CComponent::dump(stream, iIdent);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Returns a JSON document with the last collect counts and the quadtree readiness on the camera path.
+*/
+QString CWorldTerrain::snapshotJson()
+{
+    QString sCollect = "[";
+
+    bool bFirstCollect = true;
+
+    foreach (int iLayer, m_mLastCollectedChunks.keys())
+    {
+        if (bFirstCollect == false) sCollect += ",";
+        bFirstCollect = false;
+
+        sCollect += QString("{\"layer\":%1,\"overlaps\":%2,\"chunks\":[").arg(iLayer).arg(m_mLastOverlapCount.value(iLayer, 0));
+
+        bool bFirstChunk = true;
+
+        foreach (const SCollectedChunkInfo& tChunk, m_mLastCollectedChunks[iLayer])
+        {
+            if (bFirstChunk == false) sCollect += ",";
+            bFirstChunk = false;
+
+            sCollect += tChunk.snapshotJson();
+        }
+
+        sCollect += "]}";
+    }
+
+    sCollect += "]";
+
+    QString sPath = "[";
+
+    bool bFirstLevel = true;
+
+    foreach (const SChunkPathInfo& tLevel, m_vLastCameraPath)
+    {
+        if (bFirstLevel == false) sPath += ",";
+        bFirstLevel = false;
+
+        sPath += tLevel.snapshotJson();
+    }
+
+    sPath += "]";
+
+    return QString("{%1,\"collect\":%2,\"path\":%3}")
+        .arg(snapshotBaseJson())
+        .arg(sCollect)
+        .arg(sPath);
 }

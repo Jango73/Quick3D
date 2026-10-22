@@ -14,6 +14,7 @@
 #include "CPhysicalComponent.h"
 #include "CGeoZone.h"
 #include "IProgressListener.h"
+#include "C3DSceneStatistics.h"
 
 //-------------------------------------------------------------------------------------------------
 // Forward declarations
@@ -71,6 +72,86 @@ public:
 };
 
 //-------------------------------------------------------------------------------------------------
+
+//! Outcome of one mesh geometry paint test during a layer pass, retained for engine snapshots
+struct SMeshDrawInfo
+{
+    QString container;
+    QString name;
+    int layer;
+    double distance;
+    double centerX;
+    double centerY;
+    double centerZ;
+    double radius;
+    double boxMinX;
+    double boxMinY;
+    double boxMinZ;
+    double boxMaxX;
+    double boxMaxY;
+    double boxMaxZ;
+    double maxDistance;
+    bool frustum;
+    bool inRange;
+    bool drawn;
+
+    //! Returns the mesh draw outcome as a JSON object
+    QString snapshotJson() const
+    {
+        return QString("{\"container\":\"%1\",\"name\":\"%2\",\"layer\":%3,\"distance\":%4,"
+            "\"center\":[%5,%6,%7],\"radius\":%8,\"boxmin\":[%9,%10,%11],\"boxmax\":[%12,%13,%14],\"maxdistance\":%15,"
+            "\"frustum\":%16,\"inrange\":%17,\"drawn\":%18}")
+            .arg(container)
+            .arg(name)
+            .arg(layer)
+            .arg(distance, 0, 'g', 10)
+            .arg(centerX, 0, 'g', 10).arg(centerY, 0, 'g', 10).arg(centerZ, 0, 'g', 10)
+            .arg(radius, 0, 'g', 10)
+            .arg(boxMinX, 0, 'g', 10).arg(boxMinY, 0, 'g', 10).arg(boxMinZ, 0, 'g', 10)
+            .arg(boxMaxX, 0, 'g', 10).arg(boxMaxY, 0, 'g', 10).arg(boxMaxZ, 0, 'g', 10)
+            .arg(maxDistance, 0, 'g', 10)
+            .arg(frustum == true ? "true" : "false")
+            .arg(inRange == true ? "true" : "false")
+            .arg(drawn == true ? "true" : "false");
+    }
+};
+
+//-------------------------------------------------------------------------------------------------
+
+//! Last painted frame info for one layer pass, retained for engine snapshots
+struct SLayerFrameInfo
+{
+    int layer;
+    double nearPlane;
+    double farPlane;
+    C3DSceneStatistics statistics;
+    QVector<SMeshDrawInfo> draws;
+
+    //! Returns the layer frame info as a JSON object
+    QString snapshotJson() const
+    {
+        QString sDraws = "[";
+
+        bool bFirst = true;
+
+        foreach (const SMeshDrawInfo& tDraw, draws)
+        {
+            if (bFirst == false) sDraws += ",";
+            bFirst = false;
+
+            sDraws += tDraw.snapshotJson();
+        }
+
+        sDraws += "]";
+
+        return QString("{\"layer\":%1,\"near\":%2,\"far\":%3,\"statistics\":%4,\"draws\":%5}")
+            .arg(layer)
+            .arg(nearPlane, 0, 'g', 10)
+            .arg(farPlane, 0, 'g', 10)
+            .arg(statistics.snapshotJson())
+            .arg(sDraws);
+    }
+};
 
 class QUICK3D_EXPORT CCamera : public CPhysicalComponent
 {
@@ -145,6 +226,18 @@ public:
     //! Returns the far plane of the close layer conditioned for the current frame
     double closeLayerFar() const { return m_dCloseLayerFar; }
 
+    //! Returns the per-layer info retained from the last painted frame
+    QVector<SLayerFrameInfo> lastLayerFrames() const { return m_vLastLayerFrames; }
+
+    //! Records one mesh geometry paint outcome for the current layer pass, retained for snapshots
+    void recordMeshDraw(const SMeshDrawInfo& tDraw)
+    {
+        if (m_vCurrentMeshDraws.count() < 2048)
+        {
+            m_vCurrentMeshDraws.append(tDraw);
+        }
+    }
+
     //-------------------------------------------------------------------------------------------------
     // Overridden methods
     //-------------------------------------------------------------------------------------------------
@@ -160,6 +253,9 @@ public:
 
     //! Dumps contents to a stream
     virtual void dump(QTextStream& stream, int iIdent) Q_DECL_OVERRIDE;
+
+    //! Returns a JSON document with the camera state and the per-layer info of the last painted frame
+    virtual QString snapshotJson() Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Control methods
@@ -229,4 +325,6 @@ protected:
     double                  m_dMaxDistance;
     double                  m_dCloseLayerFar;
     QVector<Math::CPlane3>  m_pFrustumPlanes;
+    QVector<SLayerFrameInfo> m_vLastLayerFrames;
+    QVector<SMeshDrawInfo>  m_vCurrentMeshDraws; ///< Mesh outcomes of the running layer pass
 };

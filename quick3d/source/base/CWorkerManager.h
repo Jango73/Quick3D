@@ -11,10 +11,11 @@
 // Application
 #include "quick3d_global.h"
 #include "CWorker.h"
+#include "ISnapshotable.h"
 
 //-------------------------------------------------------------------------------------------------
 
-class QUICK3D_EXPORT CWorkerManager : public QThread, public CSingleton<CWorkerManager>
+class QUICK3D_EXPORT CWorkerManager : public QThread, public CSingleton<CWorkerManager>, public ISnapshotable
 {
     Q_OBJECT
 
@@ -28,6 +29,12 @@ public:
 
     //! Removes a worker from the pool
     bool containsWorker(CWorker* pWorker);
+
+    //! Returns the number of workers currently in the pool
+    int pendingWorkerCount();
+
+    //! Returns a JSON document with the pending worker count
+    virtual QString snapshotJson() Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Control methods

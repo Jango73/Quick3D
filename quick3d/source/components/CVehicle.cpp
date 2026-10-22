@@ -589,9 +589,9 @@ CBoundingBox CVehicle::firstMeshBounds() const
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Returns a JSON document with the movement state plus physics registration, wheels and contacts.
+    Returns the movement state plus physics registration, wheels and contacts as a node, JSON through CXMLNode.
 */
-QString CVehicle::snapshotJson()
+CXMLNode CVehicle::snapshotNode()
 {
     int iContacts = -1;
 
@@ -610,11 +610,15 @@ QString CVehicle::snapshotJson()
         }
     }
 
-    return QString("{%1,%2,\"physics\":%3,\"handbrake\":%4,\"wheels\":%5,\"contacts\":%6}")
-        .arg(snapshotBaseJson())
-        .arg(snapshotMovementJson())
-        .arg(hasPhysicsVehicle() == true ? "true" : "false")
-        .arg(isHandBrakeEngaged() == true ? "true" : "false")
-        .arg(wheels().count())
-        .arg(iContacts);
+    CXMLNode xNode("component");
+
+    fillSnapshotBaseNode(xNode);
+    fillSnapshotMovementNode(xNode);
+
+    xNode.attributes()["physics"] = hasPhysicsVehicle() == true ? "true" : "false";
+    xNode.attributes()["handbrake"] = isHandBrakeEngaged() == true ? "true" : "false";
+    xNode.attributes()["wheels"] = QString::number(wheels().count());
+    xNode.attributes()["contacts"] = QString::number(iContacts);
+
+    return xNode;
 }

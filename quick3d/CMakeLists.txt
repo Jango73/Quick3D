@@ -130,7 +130,6 @@ add_library(Quick3D SHARED
     source/utils/CImageFilter.cpp
     source/utils/CImageFilter_Matrix.cpp
     source/utils/CImageUtilities.cpp
-    source/utils/CJsonBuilder.cpp
     source/utils/CLogFloodGate.cpp
     source/utils/CPreferencesManager.cpp
     source/utils/CQuick3DUtilities.cpp

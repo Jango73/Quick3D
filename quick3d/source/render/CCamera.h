@@ -97,8 +97,8 @@ struct SMeshDrawInfo
     bool inRange;
     bool drawn;
 
-    //! Returns the mesh draw outcome as a JSON object
-    QString snapshotJson() const;
+    //! Returns the mesh draw outcome as a node, JSON through CXMLNode
+    CXMLNode snapshotNode() const;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -113,8 +113,8 @@ struct SLayerFrameInfo
     C3DSceneStatistics statistics;
     QVector<SMeshDrawInfo> draws;
 
-    //! Returns the layer frame info as a JSON object
-    QString snapshotJson() const;
+    //! Returns the layer frame info as a node, JSON through CXMLNode
+    CXMLNode snapshotNode() const;
 };
 
 class QUICK3D_EXPORT CCamera : public CPhysicalComponent
@@ -219,8 +219,8 @@ public:
     //! Dumps contents to a stream
     virtual void dump(QTextStream& stream, int iIdent) Q_DECL_OVERRIDE;
 
-    //! Returns a JSON document with the camera state and the per-layer info of the last painted frame
-    virtual QString snapshotJson() Q_DECL_OVERRIDE;
+    //! Returns the camera state and the per-layer info of the last painted frame as a node, JSON through CXMLNode
+    virtual CXMLNode snapshotNode() Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Control methods

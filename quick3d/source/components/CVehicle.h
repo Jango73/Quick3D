@@ -59,8 +59,8 @@ public:
     //! Returns true when the vehicle is registered in a physics world
     virtual bool hasPhysicsBody() const Q_DECL_OVERRIDE;
 
-    //! Returns a JSON document with the movement state plus physics registration, wheels and contacts
-    virtual QString snapshotJson() Q_DECL_OVERRIDE;
+    //! Returns the movement state plus physics registration, wheels and contacts as a node, JSON through CXMLNode
+    virtual CXMLNode snapshotNode() Q_DECL_OVERRIDE;
 
     //! Returns true, vehicles accept normalized driver inputs
     virtual bool isDriveable() const Q_DECL_OVERRIDE { return true; }

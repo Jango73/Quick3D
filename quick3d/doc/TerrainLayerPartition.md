@@ -41,8 +41,10 @@ surfaced in the snapshot.
 
 ## Snapshots and diagnostics
 
-Every `ISnapshotable` serializes its own state; array assembly shares
-`CJsonBuilder::joinArray` and the `ok` / `error` envelopes. The engine snapshot
+Every `ISnapshotable` serializes its own state as a `CXMLNode`; repeated child
+tags form the JSON arrays and the `ok` / `error` envelopes come from
+`CRemoteControlServer` through `CXMLNode::toJsonString`. Scalar values are
+stored as text, vector fields are flattened to scalar attributes. The engine snapshot
 carries camera layer frames with per-geometry draw outcomes, terrain collect
 identities and the camera-path readiness. `CLogFloodGate` bounds repetitive
 debug output to a hit count per cooldown window.

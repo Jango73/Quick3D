@@ -1,6 +1,7 @@
 
 // Application
 #include "CUiRemoteControlHandler.h"
+#include "CRemoteControlServer.h"
 #include "Quick3DTest.h"
 
 //-------------------------------------------------------------------------------------------------
@@ -33,7 +34,7 @@ QString CUiRemoteControlHandler::vehicleStatus(const QString& sName)
 {
     if (m_pWindow.isNull() == true)
     {
-        return "{\"ok\":false,\"error\":\"no window\"}";
+        return CRemoteControlServer::errorResponse("no window");
     }
 
     return m_pWindow->vehicleStatusJson(sName);
@@ -108,7 +109,7 @@ QString CUiRemoteControlHandler::engineSnapshot()
 {
     if (m_pWindow.isNull() == true)
     {
-        return "{\"ok\":false,\"error\":\"no window\"}";
+        return CRemoteControlServer::errorResponse("no window");
     }
 
     return m_pWindow->engineSnapshotJson();

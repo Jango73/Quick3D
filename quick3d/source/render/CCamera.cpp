@@ -7,7 +7,6 @@
 #include "CTimeSampler.h"
 
 // Application
-#include "CJsonBuilder.h"
 #include "CCamera.h"
 #include "C3DScene.h"
 #include "CGLWidgetScene.h"
@@ -762,72 +761,83 @@ void CCamera::dump(QTextStream& stream, int iIdent)
 */
 /***************************************************************************/
 /*!
-    Returns the mesh draw outcome as a JSON object.
+    Returns the mesh draw outcome as a node, JSON through CXMLNode.
 */
 /***************************************************************************/
-QString SMeshDrawInfo::snapshotJson() const
+CXMLNode SMeshDrawInfo::snapshotNode() const
 {
-    return QString("{\"container\":\"%1\",\"name\":\"%2\",\"layer\":%3,\"distance\":%4,"
-        "\"center\":[%5,%6,%7],\"radius\":%8,\"boxmin\":[%9,%10,%11],\"boxmax\":[%12,%13,%14],\"maxdistance\":%15,"
-        "\"frustum\":%16,\"inrange\":%17,\"drawn\":%18}")
-        .arg(container)
-        .arg(name)
-        .arg(layer)
-        .arg(distance, 0, 'g', 10)
-        .arg(centerX, 0, 'g', 10).arg(centerY, 0, 'g', 10).arg(centerZ, 0, 'g', 10)
-        .arg(radius, 0, 'g', 10)
-        .arg(boxMinX, 0, 'g', 10).arg(boxMinY, 0, 'g', 10).arg(boxMinZ, 0, 'g', 10)
-        .arg(boxMaxX, 0, 'g', 10).arg(boxMaxY, 0, 'g', 10).arg(boxMaxZ, 0, 'g', 10)
-        .arg(maxDistance, 0, 'g', 10)
-        .arg(frustum == true ? "true" : "false")
-        .arg(inRange == true ? "true" : "false")
-        .arg(drawn == true ? "true" : "false");
+    CXMLNode xNode("draws");
+
+    xNode.attributes()["container"] = container;
+    xNode.attributes()["name"] = name;
+    xNode.attributes()["layer"] = QString::number(layer);
+    xNode.attributes()["distance"] = QString::number(distance, 'g', 10);
+    xNode.attributes()["centerx"] = QString::number(centerX, 'g', 10);
+    xNode.attributes()["centery"] = QString::number(centerY, 'g', 10);
+    xNode.attributes()["centerz"] = QString::number(centerZ, 'g', 10);
+    xNode.attributes()["radius"] = QString::number(radius, 'g', 10);
+    xNode.attributes()["boxminx"] = QString::number(boxMinX, 'g', 10);
+    xNode.attributes()["boxminy"] = QString::number(boxMinY, 'g', 10);
+    xNode.attributes()["boxminz"] = QString::number(boxMinZ, 'g', 10);
+    xNode.attributes()["boxmaxx"] = QString::number(boxMaxX, 'g', 10);
+    xNode.attributes()["boxmaxy"] = QString::number(boxMaxY, 'g', 10);
+    xNode.attributes()["boxmaxz"] = QString::number(boxMaxZ, 'g', 10);
+    xNode.attributes()["maxdistance"] = QString::number(maxDistance, 'g', 10);
+    xNode.attributes()["frustum"] = frustum == true ? "true" : "false";
+    xNode.attributes()["inrange"] = inRange == true ? "true" : "false";
+    xNode.attributes()["drawn"] = drawn == true ? "true" : "false";
+
+    return xNode;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /***************************************************************************/
 /*!
-    Returns the layer frame info as a JSON object.
+    Returns the layer frame info as a node, JSON through CXMLNode.
 */
 /***************************************************************************/
-QString SLayerFrameInfo::snapshotJson() const
+CXMLNode SLayerFrameInfo::snapshotNode() const
 {
-    QStringList vDraws;
+    CXMLNode xNode("layers");
+
+    xNode.attributes()["layer"] = QString::number(layer);
+    xNode.attributes()["near"] = QString::number(nearPlane, 'g', 10);
+    xNode.attributes()["far"] = QString::number(farPlane, 'g', 10);
+    xNode.attributes()["truncated"] = truncated == true ? "true" : "false";
+
+    CXMLNode xStatistics = statistics.snapshotNode();
+    xStatistics.setTag("statistics");
+    xNode << xStatistics;
 
     foreach (const SMeshDrawInfo& tDraw, draws)
     {
-        vDraws.append(tDraw.snapshotJson());
+        xNode << tDraw.snapshotNode();
     }
 
-    return QString("{\"layer\":%1,\"near\":%2,\"far\":%3,\"truncated\":%4,\"statistics\":%5,\"draws\":%6}")
-        .arg(layer)
-        .arg(nearPlane, 0, 'g', 10)
-        .arg(farPlane, 0, 'g', 10)
-        .arg(truncated == true ? "true" : "false")
-        .arg(statistics.snapshotJson())
-        .arg(CJsonBuilder::joinArray(vDraws));
+    return xNode;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Returns a JSON document with the camera state and the per-layer info of the last painted frame.
+    Returns the camera state and the per-layer info of the last painted frame as a node, JSON through CXMLNode.
 */
-QString CCamera::snapshotJson()
+CXMLNode CCamera::snapshotNode()
 {
-    QStringList vLayers;
+    CXMLNode xNode("camera");
+
+    fillSnapshotBaseNode(xNode);
+
+    xNode.attributes()["fov"] = QString::number(m_dFOV, 'g', 10);
+    xNode.attributes()["near"] = QString::number(m_dMinDistance, 'g', 10);
+    xNode.attributes()["far"] = QString::number(m_dMaxDistance, 'g', 10);
+    xNode.attributes()["closelayerfar"] = QString::number(m_dCloseLayerFar, 'g', 10);
 
     foreach (const SLayerFrameInfo& tLayer, lastLayerFrames())
     {
-        vLayers.append(tLayer.snapshotJson());
+        xNode << tLayer.snapshotNode();
     }
 
-    return QString("{%1,\"fov\":%2,\"near\":%3,\"far\":%4,\"closelayerfar\":%5,\"layers\":%6}")
-        .arg(snapshotBaseJson())
-        .arg(m_dFOV, 0, 'g', 10)
-        .arg(m_dMinDistance, 0, 'g', 10)
-        .arg(m_dMaxDistance, 0, 'g', 10)
-        .arg(m_dCloseLayerFar, 0, 'g', 10)
-        .arg(CJsonBuilder::joinArray(vLayers));
+    return xNode;
 }

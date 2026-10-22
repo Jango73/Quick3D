@@ -5,9 +5,9 @@
 
 // qt-plus
 #include "CLogger.h"
+#include "CXMLNode.h"
 
 // Application
-#include "CJsonBuilder.h"
 #include "CRemoteControlServer.h"
 
 //-------------------------------------------------------------------------------------------------
@@ -70,7 +70,7 @@ void CRemoteControlServer::getContent(CWebContext& tContext, QString& sHead, QSt
 
     if (tContext.m_lPath.count() == 0)
     {
-        sCustomResponse = "{\"ok\":false,\"error\":\"empty path\"}";
+        sCustomResponse = errorResponse("empty path");
         return;
     }
 
@@ -193,7 +193,7 @@ void CRemoteControlServer::serveKey(const QMap<QString, QString>& mArguments, QS
 
     if (iKey < 0 || iAction < 0)
     {
-        sResponse = CJsonBuilder::errorResponse("unknown key or action");
+        sResponse = errorResponse("unknown key or action");
         return;
     }
 
@@ -209,7 +209,7 @@ void CRemoteControlServer::serveKey(const QMap<QString, QString>& mArguments, QS
         Q_ARG(int, iKey),
         Q_ARG(int, iAction));
 
-    sResponse = bResult == true ? CJsonBuilder::okResponse() : CJsonBuilder::errorResponse("key rejected");
+    sResponse = bResult == true ? okResponse() : errorResponse("key rejected");
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -275,7 +275,7 @@ void CRemoteControlServer::serveSpeed(const QMap<QString, QString>& mArguments, 
 
     if (bParsed == false)
     {
-        sResponse = CJsonBuilder::errorResponse("missing value");
+        sResponse = errorResponse("missing value");
         return;
     }
 
@@ -290,7 +290,7 @@ void CRemoteControlServer::serveSpeed(const QMap<QString, QString>& mArguments, 
         Q_RETURN_ARG(bool, bResult),
         Q_ARG(int, iValue));
 
-    sResponse = bResult == true ? CJsonBuilder::okResponse() : CJsonBuilder::errorResponse("speed rejected");
+    sResponse = bResult == true ? okResponse() : errorResponse("speed rejected");
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -319,7 +319,7 @@ bool CRemoteControlServer::requireHandler(QString& sResponse) const
 {
     if (m_pHandler.isNull() == true)
     {
-        sResponse = CJsonBuilder::errorResponse("missing handler");
+        sResponse = errorResponse("missing handler");
         return false;
     }
 
@@ -337,7 +337,7 @@ bool CRemoteControlServer::requireHandlerName(const QMap<QString, QString>& mArg
 
     if (sName.isEmpty() == true)
     {
-        sResponse = CJsonBuilder::errorResponse("missing name");
+        sResponse = errorResponse("missing name");
         return false;
     }
 
@@ -357,7 +357,7 @@ bool CRemoteControlServer::invokeHandlerBool(const char* pMethod, const QString&
         Q_RETURN_ARG(bool, bResult),
         Q_ARG(QString, sName));
 
-    sResponse = bResult == true ? CJsonBuilder::okResponse() : CJsonBuilder::errorResponse(pError);
+    sResponse = bResult == true ? okResponse() : errorResponse(pError);
 
     return bResult;
 }
@@ -377,7 +377,7 @@ bool CRemoteControlServer::invokeHandlerString(const char* pMethod, const QStrin
         Q_RETURN_ARG(QString, sPayload),
         Q_ARG(QString, sName));
 
-    sResponse = sPayload.isEmpty() == true ? CJsonBuilder::errorResponse(pError) : sPayload;
+    sResponse = sPayload.isEmpty() == true ? errorResponse(pError) : sPayload;
 
     return sPayload.isEmpty() == false;
 }
@@ -396,7 +396,52 @@ bool CRemoteControlServer::invokeHandlerString(const char* pMethod, QString& sRe
     QMetaObject::invokeMethod(m_pHandler, pMethod, Qt::BlockingQueuedConnection,
         Q_RETURN_ARG(QString, sPayload));
 
-    sResponse = sPayload.isEmpty() == true ? CJsonBuilder::errorResponse(pError) : sPayload;
+    sResponse = sPayload.isEmpty() == true ? errorResponse(pError) : sPayload;
 
     return sPayload.isEmpty() == false;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+    Returns the success envelope as JSON through CXMLNode.
+*/
+/***************************************************************************/
+QString CRemoteControlServer::okResponse()
+{
+    CXMLNode xNode("response");
+
+    xNode.attributes()["ok"] = "true";
+
+    return xNode.toJsonString();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+    Returns the failure envelope as JSON through CXMLNode.
+*/
+/***************************************************************************/
+QString CRemoteControlServer::errorResponse(const QString& sError)
+{
+    CXMLNode xNode("response");
+
+    xNode.attributes()["ok"] = "false";
+    xNode.attributes()["error"] = sError;
+
+    return xNode.toJsonString();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+    Returns the failure envelope from a literal as JSON through CXMLNode.
+*/
+/***************************************************************************/
+QString CRemoteControlServer::errorResponse(const char* pError)
+{
+    return errorResponse(QString(pError));
 }

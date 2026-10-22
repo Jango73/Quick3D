@@ -4,6 +4,9 @@
 // Qt
 #include <QString>
 
+// qt-plus
+#include "CXMLNode.h"
+
 //-------------------------------------------------------------------------------------------------
 
 class C3DSceneStatistics
@@ -14,8 +17,8 @@ public:
 
     void reset();
 
-    //! Returns the counters as a JSON object
-    QString snapshotJson() const;
+    //! Returns the counters as a node, JSON through CXMLNode
+    CXMLNode snapshotNode() const;
 
     int     m_iNumMeshesDrawn;
     int     m_iNumPolysDrawn;

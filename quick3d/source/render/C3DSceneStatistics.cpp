@@ -42,17 +42,20 @@ void C3DSceneStatistics::reset()
 
 /***************************************************************************/
 /*!
-    Returns the counters as a JSON object.
+    Returns the counters as a node, JSON through CXMLNode.
 */
 /***************************************************************************/
-QString C3DSceneStatistics::snapshotJson() const
+CXMLNode C3DSceneStatistics::snapshotNode() const
 {
-    return QString("{\"meshes\":%1,\"polys\":%2,\"chunks\":%3,\"tests\":%4,\"passed\":%5,\"outofrange\":%6,\"raytests\":%7}")
-        .arg(m_iNumMeshesDrawn)
-        .arg(m_iNumPolysDrawn)
-        .arg(m_iNumChunksDrawn)
-        .arg(m_iNumFrustumTests)
-        .arg(m_iNumFrustumPassed)
-        .arg(m_iNumFrustumOutOfRange)
-        .arg(m_iNumRayIntersectionTests);
+    CXMLNode xNode("statistics");
+
+    xNode.attributes()["meshes"] = QString::number(m_iNumMeshesDrawn);
+    xNode.attributes()["polys"] = QString::number(m_iNumPolysDrawn);
+    xNode.attributes()["chunks"] = QString::number(m_iNumChunksDrawn);
+    xNode.attributes()["tests"] = QString::number(m_iNumFrustumTests);
+    xNode.attributes()["passed"] = QString::number(m_iNumFrustumPassed);
+    xNode.attributes()["outofrange"] = QString::number(m_iNumFrustumOutOfRange);
+    xNode.attributes()["raytests"] = QString::number(m_iNumRayIntersectionTests);
+
+    return xNode;
 }

@@ -60,7 +60,7 @@ for i in $(seq 1 60); do
 done
 
 START=$(api "/vehicle?name=${VEHICLE}" || true)
-echo "${START}" | grep -q '"ok":true' || { echo "scene non chargee: ${START}"; exit 1; }
+echo "${START}" | grep -q '"ok":"true"' || { echo "scene non chargee: ${START}"; exit 1; }
 echo "[drive] start ${START}" | tee -a "${PROGRESS}"
 echo "[drive] select $(api "/select?name=${VEHICLE}")" | tee -a "${PROGRESS}"
 echo "[drive] view $(api "/view?name=Man1.Head")" | tee -a "${PROGRESS}"
@@ -73,7 +73,7 @@ while [[ ${ELAPSED} -lt ${TIMEOUT} ]]; do
   sleep 10
   ELAPSED=$((ELAPSED + 10))
   STATUS=$(api "/vehicle?name=${VEHICLE}" || true)
-  LAT=$(echo "${STATUS}" | python3 -c 'import sys,json; print(json.load(sys.stdin).get("latitude", -999))' 2>/dev/null || echo "-999")
+  LAT=$(echo "${STATUS}" | python3 -c 'import sys,json; print(str(json.load(sys.stdin).get("latitude", "-999")))' 2>/dev/null || echo "-999")
   ALIVE="0"
   kill -0 ${APP_PID} 2>/dev/null && ALIVE="1"
   echo "[drive] t=${ELAPSED}s alive=${ALIVE} lat=${LAT}" | tee -a "${PROGRESS}"

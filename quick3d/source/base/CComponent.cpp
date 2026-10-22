@@ -1166,26 +1166,29 @@ void CComponent::dump(QTextStream& stream, int iIdent)
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Returns a JSON document with the object's class and qualified name.
+    Returns the object state for the current frame as a node, JSON through CXMLNode.
 */
-QString CComponent::snapshotJson()
+CXMLNode CComponent::snapshotNode()
 {
-    return QString("{%1}").arg(snapshotBaseJson());
+    CXMLNode xNode("component");
+
+    fillSnapshotBaseNode(xNode);
+
+    return xNode;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Returns the shared class, name and geoloc fields used by snapshotJson() overrides.
+    Fills the shared class, name and geoloc attributes used by snapshotNode() overrides.
 */
-QString CComponent::snapshotBaseJson()
+void CComponent::fillSnapshotBaseNode(CXMLNode& xNode)
 {
-    return QString("\"class\":\"%1\",\"name\":\"%2\",\"latitude\":%3,\"longitude\":%4,\"altitude\":%5")
-        .arg(getClassName())
-        .arg(qualifiedName())
-        .arg(m_gGeoloc.Latitude, 0, 'g', 10)
-        .arg(m_gGeoloc.Longitude, 0, 'g', 10)
-        .arg(m_gGeoloc.Altitude, 0, 'g', 10);
+    xNode.attributes()["class"] = getClassName();
+    xNode.attributes()["name"] = qualifiedName();
+    xNode.attributes()["latitude"] = QString::number(m_gGeoloc.Latitude, 'g', 10);
+    xNode.attributes()["longitude"] = QString::number(m_gGeoloc.Longitude, 'g', 10);
+    xNode.attributes()["altitude"] = QString::number(m_gGeoloc.Altitude, 'g', 10);
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -89,11 +89,16 @@ int CWorkerManager::pendingWorkerCount()
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Returns a JSON document with the pending worker count.
+    Returns the pending worker count as a node, JSON through CXMLNode.
 */
-QString CWorkerManager::snapshotJson()
+CXMLNode CWorkerManager::snapshotNode()
 {
-    return QString("{\"class\":\"CWorkerManager\",\"pendingworkers\":%1}").arg(pendingWorkerCount());
+    CXMLNode xNode("workers");
+
+    xNode.attributes()["class"] = "CWorkerManager";
+    xNode.attributes()["pendingworkers"] = QString::number(pendingWorkerCount());
+
+    return xNode;
 }
 
 //-------------------------------------------------------------------------------------------------

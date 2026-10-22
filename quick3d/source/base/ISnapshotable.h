@@ -6,6 +6,9 @@
 // Qt
 #include <QString>
 
+// qt-plus
+#include "CXMLNode.h"
+
 //-------------------------------------------------------------------------------------------------
 
 class QUICK3D_EXPORT ISnapshotable
@@ -23,6 +26,6 @@ public:
     // Control methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Returns a JSON document with the object's state for the current frame
-    virtual QString snapshotJson() = 0;
+    //! Returns the object state for the current frame as a node, JSON through CXMLNode
+    virtual CXMLNode snapshotNode() = 0;
 };

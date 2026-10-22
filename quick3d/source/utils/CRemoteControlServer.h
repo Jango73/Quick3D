@@ -42,6 +42,19 @@ public:
     bool isListening() const;
 
     //-------------------------------------------------------------------------------------------------
+    // Static methods
+    //-------------------------------------------------------------------------------------------------
+
+    //! Returns the success envelope as JSON through CXMLNode: {"ok":"true"}
+    static QString okResponse();
+
+    //! Returns the failure envelope as JSON through CXMLNode: {"ok":"false","error":"..."}
+    static QString errorResponse(const QString& sError);
+
+    //! Returns the failure envelope from a literal as JSON through CXMLNode
+    static QString errorResponse(const char* pError);
+
+    //-------------------------------------------------------------------------------------------------
     // Inherited methods
     //-------------------------------------------------------------------------------------------------
 

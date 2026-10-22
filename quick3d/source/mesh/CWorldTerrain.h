@@ -70,8 +70,8 @@ struct SCollectedChunkInfo
     double sizeLatitude;
     double sizeLongitude;
 
-    //! Returns the chunk identity as a JSON object
-    QString snapshotJson() const;
+    //! Returns the chunk identity as a node, JSON through CXMLNode
+    CXMLNode snapshotNode() const;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -89,8 +89,8 @@ struct SChunkPathInfo
     int drawableChildren;
     bool stay;
 
-    //! Returns the level readiness as a JSON object
-    QString snapshotJson() const;
+    //! Returns the level readiness as a node, JSON through CXMLNode
+    CXMLNode snapshotNode() const;
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -181,8 +181,8 @@ public:
     //! Dumps contents to a stream
     virtual void dump(QTextStream& stream, int iIdent);
 
-    //! Returns a JSON document with the last collect counts and the quadtree readiness on the camera path
-    virtual QString snapshotJson() Q_DECL_OVERRIDE;
+    //! Returns the last collect counts and the quadtree readiness on the camera path as a node, JSON through CXMLNode
+    virtual CXMLNode snapshotNode() Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Protected methods

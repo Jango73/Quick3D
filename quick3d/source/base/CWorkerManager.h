@@ -36,8 +36,8 @@ public:
     //! Returns the number of workers currently in the pool
     int pendingWorkerCount();
 
-    //! Returns a JSON document with the pending worker count
-    virtual QString snapshotJson() Q_DECL_OVERRIDE;
+    //! Returns the pending worker count as a node, JSON through CXMLNode
+    virtual CXMLNode snapshotNode() Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Control methods

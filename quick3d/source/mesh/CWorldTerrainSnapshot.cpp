@@ -22,7 +22,6 @@
 #include "CSRTMField.h"
 #include "CHGTField.h"
 #include "CBILField.h"
-#include "CJsonBuilder.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -32,37 +31,42 @@ using namespace Math;
 
 /***************************************************************************/
 /*!
-    Returns the chunk identity as a JSON object.
+    Returns the chunk identity as a node, JSON through CXMLNode.
 */
 /***************************************************************************/
-QString SCollectedChunkInfo::snapshotJson() const
+CXMLNode SCollectedChunkInfo::snapshotNode() const
 {
-    return QString("{\"address\":\"%1\",\"latitude\":%2,\"longitude\":%3,\"sizelatitude\":%4,\"sizelongitude\":%5}")
-        .arg(address)
-        .arg(latitude, 0, 'g', 10)
-        .arg(longitude, 0, 'g', 10)
-        .arg(sizeLatitude, 0, 'g', 10)
-        .arg(sizeLongitude, 0, 'g', 10);
+    CXMLNode xNode("chunks");
+
+    xNode.attributes()["address"] = address;
+    xNode.attributes()["latitude"] = QString::number(latitude, 'g', 10);
+    xNode.attributes()["longitude"] = QString::number(longitude, 'g', 10);
+    xNode.attributes()["sizelatitude"] = QString::number(sizeLatitude, 'g', 10);
+    xNode.attributes()["sizelongitude"] = QString::number(sizeLongitude, 'g', 10);
+
+    return xNode;
 }
 
 /***************************************************************************/
 /*!
-    Returns the level readiness as a JSON object.
+    Returns the level readiness as a node, JSON through CXMLNode.
 */
 /***************************************************************************/
-QString SChunkPathInfo::snapshotJson() const
+CXMLNode SChunkPathInfo::snapshotNode() const
 {
-    return QString("{\"level\":%1,\"latitude\":%2,\"longitude\":%3,\"sizelatitude\":%4,\"sizelongitude\":%5,"
-        "\"selfready\":%6,\"children\":%7,\"drawable\":%8,\"stay\":%9}")
-        .arg(level)
-        .arg(latitude, 0, 'g', 10)
-        .arg(longitude, 0, 'g', 10)
-        .arg(sizeLatitude, 0, 'g', 10)
-        .arg(sizeLongitude, 0, 'g', 10)
-        .arg(selfReady == true ? "true" : "false")
-        .arg(childCount)
-        .arg(drawableChildren)
-        .arg(stay == true ? "true" : "false");
+    CXMLNode xNode("path");
+
+    xNode.attributes()["level"] = QString::number(level);
+    xNode.attributes()["latitude"] = QString::number(latitude, 'g', 10);
+    xNode.attributes()["longitude"] = QString::number(longitude, 'g', 10);
+    xNode.attributes()["sizelatitude"] = QString::number(sizeLatitude, 'g', 10);
+    xNode.attributes()["sizelongitude"] = QString::number(sizeLongitude, 'g', 10);
+    xNode.attributes()["selfready"] = selfReady == true ? "true" : "false";
+    xNode.attributes()["children"] = QString::number(childCount);
+    xNode.attributes()["drawable"] = QString::number(drawableChildren);
+    xNode.attributes()["stay"] = stay == true ? "true" : "false";
+
+    return xNode;
 }
 
 //-------------------------------------------------------------------------------
@@ -161,10 +165,10 @@ CGeoloc CWorldTerrain::lastCameraGeoloc() const
 
 /***************************************************************************/
 /*!
-    Returns a JSON document with the last collect counts and the quadtree readiness on the camera path.
+    Returns the last collect counts and the quadtree readiness on the camera path as a node, JSON through CXMLNode.
 */
 /***************************************************************************/
-QString CWorldTerrain::snapshotJson()
+CXMLNode CWorldTerrain::snapshotNode()
 {
     QMap<int, QVector<SCollectedChunkInfo> > mCollected;
     QVector<SChunkPathInfo> vPath;
@@ -175,29 +179,28 @@ QString CWorldTerrain::snapshotJson()
         vPath = m_vLastCameraPath;
     }
 
-    QStringList vLayers;
+    CXMLNode xNode("terrain");
+
+    fillSnapshotBaseNode(xNode);
 
     foreach (int iLayer, mCollected.keys())
     {
-        QStringList vChunks;
+        CXMLNode xLayer("collect");
+
+        xLayer.attributes()["layer"] = QString::number(iLayer);
 
         foreach (const SCollectedChunkInfo& tChunk, mCollected[iLayer])
         {
-            vChunks.append(tChunk.snapshotJson());
+            xLayer << tChunk.snapshotNode();
         }
 
-        vLayers.append(QString("{\"layer\":%1,\"chunks\":%2}").arg(iLayer).arg(CJsonBuilder::joinArray(vChunks)));
+        xNode << xLayer;
     }
-
-    QStringList vLevels;
 
     foreach (const SChunkPathInfo& tLevel, vPath)
     {
-        vLevels.append(tLevel.snapshotJson());
+        xNode << tLevel.snapshotNode();
     }
 
-    return QString("{%1,\"collect\":%2,\"path\":%3}")
-        .arg(snapshotBaseJson())
-        .arg(CJsonBuilder::joinArray(vLayers))
-        .arg(CJsonBuilder::joinArray(vLevels));
+    return xNode;
 }

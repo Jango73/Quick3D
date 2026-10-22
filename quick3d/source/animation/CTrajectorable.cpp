@@ -50,19 +50,24 @@ void CTrajectorable::resetTrajectory()
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Returns a JSON document with the movement state (geoloc from the base, rotation, speeds).
+    Returns the movement state for the current frame as a node, JSON through CXMLNode.
 */
-QString CTrajectorable::snapshotJson()
+CXMLNode CTrajectorable::snapshotNode()
 {
-    return QString("{%1,%2}").arg(snapshotBaseJson()).arg(snapshotMovementJson());
+    CXMLNode xNode("component");
+
+    fillSnapshotBaseNode(xNode);
+    fillSnapshotMovementNode(xNode);
+
+    return xNode;
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Returns the shared rotation and speed fields used by snapshotJson() overrides.
+    Fills the shared rotation and speed attributes used by snapshotNode() overrides.
 */
-QString CTrajectorable::snapshotMovementJson() const
+void CTrajectorable::fillSnapshotMovementNode(CXMLNode& xNode) const
 {
     Math::CVector3 vRotation = rotation();
 
@@ -71,11 +76,10 @@ QString CTrajectorable::snapshotMovementJson() const
         && m_pController != nullptr
         && m_pScene->controller() == m_pController;
 
-    return QString("\"rotationx\":%1,\"rotationy\":%2,\"rotationz\":%3,\"speedms\":%4,\"turnspeedds\":%5,\"controlled\":%6")
-        .arg(vRotation.X, 0, 'g', 10)
-        .arg(vRotation.Y, 0, 'g', 10)
-        .arg(vRotation.Z, 0, 'g', 10)
-        .arg(m_dSpeedMS, 0, 'g', 10)
-        .arg(m_dTurnSpeedDS, 0, 'g', 10)
-        .arg(bControlled == true ? "true" : "false");
+    xNode.attributes()["rotationx"] = QString::number(vRotation.X, 'g', 10);
+    xNode.attributes()["rotationy"] = QString::number(vRotation.Y, 'g', 10);
+    xNode.attributes()["rotationz"] = QString::number(vRotation.Z, 'g', 10);
+    xNode.attributes()["speedms"] = QString::number(m_dSpeedMS, 'g', 10);
+    xNode.attributes()["turnspeedds"] = QString::number(m_dTurnSpeedDS, 'g', 10);
+    xNode.attributes()["controlled"] = bControlled == true ? "true" : "false";
 }

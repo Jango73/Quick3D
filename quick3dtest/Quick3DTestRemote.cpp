@@ -174,13 +174,13 @@ bool Quick3DTest::setMoveSpeedSlider(int iValue)
 //-------------------------------------------------------------------------------
 
 /*!
-    Returns a JSON document describing the vehicle named sName
+    Returns a JSON document describing the vehicle named sName, built with CXMLNode
 */
 QString Quick3DTest::vehicleStatusJson(const QString& sName)
 {
     if (m_pScene == nullptr)
     {
-        return "{\"ok\":false,\"error\":\"no scene\"}";
+        return CRemoteControlServer::errorResponse("no scene");
     }
 
     QSP<CVehicle> pVehicle;
@@ -203,14 +203,21 @@ QString Quick3DTest::vehicleStatusJson(const QString& sName)
         // Non-vehicle components (Man1 is a CTrajectorable) still report their position
         if (pFoundComponent == nullptr)
         {
-            return "{\"ok\":false,\"error\":\"vehicle not found\"}";
+            return CRemoteControlServer::errorResponse("vehicle not found");
         }
 
         CGeoloc gGeoloc = pFoundComponent->geoloc();
 
-        return QString("{\"ok\":true,\"name\":\"%1\",\"physics\":false,\"latitude\":%2,\"longitude\":%3,\"altitude\":%4}")
-            .arg(pFoundComponent->name())
-            .arg(gGeoloc.Latitude, 0, 'g', 10).arg(gGeoloc.Longitude, 0, 'g', 10).arg(gGeoloc.Altitude, 0, 'g', 10);
+        CXMLNode xNode("response");
+
+        xNode.attributes()["ok"] = "true";
+        xNode.attributes()["name"] = pFoundComponent->name();
+        xNode.attributes()["physics"] = "false";
+        xNode.attributes()["latitude"] = QString::number(gGeoloc.Latitude, 'g', 10);
+        xNode.attributes()["longitude"] = QString::number(gGeoloc.Longitude, 'g', 10);
+        xNode.attributes()["altitude"] = QString::number(gGeoloc.Altitude, 'g', 10);
+
+        return xNode.toJsonString();
     }
 
     CGeoloc gGeoloc = pVehicle->geoloc();
@@ -239,29 +246,36 @@ QString Quick3DTest::vehicleStatusJson(const QString& sName)
         && pVehicle->controller() != nullptr
         && m_pScene->controller() == pVehicle->controller();
 
-    return QString("{\"ok\":true,\"name\":\"%1\",\"physics\":%2,\"latitude\":%3,\"longitude\":%4,\"altitude\":%5,"
-        "\"rotationX\":%6,\"rotationY\":%7,\"rotationZ\":%8,\"handBrake\":%9,\"wheels\":%10,\"contacts\":%11,\"controlled\":%12}")
-        .arg(pVehicle->name())
-        .arg(pVehicle->hasPhysicsVehicle() == true ? "true" : "false")
-        .arg(gGeoloc.Latitude, 0, 'g', 10).arg(gGeoloc.Longitude, 0, 'g', 10).arg(gGeoloc.Altitude, 0, 'g', 10)
-        .arg(vRotation.X, 0, 'g', 10).arg(vRotation.Y, 0, 'g', 10).arg(vRotation.Z, 0, 'g', 10)
-        .arg(pVehicle->isHandBrakeEngaged() == true ? "true" : "false")
-        .arg(pVehicle->wheels().count())
-        .arg(iContacts)
-        .arg(bControlled == true ? "true" : "false");
+    CXMLNode xNode("response");
+
+    xNode.attributes()["ok"] = "true";
+    xNode.attributes()["name"] = pVehicle->name();
+    xNode.attributes()["physics"] = pVehicle->hasPhysicsVehicle() == true ? "true" : "false";
+    xNode.attributes()["latitude"] = QString::number(gGeoloc.Latitude, 'g', 10);
+    xNode.attributes()["longitude"] = QString::number(gGeoloc.Longitude, 'g', 10);
+    xNode.attributes()["altitude"] = QString::number(gGeoloc.Altitude, 'g', 10);
+    xNode.attributes()["rotationx"] = QString::number(vRotation.X, 'g', 10);
+    xNode.attributes()["rotationy"] = QString::number(vRotation.Y, 'g', 10);
+    xNode.attributes()["rotationz"] = QString::number(vRotation.Z, 'g', 10);
+    xNode.attributes()["handbrake"] = pVehicle->isHandBrakeEngaged() == true ? "true" : "false";
+    xNode.attributes()["wheels"] = QString::number(pVehicle->wheels().count());
+    xNode.attributes()["contacts"] = QString::number(iContacts);
+    xNode.attributes()["controlled"] = bControlled == true ? "true" : "false";
+
+    return xNode.toJsonString();
 }
 
 //-------------------------------------------------------------------------------
 
 /*!
-    Returns a JSON document with the full engine state for the current frame.
+    Returns a JSON document with the full engine state for the current frame, built with CXMLNode.
     Each object serializes its own state through ISnapshotable, this method only assembles the parts.
 */
 QString Quick3DTest::engineSnapshotJson()
 {
     if (m_pScene == nullptr)
     {
-        return "{\"ok\":false,\"error\":\"no scene\"}";
+        return CRemoteControlServer::errorResponse("no scene");
     }
 
     QSP<CCamera> pCamera;
@@ -273,50 +287,74 @@ QString Quick3DTest::engineSnapshotJson()
 
     if (pCamera == nullptr)
     {
-        return "{\"ok\":false,\"error\":\"no camera\"}";
+        return CRemoteControlServer::errorResponse("no camera");
     }
 
     QString sControlled = ui.m_cbControllable != nullptr ? ui.m_cbControllable->currentText() : QString();
-    QString sVehicle = QString("null");
-    QString sTerrain = QString("null");
+    CXMLNode xVehicleNode;
+    CXMLNode xTerrainNode;
+    bool bHasVehicle = false;
+    bool bHasTerrain = false;
 
     // One pass over the top-level components collects both the controlled
     // component and the world terrain, instead of scanning twice.
     foreach (QSP<CComponent> pComponent, m_pScene->components())
     {
-        if (sControlled.isEmpty() == false && sVehicle == QString("null"))
+        if (bHasVehicle == false && sControlled.isEmpty() == false)
         {
             QSP<CComponent> pFound = pComponent->findComponent(sControlled);
 
             if (pFound != nullptr)
             {
-                sVehicle = pFound->snapshotJson();
+                xVehicleNode = pFound->snapshotNode();
+                xVehicleNode.setTag("vehicle");
+                bHasVehicle = true;
             }
         }
 
-        if (sTerrain == QString("null"))
+        if (bHasTerrain == false)
         {
             QSP<CWorldTerrain> pTerrain = QSP_CAST(CWorldTerrain, pComponent);
 
             if (pTerrain != nullptr)
             {
-                sTerrain = pTerrain->snapshotJson();
+                xTerrainNode = pTerrain->snapshotNode();
+                xTerrainNode.setTag("terrain");
+                bHasTerrain = true;
             }
         }
 
-        if ((sControlled.isEmpty() == true || sVehicle != QString("null")) && sTerrain != QString("null"))
+        if ((sControlled.isEmpty() == true || bHasVehicle == true) && bHasTerrain == true)
         {
             break;
         }
     }
 
-    return QString("{\"ok\":true,\"frame\":%1,\"paused\":%2,\"camera\":%3,\"vehicle\":%4,\"terrain\":%5,\"workers\":%6}")
-        .arg(m_iFrames)
-        .arg(m_bRun == false ? "true" : "false")
-        .arg(pCamera->snapshotJson())
-        .arg(sVehicle)
-        .arg(sTerrain)
-        .arg(CWorkerManager::getInstance()->snapshotJson());
+    CXMLNode xRoot("response");
+
+    xRoot.attributes()["ok"] = "true";
+    xRoot.attributes()["frame"] = QString::number(m_iFrames);
+    xRoot.attributes()["paused"] = m_bRun == false ? "true" : "false";
+
+    CXMLNode xCameraNode = pCamera->snapshotNode();
+    xCameraNode.setTag("camera");
+    xRoot << xCameraNode;
+
+    if (bHasVehicle == true)
+    {
+        xRoot << xVehicleNode;
+    }
+
+    if (bHasTerrain == true)
+    {
+        xRoot << xTerrainNode;
+    }
+
+    CXMLNode xWorkersNode = CWorkerManager::getInstance()->snapshotNode();
+    xWorkersNode.setTag("workers");
+    xRoot << xWorkersNode;
+
+    return xRoot.toJsonString();
 }
 
 //-------------------------------------------------------------------------------

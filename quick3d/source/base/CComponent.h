@@ -366,8 +366,8 @@ public:
     // Snapshot methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Returns a JSON document with the object's class and qualified name
-    virtual QString snapshotJson() Q_DECL_OVERRIDE;
+    //! Returns the object state for the current frame as a node, JSON through CXMLNode
+    virtual CXMLNode snapshotNode() Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Static methods
@@ -394,8 +394,8 @@ private:
 
 protected:
 
-    //! Returns the shared class, name and geoloc fields used by snapshotJson() overrides
-    QString snapshotBaseJson();
+    //! Fills the shared class, name and geoloc attributes used by snapshotNode() overrides
+    void fillSnapshotBaseNode(CXMLNode& xNode);
 
     QString                     m_sTag;                         // User defined tag
     C3DScene*                   m_pScene;                       // The scene to which the object belongs

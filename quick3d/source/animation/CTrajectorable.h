@@ -71,8 +71,8 @@ public:
     //!
     virtual bool isTrajectorable() const { return true; }
 
-    //! Returns a JSON document with the movement state (geoloc from the base, rotation, speeds)
-    virtual QString snapshotJson() Q_DECL_OVERRIDE;
+    //! Returns the movement state for the current frame as a node, JSON through CXMLNode
+    virtual CXMLNode snapshotNode() Q_DECL_OVERRIDE;
 
     //-------------------------------------------------------------------------------------------------
     // Control methods
@@ -87,8 +87,8 @@ public:
 
 protected:
 
-    //! Returns the shared rotation and speed fields used by snapshotJson() overrides
-    QString snapshotMovementJson() const;
+    //! Fills the shared rotation and speed attributes used by snapshotNode() overrides
+    void fillSnapshotMovementNode(CXMLNode& xNode) const;
 
     bool                        m_bTrajectoryEnabled;
     double                      m_dSpeedMS;

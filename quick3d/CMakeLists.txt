@@ -137,6 +137,7 @@ add_library(Quick3D SHARED
     source/utils/CRemoteControlHandler.cpp
     source/utils/CRemoteControlServer.cpp
     source/utils/CUtility.cpp
+    source/utils/CWaterWaves.cpp
     source/zip/CZip.cpp
     "${CMAKE_CURRENT_SOURCE_DIR}/../third/unzip11/ioapi.c"
     "${CMAKE_CURRENT_SOURCE_DIR}/../third/unzip11/mztools.c"

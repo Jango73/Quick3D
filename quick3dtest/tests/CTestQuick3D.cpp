@@ -6,6 +6,7 @@
 #include "CTestGeo.h"
 #include "CTestPhysics.h"
 #include "CTestVehicle.h"
+#include "CTestWaterWaves.h"
 #include "CTestScene.h"
 #include "CTestTerrainSkirt.h"
 #include "CTestRenderLayer.h"
@@ -55,6 +56,11 @@ int CTestQuick3D::runAllTests()
 
     {
         CTestVehicle oTest;
+        iStatus |= QTest::qExec(&oTest);
+    }
+
+    {
+        CTestWaterWaves oTest;
         iStatus |= QTest::qExec(&oTest);
     }
 

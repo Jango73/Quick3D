@@ -1,7 +1,7 @@
 
 #include "CWaterMaterial.h"
 #include "C3DScene.h"
-#include "CPerlin.h"
+#include "CWaterWaves.h"
 
 using namespace Math;
 
@@ -27,7 +27,7 @@ QOpenGLShaderProgram* CWaterMaterial::activate(CRenderContext* pContext)
 
     if (pProgram != nullptr)
     {
-        double dAmplitude = m_pScene->windLevel() * 4.0;
+        double dAmplitude = CWaterWaves::amplitudeFromWindLevel(m_pScene->windLevel());
 
         pProgram->setUniformValue("u_wave_enable", (GLint) 1);
         pProgram->setUniformValue("u_wave_amplitude", (GLfloat) (float) dAmplitude);
@@ -63,23 +63,9 @@ double CWaterMaterial::getHeightAt(const Math::CVector3& vPosition, const Math::
 
 double CWaterMaterial::WaveHeight(CGeoloc gPosition)
 {
-    CPerlin* pPerlin = CPerlin::getInstance();
-    double dAmplitude = m_pScene->windLevel() * 4.0;
+    // Canonical definition lives in CWaterWaves::heightAt, shared with the
+    // Jolt buoyancy query. Higher octave samples stay disabled on both sides.
+    CVector3 vRelativePositionM = gPosition.toVector3() - m_pScene->worldOrigin();
 
-    CVector3 input_position = gPosition.toVector3() - m_pScene->worldOrigin();
-
-    CVector3 position_1 = input_position;
-    CVector3 position_2 = input_position + CVector3(2.0, 2.0, 2.0);
-
-    double value_1 = pPerlin->turbulence((position_1 * 0.005) + CVector3(m_dTime, m_dTime, m_dTime) * 0.1) * dAmplitude * 4.0;
-    double value_2 = pPerlin->turbulence((position_2 * 0.005) - CVector3(m_dTime, m_dTime, m_dTime) * 0.1) * dAmplitude * 4.0;
-
-    // double value_3 = pPerlin->turbulence((position_1 * 0.050) + CVector3(m_dTime, m_dTime, m_dTime) * 0.5) * dAmplitude * 0.8;
-    // double value_4 = pPerlin->turbulence((position_2 * 0.050) - CVector3(m_dTime, m_dTime, m_dTime) * 0.5) * dAmplitude * 0.8;
-
-    // double alpha_factor = Math::Angles::clipDouble(((a_altitude * -1.0) / 40.0), 0.0, 1.0);
-    // double alpha_factor = 1.0;
-
-    // return (value_1 + value_2 + value_3 + value_4) * alpha_factor;
-    return value_1 + value_2;
+    return CWaterWaves::heightAt(vRelativePositionM, m_dTime, m_pScene->windLevel());
 }

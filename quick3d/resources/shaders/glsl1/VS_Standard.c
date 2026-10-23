@@ -175,6 +175,9 @@ float turbulence(vec3 ipos)
 
 //-------------------------------------------------------------------------------------------------
 // Water
+// Canonical CPU definition: quick3d/source/utils/CWaterWaves.h (CWaterWaves::heightAt).
+// Keep SpatialScale (0.005), TimeRate (0.1), SecondSampleOffset (2.0), HeightGain (4.0)
+// and the Perlin hash in sync on both sides, CTestWaterWaves locks the constants.
 
 float waveHeight(vec3 input_position)
 {

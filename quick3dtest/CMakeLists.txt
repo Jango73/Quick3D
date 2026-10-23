@@ -18,6 +18,8 @@ add_executable(Quick3DTest
     tests/CTestPhysics.h
     tests/CTestVehicle.cpp
     tests/CTestVehicle.h
+    tests/CTestWaterWaves.cpp
+    tests/CTestWaterWaves.h
     tests/CTestScene.cpp
     tests/CTestScene.h
     tests/CTestRenderLayer.cpp

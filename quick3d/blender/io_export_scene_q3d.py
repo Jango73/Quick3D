@@ -19,7 +19,7 @@
 bl_info = {
     "name": "Export Quick3D Format(.q3d)",
     "author": "Guillaume Darier",
-    "version": (1, 2, 0),
+    "version": (1, 3, 0),
     "blender": (3, 1, 0),
     "location": "File > Export > Quick3D (.q3d)",
     "description": "Export mesh Quick3D data (.q3d)",
@@ -40,13 +40,24 @@ import struct
 
 #--------------------------------------------------------------------------------------------------
 
+# Object types the exporter can translate to Quick3D components. Cameras, lights and
+# other scene helpers have no Quick3D representation (their data blocks expose neither
+# vertices nor materials) and are skipped instead of crashing the export.
+EXPORTABLE_OBJECT_TYPES = ('MESH', 'ARMATURE')
+
+# Maximum number of XML lines buffered in memory before a single disk write.
+# Buffering avoids one file.write() system call per vertex/face, which dominates
+# export time on dense meshes once the algorithmic hot spots are fixed.
+EXPORT_CHUNK_LINE_COUNT = 4096
+
+# Target number of progress bar updates for a whole export. Updates are throttled
+# to this count so huge meshes do not flood the UI with redraw requests.
+EXPORT_PROGRESS_UPDATE_COUNT = 200
+
+#--------------------------------------------------------------------------------------------------
+
 def writeLine(file, text):
-    pretext=''
-
-    for index in range(file.indent):
-        pretext = pretext + '\t'
-
-    file.write(pretext + text + '\n')
+    file.write('\t' * file.indent + text + '\n')
 
 #--------------------------------------------------------------------------------------------------
 
@@ -123,34 +134,39 @@ def writeMaterial(file, mat, filepath):
 
 #--------------------------------------------------------------------------------------------------
 
-def writeMaterials(file, materials, filepath):
+def writeMaterials(file, materials, filepath, progress):
     for mat in materials:
         writeMaterial(file, mat, filepath)
+        progress.advance(1)
 
 #--------------------------------------------------------------------------------------------------
 
 def getVertexUVs(mesh):
-    uvs = []
-
+    # Builds one UV coordinate per vertex in a single pass over the mesh loops.
+    # UV layers are stored per loop in Blender: the previous implementation scanned every
+    # face for every vertex, which is quadratic and dominates export time on dense meshes.
+    # When a vertex is shared by several loops (texture seams), the first loop UV is kept.
     if mesh.uv_layers.active is None:
-        return uvs
+        return []
 
-    vertex_index = 0
-    uv_layer = mesh.uv_layers.active.data[:]
+    vertex_count = len(mesh.vertices)
+    uvs = [None] * vertex_count
+    uv_data = mesh.uv_layers.active.data
+    missing_count = vertex_count
 
-    for vertex in mesh.vertices:
-        for face in mesh.polygons:
-            for loop_index in face.loop_indices:
-                if mesh.loops[loop_index].vertex_index == vertex_index:
-                    uvs.append(uv_layer[loop_index].uv)
-
-        vertex_index = vertex_index + 1
+    for loop in mesh.loops:
+        vertex_index = loop.vertex_index
+        if uvs[vertex_index] is None:
+            uvs[vertex_index] = uv_data[loop.index].uv
+            missing_count = missing_count - 1
+            if missing_count == 0:
+                break
 
     return uvs
 
 #--------------------------------------------------------------------------------------------------
 
-def writeMesh(file, object, depsgraph, materials, scene, props):
+def writeMesh(file, object, depsgraph, material_index_by_id, scene, props, progress):
     if props.apply_modifiers:
         mesh = object.evaluated_get(depsgraph).data
     else:
@@ -181,86 +197,106 @@ def writeMesh(file, object, depsgraph, materials, scene, props):
 
     openNode(file, 'Vertices', 0)
 
-    # Write vertices
-    vertex_index = 0
+    # Write vertices in buffered chunks: one file.write() per chunk instead of one per vertex.
     uvs = getVertexUVs(mesh)
+    has_uvs = len(uvs) > 0
+    vertex_indent = '\t' * file.indent
+    vertex_lines = []
 
     for vertex in mesh.vertices:
-        vert_x = vertex.co[0]
-        vert_y = vertex.co[2]
-        vert_z = vertex.co[1]
-        vert_u = 0.0
-        vert_v = 0.0
+        vertex_id = vertex.index
+        coord = vertex.co
+        vertex_u = 0.0
+        vertex_v = 0.0
 
-        if vertex_index < len(uvs):
-            vert_u = uvs[vertex_index].x
-            vert_v = uvs[vertex_index].y
+        if has_uvs and vertex_id < len(uvs):
+            uv = uvs[vertex_id]
+            if uv is not None:
+                vertex_u = uv[0]
+                vertex_v = uv[1]
 
-        openNode(file, 'Vertex', 1,
-            x = '{0:.4f}'.format(vert_x),
-            y = '{0:.4f}'.format(vert_y),
-            z = '{0:.4f}'.format(vert_z),
-            u = '{0:.4f}'.format(vert_u),
-            v = '{0:.4f}'.format(vert_v)
-            )
+        vertex_lines.append(
+            '{0}<Vertex x="{1:.4f}" y="{2:.4f}" z="{3:.4f}" u="{4:.4f}" v="{5:.4f}"/>\n'.format(
+                vertex_indent, coord[0], coord[2], coord[1], vertex_u, vertex_v))
 
-        vertex_index = vertex_index + 1
+        if len(vertex_lines) >= EXPORT_CHUNK_LINE_COUNT:
+            file.write(''.join(vertex_lines))
+            vertex_lines = []
+            progress.advance(EXPORT_CHUNK_LINE_COUNT)
+
+    if len(vertex_lines) > 0:
+        progress.advance(len(vertex_lines))
+        file.write(''.join(vertex_lines))
 
     closeNode(file, 'Vertices')
 
     openNode(file, 'Faces', 0)
 
-    # Write faces
+    # Write faces in buffered chunks. The material lookup table is built once per export
+    # instead of scanning the material list for every face.
+    face_indent = '\t' * file.indent
+    face_lines = []
+    face_materials = mesh.materials
+
     for face in mesh.polygons:
+        vertlist = ', '.join(str(vertex_index) for vertex_index in face.vertices)
 
-        # Vertices
-        vertlist = ''
-
-        for vertex in face.vertices:
-            if (len(vertlist) > 0):
-                vertlist = vertlist + ', '
-            vertlist = vertlist + str(vertex)
-
-        # Material
         try:
-            local_mat = mesh.materials[face.material_index]
-            global_mat_index = materials.index(local_mat)
+            local_material = face_materials[face.material_index]
+            if local_material is None:
+                global_material_index = 0
+            else:
+                global_material_index = material_index_by_id.get(id(local_material), 0)
         except IndexError:
-            global_mat_index = 0
+            global_material_index = 0
 
-        openNode(file, 'Face', 1, Vertices=vertlist, Material=global_mat_index)
+        face_lines.append('{0}<Face Vertices="{1}" Material="{2}"/>\n'.format(
+            face_indent, vertlist, global_material_index))
+
+        if len(face_lines) >= EXPORT_CHUNK_LINE_COUNT:
+            file.write(''.join(face_lines))
+            face_lines = []
+            progress.advance(EXPORT_CHUNK_LINE_COUNT)
+
+    if len(face_lines) > 0:
+        progress.advance(len(face_lines))
+        file.write(''.join(face_lines))
 
     closeNode(file, 'Faces')
 
-    # Write vertex groups
-    vertex_index = 0
-    weight = 0
-    weight_list = ''
+    # Write vertex groups in a single pass over the vertices. The previous implementation
+    # called group.weight() once per (group, vertex) pair and concatenated the weight string
+    # incrementally, which is slow and quadratic. It also never reset its cursors between
+    # groups, so every group after the first one was exported with wrong weights.
+    vertex_groups = object.vertex_groups
+    vertex_count = len(mesh.vertices)
 
-    for group in object.vertex_groups:
+    if len(vertex_groups) > 0 and vertex_count > 0:
+        weights_by_group_index = {}
+
+        for vertex_group in vertex_groups:
+            weights_by_group_index[vertex_group.index] = [0.0] * vertex_count
 
         for vertex in mesh.vertices:
-            try:
-                weight = group.weight(vertex_index)
-            except:
-                weight = 0.0
+            for group_element in vertex.groups:
+                column = weights_by_group_index.get(group_element.group)
+                if column is not None:
+                    column[vertex.index] = group_element.weight
 
-            if (len(weight_list) > 0):
-                weight_list = weight_list + ', '
-            weight_list = weight_list + "{0:.4f}".format(weight)
-            vertex_index = vertex_index + 1
-
-        openNode(file, 'VertexGroup', 1, Name=group.name, Weights=weight_list)
+        for vertex_group in vertex_groups:
+            weight_list = ', '.join('{0:.4f}'.format(weight) for weight in weights_by_group_index[vertex_group.index])
+            openNode(file, 'VertexGroup', 1, Name=vertex_group.name, Weights=weight_list)
+            progress.advance(vertex_count)
 
     # Write child objects
     for child in object.children:
-        writeSingleObject(file, child, depsgraph, materials, scene, props)
+        writeSingleObject(file, child, depsgraph, material_index_by_id, scene, props, progress)
 
     closeNode(file, 'Component')
 
 #--------------------------------------------------------------------------------------------------
 
-def writeBone(file, bone, materials, scene, props):
+def writeBone(file, bone, progress):
     openNode(file, 'Component', 0, Name=bone.name, Class='CBone')
 
     # Write head
@@ -319,41 +355,49 @@ def writeBone(file, bone, materials, scene, props):
         )
 
     for child in bone.children:
-        writeBone(file, child, materials, scene, props)
+        writeBone(file, child, progress)
 
     closeNode(file, 'Component')
+    progress.advance(1)
 
 #--------------------------------------------------------------------------------------------------
 
-def writeArmature(file, object, depsgraph, materials, scene, props):
+def writeArmature(file, object, depsgraph, material_index_by_id, scene, props, progress):
     openNode(file, 'Component', 0, Name=object.name, Class="CArmature")
 
     armature = object.data
 
     for bone in armature.bones:
         if bone.parent is None:
-            writeBone(file, bone, materials, scene, props)
+            writeBone(file, bone, progress)
 
     # Write child objects
     for child in object.children:
-        writeSingleObject(file, child, depsgraph, materials, scene, props)
+        writeSingleObject(file, child, depsgraph, material_index_by_id, scene, props, progress)
 
     closeNode(file, 'Component')
 
 #--------------------------------------------------------------------------------------------------
 
-def writeSingleObject(file, object, depsgraph, materials, scene, props):
+def writeSingleObject(file, object, depsgraph, material_index_by_id, scene, props, progress):
     if object.type == 'ARMATURE':
-        writeArmature(file, object, depsgraph, materials, scene, props)
+        writeArmature(file, object, depsgraph, material_index_by_id, scene, props, progress)
+        progress.advance(1)
+    elif object.type == 'MESH':
+        writeMesh(file, object, depsgraph, material_index_by_id, scene, props, progress)
+        progress.advance(1)
     else:
-        writeMesh(file, object, depsgraph, materials, scene, props)
+        # Other object types (cameras, lights, ...) have no Quick3D representation:
+        # skip them but still visit their children.
+        for child in object.children:
+            writeSingleObject(file, child, depsgraph, material_index_by_id, scene, props, progress)
 
 #--------------------------------------------------------------------------------------------------
 
-def writeTopLevelObjects(file, objects, depsgraph, materials, scene, props):
+def writeTopLevelObjects(file, objects, depsgraph, material_index_by_id, scene, props, progress):
     for object in objects:
         if object.parent is None:
-            writeSingleObject(file, object, depsgraph, materials, scene, props)
+            writeSingleObject(file, object, depsgraph, material_index_by_id, scene, props, progress)
 
 #--------------------------------------------------------------------------------------------------
 
@@ -361,6 +405,9 @@ def getMaterials(objects, depsgraph, props):
     materials = []
 
     for object in objects:
+
+        if object.type != 'MESH':
+            continue
 
         if props.apply_modifiers:
             mesh = object.evaluated_get(depsgraph).data
@@ -383,7 +430,82 @@ def get_sampled_frames(start, end, sampling):
 
 #--------------------------------------------------------------------------------------------------
 
-def do_export(context, props, filepath):
+class Q3DExportProgress:
+    # Forwards export progress to the Blender status bar. Updates are throttled so huge
+    # meshes do not flood the UI with redraw requests. The window manager is optional
+    # so exports can also run headless (unit tests, background mode).
+
+    def __init__(self, window_manager, total_steps):
+        self.window_manager = window_manager
+        self.total_steps = max(1, int(total_steps))
+        self.done_steps = 0
+        self.steps_since_update = 0
+        self.update_interval = max(1, self.total_steps // EXPORT_PROGRESS_UPDATE_COUNT + 1)
+
+        if self.window_manager is not None:
+            self.window_manager.progress_begin(0, self.total_steps)
+
+    def advance(self, steps):
+        if steps <= 0:
+            return
+
+        self.done_steps = self.done_steps + steps
+        self.steps_since_update = self.steps_since_update + steps
+
+        if self.window_manager is not None and self.steps_since_update >= self.update_interval:
+            self.window_manager.progress_update(min(self.done_steps, self.total_steps))
+            self.steps_since_update = 0
+
+    def finish(self):
+        if self.window_manager is not None:
+            self.window_manager.progress_update(self.total_steps)
+            self.window_manager.progress_end()
+
+#--------------------------------------------------------------------------------------------------
+
+def countExportSteps(object):
+    # Estimates the progress steps of one object subtree from the original (non evaluated)
+    # mesh sizes. Evaluated meshes may differ when modifiers are applied; the progress
+    # bar clamps to its maximum in that case. Non exportable objects count zero for
+    # themselves but their children are still visited.
+    if object.type not in EXPORTABLE_OBJECT_TYPES:
+        steps = 0
+    else:
+        steps = 1
+
+        mesh_data = getattr(object, 'data', None)
+        vertices = getattr(mesh_data, 'vertices', None)
+        polygons = getattr(mesh_data, 'polygons', None)
+        vertex_count = len(vertices) if vertices is not None else 0
+        face_count = len(polygons) if polygons is not None else 0
+        steps = steps + vertex_count + face_count
+
+        try:
+            steps = steps + vertex_count * len(object.vertex_groups)
+        except TypeError:
+            pass
+
+    for child in getattr(object, 'children', ()):
+        steps = steps + countExportSteps(child)
+
+    return steps
+
+#--------------------------------------------------------------------------------------------------
+
+def buildMaterialIndex(materials):
+    # Builds the material lookup table once per export instead of scanning the material
+    # list for every face. Materials are keyed by id() because RNA structs are looked up
+    # by identity here and the materials list keeps them alive during the whole export.
+    material_index_by_id = {}
+
+    for material_index, material in enumerate(materials):
+        material_index_by_id[id(material)] = material_index
+
+    return material_index_by_id
+
+#--------------------------------------------------------------------------------------------------
+
+def do_export(context, props, filepath, window_manager=None):
     scene = context.scene
     depsgraph = context.evaluated_depsgraph_get()
     start = props.range_start
@@ -395,21 +517,35 @@ def do_export(context, props, filepath):
     file = open(filepath, "wt")
     file.indent = 0
 
-    # Write XML Header
-    writeLine(file, '<?xml version="1.0" encoding="UTF-8"?>')
+    total_steps = 0
 
-    openNode(file, 'Root', 0)
+    for object in objects:
+        if object.parent is None:
+            total_steps = total_steps + countExportSteps(object)
 
-    materials = getMaterials(objects, depsgraph, props)
+    progress = Q3DExportProgress(window_manager, total_steps)
 
-    writeMaterials(file, materials, filepath)
+    try:
+        # Write XML Header
+        writeLine(file, '<?xml version="1.0" encoding="UTF-8"?>')
 
-    writeTopLevelObjects(file, objects, depsgraph, materials, scene, props)
+        openNode(file, 'Root', 0)
 
-    closeNode(file, 'Root')
+        materials = getMaterials(objects, depsgraph, props)
 
-    file.flush()
-    file.close()
+        writeMaterials(file, materials, filepath, progress)
+
+        material_index_by_id = buildMaterialIndex(materials)
+
+        writeTopLevelObjects(file, objects, depsgraph, material_index_by_id, scene, props, progress)
+
+        closeNode(file, 'Root')
+
+        file.flush()
+    finally:
+        progress.finish()
+        file.close()
+
     return True
 
 #--------------------------------------------------------------------------------------------------
@@ -471,11 +607,13 @@ class Export_q3d(bpy.types.Operator, ExportHelper):
         filepath = self.filepath
         filepath = bpy.path.ensure_ext(filepath, self.filename_ext)
 
-        exported = do_export(context, props, filepath)
+        exported = do_export(context, props, filepath, context.window_manager)
 
         if exported:
-            print('finished export in %s seconds' %((time.time() - start_time)))
+            elapsed = time.time() - start_time
+            print('finished export in %s seconds' %(elapsed))
             print(filepath)
+            self.report({'INFO'}, 'Quick3D export finished in %.1f seconds' %(elapsed))
 
         return {'FINISHED'}
 

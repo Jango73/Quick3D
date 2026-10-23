@@ -190,6 +190,9 @@ public:
     //! Returns the layer painted by the current render pass (RENDER_LAYER_CLOSE/FAR), -1 outside a layer pass
     int currentPaintLayer() const { return m_iCurrentPaintLayer; }
 
+    //! Returns the maximum light count declared by the layer of the current render pass, RENDER_LAYER_UNLIMITED_LIGHTS outside a layer pass
+    int currentLayerMaxLights() const;
+
     //! Returns the far plane of the close layer conditioned for the current frame
     double closeLayerFar() const { return m_dCloseLayerFar; }
 
@@ -293,6 +296,7 @@ protected:
     double                  m_dFocus;
     double                  m_dGain;
     int                     m_iCurrentPaintLayer;
+    int                     m_iCurrentLayerMaxLights;
     double                  m_dMinDistance;
     double                  m_dMaxDistance;
     double                  m_dCloseLayerFar;

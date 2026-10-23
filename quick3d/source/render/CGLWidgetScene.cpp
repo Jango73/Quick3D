@@ -6,6 +6,7 @@
 // Application
 #include "CVector3.h"
 #include "CGLWidgetScene.h"
+#include "CRenderLayer.h"
 #include "CSunlightModel.h"
 #include "CEnvironmentDefaults.h"
 #include "CRessourcesManager.h"
@@ -266,7 +267,22 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QOpenGLShaderPro
         pProgram->setUniformValue("u_global_ambient", QVector3D(vGlobalAmbient.X, vGlobalAmbient.Y, vGlobalAmbient.Z));
         pProgram->setUniformValue("u_shadow_enable", u_shadow_enable);
 
-        pProgram->setUniformValue("u_num_lights", (GLint) iOpenGLLightIndex);
+        // Patches of the running layer pass upload no more than the light count the layer declares
+        GLint iLightCount = iOpenGLLightIndex;
+
+        int iLayerMaxLights = RENDER_LAYER_UNLIMITED_LIGHTS;
+
+        if (pContext != nullptr && pContext->camera() != nullptr)
+        {
+            iLayerMaxLights = pContext->camera()->currentLayerMaxLights();
+        }
+
+        if (iLayerMaxLights != RENDER_LAYER_UNLIMITED_LIGHTS && iLightCount > iLayerMaxLights)
+        {
+            iLightCount = (GLint) iLayerMaxLights;
+        }
+
+        pProgram->setUniformValue("u_num_lights", iLightCount);
         pProgram->setUniformValueArray("u_light_is_sun", u_light_is_sun, MAX_GL_LIGHTS);
         pProgram->setUniformValueArray("u_light_position", u_light_position, MAX_GL_LIGHTS);
         pProgram->setUniformValueArray("u_light_screen_position", u_light_screen_position, MAX_GL_LIGHTS);
@@ -389,19 +405,35 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
 
         iOpenGLLightIndex = 0;
 
-        for (int iLightIndex = 0; iLightIndex < vLights.count() && iOpenGLLightIndex < MAX_GL_LIGHTS; iLightIndex++)
+        // The sun uploads first so capped layer passes keep it
+        QVector<QSP<CLight> > vOrderedLights;
+
+        foreach (QSP<CLight> pSun, vSuns)
         {
-            CVector4 vColor = vLights[iLightIndex]->material()->diffuse();
+            vOrderedLights.append(pSun);
+        }
+
+        foreach (QSP<CLight> pLight, vLights)
+        {
+            if (pLight != nullptr && pLight->tag() != "SUN")
+            {
+                vOrderedLights.append(pLight);
+            }
+        }
+
+        for (int iLightIndex = 0; iLightIndex < vOrderedLights.count() && iOpenGLLightIndex < MAX_GL_LIGHTS; iLightIndex++)
+        {
+            CVector4 vColor = vOrderedLights[iLightIndex]->material()->diffuse();
 
             if (vColor.X != 0.0 || vColor.Y != 0.0 || vColor.Z != 0.0)
             {
-                CVector3 vLightPosition = vLights[iLightIndex]->worldPosition();
+                CVector3 vLightPosition = vOrderedLights[iLightIndex]->worldPosition();
                 CVector3 vWorldPosition = vLightPosition - m_vWorldOrigin;
-                CVector3 vWorldDirection = vLights[iLightIndex]->worldDirection();
+                CVector3 vWorldDirection = vOrderedLights[iLightIndex]->worldDirection();
 
                 double dLightDistance = (vLightPosition - pContext->camera()->worldPosition()).magnitude();
 
-                if (vLights[iLightIndex]->tag() == "SUN" || dLightDistance < 2000.0)
+                if (vOrderedLights[iLightIndex]->tag() == "SUN" || dLightDistance < 2000.0)
                 {
                     QVector4D vRelativePosition(vWorldPosition.X, vWorldPosition.Y, vWorldPosition.Z, 1.0);
                     vRelativePosition = pContext->cameraMatrix() * vRelativePosition;
@@ -414,20 +446,20 @@ void CGLWidgetScene::setupLights(CRenderContext* pContext)
                     }
                     CVector3 vScreenPosition(vProjectedPosition.x(), vProjectedPosition.y(), vProjectedPosition.z());
 
-                    if (vLights[iLightIndex]->tag() == "SUN")
+                    if (vOrderedLights[iLightIndex]->tag() == "SUN")
                     {
                         vWorldDirection = CVector3();
                     }
 
-                    u_light_is_sun[iOpenGLLightIndex]               = (GLint) (vLights[iLightIndex]->tag() == "SUN");
+                    u_light_is_sun[iOpenGLLightIndex]               = (GLint) (vOrderedLights[iLightIndex]->tag() == "SUN");
                     u_light_position[iOpenGLLightIndex]             = QVector3D(vWorldPosition.X, vWorldPosition.Y, vWorldPosition.Z);
                     u_light_screen_position[iOpenGLLightIndex]      = QVector3D(vScreenPosition.X, vScreenPosition.Y, vScreenPosition.Z);
                     u_light_direction[iOpenGLLightIndex]            = QVector3D(vWorldDirection.X, vWorldDirection.Y, vWorldDirection.Z);
                     u_light_color[iOpenGLLightIndex]                = QVector3D(vColor.X, vColor.Y, vColor.Z);
                     u_light_distance_to_camera[iOpenGLLightIndex]   = (GLfloat) vRelativePosition.length();
-                    u_light_distance[iOpenGLLightIndex]             = (GLfloat) vLights[iLightIndex]->lightingDistance();
-                    u_light_spot_angle[iOpenGLLightIndex]           = (GLfloat) Math::Angles::toRad(vLights[iLightIndex]->verticalFOV());
-                    u_light_occlusion[iOpenGLLightIndex]            = (GLfloat) vLights[iLightIndex]->occlusion();
+                    u_light_distance[iOpenGLLightIndex]             = (GLfloat) vOrderedLights[iLightIndex]->lightingDistance();
+                    u_light_spot_angle[iOpenGLLightIndex]           = (GLfloat) Math::Angles::toRad(vOrderedLights[iLightIndex]->verticalFOV());
+                    u_light_occlusion[iOpenGLLightIndex]            = (GLfloat) vOrderedLights[iLightIndex]->occlusion();
 
                     iOpenGLLightIndex++;
                 }

@@ -49,6 +49,7 @@ CComponent* CCamera::instantiator(C3DScene* pScene)
 CCamera::CCamera(C3DScene* pScene)
     : CPhysicalComponent(pScene)
     , m_iCurrentPaintLayer(-1)
+    , m_iCurrentLayerMaxLights(RENDER_LAYER_UNLIMITED_LIGHTS)
     , m_dFOV(DEFAULT_FOV)
     , m_dFocus(0.5)
     , m_dGain(0.5)
@@ -89,6 +90,7 @@ CCamera& CCamera::operator = (const CCamera& target)
     m_dCloseLayerFar    = target.m_dCloseLayerFar;
     m_pFrustumPlanes    = target.m_pFrustumPlanes;
     m_iCurrentPaintLayer = -1;
+    m_iCurrentLayerMaxLights = RENDER_LAYER_UNLIMITED_LIGHTS;
 
     return *this;
 }
@@ -136,6 +138,16 @@ void CCamera::recordMeshDraw(const MESH_DRAW_INFO& tDraw)
     {
         m_bMeshDrawTruncated = true;
     }
+}
+
+/***************************************************************************/
+/*!
+    Returns the maximum light count declared by the layer of the current render pass.
+*/
+/***************************************************************************/
+int CCamera::currentLayerMaxLights() const
+{
+    return m_iCurrentLayerMaxLights;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -501,6 +513,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
             computeFrustum(Math::Angles::toRad(dFOV), dAspectRatio, tRange.m_dNear, tRange.m_dFar);
 
             m_iCurrentPaintLayer = tLayer.layer();
+            m_iCurrentLayerMaxLights = tLayer.maxLights();
 
             {
                 QMutexLocker tLocker(&m_mSnapshotMutex);
@@ -511,6 +524,7 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
             pScene->paintLayerComponents(&tLayerContext, *tLayer.filter());
 
             m_iCurrentPaintLayer = -1;
+            m_iCurrentLayerMaxLights = RENDER_LAYER_UNLIMITED_LIGHTS;
 
             LAYER_FRAME_INFO tFrameInfo;
             tFrameInfo.m_iLayer = tLayer.layer();

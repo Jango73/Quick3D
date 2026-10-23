@@ -32,6 +32,9 @@ constexpr int RENDER_LAYER_BIT_CLOSE = (1 << RENDER_LAYER_CLOSE);
 constexpr int RENDER_LAYER_BIT_FAR = (1 << RENDER_LAYER_FAR);
 constexpr int RENDER_LAYER_ALL = (RENDER_LAYER_BIT_CLOSE | RENDER_LAYER_BIT_FAR);
 
+//! Maximum light count declared by a layer without a cap, the full scene light list uploads
+constexpr int RENDER_LAYER_UNLIMITED_LIGHTS = -1;
+
 //-------------------------------------------------------------------------------------------------
 // Default depth tuning, shared by the standard close/far layer stack
 
@@ -40,6 +43,9 @@ constexpr double RENDER_FAR_FAR_ALTITUDE_FACTOR = 40.0;
 constexpr double RENDER_FAR_FAR_MINIMUM = 100000.0;
 constexpr double RENDER_CLOSE_NEAR_DISTANCE = 0.1;
 constexpr double RENDER_CLOSE_FAR_OVERLAP_FACTOR = 4.0;
+
+//! Maximum light count declared by the far layer, distant patches only need the sun
+constexpr int RENDER_FAR_LAYER_MAX_LIGHTS = 1;
 
 //-------------------------------------------------------------------------------------------------
 
@@ -232,12 +238,13 @@ class QUICK3D_EXPORT CRenderLayer
 {
 public:
 
-    //! Builds the layer \a iLayer named \a sName with \a pFilter and \a pConditioner
+    //! Builds the layer \a iLayer named \a sName with \a pFilter, \a pConditioner and \a iMaxLights
     CRenderLayer(
             int iLayer,
             const QString& sName,
             QSharedPointer<CRenderFilter> pFilter,
-            QSharedPointer<CDepthRangeConditioner> pConditioner
+            QSharedPointer<CDepthRangeConditioner> pConditioner,
+            int iMaxLights = RENDER_LAYER_UNLIMITED_LIGHTS
             );
 
     //! Returns the layer identifier, 0 is the closest layer
@@ -252,6 +259,9 @@ public:
     //! Returns the depth conditioner of the layer
     QSharedPointer<CDepthRangeConditioner> conditioner() const { return m_pConditioner; }
 
+    //! Returns the maximum light count uploaded while this layer paints, RENDER_LAYER_UNLIMITED_LIGHTS means no cap
+    int maxLights() const { return m_iMaxLights; }
+
     //! Returns the depth range conditioned for the current frame
     SRenderDepthRange range() const { return m_tRange; }
 
@@ -264,6 +274,7 @@ private:
     QString                                 m_sName;
     QSharedPointer<CRenderFilter>           m_pFilter;
     QSharedPointer<CDepthRangeConditioner>  m_pConditioner;
+    int                                     m_iMaxLights;
     SRenderDepthRange                       m_tRange;
 };
 

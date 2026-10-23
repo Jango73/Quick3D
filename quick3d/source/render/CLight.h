@@ -65,7 +65,7 @@ public:
     double occlusion() const { return m_dOcclusion; }
 
     //!
-    bool castShadows() const { return m_bCastShadows; }
+    bool castShadows() const { return m_bCastShadows; };
 
     //-------------------------------------------------------------------------------------------------
     // Overridden methods

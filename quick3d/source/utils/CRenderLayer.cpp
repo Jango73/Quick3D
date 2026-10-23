@@ -185,12 +185,14 @@ CRenderLayer::CRenderLayer(
         int iLayer,
         const QString& sName,
         QSharedPointer<CRenderFilter> pFilter,
-        QSharedPointer<CDepthRangeConditioner> pConditioner
+        QSharedPointer<CDepthRangeConditioner> pConditioner,
+        int iMaxLights
         )
     : m_iLayer(iLayer)
     , m_sName(sName)
     , m_pFilter(pFilter)
     , m_pConditioner(pConditioner)
+    , m_iMaxLights(iMaxLights)
 {
 }
 
@@ -216,7 +218,8 @@ CRenderLayerStack CRenderLayerStack::createDefault()
         RENDER_LAYER_FAR,
         QString("Far"),
         QSharedPointer<CRenderFilter>(new CLayerMaskFilter(RENDER_LAYER_FAR)),
-        QSharedPointer<CDepthRangeConditioner>(new CAltitudeRatioDepthConditioner())
+        QSharedPointer<CDepthRangeConditioner>(new CAltitudeRatioDepthConditioner()),
+        RENDER_FAR_LAYER_MAX_LIGHTS
         ));
 
     tStack.addLayer(CRenderLayer(

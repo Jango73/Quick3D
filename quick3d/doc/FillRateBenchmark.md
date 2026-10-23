@@ -18,6 +18,10 @@ Hardware on this machine is Intel UHD Graphics 630 (Mesa 25.1.5), display 1920x1
 
 Reference point on the same machine: V0 baseline in the small startup window measured 52 FPS, maximized it drops to 33 FPS, which reproduces the reported small-vs-maximized collapse on this hardware too.
 
+## First optimization: single primary light on capped layer passes
+
+Each render layer declares the maximum light count it paints with: `CRenderLayer::maxLights()` (`quick3d/source/utils/CRenderLayer.h`, `RENDER_LAYER_UNLIMITED_LIGHTS` for no cap, `RENDER_FAR_LAYER_MAX_LIGHTS` set to 1 in `CRenderLayerStack::createDefault()` for the far layer, close layer uncapped). The camera carries the running pass cap in `CCamera::currentLayerMaxLights()` (`quick3d/source/render/CCamera.h`), maintained alongside `currentPaintLayer()`, and `CGLWidgetScene::setupEnvironment()` clamps the uploaded `u_num_lights` to that cap (`quick3d/source/render/CGLWidgetScene.cpp`). Since `u_num_lights` drives the lighting loop, the light-ray loop and the shadow loop in `FS_Standard.c` (`glsl1`/`glsl4`), all three get cheaper on capped passes with no new camera distance introduced. The scene sun survives the cap: `CGLWidgetScene::setupLights()` uploads lights tagged `SUN` first (`C3DScene::lightsByTag()`), so capped passes keep them. Measured on the same machine and scene, maximized 1920x935: 37 FPS versus 33 FPS baseline (+4), run over 600 frames.
+
 ## Ranking and conclusion
 
 Ordered by isolated maximized-window gain: light count (+7) first, then 8-texture mix removal (+5), then Oren-Nayar + GGX to Lambert simplification (+4). Sky flattening (+1), light-rays disabling (+0) and fog disabling (+0) show no measurable effect in the nominal startup case (shadows off, clouds already skipped below `u_shaderQuality 0.85`, fog `enabled=true` at `level=0.0`, no water visible, default quality 0.5). The drop from 52 FPS small to 33 FPS maximized on unmodified shaders confirms the bottleneck scales with covered pixel count: per-pixel lighting loop plus multi-texture fetches plus BRDF dominate frame time at 1920x935, while sky, light-rays and fog ALU are negligible there.

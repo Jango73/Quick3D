@@ -217,14 +217,29 @@ void CTestVehicle::testWheeledControllerDrivesAttachedVehicle()
 
     QSP<CVehicle> pVehicle = createFourWheelTestVehicle();
 
-    QVERIFY(pVehicle->attachPhysicsVehicle(&oWorld, Math::CVector3(0.9, 0.3, 2.0), Math::CVector3(0.0, 2.0, 0.0)) == true);
+    // Note: body starts at suspension equilibrium (radius 0.4 minus wheel
+    // center -0.27) plus a small margin, a high spawn free falls and tips
+    const double dEquilibriumYM = 0.67;
+    const double dSpawnMarginM = 0.23;
+
+    QVERIFY(pVehicle->attachPhysicsVehicle(&oWorld, Math::CVector3(0.9, 0.3, 2.0), Math::CVector3(0.0, dEquilibriumYM + dSpawnMarginM, 0.0)) == true);
     QVERIFY(pVehicle->hasPhysicsVehicle() == true);
 
     CForceController oController(nullptr);
     oController.setPositionTarget(pVehicle);
 
+    // Note: settle at equilibrium before driving, a falling chassis yaws
+    // differently per CPU
+    for (int iStep = 0; iStep < 60; iStep++)
+    {
+        oController.update(1.0 / 60.0);
+        oWorld.step(1.0 / 60.0);
+    }
+
     QKeyEvent cForwardPress(QEvent::KeyPress, Qt::Key_Z, Qt::NoModifier);
     oController.keyPressEvent(&cForwardPress);
+
+    QVERIFY(oController.driveForwardNorm() == 1.0);
 
     for (int iStep = 0; iStep < 300; iStep++)
     {
@@ -366,9 +381,12 @@ static double driveHeavyTestVehicle(bool bReleaseBrake)
 
     QSP<CVehicle> pVehicle = createHeavyTestVehicle();
 
-    // Note: like the scene hunters, wheels sit above the origin and the
-    // chassis center offset carries them below the body center
-    if (pVehicle->attachPhysicsVehicle(&oWorld, Math::CVector3(1.22, 1.425, 2.07), Math::CVector3(0.0, 2.0, 0.0), Math::CQuaternion(0.0, 0.0, 0.0, 1.0), Math::CVector3(0.0, 1.425, 0.0)) == false)
+    // Note: origin starts at ground level (wheel center 0.45 minus radius
+    // 0.45) plus a small margin, the body center offset carries the chassis
+    // above it, a high spawn free falls and tips differently per CPU
+    const double dSpawnMarginM = 0.2;
+
+    if (pVehicle->attachPhysicsVehicle(&oWorld, Math::CVector3(1.22, 1.425, 2.07), Math::CVector3(0.0, dSpawnMarginM, 0.0), Math::CQuaternion(0.0, 0.0, 0.0, 1.0), Math::CVector3(0.0, 1.425, 0.0)) == false)
     {
         return -1.0;
     }
@@ -380,6 +398,14 @@ static double driveHeavyTestVehicle(bool bReleaseBrake)
 
     CForceController oController(nullptr);
     oController.setPositionTarget(pVehicle);
+
+    // Note: settle at equilibrium before driving, a falling chassis yaws
+    // differently per CPU
+    for (int iStep = 0; iStep < 60; iStep++)
+    {
+        oController.update(1.0 / 60.0);
+        oWorld.step(1.0 / 60.0);
+    }
 
     QKeyEvent cForwardPress(QEvent::KeyPress, Qt::Key_Z, Qt::NoModifier);
     oController.keyPressEvent(&cForwardPress);

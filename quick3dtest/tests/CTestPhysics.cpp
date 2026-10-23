@@ -35,7 +35,13 @@ static int createFourWheelVehicle(CPhysicsWorld& oWorld)
         vWheels.append(cWheel);
     }
 
-    return oWorld.addVehicle(Math::CVector3(0.9, 0.3, 2.0), 1200.0, Math::CVector3(0.0, 2.0, 0.0), vWheels);
+    // Note: body starts at suspension equilibrium (radius 0.4 minus wheel
+    // center -0.27) plus a small margin, a high spawn free falls and tips
+    // the chassis differently per CPU, which drove the chassis backwards
+    const double dEquilibriumYM = 0.67;
+    const double dSpawnMarginM = 0.23;
+
+    return oWorld.addVehicle(Math::CVector3(0.9, 0.3, 2.0), 1200.0, Math::CVector3(0.0, dEquilibriumYM + dSpawnMarginM, 0.0), vWheels);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -184,6 +190,16 @@ void CTestPhysics::testVehicleDrivesForward()
     int iVehicle = createFourWheelVehicle(oWorld);
 
     QVERIFY(iVehicle >= 0);
+
+    // Note: settle at equilibrium before driving, a falling chassis bounces
+    // and yaws differently per CPU
+    QVERIFY(oWorld.setVehicleDriverInput(iVehicle, 0.0, 0.0, 0.0, 0.0) == true);
+
+    for (int iStep = 0; iStep < 60; iStep++)
+    {
+        oWorld.step(1.0 / 60.0);
+    }
+
     QVERIFY(oWorld.setVehicleDriverInput(iVehicle, 1.0, 0.0, 0.0, 0.0) == true);
 
     for (int iStep = 0; iStep < 300; iStep++)
@@ -194,7 +210,7 @@ void CTestPhysics::testVehicleDrivesForward()
     Math::CVector3 vPosition;
 
     QVERIFY(oWorld.vehiclePosition(iVehicle, vPosition) == true);
-    QVERIFY(vPosition.Z > 2.0);
+    QVERIFY2(vPosition.Z > 2.0, qPrintable(QString("Chassis moved to z=%1").arg(vPosition.Z)));
     QVERIFY(qAbs(vPosition.X) < 1.5);
     QVERIFY(vPosition.Y > 0.3 && vPosition.Y < 1.6);
 }
@@ -261,7 +277,11 @@ void CTestPhysics::testHeavyVehicleClimbsSlope()
     const double dStartZM = -10.0;
     const double dGroundM = dStartZM * double(fGrade);
 
-    int iVehicle = createHeavyVehicle(oWorld, Math::CVector3(0.0, dGroundM + 2.0, dStartZM));
+    // Note: body starts at suspension equilibrium (radius 0.8 minus wheel
+    // center -0.4) above the local ground, a high spawn free falls and tips
+    const double dEquilibriumYM = 1.2;
+
+    int iVehicle = createHeavyVehicle(oWorld, Math::CVector3(0.0, dGroundM + dEquilibriumYM, dStartZM));
 
     QVERIFY(iVehicle >= 0);
 
@@ -278,7 +298,9 @@ void CTestPhysics::testHeavyVehicleClimbsSlope()
 
     QVERIFY(oWorld.setVehicleDriverInput(iVehicle, 1.0, 0.0, 0.0, 0.0) == true);
 
-    for (int iStep = 0; iStep < 600; iStep++)
+    // Note: 300 steps stay on the 64 m grid (start -10, climb to about +5),
+    // 600 steps drive off the north edge and fall, which fails the climb
+    for (int iStep = 0; iStep < 300; iStep++)
     {
         oWorld.step(1.0 / 60.0);
     }
@@ -286,9 +308,9 @@ void CTestPhysics::testHeavyVehicleClimbsSlope()
     Math::CVector3 vFinal;
 
     QVERIFY(oWorld.vehiclePosition(iVehicle, vFinal) == true);
-    QVERIFY(qAbs(vFinal.X) < 2.5);
-    QVERIFY(vFinal.Z - vSettled.Z > 4.0);
-    QVERIFY(vFinal.Y - vSettled.Y > 0.8);
+    QVERIFY2(qAbs(vFinal.X) < 2.5, qPrintable(QString("X drifted to %1").arg(vFinal.X)));
+    QVERIFY2(vFinal.Z - vSettled.Z > 4.0, qPrintable(QString("Z %1 to %2").arg(vSettled.Z).arg(vFinal.Z)));
+    QVERIFY2(vFinal.Y - vSettled.Y > 0.8, qPrintable(QString("Y %1 to %2 settled Z %3 final Z %4").arg(vSettled.Y).arg(vFinal.Y).arg(vSettled.Z).arg(vFinal.Z)));
 }
 
 //-------------------------------------------------------------------------------------------------

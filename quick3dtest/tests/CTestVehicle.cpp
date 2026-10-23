@@ -2,8 +2,12 @@
 // Qt
 #include <QKeyEvent>
 
+// STL
+#include <cmath>
+
 // Application
 #include "CTestVehicle.h"
+#include "CQuaternion.h"
 #include "CVehicle.h"
 #include "CWheel.h"
 #include "CForceController.h"
@@ -45,6 +49,36 @@ static QSP<CVehicle> createFourWheelTestVehicle()
     }
 
     return pVehicle;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+* \brief Reads the settled chassis pose and returns its horizontal forward axis.
+*/
+static bool settledForwardAxis(CPhysicsWorld& oWorld, int iVehicle, Math::CVector3& vPosition, Math::CVector3& vForwardAxis)
+{
+    Math::CQuaternion cRotation;
+
+    if (oWorld.vehiclePosition(iVehicle, vPosition) == false)
+    {
+        return false;
+    }
+
+    if (oWorld.vehicleRotation(iVehicle, cRotation) == false)
+    {
+        return false;
+    }
+
+    // Note: the drop bounces the chassis, its yaw after settling depends on
+    // the machine (Jolt solves on a thread pool sized by core count), the
+    // drive assertions follow the settled forward axis instead of world +Z
+    vForwardAxis = cRotation * Math::CVector3(0.0, 0.0, 1.0);
+    vForwardAxis.Y = 0.0;
+    vForwardAxis = vForwardAxis.normalized();
+
+    return vForwardAxis.magnitude() > 0.0;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -218,12 +252,17 @@ void CTestVehicle::testWheeledControllerDrivesAttachedVehicle()
     QSP<CVehicle> pVehicle = createFourWheelTestVehicle();
 
     // Note: body starts at suspension equilibrium (radius 0.4 minus wheel
-    // center -0.27) plus a small margin, a high spawn free falls and tips
+    // center -0.27), a 1 cm drop only, a high spawn free falls and tips
     const double dEquilibriumYM = 0.67;
-    const double dSpawnMarginM = 0.23;
+    const double dSpawnMarginM = 0.01;
 
     QVERIFY(pVehicle->attachPhysicsVehicle(&oWorld, Math::CVector3(0.9, 0.3, 2.0), Math::CVector3(0.0, dEquilibriumYM + dSpawnMarginM, 0.0)) == true);
     QVERIFY(pVehicle->hasPhysicsVehicle() == true);
+
+    // Note: the hand brake engages by default, the drive run releases it so
+    // the run matches the direct twin (hand input zero), brake behavior is
+    // covered by testHandBrakeEngagedByDefault and the heavy test below
+    pVehicle->setHandBrakeEngaged(false);
 
     CForceController oController(nullptr);
     oController.setPositionTarget(pVehicle);
@@ -236,6 +275,11 @@ void CTestVehicle::testWheeledControllerDrivesAttachedVehicle()
         oWorld.step(1.0 / 60.0);
     }
 
+    Math::CVector3 vSettledPosition;
+    Math::CVector3 vForwardAxis;
+
+    QVERIFY(settledForwardAxis(oWorld, 0, vSettledPosition, vForwardAxis) == true);
+
     QKeyEvent cForwardPress(QEvent::KeyPress, Qt::Key_Z, Qt::NoModifier);
     oController.keyPressEvent(&cForwardPress);
 
@@ -247,10 +291,16 @@ void CTestVehicle::testWheeledControllerDrivesAttachedVehicle()
         oWorld.step(1.0 / 60.0);
     }
 
-    Math::CVector3 vPosition;
+    Math::CVector3 vFinalPosition;
 
-    QVERIFY(oWorld.vehiclePosition(0, vPosition) == true);
-    QVERIFY2(vPosition.Z > 2.0, qPrintable(QString("Chassis moved to z=%1").arg(vPosition.Z)));
+    QVERIFY(oWorld.vehiclePosition(0, vFinalPosition) == true);
+
+    Math::CVector3 vTravel = vFinalPosition - vSettledPosition;
+    double dForwardM = vTravel.dot(vForwardAxis);
+    double dLateralM = (vTravel - vForwardAxis * dForwardM).magnitude();
+
+    QVERIFY2(dForwardM > 2.0, qPrintable(QString("Chassis moved %1 m forward, %2 m sideways").arg(dForwardM).arg(dLateralM)));
+    QVERIFY2(dLateralM < 1.5, qPrintable(QString("Chassis drifted %1 m sideways").arg(dLateralM)));
 
     QVERIFY(pVehicle->summedForces_mss() == Math::CVector3(0.0, 0.0, 0.0));
 
@@ -363,32 +413,33 @@ static QSP<CVehicle> createHeavyTestVehicle()
 
 /***************************************************************************/
 /*!
-* \brief Drives a heavy vehicle at full throttle, returns the distance covered.
+* \brief Drives a heavy vehicle at full throttle, returns true and the travel
+* along its settled forward axis with the sideways drift.
 */
-static double driveHeavyTestVehicle(bool bReleaseBrake)
+static bool driveHeavyTestVehicle(bool bReleaseBrake, double& dForwardM, double& dLateralM)
 {
     CPhysicsWorld oWorld;
 
     if (oWorld.initialize() == false)
     {
-        return -1.0;
+        return false;
     }
 
     if (oWorld.addStaticBox(Math::CVector3(50.0, 1.0, 50.0), Math::CVector3(0.0, -1.0, 0.0)) < 0)
     {
-        return -1.0;
+        return false;
     }
 
     QSP<CVehicle> pVehicle = createHeavyTestVehicle();
 
     // Note: origin starts at ground level (wheel center 0.45 minus radius
-    // 0.45) plus a small margin, the body center offset carries the chassis
-    // above it, a high spawn free falls and tips differently per CPU
-    const double dSpawnMarginM = 0.2;
+    // 0.45), the body center offset carries the chassis above it, a 1 cm
+    // drop only, a high spawn free falls and tips
+    const double dSpawnMarginM = 0.01;
 
     if (pVehicle->attachPhysicsVehicle(&oWorld, Math::CVector3(1.22, 1.425, 2.07), Math::CVector3(0.0, dSpawnMarginM, 0.0), Math::CQuaternion(0.0, 0.0, 0.0, 1.0), Math::CVector3(0.0, 1.425, 0.0)) == false)
     {
-        return -1.0;
+        return false;
     }
 
     if (bReleaseBrake == true)
@@ -407,6 +458,14 @@ static double driveHeavyTestVehicle(bool bReleaseBrake)
         oWorld.step(1.0 / 60.0);
     }
 
+    Math::CVector3 vSettledPosition;
+    Math::CVector3 vForwardAxis;
+
+    if (settledForwardAxis(oWorld, 0, vSettledPosition, vForwardAxis) == false)
+    {
+        return false;
+    }
+
     QKeyEvent cForwardPress(QEvent::KeyPress, Qt::Key_Z, Qt::NoModifier);
     oController.keyPressEvent(&cForwardPress);
 
@@ -416,17 +475,22 @@ static double driveHeavyTestVehicle(bool bReleaseBrake)
         oWorld.step(1.0 / 60.0);
     }
 
-    Math::CVector3 vPosition;
+    Math::CVector3 vFinalPosition;
 
-    if (oWorld.vehiclePosition(0, vPosition) == false)
+    if (oWorld.vehiclePosition(0, vFinalPosition) == false)
     {
-        return -1.0;
+        return false;
     }
+
+    Math::CVector3 vTravel = vFinalPosition - vSettledPosition;
+
+    dForwardM = vTravel.dot(vForwardAxis);
+    dLateralM = (vTravel - vForwardAxis * dForwardM).magnitude();
 
     pVehicle->detachPhysicsVehicle();
     oWorld.shutdown();
 
-    return vPosition.Z;
+    return true;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -438,12 +502,22 @@ static double driveHeavyTestVehicle(bool bReleaseBrake)
 /***************************************************************************/
 void CTestVehicle::testHeavyVehicleDrivesOnlyWhenReleased()
 {
-    double dReleased = driveHeavyTestVehicle(true);
-    double dEngaged = driveHeavyTestVehicle(false);
+    double dReleasedForwardM = 0.0;
+    double dReleasedLateralM = 0.0;
 
-    QVERIFY2(dReleased > 3.0, qPrintable(QString("Released heavy vehicle covered %1 m").arg(dReleased)));
-    QVERIFY2(dEngaged >= 0.0, qPrintable(QString("Engaged run failed with %1").arg(dEngaged)));
-    QVERIFY2(dEngaged < 0.3 * dReleased, qPrintable(QString("Engaged %1 m versus released %2 m").arg(dEngaged).arg(dReleased)));
+    QVERIFY(driveHeavyTestVehicle(true, dReleasedForwardM, dReleasedLateralM) == true);
+    QVERIFY2(dReleasedForwardM > 3.0, qPrintable(QString("Released heavy vehicle covered %1 m forward, %2 m sideways").arg(dReleasedForwardM).arg(dReleasedLateralM)));
+
+    double dEngagedForwardM = 0.0;
+    double dEngagedLateralM = 0.0;
+
+    QVERIFY(driveHeavyTestVehicle(false, dEngagedForwardM, dEngagedLateralM) == true);
+
+    // Note: a held chassis barely moves, its travel magnitude stays positive
+    // by construction, no sign assumption on a jitter around zero
+    double dEngagedTravelM = sqrt(dEngagedForwardM * dEngagedForwardM + dEngagedLateralM * dEngagedLateralM);
+
+    QVERIFY2(dEngagedTravelM < 0.3 * dReleasedForwardM, qPrintable(QString("Engaged %1 m versus released %2 m").arg(dEngagedTravelM).arg(dReleasedForwardM)));
 }
 
 //-------------------------------------------------------------------------------------------------

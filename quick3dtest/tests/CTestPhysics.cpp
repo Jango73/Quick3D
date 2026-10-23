@@ -36,10 +36,10 @@ static int createFourWheelVehicle(CPhysicsWorld& oWorld)
     }
 
     // Note: body starts at suspension equilibrium (radius 0.4 minus wheel
-    // center -0.27) plus a small margin, a high spawn free falls and tips
+    // center -0.27), a 1 cm drop only, a high spawn free falls and tips
     // the chassis differently per CPU, which drove the chassis backwards
     const double dEquilibriumYM = 0.67;
-    const double dSpawnMarginM = 0.23;
+    const double dSpawnMarginM = 0.01;
 
     return oWorld.addVehicle(Math::CVector3(0.9, 0.3, 2.0), 1200.0, Math::CVector3(0.0, dEquilibriumYM + dSpawnMarginM, 0.0), vWheels);
 }

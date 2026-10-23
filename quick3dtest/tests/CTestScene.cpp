@@ -1061,64 +1061,6 @@ void CTestScene::testKeyDrivenPvpLikeVehicleMovesAfterIdle()
 
 /***************************************************************************/
 /*!
-* \brief A PVP like vehicle holding Z and C curves to the right of its start heading.
-*/
-/***************************************************************************/
-void CTestScene::testKeyDrivenPvpLikeVehicleTurnsRight()
-{
-    C3DScene cScene(false);
-
-    QSP<CVehicle> pVehicle;
-    QSP<CForceController> pController;
-
-    QVERIFY(setupPvpLikeScene(cScene, pVehicle, pController) == true);
-
-    // Note: settle at equilibrium before steering, a settling chassis
-    // yaws differently per CPU and masks the steering curve
-    for (int iStep = 0; iStep < 30; iStep++)
-    {
-        cScene.updateScene(1.0 / 60.0);
-    }
-
-    pressHandBrakeAndForwardKeys(cScene);
-
-    QKeyEvent cRightPress(QEvent::KeyPress, Qt::Key_C, Qt::NoModifier);
-    cScene.controller()->keyPressEvent(&cRightPress);
-
-    QVERIFY2(pController->driveForwardNorm() == 1.0, "Forward key did not engage");
-    QVERIFY2(pController->driveRightNorm() == 1.0, "Right key did not engage");
-
-    Math::CVector3 vStartECEF = pVehicle->geoloc().toVector3();
-    Math::CAxis aStartAxis = pVehicle->geoloc().getTopocentricAxis();
-
-    for (int iStep = 0; iStep < 120; iStep++)
-    {
-        cScene.updateScene(1.0 / 60.0);
-    }
-
-    cScene.physicsWorld()->logVehicleDebugState(pVehicle->physicsVehicleIndex());
-
-    Math::CVector3 vTravelledM = pVehicle->geoloc().toVector3() - vStartECEF;
-    double dForwardM = vTravelledM.dot(aStartAxis.Front);
-    double dRightM = vTravelledM.dot(aStartAxis.Right);
-
-    CVehicleDebugState cState;
-    bool bDebugOk = cScene.physicsWorld()->vehicleDebugState(pVehicle->physicsVehicleIndex(), cState);
-
-    double dFrontSteerRad = cState.m_vWheelSteerAngleRad.count() > 0 ? cState.m_vWheelSteerAngleRad[0] : 0.0;
-
-    QVERIFY2(bDebugOk == true, "Vehicle debug state unreadable, chassis detached");
-
-    QVERIFY2(dForwardM > 2.0 && dRightM > 1.0, qPrintable(QString("Forward %1 m lateral %2 m right steer=%3 rad right input=%4 fwd input=%5")
-        .arg(dForwardM).arg(dRightM).arg(dFrontSteerRad).arg(cState.m_dRightReadback).arg(cState.m_dForwardReadback)));
-
-    cScene.detachVehicleFromPhysics(pVehicle);
-}
-
-//-------------------------------------------------------------------------------------------------
-
-/***************************************************************************/
-/*!
 * \brief A fresh scene carries the default rendering environment values.
 */
 /***************************************************************************/

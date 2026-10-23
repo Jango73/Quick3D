@@ -5,6 +5,7 @@
 #include "CAxis.h"
 #include "C3DScene.h"
 #include "CAircraftController.h"
+#include "CKeyboardMapper.h"
 
 using namespace Math;
 
@@ -263,7 +264,8 @@ void CAircraftController::keyPressEvent(QKeyEvent* event)
     QSP<CWing> pLeftWing = QSP_CAST(CWing, m_rLeftWingTarget.component());
     QSP<CWing> pRightWing = QSP_CAST(CWing, m_rRightWingTarget.component());
 
-    switch (event->key())
+    // Note: physical positions through CKeyboardMapper, see CStandardController
+    switch (CKeyboardMapper::canonicalKey(event))
     {
         case Qt::Key_D:
             generateQ3DEvent(CQ3DEvent(Q3DEvent_AileronRight, CQ3DEvent::Press));
@@ -362,7 +364,8 @@ void CAircraftController::keyReleaseEvent(QKeyEvent *event)
 {
     CStandardController::keyReleaseEvent(event);
 
-    switch (event->key())
+    // Note: physical positions through CKeyboardMapper, see keyPressEvent
+    switch (CKeyboardMapper::canonicalKey(event))
     {
         case Qt::Key_D:
             generateQ3DEvent(CQ3DEvent(Q3DEvent_AileronRight, CQ3DEvent::Release));

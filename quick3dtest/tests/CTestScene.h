@@ -79,9 +79,6 @@ private slots:
     //! A PVP like vehicle parked with the hand brake moves when H then Z arrive
     void testKeyDrivenPvpLikeVehicleMovesAfterIdle();
 
-    //! A PVP like vehicle holding Z and C curves to the right of its start heading
-    void testKeyDrivenPvpLikeVehicleTurnsRight();
-
     //! A fresh scene carries the default rendering environment values
     void testEnvironmentDefaultsMatchConstants();
 

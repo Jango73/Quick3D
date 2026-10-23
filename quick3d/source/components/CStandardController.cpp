@@ -8,6 +8,7 @@
 #include "C3DScene.h"
 #include "CCamera.h"
 #include "CStandardController.h"
+#include "CKeyboardMapper.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -286,7 +287,9 @@ void CStandardController::keyPressEvent(QKeyEvent* event)
 {
     CController::keyPressEvent(event);
 
-    switch (event->key())
+    // Note: physical positions through CKeyboardMapper, same finger layout on
+    // AZERTY, QWERTY and QWERTZ. Synthetic events fall back to the key code.
+    switch (CKeyboardMapper::canonicalKey(event))
     {
         case Qt::Key_Escape:
             m_bUseMouse = false;
@@ -336,7 +339,8 @@ void CStandardController::keyReleaseEvent(QKeyEvent *event)
 {
     CController::keyReleaseEvent(event);
 
-    switch (event->key())
+    // Note: same physical resolution as keyPressEvent above
+    switch (CKeyboardMapper::canonicalKey(event))
     {
         case Qt::Key_A:
             generateQ3DEvent(CQ3DEvent(Q3DEvent_LookUp, CQ3DEvent::Release));

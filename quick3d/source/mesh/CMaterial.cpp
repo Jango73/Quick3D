@@ -314,50 +314,17 @@ void CMaterial::disableFrameBuffer()
 
 //-------------------------------------------------------------------------------------------------
 
-QOpenGLShaderProgram* CMaterial::activate(CRenderContext* pContext)
-{
-    // Timed through the render context statistics and flushed to CTimeSampler once per
-    // layer pass: a scoped sample here would run hundreds of mutex-protected map updates
-    // per frame and collapse the frame rate it is supposed to measure.
-    bool bSample = (pContext != nullptr) && CTimeSampler::getInstance()->isEnabled();
-    QElapsedTimer tTimer;
-
-    if (bSample == true)
-    {
-        tTimer.start();
-    }
-
-    QOpenGLShaderProgram* pProgram = programForContext(pContext);
-
-    if (pProgram != nullptr)
-    {
-        if (pContext->pActiveMaterial != this)
-        {
-            pContext->pActiveMaterial = this;
-
-            bindProgram(pContext, pProgram);
-
-            applyStaticState(pContext, pProgram);
-        }
-
-        applyDynamicState(pContext, pProgram);
-    }
-
-    if (bSample == true)
-    {
-        pContext->tStatistics.m_iMaterialActivateNs += tTimer.nsecsElapsed();
-    }
-
-    return pProgram;
-}
-
-//-------------------------------------------------------------------------------------------------
-
 /*!
-    Selects the shader program for the given context.
+    Selects the shader program for the given context. \br\br
+    pContext must be non-null: a null context returns null.
 */
 QOpenGLShaderProgram* CMaterial::programForContext(CRenderContext* pContext)
 {
+    if (pContext == nullptr)
+    {
+        return nullptr;
+    }
+
     if (m_bBillBoard)
     {
         return pContext->scene()->shaders()->getShader(SP_Standard_Billboard);
@@ -374,13 +341,18 @@ QOpenGLShaderProgram* CMaterial::programForContext(CRenderContext* pContext)
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Binds the given program to the given context.
+    Binds the given program to the given context. \br\br
+    pContext must be non-null: a null context is a no-op. The context scene
+    is the single scene source here, as in programForContext().
 */
 void CMaterial::bindProgram(CRenderContext* pContext, QOpenGLShaderProgram* pProgram)
 {
-    Q_UNUSED(pContext);
+    if (pContext == nullptr)
+    {
+        return;
+    }
 
-    m_pScene->makeCurrentRenderingContext();
+    pContext->scene()->makeCurrentRenderingContext();
 
     pProgram->bind();
 }
@@ -461,7 +433,14 @@ void CMaterial::bindDiffuseMaps(CRenderContext* pContext, QOpenGLShaderProgram* 
 
     if (m_vDiffuseTextures.count() > 0)
     {
-        for (int iIndex = 0; iIndex < m_vDiffuseTextures.count() && iIndex < 8; iIndex++)
+        int iSlotCount = m_vDiffuseTextures.count();
+
+        if (iSlotCount > DiffuseTextureSlotCount)
+        {
+            iSlotCount = DiffuseTextureSlotCount;
+        }
+
+        for (int iIndex = 0; iIndex < iSlotCount; iIndex++)
         {
             m_vDiffuseTextures[iIndex]->activate(iIndex);
         }
@@ -472,7 +451,7 @@ void CMaterial::bindDiffuseMaps(CRenderContext* pContext, QOpenGLShaderProgram* 
         // unbound units (pure black output)
         bool bTexturesReady = true;
 
-        for (int iIndex = 0; iIndex < m_vDiffuseTextures.count() && iIndex < 8; iIndex++)
+        for (int iIndex = 0; iIndex < iSlotCount; iIndex++)
         {
             if (m_vDiffuseTextures[iIndex]->glTexture() == 0)
             {
@@ -485,14 +464,10 @@ void CMaterial::bindDiffuseMaps(CRenderContext* pContext, QOpenGLShaderProgram* 
         {
             pProgram->setUniformValue("u_texture_diffuse_enable", (GLint) 1);
 
-            pProgram->setUniformValue("u_texture_diffuse_0", (GLint) 1);
-            pProgram->setUniformValue("u_texture_diffuse_1", (GLint) 2);
-            pProgram->setUniformValue("u_texture_diffuse_2", (GLint) 3);
-            pProgram->setUniformValue("u_texture_diffuse_3", (GLint) 4);
-            pProgram->setUniformValue("u_texture_diffuse_4", (GLint) 5);
-            pProgram->setUniformValue("u_texture_diffuse_5", (GLint) 6);
-            pProgram->setUniformValue("u_texture_diffuse_6", (GLint) 7);
-            pProgram->setUniformValue("u_texture_diffuse_7", (GLint) 8);
+            for (int iIndex = 0; iIndex < iSlotCount; iIndex++)
+            {
+                pProgram->setUniformValue(QString("u_texture_diffuse_%1").arg(iIndex).toLatin1().constData(), (GLint) (DiffuseTextureUnitBase + iIndex));
+            }
         }
         else
         {
@@ -514,6 +489,59 @@ void CMaterial::applyDynamicState(CRenderContext* pContext, QOpenGLShaderProgram
 {
     Q_UNUSED(pContext);
     Q_UNUSED(pProgram);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+    Activates this material for rendering: selects the shader program for
+    the context, applies the pass-invariant state on material change only,
+    then applies the per-draw state on every call. \br\br
+    pContext must be non-null: a null context returns null. Returns the
+    bound program, null when no program matches the context.
+*/
+/***************************************************************************/
+QOpenGLShaderProgram* CMaterial::activate(CRenderContext* pContext)
+{
+    if (pContext == nullptr)
+    {
+        return nullptr;
+    }
+
+    // Timed through the render context statistics and flushed to CTimeSampler once per
+    // layer pass: a scoped sample here would run hundreds of mutex-protected map updates
+    // per frame and collapse the frame rate it is supposed to measure.
+    bool bSample = CTimeSampler::getInstance()->isEnabled();
+    QElapsedTimer tTimer;
+
+    if (bSample == true)
+    {
+        tTimer.start();
+    }
+
+    QOpenGLShaderProgram* pProgram = programForContext(pContext);
+
+    if (pProgram != nullptr)
+    {
+        if (pContext->pActiveMaterial != this)
+        {
+            pContext->pActiveMaterial = this;
+
+            bindProgram(pContext, pProgram);
+
+            applyStaticState(pContext, pProgram);
+        }
+
+        applyDynamicState(pContext, pProgram);
+    }
+
+    if (bSample == true)
+    {
+        pContext->tStatistics.m_iMaterialActivateNs += tTimer.nsecsElapsed();
+    }
+
+    return pProgram;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -541,6 +569,22 @@ void CMaterial::activateShadow(CRenderContext* pContext)
 CGeoloc CMaterial::transformGeoloc(const CGeoloc& gPosition)
 {
     return gPosition;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+    Selects the tile for the given geolocation and level before a terrain
+    paint. \br\br
+    The base implementation does nothing: only tiled materials track a
+    current tile.
+*/
+/***************************************************************************/
+void CMaterial::prepareForTerrainPaint(const CGeoloc& gPosition, int iLevel)
+{
+    Q_UNUSED(gPosition);
+    Q_UNUSED(iLevel);
 }
 
 //-------------------------------------------------------------------------------------------------

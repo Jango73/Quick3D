@@ -9,7 +9,6 @@
 #include "C3DScene.h"
 #include "CWorldTerrain.h"
 #include "CWorldChunk.h"
-#include "CTiledMaterial.h"
 
 using namespace Math;
 
@@ -228,15 +227,56 @@ bool CWorldChunk::operator < (const CWorldChunk& other) const
 
 //-------------------------------------------------------------------------------------------------
 
+//! RAII timer accumulating elapsed nanoseconds into a render-context
+//! statistics counter, active only while the time sampler is enabled
+class CStatisticsTimeSample
+{
+public:
+
+    //!
+    CStatisticsTimeSample(qint64& iAccumulator)
+        : m_iAccumulator(iAccumulator)
+        , m_bSample(CTimeSampler::getInstance()->isEnabled())
+    {
+        if (m_bSample == true)
+        {
+            m_tTimer.start();
+        }
+    }
+
+    //!
+    ~CStatisticsTimeSample()
+    {
+        if (m_bSample == true)
+        {
+            m_iAccumulator += m_tTimer.nsecsElapsed();
+        }
+    }
+
+private:
+
+    qint64&       m_iAccumulator;
+    QElapsedTimer m_tTimer;
+    bool          m_bSample;
+};
+
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+    Paints this chunk through the single entry point: bounds segments in
+    bounds-only mode, opaque then water phases otherwise.
+*/
+/***************************************************************************/
 void CWorldChunk::paint(CRenderContext* pContext)
 {
     // CVector3 vPosition = pContext->internalCameraMatrix() * worldBounds().center();
     // double dRadius = worldBounds().radius();
 
-    setUsedNow();
-
     if (pContext->scene()->boundsOnly())
     {
+        setUsedNow();
+
         worldBounds().addSegments(pContext->scene());
     }
     else
@@ -254,43 +294,32 @@ void CWorldChunk::paint(CRenderContext* pContext)
 
 //-------------------------------------------------------------------------------------------------
 
+/***************************************************************************/
+/*!
+    Paints the terrain then the bounded meshes of this chunk. \br\br
+    The terrain material selects its tile for the chunk geolocation first:
+    the quad-key policy lives behind CMaterial::prepareForTerrainPaint(),
+    a no-op in base overridden by the tiled material.
+*/
+/***************************************************************************/
 void CWorldChunk::paintOpaquePhase(CRenderContext* pContext)
 {
     setUsedNow();
 
-    bool bSample = CTimeSampler::getInstance()->isEnabled();
-    QElapsedTimer tTimer;
-
     if (m_pTerrain && m_pTerrain->isOK())
     {
-        if (bSample == true)
-        {
-            tTimer.start();
-        }
+        CStatisticsTimeSample tSample(pContext->tStatistics.m_iChunkTerrainNs);
 
         CMaterial* pMaterial = m_pAutoTerrain->material();
 
-        CTiledMaterial* pTiled = dynamic_cast<CTiledMaterial*>(pMaterial);
-
-        if (pTiled != nullptr)
-        {
-            pTiled->setCurrentPositionAndLevel(m_gOriginalGeoloc, m_pTerrain->level());
-        }
+        pMaterial->prepareForTerrainPaint(m_gOriginalGeoloc, m_pTerrain->level());
 
         m_pTerrain->paint(pContext);
-
-        if (bSample == true)
-        {
-            pContext->tStatistics.m_iChunkTerrainNs += tTimer.nsecsElapsed();
-        }
     }
 
     if (m_bOK)
     {
-        if (bSample == true)
-        {
-            tTimer.start();
-        }
+        CStatisticsTimeSample tSample(pContext->tStatistics.m_iChunkBoundedNs);
 
         foreach (CBoundedMeshInstances* pBoundedMeshInstance, m_vBoundedMeshes)
         {
@@ -301,16 +330,18 @@ void CWorldChunk::paintOpaquePhase(CRenderContext* pContext)
         {
             m_vBushMeshes[sBushName]->paint(pContext, this);
         }
-
-        if (bSample == true)
-        {
-            pContext->tStatistics.m_iChunkBoundedNs += tTimer.nsecsElapsed();
-        }
     }
 }
 
 //-------------------------------------------------------------------------------------------------
 
+/***************************************************************************/
+/*!
+    Paints the transparent water of this chunk over the settled opaque
+    depths. \br\br
+    Does nothing when the chunk holds no water mesh.
+*/
+/***************************************************************************/
 void CWorldChunk::paintWaterPhase(CRenderContext* pContext)
 {
     if (m_pWater == nullptr || m_pWater->isOK() == false)
@@ -318,24 +349,13 @@ void CWorldChunk::paintWaterPhase(CRenderContext* pContext)
         return;
     }
 
-    bool bSample = CTimeSampler::getInstance()->isEnabled();
-    QElapsedTimer tTimer;
-
-    if (bSample == true)
-    {
-        tTimer.start();
-    }
+    CStatisticsTimeSample tSample(pContext->tStatistics.m_iChunkWaterNs);
 
     glDisable(GL_CULL_FACE);
 
     m_pWater->paint(pContext);
 
     glEnable(GL_CULL_FACE);
-
-    if (bSample == true)
-    {
-        pContext->tStatistics.m_iChunkWaterNs += tTimer.nsecsElapsed();
-    }
 }
 
 //-------------------------------------------------------------------------------------------------

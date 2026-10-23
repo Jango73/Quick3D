@@ -17,7 +17,6 @@ using namespace Math;
 CTiledMaterial::CTiledMaterial(C3DScene* pScene)
     : CMaterial(pScene)
     , m_iLevels(18)
-    , m_pLastBoundProgram(nullptr)
 {
     connect(&m_tClient, SIGNAL(tileReady(QString)), this, SLOT(onTileReady(QString)));
 }
@@ -34,6 +33,14 @@ void CTiledMaterial::onTileReady(QString sTileName)
 {
     if (m_mTiles.contains(sTileName))
     {
+        // The entry may already hold a texture (retry after an eviction):
+        // release it first, CTile owns its texture pointer
+        if (m_mTiles[sTileName].m_pTexture != nullptr)
+        {
+            delete m_mTiles[sTileName].m_pTexture;
+            m_mTiles[sTileName].m_pTexture = nullptr;
+        }
+
         m_mTiles[sTileName].m_pTexture = new CTexture(m_pScene, sTileName, m_tClient.getTile(sTileName), QSize(256, 256), m_vDiffuseTextures.count());
 
         LOG_METHOD_DEBUG(QString("Created texture %1").arg(m_mTiles[sTileName].m_pTexture->glTexture()));
@@ -52,7 +59,15 @@ CVector2 CTiledMaterial::texCoords(const CGeoloc& gPosition, int iLevel)
 
 //-------------------------------------------------------------------------------------------------
 
-void CTiledMaterial::setCurrentPositionAndLevel(const CGeoloc& gPosition, int iLevel)
+/***************************************************************************/
+/*!
+    Selects the tile quad key for the given geolocation and level: loads
+    the tile when missing, marks it in use otherwise, then collects the
+    tiles unused for a while. \br\br
+    Runs during the render pass, before the terrain mesh of the chunk paints.
+*/
+/***************************************************************************/
+void CTiledMaterial::prepareForTerrainPaint(const CGeoloc& gPosition, int iLevel)
 {
     m_sCurrentQuadKey = quadKeyFromPositionAndLevel(gPosition, iLevel);
 
@@ -61,12 +76,25 @@ void CTiledMaterial::setCurrentPositionAndLevel(const CGeoloc& gPosition, int iL
         m_mTiles[m_sCurrentQuadKey] = CTile(0, 0);
         m_tClient.loadTile(m_sCurrentQuadKey);
     }
+    else
+    {
+        // Mark the tile in use before the garbage collection below:
+        // the tile about to be painted must never be evicted here
+        m_mTiles[m_sCurrentQuadKey].m_tLastUsed = QDateTime::currentDateTime();
+    }
 
     collectGarbage();
 }
 
 //-------------------------------------------------------------------------------------------------
 
+/***************************************************************************/
+/*!
+    Binds the diffuse texture maps. \br\br
+    The tile bound in applyDynamicState() is the only diffuse source:
+    the base diffuse path stays disabled here.
+*/
+/***************************************************************************/
 void CTiledMaterial::bindDiffuseMaps(CRenderContext* pContext, QOpenGLShaderProgram* pProgram)
 {
     Q_UNUSED(pContext);
@@ -78,17 +106,18 @@ void CTiledMaterial::bindDiffuseMaps(CRenderContext* pContext, QOpenGLShaderProg
 
 //-------------------------------------------------------------------------------------------------
 
+/***************************************************************************/
+/*!
+    Binds the tile for the current quad key. \br\br
+    The rebind runs on every call: the shader program and the texture units
+    are shared with the other materials (bounded meshes bind their own
+    textures between two terrain chunks), so skipping the bind when the quad
+    key is unchanged would keep a foreign texture bound.
+*/
+/***************************************************************************/
 void CTiledMaterial::applyDynamicState(CRenderContext* pContext, QOpenGLShaderProgram* pProgram)
 {
     Q_UNUSED(pContext);
-
-    if (pProgram == m_pLastBoundProgram && m_sCurrentQuadKey == m_sLastBoundQuadKey)
-    {
-        return;
-    }
-
-    m_pLastBoundProgram = pProgram;
-    m_sLastBoundQuadKey = m_sCurrentQuadKey;
 
     pProgram->setUniformValue("u_texture_diffuse_enable", (GLint) 0);
 
@@ -100,7 +129,7 @@ void CTiledMaterial::applyDynamicState(CRenderContext* pContext, QOpenGLShaderPr
             m_mTiles[m_sCurrentQuadKey].m_pTexture->activate();
 
             pProgram->setUniformValue("u_texture_diffuse_enable", (GLint) 1);
-            pProgram->setUniformValue("u_texture_diffuse_0", (GLint) 1);
+            pProgram->setUniformValue("u_texture_diffuse_0", (GLint) DiffuseTextureUnitBase);
         }
     }
 }

@@ -330,20 +330,32 @@ void CWorldTerrain::paint(CRenderContext* pContext)
     {
         CScopedTimeSample tSample(QString("Terrain_DrawLoop"));
 
-        // Opaque phase first: consecutive chunks share the terrain material,
-        // so the material activation guard hits instead of re-applying the
-        // full state on every chunk
-        foreach (QSP<CWorldChunk> pChunk, vChunkCollect)
+        if (pContext->scene()->boundsOnly())
         {
-            pContext->tStatistics.m_iNumChunksDrawn++;
+            // Debug view: every chunk draws its bounds segments through the
+            // single entry point, the phased path below renders geometry only
+            foreach (QSP<CWorldChunk> pChunk, vChunkCollect)
+            {
+                pContext->tStatistics.m_iNumChunksDrawn++;
 
-            pChunk->paintOpaquePhase(pContext);
+                pChunk->paint(pContext);
+            }
         }
-
-        // Transparent phase last: water over settled opaque depths
-        foreach (QSP<CWorldChunk> pChunk, vChunkCollect)
+        else
         {
-            pChunk->paintWaterPhase(pContext);
+            // Opaque phase first, transparent water last over settled depths
+            foreach (QSP<CWorldChunk> pChunk, vChunkCollect)
+            {
+                pContext->tStatistics.m_iNumChunksDrawn++;
+
+                pChunk->paintOpaquePhase(pContext);
+            }
+
+            // Transparent phase last: water over settled opaque depths
+            foreach (QSP<CWorldChunk> pChunk, vChunkCollect)
+            {
+                pChunk->paintWaterPhase(pContext);
+            }
         }
     }
 

@@ -178,6 +178,11 @@ void CTexture::ensureUploaded()
     tImage = tImage.scaled(m_tTargetSize.width(), m_tTargetSize.height(), Qt::IgnoreAspectRatio);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tImage.width(), tImage.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tImage.bits());
 
+    // Mipmap quality hint is global GL state: set it next to the single
+    // generation site at upload time. No other engine code changes it, so
+    // one setting per upload is sufficient.
+    glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
+
     GL_glGenerateMipmap(GL_TEXTURE_2D);
 
     // Sampling parameters live on the texture object: set them once at
@@ -191,8 +196,6 @@ void CTexture::ensureUploaded()
     }
     else
     {
-        glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
-
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -206,7 +209,7 @@ void CTexture::activate(int iIndex)
 {
     m_pScene->makeCurrentRenderingContext();
 
-    GL_glActiveTexture(GL_TEXTURE1 + iIndex);
+    GL_glActiveTexture(GL_TEXTURE0 + DiffuseTextureUnitBase + iIndex);
 
     ensureUploaded();
 
@@ -242,7 +245,7 @@ void CTexture::onUpdateFinished()
     {
         m_pScene->makeCurrentRenderingContext();
 
-        GL_glActiveTexture(GL_TEXTURE1 + 0);
+        GL_glActiveTexture(GL_TEXTURE0 + DiffuseTextureUnitBase);
 
         glBindTexture(GL_TEXTURE_2D, m_uiGLTexture);
 

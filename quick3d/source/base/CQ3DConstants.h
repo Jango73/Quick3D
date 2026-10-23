@@ -279,6 +279,13 @@
 #define SP_Special_Lines                    "Special_Lines"
 
 //-------------------------------------------------------------------------------------------------
+// Diffuse texture slots
+
+// Diffuse maps bind on texture units 1..8: unit 0 stays reserved for the shadow map (see CMaterial::activateShadow)
+#define DiffuseTextureSlotCount               8
+#define DiffuseTextureUnitBase                1
+
+//-------------------------------------------------------------------------------------------------
 // Q3D events
 
 #define Q3D_Event                           "Event"

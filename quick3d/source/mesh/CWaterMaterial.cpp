@@ -21,6 +21,15 @@ CWaterMaterial::~CWaterMaterial()
 {
 }
 
+//-------------------------------------------------------------------------------------------------
+
+/***************************************************************************/
+/*!
+    Applies the pass-invariant state, then the wave uniforms for the
+    current wind level. \br\br
+    Runs only when the material changes.
+*/
+/***************************************************************************/
 void CWaterMaterial::applyStaticState(CRenderContext* pContext, QOpenGLShaderProgram* pProgram)
 {
     CMaterial::applyStaticState(pContext, pProgram);

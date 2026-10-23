@@ -127,6 +127,18 @@ public:
     //! Returns texture coordinates for a given geo loc
     virtual Math::CVector2 texCoords(const CGeoloc& gPosition, int iLevel);
 
+    //!
+    static Math::CVector4 black()	{ return Math::CVector4(0.0, 0.0, 0.0, 1.0); }
+
+    //!
+    static Math::CVector4 white()	{ return Math::CVector4(1.0, 1.0, 1.0, 1.0); }
+
+    //!
+    static Math::CVector4 red()		{ return Math::CVector4(1.0, 0.0, 0.0, 1.0); }
+
+    //!
+    static Math::CVector4 white_x5()	{ return Math::CVector4(5.0, 5.0, 5.0, 1.0); }
+
     //-------------------------------------------------------------------------------------------------
     // Inherited methods
     //-------------------------------------------------------------------------------------------------
@@ -186,6 +198,9 @@ public:
     //! Applies transformations to the given geolocation (example: Mercator)
     virtual CGeoloc transformGeoloc(const CGeoloc& gPosition);
 
+    //! Selects the tile for the given geolocation and level before a terrain paint. No-op in base
+    virtual void prepareForTerrainPaint(const CGeoloc& gPosition, int iLevel);
+
     //! Dumps contents to a stream
     virtual void dump(QTextStream& stream, int iIdent) Q_DECL_OVERRIDE;
 
@@ -209,15 +224,6 @@ protected:
 
     //! Applies the per-draw state. Runs on every activate, even on cache hit
     virtual void applyDynamicState(CRenderContext* pContext, QOpenGLShaderProgram* pProgram);
-
-public:
-
-    //!
-    static Math::CVector4 black()	{ return Math::CVector4(0.0, 0.0, 0.0, 1.0); }
-    static Math::CVector4 white()	{ return Math::CVector4(1.0, 1.0, 1.0, 1.0); }
-    static Math::CVector4 red()		{ return Math::CVector4(1.0, 0.0, 0.0, 1.0); }
-
-    static Math::CVector4 white_x5()	{ return Math::CVector4(5.0, 5.0, 5.0, 1.0); }
 
     //-------------------------------------------------------------------------------------------------
     // Properties

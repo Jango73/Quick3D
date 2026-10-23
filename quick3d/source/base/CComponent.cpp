@@ -125,6 +125,17 @@ void CComponent::setTag(const QString& sValue)
 //-------------------------------------------------------------------------------------------------
 
 /*!
+    Sets the render layer names of the component to \a sValue. \br\br
+    An empty list means the component belongs to every layer.
+*/
+void CComponent::setLayerNames(const QStringList& sValue)
+{
+    m_sLayerNames = sValue;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
     Sets the component's controller to \a pController.
 */
 void CComponent::setController(CController* pController)
@@ -610,6 +621,25 @@ void CComponent::loadParameters(const QString& sBaseFile, const CXMLNode& xCompo
     if (xComponent.attributes()[ParamName_Tag].isEmpty() == false)
     {
         m_sTag = xComponent.attributes()[ParamName_Tag];
+    }
+
+    // Render layer names, comma separated, empty means every layer
+
+    if (xComponent.attributes()[ParamName_Layers].isEmpty() == false)
+    {
+        m_sLayerNames.clear();
+
+        QStringList sNames = xComponent.attributes()[ParamName_Layers].split(QString(","));
+
+        foreach (const QString& sName, sNames)
+        {
+            QString sTrimmed = sName.trimmed();
+
+            if (sTrimmed.isEmpty() == false)
+            {
+                m_sLayerNames.append(sTrimmed);
+            }
+        }
     }
 
     // Original position

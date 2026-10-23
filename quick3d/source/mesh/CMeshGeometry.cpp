@@ -614,7 +614,7 @@ void CMeshGeometry::paint(CRenderContext* pContext, CComponent* pContainer)
             MESH_DRAW_INFO tDraw;
             tDraw.m_sContainer = QString::number(quintptr(pContainer), 16);
             tDraw.m_sName = pContainer->qualifiedName();
-            tDraw.m_iLayer = pContext->camera()->currentPaintLayer();
+            tDraw.m_sLayer = pContext->camera()->currentPaintLayer();
             tDraw.m_dDistance = vPosition.magnitude();
             tDraw.m_dCenterX = vPosition.X;
             tDraw.m_dCenterY = vPosition.Y;

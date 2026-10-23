@@ -253,6 +253,26 @@ void C3DScene::loadEnvironment(const CXMLNode& xEnvironment)
 //-------------------------------------------------------------------------------------------------
 
 /*!
+    Loads the render layer stack from a \a xLayers XML node, false when a layer is invalid. \br\br
+    A failed load resets the stack, a scene never paints with layers from a previous load.
+*/
+bool C3DScene::loadLayers(const CXMLNode& xLayers)
+{
+    if (m_tLayerStack.loadFromXml(xLayers) == false)
+    {
+        LOG_METHOD_ERROR(QString("Scene holds invalid render layers"));
+
+        m_tLayerStack = CRenderLayerStack();
+
+        return false;
+    }
+
+    return true;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
     Initializes shaders.
 */
 void C3DScene::initShaders()
@@ -661,22 +681,22 @@ void C3DScene::paintComponents(CRenderContext* pContext)
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Paints the components accepted by \a tFilter, using \a pContext.
+    Paints the components accepted by \a tLayer, using \a pContext.
 */
-void C3DScene::paintLayerComponents(CRenderContext* pContext, const CRenderFilter& tFilter)
+void C3DScene::paintLayerComponents(CRenderContext* pContext, const CRenderLayer& tLayer)
 {
-    paintComponentsTimed(pContext, &tFilter, QString(PaintClassSamplePrefix));
+    paintComponentsTimed(pContext, &tLayer, QString(PaintClassSamplePrefix));
 }
 
 //-------------------------------------------------------------------------------------------------
 
 /*!
-    Paints visible components accepted by \a pFilter (all when \a pFilter is null),
+    Paints visible components accepted by \a pLayer (all when \a pLayer is null),
     timing each component class under \a sPrefix. \br\br
     Timings group locally per class and flush once per class, so the shared
     sampler mutex is never held inside the component loop.
 */
-void C3DScene::paintComponentsTimed(CRenderContext* pContext, const CRenderFilter* pFilter, const QString& sPrefix)
+void C3DScene::paintComponentsTimed(CRenderContext* pContext, const CRenderLayer* pLayer, const QString& sPrefix)
 {
     QMap<QString, qint64> mClassTimesNs;
 
@@ -684,7 +704,7 @@ void C3DScene::paintComponentsTimed(CRenderContext* pContext, const CRenderFilte
 
     foreach(QSP<CComponent> pComponent, m_vComponents)
     {
-        if (pComponent->isVisible() && (pFilter == nullptr || pFilter->accept(pComponent.data())))
+        if (pComponent->isVisible() && (pLayer == nullptr || pLayer->accepts(pComponent.data())))
         {
             QElapsedTimer tTimer;
 

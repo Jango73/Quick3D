@@ -34,8 +34,91 @@
       <xs:element type="NamedType" name="Camera4" maxOccurs="1" minOccurs="0"/>
       <xs:element type="NamedType" name="ControlledComponent" maxOccurs="1" minOccurs="0"/>
       <xs:element type="EnvironmentType" name="Environment" maxOccurs="1" minOccurs="0"/>
+      <xs:element type="LayersType" name="Layers" maxOccurs="1" minOccurs="0"/>
       <xs:element type="ComponentListType" name="Components" maxOccurs="1" minOccurs="0"/>
     </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="LayersType">
+    <xs:sequence>
+      <xs:element type="LayerType" name="Layer" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="MemberType">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute type="xs:string" name="Name" use="required">
+          <xs:annotation>
+            <xs:documentation>
+              Name of a component listed as an explicit member of the layer.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:complexType name="LayerType">
+    <xs:sequence>
+      <xs:element type="MemberType" name="Member" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+        <xs:attribute type="xs:string" name="Name" use="required">
+          <xs:annotation>
+            <xs:documentation>
+              Layer identifier, unique in the scene, referenced by the Layers attribute of components.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" name="Filter" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              Membership predicate type: Layers, Tag or Class. Defaults to Layers.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" name="Tag" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              Tag accepted by a Tag filter.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" name="Class" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              Class name accepted by a Class filter.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:string" name="Conditioner" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              Depth range conditioner type: AltitudeRatio, OverlapReference or Fixed. Defaults to AltitudeRatio.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:float" name="NearDivisor" use="optional"/>
+        <xs:attribute type="xs:float" name="FarFactor" use="optional"/>
+        <xs:attribute type="xs:float" name="MinNear" use="optional"/>
+        <xs:attribute type="xs:float" name="MinFar" use="optional"/>
+        <xs:attribute type="xs:float" name="Near" use="optional"/>
+        <xs:attribute type="xs:float" name="Far" use="optional"/>
+        <xs:attribute type="xs:float" name="OverlapFactor" use="optional"/>
+        <xs:attribute type="xs:int" name="MaxLights" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              Maximum light count uploaded while this layer paints, -1 means no cap.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute type="xs:boolean" name="ClearDepth" use="optional"/>
+        <xs:attribute type="xs:boolean" name="DepthTest" use="optional"/>
+        <xs:attribute type="xs:boolean" name="DepthWrite" use="optional"/>
+        <xs:attribute type="xs:float" name="Scale" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              Reduced-size rendering factor inside (0, 1], 1.0 means full size.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
   </xs:complexType>
   <xs:complexType name="ComponentListType">
     <xs:sequence>
@@ -77,6 +160,13 @@
             </xs:documentation>
           </xs:annotation>
 		</xs:attribute>
+        <xs:attribute type="xs:string" name="Layers" use="optional">
+          <xs:annotation>
+            <xs:documentation>
+              Comma separated render layer names this component belongs to, empty means every layer.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
         <xs:attribute type="xs:string" name="PositionTarget" use="optional">
           <xs:annotation>
             <xs:documentation>

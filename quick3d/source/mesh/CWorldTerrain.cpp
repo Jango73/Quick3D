@@ -290,7 +290,7 @@ void CWorldTerrain::paint(CRenderContext* pContext)
         paintRecurse(vChunkCollect, pContext, m_pRoot, m_iLevels);
     }
 
-    int iPaintLayer = (pContext != nullptr && pContext->camera() != nullptr) ? pContext->camera()->currentPaintLayer() : -1;
+    QString sPaintLayer = (pContext != nullptr && pContext->camera() != nullptr) ? pContext->camera()->currentPaintLayer() : QString("");
 
     QVector<COLLECTED_CHUNK_INFO> vCollected;
 
@@ -316,7 +316,7 @@ void CWorldTerrain::paint(CRenderContext* pContext)
 
     {
         QMutexLocker tLocker(&m_mSnapshotMutex);
-        m_mLastCollectedChunks[iPaintLayer] = vCollected;
+        m_mLastCollectedChunks[sPaintLayer] = vCollected;
         m_gLastCameraGeoloc = gCameraGeoloc;
     }
 
@@ -423,21 +423,14 @@ static void expandLayerDepthInterval(double& dDepthMin, double& dDepthMax, const
     The interval is the camera-space forward depth of the chunk in the same frame the
     per-geometry draw test uses (CMeshGeometry::paint through CCamera::contains()):
     the layer depth planes clip on this axis, so collect and drawing speak the same
-    language. In the far pass chunks fully inside the close range are skipped, in the
-    close pass chunks fully outside it are skipped. Chunks spanning the close far plane
-    are kept in both passes.
+    language. The running pass decides through CCamera::skipDepthInterval(), chunks
+    spanning a boundary are kept in every intersected pass.
 */
 bool CWorldTerrain::skipChunkForLayerPass(QSP<CWorldChunk> pChunk, CRenderContext* pContext)
 {
     if (pChunk == nullptr || pContext == nullptr || pContext->camera() == nullptr) return false;
 
-    int iLayer = pContext->camera()->currentPaintLayer();
-
-    if (iLayer != RENDER_LAYER_FAR && iLayer != RENDER_LAYER_CLOSE) return false;
-
-    double dCloseFar = pContext->camera()->closeLayerFar();
-
-    if (dCloseFar <= 0.0) return false;
+    if (pContext->camera()->currentPaintLayer().isEmpty() == true) return false;
 
     Math::CMatrix4 mCameraMatrix = pContext->internalCameraMatrix();
 
@@ -492,12 +485,7 @@ bool CWorldTerrain::skipChunkForLayerPass(QSP<CWorldChunk> pChunk, CRenderContex
         }
     }
 
-    if (iLayer == RENDER_LAYER_FAR)
-    {
-        return dDepthMax < dCloseFar;
-    }
-
-    return dDepthMin > dCloseFar;
+    return pContext->camera()->skipDepthInterval(dDepthMin, dDepthMax);
 }
 
 //-------------------------------------------------------------------------------------------------

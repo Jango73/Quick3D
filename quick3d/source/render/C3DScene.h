@@ -32,6 +32,7 @@
 #include "CRenderContext.h"
 #include "CViewport.h"
 #include "CMeshByMaterial.h"
+#include "CRenderLayer.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -199,6 +200,12 @@ public:
     //! Returns a const reference to the vector of components.
     const QVector<QSP<CComponent> >& components() const { return m_vComponents; }
 
+    //! Returns a reference to the scene render layer stack in paint order
+    CRenderLayerStack& layerStack() { return m_tLayerStack; }
+
+    //! Returns a const reference to the scene render layer stack in paint order
+    const CRenderLayerStack& layerStack() const { return m_tLayerStack; }
+
     //! Returns a vector of components whose tag matches \a sTag.
     QVector<QSP<CComponent> > componentsByTag(const QString& sTag);
 
@@ -305,6 +312,9 @@ public:
     //! Loads the rendering environment from an <Environment> XML node
     void loadEnvironment(const CXMLNode& xEnvironment);
 
+    //! Loads the render layer stack from a <Layers> XML node, false when a layer is invalid
+    bool loadLayers(const CXMLNode& xLayers);
+
     //! Sets up shaders
     virtual void initShaders();
 
@@ -355,8 +365,8 @@ public:
     //! Paints all components, using \a pContext.
     void paintComponents(CRenderContext* pContext);
 
-    //! Paints the components accepted by \a tFilter, using \a pContext.
-    void paintLayerComponents(CRenderContext* pContext, const CRenderFilter& tFilter);
+    //! Paints the components accepted by \a tLayer, using \a pContext.
+    void paintLayerComponents(CRenderContext* pContext, const CRenderLayer& tLayer);
 
     //! Paints all components that cast shadows, using \a pContext.
     void paintShadowCastingComponents(CRenderContext* pContext);
@@ -394,8 +404,8 @@ protected:
     //!
     static void getLightsRecurse(QVector<QSP<CLight> >& vLights, QSP<CComponent> pComponent);
 
-    //! Paints visible components accepted by pFilter (all when null), timing each class under sPrefix
-    void paintComponentsTimed(CRenderContext* pContext, const CRenderFilter* pFilter, const QString& sPrefix);
+    //! Paints visible components accepted by pLayer (all when null), timing each class under sPrefix
+    void paintComponentsTimed(CRenderContext* pContext, const CRenderLayer* pLayer, const QString& sPrefix);
 
     //!
     static void getLightsByTagRecurse(QVector<QSP<CLight> >& vLights, const QString &sTag, QSP<CComponent> pComponent);
@@ -423,6 +433,7 @@ public:
 
 protected:
 
+    CRenderLayerStack                      m_tLayerStack;
     QMap<int, CViewport*>                   m_pViewports;
     CGLExtension*                           m_pGLExtension;
     CRessourcesManager*                     m_pRessourcesManager;

@@ -151,7 +151,7 @@ public:
     QVector<QSP<CComponent> >& generators() { return m_vGenerators; }
 
     //! Returns the per-layer chunk identities retained from the last paint, copy under lock
-    QMap<int, QVector<COLLECTED_CHUNK_INFO> > lastCollectedChunks() const;
+    QMap<QString, QVector<COLLECTED_CHUNK_INFO> > lastCollectedChunks() const;
 
     //! Returns the quadtree readiness retained from the last paint, copy under lock
     QVector<CHUNK_PATH_INFO> lastCameraPath() const;
@@ -314,7 +314,7 @@ protected:
     QSP<CMaterial>              m_pMaterial;
     QVector<QSP<CComponent> >   m_vGenerators;
     QMap<const CWorldChunk*, int> m_mPhysicsHeightfields; ///< Chunk to height field ids, owned here not in the mesh
-    QMap<int, QVector<COLLECTED_CHUNK_INFO> > m_mLastCollectedChunks; ///< Layer pass to identities of its last painted chunks
+    QMap<QString, QVector<COLLECTED_CHUNK_INFO> > m_mLastCollectedChunks; ///< Layer pass to identities of its last painted chunks
     QVector<CHUNK_PATH_INFO>     m_vLastCameraPath; ///< Quadtree readiness on the camera path, recorded by the last paint
     QVector<REGISTERED_HEIGHTFIELD_INFO> m_vLastHeightfields; ///< Physics height field identities, recorded by the last sync
     CGeoloc                     m_gLastCameraGeoloc; ///< Camera position retained from the last paint, for snapshots

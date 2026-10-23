@@ -3,6 +3,7 @@
 
 // Qt
 #include <QString>
+#include <QStringList>
 #include <QVector>
 #include <QGraphicsScene>
 #include <QPainter>
@@ -107,6 +108,9 @@ public:
     //! Sets the user defined tag
     void setTag(const QString& sValue);
 
+    //! Sets the render layer names this object belongs to, empty means every layer
+    void setLayerNames(const QStringList& sValue);
+
     //! Sets the object's controller
     void setController(CController* pController);
 
@@ -168,6 +172,9 @@ public:
     //! Returns the user defined tag
     QString tag() const { return m_sTag; }
 
+    //! Returns the render layer names this object belongs to, empty means every layer
+    QStringList layerNames() const { return m_sLayerNames; }
+
     //! Returns the object's qualified name
     QString qualifiedName();
 
@@ -194,9 +201,6 @@ public:
 
     //! Is the object a camera?
     virtual bool isCamera() const { return false; }
-
-    //! Returns the bit mask of render layers this object belongs to, one bit per layer
-    virtual int renderLayers() const { return RENDER_LAYER_ALL; }
 
     //! Is the object a light?
     virtual bool isLight() const { return false; }
@@ -398,6 +402,7 @@ protected:
     void fillSnapshotBaseNode(CXMLNode& xNode);
 
     QString                     m_sTag;                         // User defined tag
+    QStringList                 m_sLayerNames;                  // Render layer names, empty means every layer
     C3DScene*                   m_pScene;                       // The scene to which the object belongs
     CController*                m_pController;
     Math::CMatrix4              m_mWorldTransform;              // World transform of the object

@@ -13,6 +13,7 @@
 #include "CRenderContext.h"
 #include "CRenderLayer.h"
 #include "CImageUtilities.h"
+#include "CRenderScalePolicy.h"
 
 //-------------------------------------------------------------------------------------------------
 
@@ -48,14 +49,14 @@ CComponent* CCamera::instantiator(C3DScene* pScene)
 
 CCamera::CCamera(C3DScene* pScene)
     : CPhysicalComponent(pScene)
-    , m_iCurrentPaintLayer(-1)
+    , m_sCurrentPaintLayer(QString(""))
+    , m_dCurrentLayerScale(1.0)
     , m_iCurrentLayerMaxLights(RENDER_LAYER_UNLIMITED_LIGHTS)
     , m_dFOV(DEFAULT_FOV)
     , m_dFocus(0.5)
     , m_dGain(0.5)
     , m_dMinDistance(0.0)
     , m_dMaxDistance(0.0)
-    , m_dCloseLayerFar(-1.0)
     , m_bMeshDrawTruncated(false)
 {
     setName("Camera");
@@ -87,9 +88,11 @@ CCamera& CCamera::operator = (const CCamera& target)
     m_dGain             = target.m_dGain;
     m_dMinDistance      = target.m_dMinDistance;
     m_dMaxDistance      = target.m_dMaxDistance;
-    m_dCloseLayerFar    = target.m_dCloseLayerFar;
     m_pFrustumPlanes    = target.m_pFrustumPlanes;
-    m_iCurrentPaintLayer = -1;
+    m_sCurrentPaintLayer = QString("");
+    m_dCurrentLayerScale = 1.0;
+    m_mLayerRanges.clear();
+    m_sLayerOrder.clear();
     m_iCurrentLayerMaxLights = RENDER_LAYER_UNLIMITED_LIGHTS;
 
     return *this;
@@ -148,6 +151,72 @@ void CCamera::recordMeshDraw(const MESH_DRAW_INFO& tDraw)
 int CCamera::currentLayerMaxLights() const
 {
     return m_iCurrentLayerMaxLights;
+}
+
+/***************************************************************************/
+/*!
+    Returns the conditioned range of the layer painted by the current render pass, invalid outside a layer pass.
+*/
+/***************************************************************************/
+SRenderDepthRange CCamera::currentLayerRange() const
+{
+    if (m_mLayerRanges.contains(m_sCurrentPaintLayer) == false)
+    {
+        return SRenderDepthRange();
+    }
+
+    return m_mLayerRanges[m_sCurrentPaintLayer];
+}
+
+/***************************************************************************/
+/*!
+    Returns the conditioned ranges of the layers painted after the current one, nearest last in paint order.
+*/
+/***************************************************************************/
+QVector<SRenderDepthRange> CCamera::nearerLayerRanges() const
+{
+    QVector<SRenderDepthRange> vRanges;
+
+    int iOrder = m_sLayerOrder.indexOf(m_sCurrentPaintLayer);
+
+    if (iOrder < 0) return vRanges;
+
+    for (int iIndex = iOrder + 1; iIndex < m_sLayerOrder.count(); iIndex++)
+    {
+        vRanges.append(m_mLayerRanges[m_sLayerOrder[iIndex]]);
+    }
+
+    return vRanges;
+}
+
+/***************************************************************************/
+/*!
+    Returns true when the depth interval \a dDepthMin to \a dDepthMax contributes nothing to the current layer pass. \br\br
+    The interval is skipped when disjoint from the running layer range or fully covered by one nearer layer:
+    chunks spanning a boundary are kept in every intersected pass, so no distance is left without a layer.
+*/
+/***************************************************************************/
+bool CCamera::skipDepthInterval(double dDepthMin, double dDepthMax) const
+{
+    SRenderDepthRange tOwn = currentLayerRange();
+
+    if (tOwn.isValid() == false) return false;
+
+    // The collect interval is measured with the scaled pass matrices, the stored
+    // ranges are real: compare in real space so every layer scale stays exact
+    double dRealMin = dDepthMin / m_dCurrentLayerScale;
+    double dRealMax = dDepthMax / m_dCurrentLayerScale;
+
+    if (dRealMax < tOwn.m_dNear || dRealMin > tOwn.m_dFar) return true;
+
+    QVector<SRenderDepthRange> vNearer = nearerLayerRanges();
+
+    foreach (const SRenderDepthRange& tNearer, vNearer)
+    {
+        if (tNearer.m_dNear <= dRealMin && dRealMax <= tNearer.m_dFar) return true;
+    }
+
+    return false;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -339,33 +408,42 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
 
     double dAspectRatio = (double) iWidth / (double) iHeight;
 
-    // Jointly conditioned layer depth ranges: the close far plane always
-    // overlaps the far near plane, so every distance is covered by at least
-    // one layer and nothing is ever clipped between the planes
-    CRenderLayerStack tLayerStack = CRenderLayerStack::createDefault();
+    // Jointly conditioned scene layer depth ranges: every foreground range
+    // overlaps the background near plane, so every distance is covered by at
+    // least one layer and nothing is ever clipped between the planes
+    CRenderLayerStack tLayerStack = pScene->layerStack();
     tLayerStack.conditionLayers(geoloc().Altitude);
 
-    SRenderDepthRange tFarRange = tLayerStack.layers().first().range();
+    SRenderDepthRange tUnionRange;
+    bool bFirstRange = true;
 
-    m_dCloseLayerFar = -1.0;
-    m_iCurrentPaintLayer = -1;
+    m_sCurrentPaintLayer = QString("");
+    m_mLayerRanges.clear();
+    m_sLayerOrder.clear();
     m_vLastLayerFrames.clear();
 
     foreach (const CRenderLayer& tLayer, tLayerStack.layers())
     {
-        if (tLayer.layer() == RENDER_LAYER_FAR)
+        SRenderDepthRange tRange = tLayer.range();
+
+        m_mLayerRanges[tLayer.name()] = tRange;
+        m_sLayerOrder.append(tLayer.name());
+
+        if (bFirstRange == true || tRange.m_dNear < tUnionRange.m_dNear)
         {
-            tFarRange = tLayer.range();
+            tUnionRange.m_dNear = tRange.m_dNear;
         }
 
-        if (tLayer.layer() == RENDER_LAYER_CLOSE)
+        if (bFirstRange == true || tRange.m_dFar > tUnionRange.m_dFar)
         {
-            m_dCloseLayerFar = tLayer.range().m_dFar;
+            tUnionRange.m_dFar = tRange.m_dFar;
         }
+
+        bFirstRange = false;
     }
 
-    m_dMinDistance = tFarRange.m_dNear;
-    m_dMaxDistance = tFarRange.m_dFar;
+    m_dMinDistance = tUnionRange.m_dNear;
+    m_dMaxDistance = tUnionRange.m_dFar;
 
     // For tests
     if (bOverlook)
@@ -467,52 +545,71 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
     }
     else
     {
-        bool bFirstLayer = true;
-
         foreach (const CRenderLayer& tLayer, tLayerStack.layers())
         {
             CScopedTimeSample tLayerSample(QString(LAYER_SAMPLE_PREFIX) + tLayer.name());
 
             SRenderDepthRange tRange = tLayer.range();
+            SRenderDepthRange tScaledRange = CRenderScalePolicy::scaledDepthRange(tRange, tLayer.scale());
 
-            if (bFirstLayer)
-            {
-                bFirstLayer = false;
-            }
-            else
+            if (tLayer.clearDepth() == true)
             {
                 glClear(GL_DEPTH_BUFFER_BIT);
             }
 
-            m_dMinDistance = tRange.m_dNear;
-            m_dMaxDistance = tRange.m_dFar;
+            if (tLayer.depthTest() == true)
+            {
+                glEnable(GL_DEPTH_TEST);
+            }
+            else
+            {
+                glDisable(GL_DEPTH_TEST);
+            }
+
+            if (tLayer.depthWrite() == true)
+            {
+                glDepthMask(GL_TRUE);
+            }
+            else
+            {
+                glDepthMask(GL_FALSE);
+            }
+
+            m_dMinDistance = tScaledRange.m_dNear;
+            m_dMaxDistance = tScaledRange.m_dFar;
 
             QMatrix4x4 mLayerProjection = CCamera::getQtProjectionMatrix(
                         dFOV,
                         dAspectRatio,
-                        tRange.m_dNear,
-                        tRange.m_dFar
+                        tScaledRange.m_dNear,
+                        tScaledRange.m_dFar
                         );
 
             CMatrix4 mLayerInternalProjection = CMatrix4::fromQtMatrix(mLayerProjection);
 
+            QMatrix4x4 mLayerCameraMatrix = CRenderScalePolicy::scaledViewMatrix(mCameraMatrix, tLayer.scale());
+            CMatrix4 mLayerInternalCameraMatrix = CRenderScalePolicy::scaledInternalViewMatrix(m_mInternalCameraMatrix, tLayer.scale());
+
             CRenderContext tLayerContext(
-                        mLayerProjection, mCameraMatrix,
+                        mLayerProjection, mLayerCameraMatrix,
                         mShadowProjectionMatrix, mShadowMatrix,
-                        m_mInternalCameraMatrix,
+                        mLayerInternalCameraMatrix,
                         mLayerInternalProjection,
                         pScene,
                         this
                         );
+
+            tLayerContext.setLayerScale(tLayer.scale());
 
             if (bForceIR)
             {
                 tLayerContext.bUseIR = true;
             }
 
-            computeFrustum(Math::Angles::toRad(dFOV), dAspectRatio, tRange.m_dNear, tRange.m_dFar);
+            computeFrustum(Math::Angles::toRad(dFOV), dAspectRatio, tScaledRange.m_dNear, tScaledRange.m_dFar);
 
-            m_iCurrentPaintLayer = tLayer.layer();
+            m_sCurrentPaintLayer = tLayer.name();
+            m_dCurrentLayerScale = tLayer.scale();
             m_iCurrentLayerMaxLights = tLayer.maxLights();
 
             {
@@ -521,15 +618,19 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
                 m_bMeshDrawTruncated = false;
             }
 
-            pScene->paintLayerComponents(&tLayerContext, *tLayer.filter());
+            pScene->paintLayerComponents(&tLayerContext, tLayer);
 
-            m_iCurrentPaintLayer = -1;
+            m_sCurrentPaintLayer = QString("");
+            m_dCurrentLayerScale = 1.0;
             m_iCurrentLayerMaxLights = RENDER_LAYER_UNLIMITED_LIGHTS;
 
+            glEnable(GL_DEPTH_TEST);
+            glDepthMask(GL_TRUE);
+
             LAYER_FRAME_INFO tFrameInfo;
-            tFrameInfo.m_iLayer = tLayer.layer();
-            tFrameInfo.m_dNearPlane = tRange.m_dNear;
-            tFrameInfo.m_dFarPlane = tRange.m_dFar;
+            tFrameInfo.m_sLayer = tLayer.name();
+            tFrameInfo.m_dNearPlane = tScaledRange.m_dNear;
+            tFrameInfo.m_dFarPlane = tScaledRange.m_dFar;
             tFrameInfo.m_tStatistics = tLayerContext.tStatistics;
 
             {
@@ -559,8 +660,8 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
         }
 
         // Restore the main range on the camera once all layers are painted
-        m_dMinDistance = tFarRange.m_dNear;
-        m_dMaxDistance = tFarRange.m_dFar;
+        m_dMinDistance = tUnionRange.m_dNear;
+        m_dMaxDistance = tUnionRange.m_dFar;
 
         computeFrustum(Math::Angles::toRad(dFOV), dAspectRatio, m_dMinDistance, m_dMaxDistance);
     }
@@ -796,7 +897,7 @@ CXMLNode MESH_DRAW_INFO::snapshotNode() const
 
     xNode.attributes()["container"] = m_sContainer;
     xNode.attributes()["name"] = m_sName;
-    xNode.attributes()["layer"] = QString::number(m_iLayer);
+    xNode.attributes()["layer"] = m_sLayer;
     xNode.attributes()["distance"] = QString::number(m_dDistance, 'g', 10);
     xNode.attributes()["centerx"] = QString::number(m_dCenterX, 'g', 10);
     xNode.attributes()["centery"] = QString::number(m_dCenterY, 'g', 10);
@@ -827,7 +928,7 @@ CXMLNode LAYER_FRAME_INFO::snapshotNode() const
 {
     CXMLNode xNode("layers");
 
-    xNode.attributes()["layer"] = QString::number(m_iLayer);
+    xNode.attributes()["layer"] = m_sLayer;
     xNode.attributes()["near"] = QString::number(m_dNearPlane, 'g', 10);
     xNode.attributes()["far"] = QString::number(m_dFarPlane, 'g', 10);
     xNode.attributes()["truncated"] = m_bTruncated == true ? "true" : "false";
@@ -858,7 +959,6 @@ CXMLNode CCamera::snapshotNode()
     xNode.attributes()["fov"] = QString::number(m_dFOV, 'g', 10);
     xNode.attributes()["near"] = QString::number(m_dMinDistance, 'g', 10);
     xNode.attributes()["far"] = QString::number(m_dMaxDistance, 'g', 10);
-    xNode.attributes()["closelayerfar"] = QString::number(m_dCloseLayerFar, 'g', 10);
 
     foreach (const LAYER_FRAME_INFO& tLayer, lastLayerFrames())
     {

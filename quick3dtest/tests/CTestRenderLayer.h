@@ -16,17 +16,20 @@ public:
 
 private slots:
 
-    //! Layer bits match their identifiers and combine into the all mask
-    void testLayerBitMatchesIdentifier();
+    //! A component without layer names is accepted in every layer
+    void testMembershipFilterAcceptsUnlistedEverywhere();
 
-    //! Default components span both layers, terrain near the camera is never filtered out
-    void testDefaultComponentSpansBothLayers();
+    //! A component with layer names is accepted only in the listed layers
+    void testMembershipFilterRestrictsToListedLayers();
 
-    //! A far-only component is rejected by the close filter
-    void testFarOnlyComponentSkippedByCloseFilter();
+    //! A tag filter accepts the tagged components only
+    void testTagFilterMatchesTagOnly();
 
-    //! A close-only component is rejected by the far filter
-    void testCloseOnlyComponentSkippedByFarFilter();
+    //! A class filter accepts the matching class name only
+    void testClassFilterMatchesClassOnly();
+
+    //! An unknown filter type yields no filter
+    void testUnknownFilterTypeReturnsNull();
 
     //! The altitude conditioner keeps a tight far/near ratio at altitude
     void testAltitudeConditionerKeepsTightRatio();
@@ -34,11 +37,38 @@ private slots:
     //! The altitude conditioner clamps to minimums at ground level
     void testConditionerClampsToMinimums();
 
-    //! The conditioned stack covers every distance without gap
+    //! The fixed conditioner returns its constant range
+    void testFixedConditionerReturnsConstant();
+
+    //! An unknown conditioner type yields no conditioner
+    void testUnknownConditionerTypeReturnsNull();
+
+    //! A layer rejects scales outside (0, 1]
+    void testLayerRejectsInvalidScale();
+
+    //! A stack rejects duplicated layer names
+    void testStackRejectsDuplicatedNames();
+
+    //! A three-layer XML stack loads in paint order with members
+    void testStackLoadsThreeLayersInPaintOrder();
+
+    //! The conditioned N-layer stack covers every distance without gap
     void testStackCoversEveryDistanceWithoutGap();
 
-    //! The stack paints the farthest layer first
-    void testStackPaintOrderIsFarFirst();
+    //! Reduced-size rendering preserves angular size and distance ratio
+    void testScalePreservesAngularSize();
+
+    //! View-space scaling matches the world-space scale about the camera
+    void testViewSpaceScaleMatchesWorldSpace();
+
+    //! A scaled pass keeps the clip coordinates of the full-size pass
+    void testScaledPassKeepsClipCoordinates();
+
+    //! The scene loads layers from XML and exposes them by reference
+    void testSceneLoadsLayersFromXml();
+
+    //! The scene loader requires a valid Layers node
+    void testLoaderRequiresLayersNode();
 };
 
 //-------------------------------------------------------------------------------------------------

@@ -33,8 +33,13 @@
     <Geoloc Latitude="9.7905" Longitude="17.8018" Altitude="0.0"/>
     -->
 
+    <Layers>
+        <Layer Name="Far" Filter="Layers" Conditioner="AltitudeRatio" NearDivisor="8" FarFactor="40" MinNear="0.1" MinFar="100000" MaxLights="1" ClearDepth="false" DepthTest="true" DepthWrite="true" Scale="1.0" />
+        <Layer Name="Close" Filter="Layers" Conditioner="OverlapReference" Near="0.1" OverlapFactor="4" MaxLights="-1" ClearDepth="true" DepthTest="true" DepthWrite="true" Scale="1.0" />
+    </Layers>
+
     <Components>
-        <Component Name="SkyBox" Class="CSkyBox" />
+        <Component Name="SkyBox" Class="CSkyBox" Layers="Far" />
 
         <Component Name="Sun" Class="CLight" Tag="SUN">
             <Position x="0.0" y="0.0" z="0.0"/>

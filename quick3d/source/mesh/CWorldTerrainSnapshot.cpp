@@ -152,7 +152,7 @@ void CWorldTerrain::recordCameraPath(const CGeoloc& gCamera)
     Returns the per-layer chunk identities retained from the last paint.
 */
 /***************************************************************************/
-QMap<int, QVector<COLLECTED_CHUNK_INFO> > CWorldTerrain::lastCollectedChunks() const
+QMap<QString, QVector<COLLECTED_CHUNK_INFO> > CWorldTerrain::lastCollectedChunks() const
 {
     QMutexLocker tLocker(&m_mSnapshotMutex);
 
@@ -202,7 +202,7 @@ QVector<REGISTERED_HEIGHTFIELD_INFO> CWorldTerrain::lastHeightfields() const
 /***************************************************************************/
 CXMLNode CWorldTerrain::snapshotNode()
 {
-    QMap<int, QVector<COLLECTED_CHUNK_INFO> > mCollected;
+    QMap<QString, QVector<COLLECTED_CHUNK_INFO> > mCollected;
     QVector<CHUNK_PATH_INFO> vPath;
     QVector<REGISTERED_HEIGHTFIELD_INFO> vHeightfields;
 
@@ -217,13 +217,13 @@ CXMLNode CWorldTerrain::snapshotNode()
 
     fillSnapshotBaseNode(xNode);
 
-    foreach (int iLayer, mCollected.keys())
+    foreach (const QString& sLayer, mCollected.keys())
     {
         CXMLNode xLayer("collect");
 
-        xLayer.attributes()["layer"] = QString::number(iLayer);
+        xLayer.attributes()["layer"] = sLayer;
 
-        foreach (const COLLECTED_CHUNK_INFO& tChunk, mCollected[iLayer])
+        foreach (const COLLECTED_CHUNK_INFO& tChunk, mCollected[sLayer])
         {
             xLayer << tChunk.snapshotNode();
         }

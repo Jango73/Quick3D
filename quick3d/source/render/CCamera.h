@@ -2,12 +2,15 @@
 #pragma once
 
 // Qt
+#include <QMap>
 #include <QMatrix4x4>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QStringList>
 
 // Application
 #include "quick3d_global.h"
+#include "CRenderLayer.h"
 #include "CVector3.h"
 #include "CMatrix4.h"
 #include "CPlane3.h"
@@ -80,7 +83,7 @@ struct MESH_DRAW_INFO
 {
     QString m_sContainer;
     QString m_sName;
-    int     m_iLayer;
+    QString m_sLayer;
     double  m_dDistance;
     double  m_dCenterX;
     double  m_dCenterY;
@@ -106,7 +109,7 @@ struct MESH_DRAW_INFO
 //! Last painted frame info for one layer pass, retained for engine snapshots
 struct LAYER_FRAME_INFO
 {
-    int                     m_iLayer;
+    QString                 m_sLayer;
     double                  m_dNearPlane;
     double                  m_dFarPlane;
     bool                    m_bTruncated;
@@ -187,14 +190,23 @@ public:
     //! Returns the maximum visibility distance of objects (used by projection matrix)
     double maxDistance() const { return m_dMaxDistance; }
 
-    //! Returns the layer painted by the current render pass (RENDER_LAYER_CLOSE/FAR), -1 outside a layer pass
-    int currentPaintLayer() const { return m_iCurrentPaintLayer; }
+    //! Returns the layer painted by the current render pass, empty outside a layer pass
+    QString currentPaintLayer() const { return m_sCurrentPaintLayer; }
 
     //! Returns the maximum light count declared by the layer of the current render pass, RENDER_LAYER_UNLIMITED_LIGHTS outside a layer pass
     int currentLayerMaxLights() const;
 
-    //! Returns the far plane of the close layer conditioned for the current frame
-    double closeLayerFar() const { return m_dCloseLayerFar; }
+    //! Returns the conditioned range of the layer painted by the current render pass, invalid outside a layer pass
+    SRenderDepthRange currentLayerRange() const;
+
+    //! Returns the reduced-size factor of the layer painted by the current render pass, 1.0 outside a layer pass
+    double currentLayerScale() const { return m_dCurrentLayerScale; }
+
+    //! Returns the conditioned ranges of the layers painted after the current one, nearest last in paint order
+    QVector<SRenderDepthRange> nearerLayerRanges() const;
+
+    //! Returns true when the depth interval \a dDepthMin to \a dDepthMax contributes nothing to the current layer pass
+    bool skipDepthInterval(double dDepthMin, double dDepthMax) const;
 
     //! Returns the per-layer info retained from the last painted frame, copy under lock
     QVector<LAYER_FRAME_INFO> lastLayerFrames() const;
@@ -295,11 +307,13 @@ protected:
     double                  m_dFOV;
     double                  m_dFocus;
     double                  m_dGain;
-    int                     m_iCurrentPaintLayer;
+    QString                 m_sCurrentPaintLayer;
+    double                  m_dCurrentLayerScale;
     int                     m_iCurrentLayerMaxLights;
+    QMap<QString, SRenderDepthRange> m_mLayerRanges;
+    QStringList             m_sLayerOrder;
     double                  m_dMinDistance;
     double                  m_dMaxDistance;
-    double                  m_dCloseLayerFar;
     QVector<Math::CPlane3>  m_pFrustumPlanes;
     QVector<LAYER_FRAME_INFO> m_vLastLayerFrames;
     QVector<MESH_DRAW_INFO>  m_vCurrentMeshDraws; ///< Mesh outcomes of the running layer pass

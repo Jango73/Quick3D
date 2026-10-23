@@ -36,6 +36,8 @@ QVector<QSP<CComponent> > CComponentLoader::load(const QString& sBaseFile, C3DSc
     QString sCamera3;
     QString sCamera4;
     QString sControlled;
+    bool bLayersSeen = false;
+    bool bLayersValid = false;
 
     // Note: no implicit environment reset here. Callers reset the scene
     // environment explicitly before loading, so a load never depends on a
@@ -66,6 +68,11 @@ QVector<QSP<CComponent> > CComponentLoader::load(const QString& sBaseFile, C3DSc
         else if (xNode.tag() == ParamName_Environment)
         {
             pScene->loadEnvironment(xNode);
+        }
+        else if (xNode.tag() == ParamName_Layers)
+        {
+            bLayersSeen = true;
+            bLayersValid = pScene->loadLayers(xNode);
         }
         else if (xNode.tag() == ParamName_Components)
         {
@@ -127,6 +134,19 @@ QVector<QSP<CComponent> > CComponentLoader::load(const QString& sBaseFile, C3DSc
         {
             pScene->setController(pControlledFound->controller());
         }
+    }
+
+    if (bLayersSeen == false)
+    {
+        LOG_METHOD_ERROR(QString("Scene holds no Layers node, render layers are scene declared"));
+        LOG_METHOD_DEBUG(QString("Scene file: %1").arg(sBaseFile));
+
+        return QVector<QSP<CComponent> >();
+    }
+
+    if (bLayersValid == false)
+    {
+        return QVector<QSP<CComponent> >();
     }
 
     LOG_METHOD_INFO("Finished loading scene");

@@ -91,6 +91,10 @@ uniform int             u_inverse_polarity_enable;
 
 uniform int             u_lightrays_enable;
 
+uniform float           u_contrast;
+uniform float           u_saturation;
+uniform float           u_brightness;
+
 // Interpolated values
 
 in vec3			vo_position;
@@ -1071,12 +1075,8 @@ vec3 getShadow()
 
 vec3 postEffects(vec3 rgb, vec2 xy)
 {
-    // Contrast / saturation / brightness
-    #define CONTRAST 1.0
-    #define SATURATION 1.0
-    #define BRIGHTNESS 1.0
-
-    rgb = mix(vec3(0.5), mix(vec3(dot(vec3(0.2125, 0.7154, 0.0721), rgb * BRIGHTNESS)), rgb * BRIGHTNESS, SATURATION), CONTRAST);
+    // Contrast / saturation / brightness from the rendering environment
+    rgb = mix(vec3(0.5), mix(vec3(dot(vec3(0.2125, 0.7154, 0.0721), rgb * u_brightness)), rgb * u_brightness, u_saturation), u_contrast);
 
     // Vignette
     // rgb *= 0.4 + 0.5 * pow(40.0 * xy.x * xy.y * (1.0 - xy.x) * (1.0 - xy.y), 0.2);

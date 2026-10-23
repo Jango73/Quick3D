@@ -109,6 +109,15 @@ public:
     //! Sets the ozone column amount scaling the nominal ozone absorption to \a value
     void setOzoneAmount(double value);
 
+    //! Sets the final pass contrast multiplier to \a value
+    void setContrast(double value);
+
+    //! Sets the final pass saturation multiplier to \a value
+    void setSaturation(double value);
+
+    //! Sets the final pass brightness multiplier to \a value
+    void setBrightness(double value);
+
     //!
     void setWindLevel(double value);
 
@@ -247,6 +256,15 @@ public:
 
     //! Returns the ozone column amount scaling the nominal ozone absorption
     double ozoneAmount() const { return m_tEnvironment.ozoneAmount(); }
+
+    //! Returns the final pass contrast multiplier
+    double contrast() const { return m_tEnvironment.contrast(); }
+
+    //! Returns the final pass saturation multiplier
+    double saturation() const { return m_tEnvironment.saturation(); }
+
+    //! Returns the final pass brightness multiplier
+    double brightness() const { return m_tEnvironment.brightness(); }
 
     //!
     double time() const { return m_dTime; }

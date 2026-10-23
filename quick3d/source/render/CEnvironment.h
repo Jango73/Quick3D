@@ -19,10 +19,11 @@ class CSkyModel;
 /*!
     Value object holding the rendering environment of a scene.
 
-    Groups the six environment settings (atmosphere altitude, fog distances,
-    base colors, sky model, ozone amount) so C3DScene stays a scene graph
-    instead of a god-object. Attribute parsing, color parsing and validation
-    live here, scene code only delegates.
+    Groups the environment settings (atmosphere altitude, fog distances,
+    base colors, sky model, ozone amount, final pass contrast, saturation,
+    brightness) so C3DScene stays a scene graph instead of a god-object.
+    Attribute parsing, color parsing and validation live here, scene code
+    only delegates.
 */
 class QUICK3D_EXPORT CEnvironment
 {
@@ -64,6 +65,15 @@ public:
     //! Negative values are clipped to zero, which disables ozone absorption.
     void setOzoneAmount(double value);
 
+    //! Sets the final pass contrast multiplier to \a value
+    void setContrast(double value) { m_dContrast = value; }
+
+    //! Sets the final pass saturation multiplier to \a value
+    void setSaturation(double value) { m_dSaturation = value; }
+
+    //! Sets the final pass brightness multiplier to \a value
+    void setBrightness(double value) { m_dBrightness = value; }
+
     //-------------------------------------------------------------------------------------------------
     // Getters
     //-------------------------------------------------------------------------------------------------
@@ -101,6 +111,15 @@ public:
     //! Returns the ozone column amount scaling the nominal ozone absorption
     double ozoneAmount() const { return m_dOzoneAmount; }
 
+    //! Returns the final pass contrast multiplier
+    double contrast() const { return m_dContrast; }
+
+    //! Returns the final pass saturation multiplier
+    double saturation() const { return m_dSaturation; }
+
+    //! Returns the final pass brightness multiplier
+    double brightness() const { return m_dBrightness; }
+
     //-------------------------------------------------------------------------------------------------
     // Control methods
     //-------------------------------------------------------------------------------------------------
@@ -137,4 +156,7 @@ protected:
     double           m_dUnderwaterFogDistance;
     QSP<CSkyModel>   m_pSkyModel;
     double           m_dOzoneAmount;
+    double           m_dContrast;
+    double           m_dSaturation;
+    double           m_dBrightness;
 };

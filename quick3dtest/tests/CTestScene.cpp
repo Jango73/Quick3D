@@ -1144,6 +1144,10 @@ void CTestScene::testEnvironmentDefaultsMatchConstants()
 
     QCOMPARE(cScene.ozoneAmount(), EnvironmentDefaults::OzoneAmount);
 
+    QCOMPARE(cScene.contrast(), EnvironmentDefaults::Contrast);
+    QCOMPARE(cScene.saturation(), EnvironmentDefaults::Saturation);
+    QCOMPARE(cScene.brightness(), EnvironmentDefaults::Brightness);
+
     QVERIFY2(cScene.skyModel().data() != nullptr, "Scene should own a sky model");
     QCOMPARE(cScene.skyModelName(), QString(SkyModels::PhysicalName));
     QCOMPARE(cScene.skyModelId(), SkyModels::PhysicalId);
@@ -1162,7 +1166,7 @@ void CTestScene::testEnvironmentLoadsFromXmlNode()
 
     QString sXml =
         "<Scene>"
-        "    <Environment AtmosphereAltitude=\"200000.0\" FogMinimumDistance=\"25.0\" UnderwaterFogDistance=\"500.0\" SkyModel=\"Physical\" OzoneAmount=\"1.5\">"
+        "    <Environment AtmosphereAltitude=\"200000.0\" FogMinimumDistance=\"25.0\" UnderwaterFogDistance=\"500.0\" SkyModel=\"Physical\" OzoneAmount=\"1.5\" Contrast=\"1.2\" Saturation=\"0.9\" Brightness=\"1.1\">"
         "        <GlobalAmbient r=\"0.1\" g=\"0.2\" b=\"0.3\" />"
         "        <SkyColor r=\"0.4\" g=\"0.5\" b=\"0.6\" />"
         "        <FogColor r=\"0.7\" g=\"0.8\" b=\"0.9\" />"
@@ -1180,6 +1184,9 @@ void CTestScene::testEnvironmentLoadsFromXmlNode()
     QCOMPARE(cScene.skyModelName(), QString("Physical"));
     QCOMPARE(cScene.skyModelId(), SkyModels::PhysicalId);
     QCOMPARE(cScene.ozoneAmount(), 1.5);
+    QCOMPARE(cScene.contrast(), 1.2);
+    QCOMPARE(cScene.saturation(), 0.9);
+    QCOMPARE(cScene.brightness(), 1.1);
 
     QCOMPARE(cScene.globalAmbientColor().X, 0.1);
     QCOMPARE(cScene.globalAmbientColor().Y, 0.2);

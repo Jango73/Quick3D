@@ -307,6 +307,9 @@ void CGLWidgetScene::setupEnvironment(CRenderContext* pContext, QOpenGLShaderPro
         pProgram->setUniformValue("u_sun_color", vSunColor);
         pProgram->setUniformValue("u_sun_intensity", (GLfloat) m_dSunIntensity);
         pProgram->setUniformValue("u_lightrays_enable", (GLint) (m_bLightRaysEnabled ? 1 : 0));
+        pProgram->setUniformValue("u_contrast", (GLfloat) contrast());
+        pProgram->setUniformValue("u_saturation", (GLfloat) saturation());
+        pProgram->setUniformValue("u_brightness", (GLfloat) brightness());
 
         QSP<CSkyModel> pSkyModel = skyModel();
 

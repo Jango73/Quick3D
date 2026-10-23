@@ -508,6 +508,9 @@
     <xs:attribute type="xs:float" name="UnderwaterFogDistance" use="optional"/>
     <xs:attribute type="xs:string" name="SkyModel" use="optional"/>
     <xs:attribute type="xs:float" name="OzoneAmount" use="optional"/>
+    <xs:attribute type="xs:float" name="Contrast" use="optional"/>
+    <xs:attribute type="xs:float" name="Saturation" use="optional"/>
+    <xs:attribute type="xs:float" name="Brightness" use="optional"/>
   </xs:complexType>
   <xs:complexType name="PhysicsType">
     <xs:simpleContent>

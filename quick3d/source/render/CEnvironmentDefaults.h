@@ -80,6 +80,10 @@ constexpr double FogColorB = 0.5;
 
 constexpr double OzoneAmount = 1.0;
 
+constexpr double Contrast = 1.3;
+constexpr double Saturation = 1.0;
+constexpr double Brightness = 1.0;
+
 // Sky display exposure. The physical sky outputs small radiance values, this
 // exposure maps them to display range, calibrated so the noon zenith matches
 // the previous look

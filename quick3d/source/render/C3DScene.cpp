@@ -448,6 +448,36 @@ void C3DScene::setOzoneAmount(double value)
 //-------------------------------------------------------------------------------------------------
 
 /*!
+    Sets the final pass contrast multiplier to \a value.
+*/
+void C3DScene::setContrast(double value)
+{
+    m_tEnvironment.setContrast(value);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Sets the final pass saturation multiplier to \a value.
+*/
+void C3DScene::setSaturation(double value)
+{
+    m_tEnvironment.setSaturation(value);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Sets the final pass brightness multiplier to \a value.
+*/
+void C3DScene::setBrightness(double value)
+{
+    m_tEnvironment.setBrightness(value);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
     Sets the force of the wind to \a value.
 */
 void C3DScene::setWindLevel(double value)

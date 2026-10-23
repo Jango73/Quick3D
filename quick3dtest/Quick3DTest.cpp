@@ -568,6 +568,27 @@ void Quick3DTest::onEnvironmentClicked()
     pUnderwaterFog->setValue(m_pScene->underwaterFogDistance());
     pLayout->addRow("Underwater fog distance", pUnderwaterFog);
 
+    QDoubleSpinBox* pContrast = new QDoubleSpinBox(&tDialog);
+    pContrast->setRange(0.0, 3.0);
+    pContrast->setSingleStep(0.05);
+    pContrast->setDecimals(2);
+    pContrast->setValue(m_pScene->contrast());
+    pLayout->addRow("Contrast", pContrast);
+
+    QDoubleSpinBox* pSaturation = new QDoubleSpinBox(&tDialog);
+    pSaturation->setRange(0.0, 3.0);
+    pSaturation->setSingleStep(0.05);
+    pSaturation->setDecimals(2);
+    pSaturation->setValue(m_pScene->saturation());
+    pLayout->addRow("Saturation", pSaturation);
+
+    QDoubleSpinBox* pBrightness = new QDoubleSpinBox(&tDialog);
+    pBrightness->setRange(0.0, 3.0);
+    pBrightness->setSingleStep(0.05);
+    pBrightness->setDecimals(2);
+    pBrightness->setValue(m_pScene->brightness());
+    pLayout->addRow("Brightness", pBrightness);
+
     CColorEdit* pGlobalAmbientEdit = new CColorEdit(&tDialog);
     pGlobalAmbientEdit->setColor(CColorSelector::vectorToColor(m_pScene->globalAmbientColor()));
     pLayout->addRow("Global ambient", pGlobalAmbientEdit);
@@ -600,6 +621,9 @@ void Quick3DTest::onEnvironmentClicked()
     connect(pAtmosphereAltitude, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this](double dValue) { m_pScene->setAtmosphereAltitude(dValue); });
     connect(pFogMinimum, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this](double dValue) { m_pScene->setFogMinimumDistance(dValue); });
     connect(pUnderwaterFog, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this](double dValue) { m_pScene->setUnderwaterFogDistance(dValue); });
+    connect(pContrast, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this](double dValue) { m_pScene->setContrast(dValue); });
+    connect(pSaturation, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this](double dValue) { m_pScene->setSaturation(dValue); });
+    connect(pBrightness, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this](double dValue) { m_pScene->setBrightness(dValue); });
 
     tDialog.exec();
 }

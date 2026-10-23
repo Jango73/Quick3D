@@ -38,6 +38,9 @@ void CEnvironment::resetToDefaults()
 
     m_pSkyModel = CSkyModelFactory::create(SkyModels::DefaultName);
     m_dOzoneAmount = EnvironmentDefaults::OzoneAmount;
+    m_dContrast = EnvironmentDefaults::Contrast;
+    m_dSaturation = EnvironmentDefaults::Saturation;
+    m_dBrightness = EnvironmentDefaults::Brightness;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -63,6 +66,10 @@ void CEnvironment::loadFromXml(const CXMLNode& xEnvironment)
     {
         setOzoneAmount(dOzoneAmount);
     }
+
+    readDoubleAttribute(xEnvironment, ParamName_Contrast, m_dContrast);
+    readDoubleAttribute(xEnvironment, ParamName_Saturation, m_dSaturation);
+    readDoubleAttribute(xEnvironment, ParamName_Brightness, m_dBrightness);
 
     readColorAttribute(xEnvironment, ParamName_GlobalAmbient, m_vGlobalAmbientColor);
     readColorAttribute(xEnvironment, ParamName_FogColor, m_vFogBaseColor);

@@ -189,6 +189,29 @@ public:
     //! Dumps contents to a stream
     virtual void dump(QTextStream& stream, int iIdent) Q_DECL_OVERRIDE;
 
+    //-------------------------------------------------------------------------------------------------
+    // Protected methods
+    //-------------------------------------------------------------------------------------------------
+
+protected:
+
+    //! Selects the shader program for the given context (billboard, lines or mesh)
+    QOpenGLShaderProgram* programForContext(CRenderContext* pContext);
+
+    //! Binds the program to the given context
+    void bindProgram(CRenderContext* pContext, QOpenGLShaderProgram* pProgram);
+
+    //! Applies the pass-invariant state (uniforms, textures, environment). Runs only when the material changes
+    virtual void applyStaticState(CRenderContext* pContext, QOpenGLShaderProgram* pProgram);
+
+    //! Binds the diffuse texture maps. Runs only when the material changes
+    virtual void bindDiffuseMaps(CRenderContext* pContext, QOpenGLShaderProgram* pProgram);
+
+    //! Applies the per-draw state. Runs on every activate, even on cache hit
+    virtual void applyDynamicState(CRenderContext* pContext, QOpenGLShaderProgram* pProgram);
+
+public:
+
     //!
     static Math::CVector4 black()	{ return Math::CVector4(0.0, 0.0, 0.0, 1.0); }
     static Math::CVector4 white()	{ return Math::CVector4(1.0, 1.0, 1.0, 1.0); }

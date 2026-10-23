@@ -17,6 +17,7 @@ using namespace Math;
 CTiledMaterial::CTiledMaterial(C3DScene* pScene)
     : CMaterial(pScene)
     , m_iLevels(18)
+    , m_pLastBoundProgram(nullptr)
 {
     connect(&m_tClient, SIGNAL(tileReady(QString)), this, SLOT(onTileReady(QString)));
 }
@@ -66,28 +67,42 @@ void CTiledMaterial::setCurrentPositionAndLevel(const CGeoloc& gPosition, int iL
 
 //-------------------------------------------------------------------------------------------------
 
-QOpenGLShaderProgram* CTiledMaterial::activate(CRenderContext* pContext)
+void CTiledMaterial::bindDiffuseMaps(CRenderContext* pContext, QOpenGLShaderProgram* pProgram)
 {
-    QOpenGLShaderProgram* pProgram = CMaterial::activate(pContext);
+    Q_UNUSED(pContext);
 
-    if (pProgram != nullptr)
+    // The tile bound in applyDynamicState() is the only diffuse source:
+    // keep the base diffuse path disabled
+    pProgram->setUniformValue("u_texture_diffuse_enable", (GLint) 0);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CTiledMaterial::applyDynamicState(CRenderContext* pContext, QOpenGLShaderProgram* pProgram)
+{
+    Q_UNUSED(pContext);
+
+    if (pProgram == m_pLastBoundProgram && m_sCurrentQuadKey == m_sLastBoundQuadKey)
     {
-        pProgram->setUniformValue("u_texture_diffuse_enable", (GLint) 0);
-
-        if (m_mTiles.contains(m_sCurrentQuadKey))
-        {
-            if (m_mTiles[m_sCurrentQuadKey].m_pTexture != nullptr)
-            {
-                m_mTiles[m_sCurrentQuadKey].m_tLastUsed = QDateTime::currentDateTime();
-                m_mTiles[m_sCurrentQuadKey].m_pTexture->activate();
-
-                pProgram->setUniformValue("u_texture_diffuse_enable", (GLint) 1);
-                pProgram->setUniformValue("u_texture_diffuse_0", (GLint) 1);
-            }
-        }
+        return;
     }
 
-    return pProgram;
+    m_pLastBoundProgram = pProgram;
+    m_sLastBoundQuadKey = m_sCurrentQuadKey;
+
+    pProgram->setUniformValue("u_texture_diffuse_enable", (GLint) 0);
+
+    if (m_mTiles.contains(m_sCurrentQuadKey))
+    {
+        if (m_mTiles[m_sCurrentQuadKey].m_pTexture != nullptr)
+        {
+            m_mTiles[m_sCurrentQuadKey].m_tLastUsed = QDateTime::currentDateTime();
+            m_mTiles[m_sCurrentQuadKey].m_pTexture->activate();
+
+            pProgram->setUniformValue("u_texture_diffuse_enable", (GLint) 1);
+            pProgram->setUniformValue("u_texture_diffuse_0", (GLint) 1);
+        }
+    }
 }
 
 //-------------------------------------------------------------------------------------------------

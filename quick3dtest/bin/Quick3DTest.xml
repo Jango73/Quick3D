@@ -514,8 +514,8 @@
 
         <Component Name="Man1" Class="CMan">
             <Geoloc Latitude="19.237731" Longitude="10.896700" Altitude="0.0" />
-            <!-- Drive repro heading: faces the northward run used by drive-2deg.sh -->
-            <Rotation x="0.0" y="60.0" z="0.0" />
+            <!-- South-facing heading for draw-call measurements -->
+            <Rotation x="0.0" y="180.0" z="0.0" />
             <Physics PhysicsActive="1" MassKG="80" Drag="0.01" Friction="2.0" />
             <Component Name="Head" Class="CCamera">
                 <Position x="0.0" y="1.8" z="0.0" />

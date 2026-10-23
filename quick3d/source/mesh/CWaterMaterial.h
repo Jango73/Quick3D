@@ -47,8 +47,8 @@ public:
     // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Activates this material for rendering
-    virtual QOpenGLShaderProgram* activate(CRenderContext* pContext);
+    //! Applies the wave uniforms on top of the base static state
+    virtual void applyStaticState(CRenderContext* pContext, QOpenGLShaderProgram* pProgram) Q_DECL_OVERRIDE;
 
     //! Returns the altitude at the given geolocation
     virtual double getHeightAt(const CGeoloc& gPosition, double* pRigidness = nullptr);

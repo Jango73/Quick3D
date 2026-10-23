@@ -143,6 +143,12 @@ public:
     //!
     void paint(CRenderContext* pContext);
 
+    //! Paints the opaque phase (terrain and bounded meshes) for a layer pass
+    void paintOpaquePhase(CRenderContext* pContext);
+
+    //! Paints the transparent phase (water) for a layer pass
+    void paintWaterPhase(CRenderContext* pContext);
+
     //!
     bool drawable();
 

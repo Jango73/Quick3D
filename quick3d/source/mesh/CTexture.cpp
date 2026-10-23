@@ -179,6 +179,25 @@ void CTexture::ensureUploaded()
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tImage.width(), tImage.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, tImage.bits());
 
     GL_glGenerateMipmap(GL_TEXTURE_2D);
+
+    // Sampling parameters live on the texture object: set them once at
+    // upload time instead of on every bind
+    if (m_bIsDynamic)
+    {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    }
+    else
+    {
+        glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -199,23 +218,6 @@ void CTexture::activate(int iIndex)
     }
 
     glBindTexture(GL_TEXTURE_2D, m_uiGLTexture);
-
-    if (m_bIsDynamic)
-    {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    }
-    else
-    {
-        glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    }
 }
 
 //-------------------------------------------------------------------------------------------------

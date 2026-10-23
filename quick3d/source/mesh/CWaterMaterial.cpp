@@ -21,19 +21,14 @@ CWaterMaterial::~CWaterMaterial()
 {
 }
 
-QOpenGLShaderProgram* CWaterMaterial::activate(CRenderContext* pContext)
+void CWaterMaterial::applyStaticState(CRenderContext* pContext, QOpenGLShaderProgram* pProgram)
 {
-    QOpenGLShaderProgram* pProgram = CMaterial::activate(pContext);
+    CMaterial::applyStaticState(pContext, pProgram);
 
-    if (pProgram != nullptr)
-    {
-        double dAmplitude = CWaterWaves::amplitudeFromWindLevel(m_pScene->windLevel());
+    double dAmplitude = CWaterWaves::amplitudeFromWindLevel(m_pScene->windLevel());
 
-        pProgram->setUniformValue("u_wave_enable", (GLint) 1);
-        pProgram->setUniformValue("u_wave_amplitude", (GLfloat) (float) dAmplitude);
-    }
-
-    return pProgram;
+    pProgram->setUniformValue("u_wave_enable", (GLint) 1);
+    pProgram->setUniformValue("u_wave_amplitude", (GLfloat) (float) dAmplitude);
 }
 
 double CWaterMaterial::getHeightAt(const CGeoloc& gPosition, double* pRigidness)

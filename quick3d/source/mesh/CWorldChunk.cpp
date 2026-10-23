@@ -246,75 +246,95 @@ void CWorldChunk::paint(CRenderContext* pContext)
         {
             // pContext->tStatistics.m_iNumFrustumTests++;
 
-            bool bSample = CTimeSampler::getInstance()->isEnabled();
-            QElapsedTimer tTimer;
-
-            if (m_pTerrain && m_pTerrain->isOK())
-            {
-                if (bSample == true)
-                {
-                    tTimer.start();
-                }
-
-                CMaterial* pMaterial = m_pAutoTerrain->material();
-
-                CTiledMaterial* pTiled = dynamic_cast<CTiledMaterial*>(pMaterial);
-
-                if (pTiled != nullptr)
-                {
-                    pTiled->setCurrentPositionAndLevel(m_gOriginalGeoloc, m_pTerrain->level());
-                }
-
-                m_pTerrain->paint(pContext);
-
-                if (bSample == true)
-                {
-                    pContext->tStatistics.m_iChunkTerrainNs += tTimer.nsecsElapsed();
-                }
-            }
-
-            if (m_pWater && m_pWater->isOK())
-            {
-                if (bSample == true)
-                {
-                    tTimer.start();
-                }
-
-                glDisable(GL_CULL_FACE);
-
-                m_pWater->paint(pContext);
-
-                glEnable(GL_CULL_FACE);
-
-                if (bSample == true)
-                {
-                    pContext->tStatistics.m_iChunkWaterNs += tTimer.nsecsElapsed();
-                }
-            }
-
-            if (m_bOK)
-            {
-                if (bSample == true)
-                {
-                    tTimer.start();
-                }
-
-                foreach (CBoundedMeshInstances* pBoundedMeshInstance, m_vBoundedMeshes)
-                {
-                    pBoundedMeshInstance->paint(pContext);
-                }
-
-                foreach (QString sBushName, m_vBushMeshes.keys())
-                {
-                    m_vBushMeshes[sBushName]->paint(pContext, this);
-                }
-
-                if (bSample == true)
-                {
-                    pContext->tStatistics.m_iChunkBoundedNs += tTimer.nsecsElapsed();
-                }
-            }
+            paintOpaquePhase(pContext);
+            paintWaterPhase(pContext);
         }
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CWorldChunk::paintOpaquePhase(CRenderContext* pContext)
+{
+    setUsedNow();
+
+    bool bSample = CTimeSampler::getInstance()->isEnabled();
+    QElapsedTimer tTimer;
+
+    if (m_pTerrain && m_pTerrain->isOK())
+    {
+        if (bSample == true)
+        {
+            tTimer.start();
+        }
+
+        CMaterial* pMaterial = m_pAutoTerrain->material();
+
+        CTiledMaterial* pTiled = dynamic_cast<CTiledMaterial*>(pMaterial);
+
+        if (pTiled != nullptr)
+        {
+            pTiled->setCurrentPositionAndLevel(m_gOriginalGeoloc, m_pTerrain->level());
+        }
+
+        m_pTerrain->paint(pContext);
+
+        if (bSample == true)
+        {
+            pContext->tStatistics.m_iChunkTerrainNs += tTimer.nsecsElapsed();
+        }
+    }
+
+    if (m_bOK)
+    {
+        if (bSample == true)
+        {
+            tTimer.start();
+        }
+
+        foreach (CBoundedMeshInstances* pBoundedMeshInstance, m_vBoundedMeshes)
+        {
+            pBoundedMeshInstance->paint(pContext);
+        }
+
+        foreach (QString sBushName, m_vBushMeshes.keys())
+        {
+            m_vBushMeshes[sBushName]->paint(pContext, this);
+        }
+
+        if (bSample == true)
+        {
+            pContext->tStatistics.m_iChunkBoundedNs += tTimer.nsecsElapsed();
+        }
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void CWorldChunk::paintWaterPhase(CRenderContext* pContext)
+{
+    if (m_pWater == nullptr || m_pWater->isOK() == false)
+    {
+        return;
+    }
+
+    bool bSample = CTimeSampler::getInstance()->isEnabled();
+    QElapsedTimer tTimer;
+
+    if (bSample == true)
+    {
+        tTimer.start();
+    }
+
+    glDisable(GL_CULL_FACE);
+
+    m_pWater->paint(pContext);
+
+    glEnable(GL_CULL_FACE);
+
+    if (bSample == true)
+    {
+        pContext->tStatistics.m_iChunkWaterNs += tTimer.nsecsElapsed();
     }
 }
 

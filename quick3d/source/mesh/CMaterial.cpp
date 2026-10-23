@@ -327,20 +327,7 @@ QOpenGLShaderProgram* CMaterial::activate(CRenderContext* pContext)
         tTimer.start();
     }
 
-    QOpenGLShaderProgram* pProgram = nullptr;
-
-    if (m_bBillBoard)
-    {
-        pProgram = pContext->scene()->shaders()->getShader(SP_Standard_Billboard);
-    }
-    else if (m_bLines)
-    {
-        pProgram = pContext->scene()->shaders()->getShader(SP_Special_Lines);
-    }
-    else
-    {
-        pProgram = pContext->scene()->shaders()->getShader(SP_Standard_Mesh);
-    }
+    QOpenGLShaderProgram* pProgram = programForContext(pContext);
 
     if (pProgram != nullptr)
     {
@@ -348,109 +335,12 @@ QOpenGLShaderProgram* CMaterial::activate(CRenderContext* pContext)
         {
             pContext->pActiveMaterial = this;
 
-            m_pScene->makeCurrentRenderingContext();
+            bindProgram(pContext, pProgram);
 
-            pProgram->bind();
-
-            // IR setup
-            if (pContext->bUseIR)
-            {
-                pProgram->setUniformValue("u_IR_enable", (GLint) 1);
-                pProgram->setUniformValue("u_IR_factor", (GLfloat) m_dIRFactor);
-            }
-            else
-            {
-                pProgram->setUniformValue("u_IR_enable", (GLint) 0);
-                pProgram->setUniformValue("u_IR_factor", (GLfloat) 1.0);
-            }
-
-            // Inverse polarity setup
-            if (pContext->bUseInversePolarity)
-            {
-                pProgram->setUniformValue("u_inverse_polarity_enable", (GLint) 1);
-            }
-            else
-            {
-                pProgram->setUniformValue("u_inverse_polarity_enable", (GLint) 0);
-            }
-
-            // Sky setup
-            if (m_bUseSky)
-            {
-                pProgram->setUniformValue("u_sky_enable", (GLint) 1);
-            }
-            else
-            {
-                pProgram->setUniformValue("u_sky_enable", (GLint) 0);
-            }
-
-            // Wave setup
-            pProgram->setUniformValue("u_wave_enable", (GLint) 0);
-
-            // Standard setup
-            pProgram->setUniformValue("u_material_ambient", QVector4D(m_cAmbient.X, m_cAmbient.Y, m_cAmbient.Z, m_cAmbient.W));
-            pProgram->setUniformValue("u_material_diffuse", QVector4D(m_cDiffuse.X, m_cDiffuse.Y, m_cDiffuse.Z, m_cDiffuse.W));
-            pProgram->setUniformValue("u_material_specular", QVector4D(m_cSpecular.X, m_cSpecular.Y, m_cSpecular.Z, m_cSpecular.W));
-            pProgram->setUniformValue("u_material_subdermal", QVector4D(m_cSubdermal.X, m_cSubdermal.Y, m_cSubdermal.Z, m_cSubdermal.W));
-            pProgram->setUniformValue("u_material_self_illum", (GLfloat) m_dSelfIllumination);
-            pProgram->setUniformValue("u_material_shininess", (GLfloat) m_dShininess);
-            pProgram->setUniformValue("u_material_metalness", (GLfloat) m_dMetalness);
-            pProgram->setUniformValue("u_material_sss_factor", (GLfloat) m_dSSSFactor);
-            pProgram->setUniformValue("u_material_sss_radius", (GLfloat) m_dSSSRadius);
-
-            if (m_vDiffuseTextures.count() > 0)
-            {
-                for (int iIndex = 0; iIndex < m_vDiffuseTextures.count() && iIndex < 8; iIndex++)
-                {
-                    m_vDiffuseTextures[iIndex]->activate(iIndex);
-                }
-
-                // Fallback : textures created before the first frame have no GPU
-                // counterpart yet (no OpenGL context while the scene loads). If the
-                // upload failed, stay on the untextured path instead of sampling
-                // unbound units (pure black output)
-                bool bTexturesReady = true;
-
-                for (int iIndex = 0; iIndex < m_vDiffuseTextures.count() && iIndex < 8; iIndex++)
-                {
-                    if (m_vDiffuseTextures[iIndex]->glTexture() == 0)
-                    {
-                        bTexturesReady = false;
-                        break;
-                    }
-                }
-
-                if (bTexturesReady)
-                {
-                    pProgram->setUniformValue("u_texture_diffuse_enable", (GLint) 1);
-
-                    pProgram->setUniformValue("u_texture_diffuse_0", (GLint) 1);
-                    pProgram->setUniformValue("u_texture_diffuse_1", (GLint) 2);
-                    pProgram->setUniformValue("u_texture_diffuse_2", (GLint) 3);
-                    pProgram->setUniformValue("u_texture_diffuse_3", (GLint) 4);
-                    pProgram->setUniformValue("u_texture_diffuse_4", (GLint) 5);
-                    pProgram->setUniformValue("u_texture_diffuse_5", (GLint) 6);
-                    pProgram->setUniformValue("u_texture_diffuse_6", (GLint) 7);
-                    pProgram->setUniformValue("u_texture_diffuse_7", (GLint) 8);
-                }
-                else
-                {
-                    pProgram->setUniformValue("u_texture_diffuse_enable", (GLint) 0);
-                }
-            }
-            else
-            {
-                pProgram->setUniformValue("u_texture_diffuse_enable", (GLint) 0);
-            }
-
-            // Bump map setup
-
-            pProgram->setUniformValue("u_texture_bump_enable", (GLint) 0);
-            pProgram->setUniformValue("u_texture_bump", (GLint) 1);
-
-            // Environment setup
-            pContext->scene()->setupEnvironment(pContext, pProgram, m_bUseSky);
+            applyStaticState(pContext, pProgram);
         }
+
+        applyDynamicState(pContext, pProgram);
     }
 
     if (bSample == true)
@@ -459,6 +349,171 @@ QOpenGLShaderProgram* CMaterial::activate(CRenderContext* pContext)
     }
 
     return pProgram;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Selects the shader program for the given context.
+*/
+QOpenGLShaderProgram* CMaterial::programForContext(CRenderContext* pContext)
+{
+    if (m_bBillBoard)
+    {
+        return pContext->scene()->shaders()->getShader(SP_Standard_Billboard);
+    }
+
+    if (m_bLines)
+    {
+        return pContext->scene()->shaders()->getShader(SP_Special_Lines);
+    }
+
+    return pContext->scene()->shaders()->getShader(SP_Standard_Mesh);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Binds the given program to the given context.
+*/
+void CMaterial::bindProgram(CRenderContext* pContext, QOpenGLShaderProgram* pProgram)
+{
+    Q_UNUSED(pContext);
+
+    m_pScene->makeCurrentRenderingContext();
+
+    pProgram->bind();
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Applies the pass-invariant state: uniforms, diffuse maps and environment.
+    Runs only when the material changes.
+*/
+void CMaterial::applyStaticState(CRenderContext* pContext, QOpenGLShaderProgram* pProgram)
+{
+    // IR setup
+    if (pContext->bUseIR)
+    {
+        pProgram->setUniformValue("u_IR_enable", (GLint) 1);
+        pProgram->setUniformValue("u_IR_factor", (GLfloat) m_dIRFactor);
+    }
+    else
+    {
+        pProgram->setUniformValue("u_IR_enable", (GLint) 0);
+        pProgram->setUniformValue("u_IR_factor", (GLfloat) 1.0);
+    }
+
+    // Inverse polarity setup
+    if (pContext->bUseInversePolarity)
+    {
+        pProgram->setUniformValue("u_inverse_polarity_enable", (GLint) 1);
+    }
+    else
+    {
+        pProgram->setUniformValue("u_inverse_polarity_enable", (GLint) 0);
+    }
+
+    // Sky setup
+    if (m_bUseSky)
+    {
+        pProgram->setUniformValue("u_sky_enable", (GLint) 1);
+    }
+    else
+    {
+        pProgram->setUniformValue("u_sky_enable", (GLint) 0);
+    }
+
+    // Wave setup
+    pProgram->setUniformValue("u_wave_enable", (GLint) 0);
+
+    // Standard setup
+    pProgram->setUniformValue("u_material_ambient", QVector4D(m_cAmbient.X, m_cAmbient.Y, m_cAmbient.Z, m_cAmbient.W));
+    pProgram->setUniformValue("u_material_diffuse", QVector4D(m_cDiffuse.X, m_cDiffuse.Y, m_cDiffuse.Z, m_cDiffuse.W));
+    pProgram->setUniformValue("u_material_specular", QVector4D(m_cSpecular.X, m_cSpecular.Y, m_cSpecular.Z, m_cSpecular.W));
+    pProgram->setUniformValue("u_material_subdermal", QVector4D(m_cSubdermal.X, m_cSubdermal.Y, m_cSubdermal.Z, m_cSubdermal.W));
+    pProgram->setUniformValue("u_material_self_illum", (GLfloat) m_dSelfIllumination);
+    pProgram->setUniformValue("u_material_shininess", (GLfloat) m_dShininess);
+    pProgram->setUniformValue("u_material_metalness", (GLfloat) m_dMetalness);
+    pProgram->setUniformValue("u_material_sss_factor", (GLfloat) m_dSSSFactor);
+    pProgram->setUniformValue("u_material_sss_radius", (GLfloat) m_dSSSRadius);
+
+    bindDiffuseMaps(pContext, pProgram);
+
+    // Bump map setup
+
+    pProgram->setUniformValue("u_texture_bump_enable", (GLint) 0);
+    pProgram->setUniformValue("u_texture_bump", (GLint) 1);
+
+    // Environment setup
+    pContext->scene()->setupEnvironment(pContext, pProgram, m_bUseSky);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Binds the diffuse texture maps and selects the diffuse shader path.
+*/
+void CMaterial::bindDiffuseMaps(CRenderContext* pContext, QOpenGLShaderProgram* pProgram)
+{
+    Q_UNUSED(pContext);
+
+    if (m_vDiffuseTextures.count() > 0)
+    {
+        for (int iIndex = 0; iIndex < m_vDiffuseTextures.count() && iIndex < 8; iIndex++)
+        {
+            m_vDiffuseTextures[iIndex]->activate(iIndex);
+        }
+
+        // Fallback : textures created before the first frame have no GPU
+        // counterpart yet (no OpenGL context while the scene loads). If the
+        // upload failed, stay on the untextured path instead of sampling
+        // unbound units (pure black output)
+        bool bTexturesReady = true;
+
+        for (int iIndex = 0; iIndex < m_vDiffuseTextures.count() && iIndex < 8; iIndex++)
+        {
+            if (m_vDiffuseTextures[iIndex]->glTexture() == 0)
+            {
+                bTexturesReady = false;
+                break;
+            }
+        }
+
+        if (bTexturesReady)
+        {
+            pProgram->setUniformValue("u_texture_diffuse_enable", (GLint) 1);
+
+            pProgram->setUniformValue("u_texture_diffuse_0", (GLint) 1);
+            pProgram->setUniformValue("u_texture_diffuse_1", (GLint) 2);
+            pProgram->setUniformValue("u_texture_diffuse_2", (GLint) 3);
+            pProgram->setUniformValue("u_texture_diffuse_3", (GLint) 4);
+            pProgram->setUniformValue("u_texture_diffuse_4", (GLint) 5);
+            pProgram->setUniformValue("u_texture_diffuse_5", (GLint) 6);
+            pProgram->setUniformValue("u_texture_diffuse_6", (GLint) 7);
+            pProgram->setUniformValue("u_texture_diffuse_7", (GLint) 8);
+        }
+        else
+        {
+            pProgram->setUniformValue("u_texture_diffuse_enable", (GLint) 0);
+        }
+    }
+    else
+    {
+        pProgram->setUniformValue("u_texture_diffuse_enable", (GLint) 0);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------
+
+/*!
+    Applies the per-draw state. The base implementation does nothing.
+*/
+void CMaterial::applyDynamicState(CRenderContext* pContext, QOpenGLShaderProgram* pProgram)
+{
+    Q_UNUSED(pContext);
+    Q_UNUSED(pProgram);
 }
 
 //-------------------------------------------------------------------------------------------------

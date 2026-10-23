@@ -66,6 +66,43 @@ Update_PostUpdate avg 0.355 ms/frame calls 277
 Update_VehiclePhysics avg 0.949 ms/frame calls 277
 ```
 
+## Dump 3 (514 frames, post-fix steady state)
+
+```
+Camera_LayerPasses avg 12.774 ms/frame calls 513
+Camera_Layer_Close avg 5.908 ms/frame calls 513
+Camera_Layer_Far avg 6.736 ms/frame calls 513
+Camera_Render avg 13.176 ms/frame calls 513
+Camera_SetupLights avg 0.079 ms/frame calls 513
+Camera_UpdateObjects avg 0.049 ms/frame calls 513
+Chunk_Bounded avg 0.793 ms/frame calls 1026
+Chunk_Terrain avg 2.057 ms/frame calls 1026
+Chunk_Water avg 1.555 ms/frame calls 1026
+Frame_SetText avg 0.100 ms/frame calls 514
+Material_Activate avg 0.643 ms/frame calls 1026
+Mesh_BindState avg 1.089 ms/frame calls 1026
+Mesh_Draw avg 0.492 ms/frame calls 1026
+PaintGL avg 13.271 ms/frame calls 513
+Paint_CAircraft avg 0.017 ms/frame calls 1026
+Paint_CLight avg 0.001 ms/frame calls 1026
+Paint_CMan avg 0.006 ms/frame calls 1026
+Paint_CSkyBox avg 0.143 ms/frame calls 513
+Paint_CTerrestrialVehicle avg 0.146 ms/frame calls 1026
+Paint_CWorldTerrain avg 10.983 ms/frame calls 1026
+Terrain_Collect avg 1.903 ms/frame calls 1026
+Terrain_DrawLoop avg 8.248 ms/frame calls 1026
+UpdateScene avg 2.502 ms/frame calls 514
+Update_Collisions avg 0.077 ms/frame calls 514
+Update_Components avg 1.247 ms/frame calls 514
+Update_Controller avg 0.059 ms/frame calls 514
+Update_PostUpdate avg 0.292 ms/frame calls 514
+Update_VehiclePhysics avg 0.566 ms/frame calls 514
+```
+
 ## Analysis
 
-The actual `glDrawElements` calls (`Mesh_Draw` = 0.955/22.438 ms/frame, ~4 %) are cheap: the time is CPU-side state setup, not the GPU draws. `Material_Activate` = 8.847/22.438 ms/frame (~39 %) dominates: program bind, ~30 `setUniformValue` calls, texture binds and `setupEnvironment` rerun per chunk per pass. `Mesh_BindState` (1.122) and `Terrain_Collect` (1.931) are secondary. `Terrain_DrawLoop` (17.282) exceeds its timed parts (7.761 + 4.825 + 0.781 = 13.367), leaving ~3.9 ms/frame of loop overhead between the timers. Fix direction: cut per-chunk CPU state setup (redundant uniform updates, unsorted state changes), not the draw count.
+The actual `glDrawElements` calls (`Mesh_Draw` = 0.955/22.438 ms/frame, ~4 %) are cheap: the time is CPU-side state setup, not the GPU draws. `Material_Activate` was 8.847/22.438 ms/frame (~39 %): program bind, ~30 `setUniformValue` calls, texture binds and `setupEnvironment` rerun per chunk per pass, with the terrain/water alternation defeating the identity guard and the tiled tail running unconditionally. Controlled A/B (Man1 heading 180, equal draw counts): pre-fix `Material_Activate` 9.302 / `PaintGL` 22.825, post-fix 1.044 / 12.875. Remaining: `Terrain_Collect` (1.6-1.9), `Mesh_BindState` (1.1), loop residual (~3.9).
+
+## Fix summary
+
+`CMaterial::activate()` is now a template method: single identity guard, then virtual `applyStaticState()` (uniforms, diffuse maps via virtual `bindDiffuseMaps()`, environment; runs only on material change) and virtual `applyDynamicState()` (per-draw hook, no-op in base). `CTiledMaterial` lost its `activate()` override and binds the tile in `applyDynamicState()` guarded on quad-key/program change; its static diffuse binding is empty (the tile is the only diffuse source). `CWaterMaterial` sets its wave uniforms in `applyStaticState()`. `CWorldTerrain::paint()` paints an opaque phase (terrain + bounded) then a water phase so the guard hits across consecutive chunks. `CTexture` sets sampling parameters once at upload; `activate()` only binds. Sampling itself is gated behind `--sample` (off by default) and accumulates in `tStatistics` with a once-per-pass flush, so production frames carry no sampling overhead. Files: `quick3d/source/mesh/CMaterial.{h,cpp}`, `quick3d/source/mesh/CTiledMaterial.{h,cpp}`, `quick3d/source/mesh/CWaterMaterial.{h,cpp}`, `quick3d/source/mesh/CTexture.cpp`, `quick3d/source/mesh/CWorldChunk.{h,cpp}`, `quick3d/source/mesh/CWorldTerrain.cpp`, `quick3d/source/render/C3DSceneStatistics.{h,cpp}`, `quick3d/source/render/C3DScene.cpp`, `quick3d/source/render/CCamera.cpp`, `quick3dtest/main.cpp`, `quick3dtest/bin/Quick3DTest.xml` (Man1 heading 180).

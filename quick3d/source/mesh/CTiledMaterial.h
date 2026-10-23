@@ -76,7 +76,7 @@ public:
     //!
     void setLevels(int value) { m_iLevels = value; }
 
-    //! Définit la géolocalisation et le niveau
+    //! Sets the geolocation and the level
     void setCurrentPositionAndLevel(const CGeoloc& gPosition, int iLevel);
 
     //-------------------------------------------------------------------------------------------------
@@ -93,10 +93,13 @@ public:
     // Inherited methods
     //-------------------------------------------------------------------------------------------------
 
-    //! Active ce matériau pour le rendu
-    virtual QOpenGLShaderProgram* activate(CRenderContext* pContext);
+    //! The tiled diffuse source replaces the base diffuse maps: nothing to bind here
+    virtual void bindDiffuseMaps(CRenderContext* pContext, QOpenGLShaderProgram* pProgram) Q_DECL_OVERRIDE;
 
-    //! Applique des transformations à la géolocalisation donnée (ex: Mercator)
+    //! Binds the current tile, once per quad key
+    virtual void applyDynamicState(CRenderContext* pContext, QOpenGLShaderProgram* pProgram) Q_DECL_OVERRIDE;
+
+    //! Applies transformations to the given geolocation (example: Mercator)
     virtual CGeoloc transformGeoloc(const CGeoloc& gPosition);
 
 protected:
@@ -114,7 +117,7 @@ protected:
     //!
     bool quadKeyPresent(QString sKey);
 
-    //! Détruit les textures de terrain inutilisées
+    //! Destroys unused terrain textures
     void collectGarbage();
 
     //-------------------------------------------------------------------------------------------------
@@ -135,4 +138,6 @@ protected:
     CHTTPMapClient          m_tClient;
     QMap<QString, CTile>    m_mTiles;
     QString                 m_sCurrentQuadKey;
+    QString                 m_sLastBoundQuadKey;
+    QOpenGLShaderProgram*   m_pLastBoundProgram;
 };

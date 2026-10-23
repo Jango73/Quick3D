@@ -15,6 +15,9 @@
 #include "Quick3DTest.h"
 #include "tests/CTestQuick3D.h"
 
+// qt-plus
+#include "CTimeSampler.h"
+
 #ifdef USE_VLD
 #include <vld.h>
 #endif
@@ -23,6 +26,7 @@ static const char* sArg_Help        = "--help";         // Shows help
 static const char* sArg_Scene       = "--scene";        // Scene name
 static const char* sArg_RunTests    = "run-tests";      // Unit tests mode, like aze
 static const char* sArg_CheckRender = "--check-render"; // Capture view, log black pixel ratio, quit
+static const char* sArg_Sample      = "--sample";        // Enable CTimeSampler dumps (off by default)
 
 static void printUsage()
 {
@@ -37,7 +41,8 @@ static void printUsage()
     sOut << "  " << sArg_Help << ": shows this help\n";
     sOut <<   "  " << sArg_Scene << ": specify startup scene\n";
     sOut << "  " << sArg_RunTests << ": runs unit tests\n";
-    sOut << "  " << sArg_CheckRender << ": captures the 3D view, logs the black pixel ratio, quits\n";
+     sOut << "  " << sArg_CheckRender << ": captures the 3D view, logs the black pixel ratio, quits\n";
+     sOut << "  " << sArg_Sample << ": enables CTimeSampler timing dumps\n";
 }
 
 int main(int argc, char *argv[])
@@ -61,6 +66,7 @@ int main(int argc, char *argv[])
     else if (lArgList.contains(sArg_RunTests))
     {
         QCoreApplication tApplication(argc, argv);
+        CTimeSampler::getInstance()->setEnabled(lArgList.contains(sArg_Sample));
         CTestQuick3D tests;
         QTEST_SET_MAIN_SOURCE_PATH
         return tests.runAllTests();
@@ -78,6 +84,7 @@ int main(int argc, char *argv[])
         }
 
         QApplication a(argc, argv);
+        CTimeSampler::getInstance()->setEnabled(lArgList.contains(sArg_Sample));
         Quick3DTest w(sSceneFileName);
         w.setCheckRenderMode(lArgList.contains(sArg_CheckRender));
         w.show();

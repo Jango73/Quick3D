@@ -1,6 +1,7 @@
 
 // qt-plus
 #include "CLogger.h"
+#include "CTimeSampler.h"
 
 // Application
 #include "CGLMeshData.h"
@@ -130,6 +131,14 @@ void CGLMeshData::paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolu
     {
         pContext->tStatistics.m_iNumMeshesDrawn++;
 
+        bool bSample = CTimeSampler::getInstance()->isEnabled();
+        QElapsedTimer tTimer;
+
+        if (bSample == true)
+        {
+            tTimer.start();
+        }
+
         if (m_iCurrentVBO != m_iVBO[0])
         {
             m_iCurrentVBO = m_iVBO[0];
@@ -211,6 +220,12 @@ void CGLMeshData::paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolu
                         );
         }
 
+        if (bSample == true)
+        {
+            pContext->tStatistics.m_iMeshBindStateNs += tTimer.nsecsElapsed();
+            tTimer.start();
+        }
+
         switch (iGLType)
         {
             case GL_POINTS:
@@ -283,6 +298,11 @@ void CGLMeshData::paint(CRenderContext* pContext, const QMatrix4x4& mModelAbsolu
 
             default:
                 break;
+        }
+
+        if (bSample == true)
+        {
+            pContext->tStatistics.m_iMeshDrawNs += tTimer.nsecsElapsed();
         }
     }
 }

@@ -17,6 +17,12 @@ C3DSceneStatistics::C3DSceneStatistics()
     , m_iNumFrustumPassed(0)
     , m_iNumFrustumOutOfRange(0)
     , m_iNumRayIntersectionTests(0)
+    , m_iChunkTerrainNs(0)
+    , m_iChunkWaterNs(0)
+    , m_iChunkBoundedNs(0)
+    , m_iMaterialActivateNs(0)
+    , m_iMeshBindStateNs(0)
+    , m_iMeshDrawNs(0)
 {
 }
 
@@ -36,6 +42,12 @@ void C3DSceneStatistics::reset()
     m_iNumFrustumPassed = 0;
     m_iNumFrustumOutOfRange = 0;
     m_iNumRayIntersectionTests = 0;
+    m_iChunkTerrainNs = 0;
+    m_iChunkWaterNs = 0;
+    m_iChunkBoundedNs = 0;
+    m_iMaterialActivateNs = 0;
+    m_iMeshBindStateNs = 0;
+    m_iMeshDrawNs = 0;
 }
 
 //-------------------------------------------------------------------------------------------------

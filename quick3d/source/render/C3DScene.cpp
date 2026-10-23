@@ -680,17 +680,26 @@ void C3DScene::paintComponentsTimed(CRenderContext* pContext, const CRenderFilte
 {
     QMap<QString, qint64> mClassTimesNs;
 
+    bool bSample = CTimeSampler::getInstance()->isEnabled();
+
     foreach(QSP<CComponent> pComponent, m_vComponents)
     {
         if (pComponent->isVisible() && (pFilter == nullptr || pFilter->accept(pComponent.data())))
         {
             QElapsedTimer tTimer;
-            tTimer.start();
+
+            if (bSample == true)
+            {
+                tTimer.start();
+            }
 
             pComponent->paint(pContext);
             pComponent->postPaint(pContext);
 
-            mClassTimesNs[pComponent->getClassName()] += tTimer.nsecsElapsed();
+            if (bSample == true)
+            {
+                mClassTimesNs[pComponent->getClassName()] += tTimer.nsecsElapsed();
+            }
         }
     }
 
@@ -700,9 +709,12 @@ void C3DScene::paintComponentsTimed(CRenderContext* pContext, const CRenderFilte
 
     m_pSegments->paint(pContext, nullptr);
 
-    foreach (const QString& sName, mClassTimesNs.keys())
+    if (bSample == true)
     {
-        CTimeSampler::getInstance()->addSampleTime(sPrefix + sName, mClassTimesNs.value(sName));
+        foreach (const QString& sName, mClassTimesNs.keys())
+        {
+            CTimeSampler::getInstance()->addSampleTime(sPrefix + sName, mClassTimesNs.value(sName));
+        }
     }
 }
 

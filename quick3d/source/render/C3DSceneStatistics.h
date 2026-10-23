@@ -27,4 +27,13 @@ public:
     int     m_iNumFrustumPassed;
     int     m_iNumFrustumOutOfRange;
     int     m_iNumRayIntersectionTests;
+
+    // Accumulated nanoseconds per layer pass, flushed to CTimeSampler once per pass.
+    // Render thread only, no locking. Not part of the snapshot node.
+    qint64  m_iChunkTerrainNs;
+    qint64  m_iChunkWaterNs;
+    qint64  m_iChunkBoundedNs;
+    qint64  m_iMaterialActivateNs;
+    qint64  m_iMeshBindStateNs;
+    qint64  m_iMeshDrawNs;
 };

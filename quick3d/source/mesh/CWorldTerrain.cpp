@@ -1,6 +1,7 @@
 
 // qt-plus
 #include "CLogger.h"
+#include "CTimeSampler.h"
 
 // Std
 #include <algorithm>
@@ -284,7 +285,10 @@ void CWorldTerrain::paint(CRenderContext* pContext)
 
     QVector<QSP<CWorldChunk> > vChunkCollect;
 
-    paintRecurse(vChunkCollect, pContext, m_pRoot, m_iLevels);
+    {
+        CScopedTimeSample tSample(QString("Terrain_Collect"));
+        paintRecurse(vChunkCollect, pContext, m_pRoot, m_iLevels);
+    }
 
     int iPaintLayer = (pContext != nullptr && pContext->camera() != nullptr) ? pContext->camera()->currentPaintLayer() : -1;
 
@@ -323,11 +327,15 @@ void CWorldTerrain::paint(CRenderContext* pContext)
 
     std::sort(vChunkCollect.begin(), vChunkCollect.end());
 
-    foreach (QSP<CWorldChunk> pChunk, vChunkCollect)
     {
-        pContext->tStatistics.m_iNumChunksDrawn++;
+        CScopedTimeSample tSample(QString("Terrain_DrawLoop"));
 
-        pChunk->paint(pContext);
+        foreach (QSP<CWorldChunk> pChunk, vChunkCollect)
+        {
+            pContext->tStatistics.m_iNumChunksDrawn++;
+
+            pChunk->paint(pContext);
+        }
     }
 
     // Garbage collection

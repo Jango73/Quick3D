@@ -2,6 +2,7 @@
 
 // qt-plus
 #include "CLogger.h"
+#include "CTimeSampler.h"
 
 // Application
 #include "CRessourcesManager.h"
@@ -315,6 +316,17 @@ void CMaterial::disableFrameBuffer()
 
 QOpenGLShaderProgram* CMaterial::activate(CRenderContext* pContext)
 {
+    // Timed through the render context statistics and flushed to CTimeSampler once per
+    // layer pass: a scoped sample here would run hundreds of mutex-protected map updates
+    // per frame and collapse the frame rate it is supposed to measure.
+    bool bSample = (pContext != nullptr) && CTimeSampler::getInstance()->isEnabled();
+    QElapsedTimer tTimer;
+
+    if (bSample == true)
+    {
+        tTimer.start();
+    }
+
     QOpenGLShaderProgram* pProgram = nullptr;
 
     if (m_bBillBoard)
@@ -439,6 +451,11 @@ QOpenGLShaderProgram* CMaterial::activate(CRenderContext* pContext)
             // Environment setup
             pContext->scene()->setupEnvironment(pContext, pProgram, m_bUseSky);
         }
+    }
+
+    if (bSample == true)
+    {
+        pContext->tStatistics.m_iMaterialActivateNs += tTimer.nsecsElapsed();
     }
 
     return pProgram;

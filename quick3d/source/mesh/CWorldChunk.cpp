@@ -1,6 +1,7 @@
 
 // qt-plus
 #include "CLogger.h"
+#include "CTimeSampler.h"
 
 // Application
 #include "CWorkerManager.h"
@@ -245,8 +246,16 @@ void CWorldChunk::paint(CRenderContext* pContext)
         {
             // pContext->tStatistics.m_iNumFrustumTests++;
 
+            bool bSample = CTimeSampler::getInstance()->isEnabled();
+            QElapsedTimer tTimer;
+
             if (m_pTerrain && m_pTerrain->isOK())
             {
+                if (bSample == true)
+                {
+                    tTimer.start();
+                }
+
                 CMaterial* pMaterial = m_pAutoTerrain->material();
 
                 CTiledMaterial* pTiled = dynamic_cast<CTiledMaterial*>(pMaterial);
@@ -257,19 +266,39 @@ void CWorldChunk::paint(CRenderContext* pContext)
                 }
 
                 m_pTerrain->paint(pContext);
+
+                if (bSample == true)
+                {
+                    pContext->tStatistics.m_iChunkTerrainNs += tTimer.nsecsElapsed();
+                }
             }
 
             if (m_pWater && m_pWater->isOK())
             {
+                if (bSample == true)
+                {
+                    tTimer.start();
+                }
+
                 glDisable(GL_CULL_FACE);
 
                 m_pWater->paint(pContext);
 
                 glEnable(GL_CULL_FACE);
+
+                if (bSample == true)
+                {
+                    pContext->tStatistics.m_iChunkWaterNs += tTimer.nsecsElapsed();
+                }
             }
 
             if (m_bOK)
             {
+                if (bSample == true)
+                {
+                    tTimer.start();
+                }
+
                 foreach (CBoundedMeshInstances* pBoundedMeshInstance, m_vBoundedMeshes)
                 {
                     pBoundedMeshInstance->paint(pContext);
@@ -278,6 +307,11 @@ void CWorldChunk::paint(CRenderContext* pContext)
                 foreach (QString sBushName, m_vBushMeshes.keys())
                 {
                     m_vBushMeshes[sBushName]->paint(pContext, this);
+                }
+
+                if (bSample == true)
+                {
+                    pContext->tStatistics.m_iChunkBoundedNs += tTimer.nsecsElapsed();
                 }
             }
         }

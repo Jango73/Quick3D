@@ -530,6 +530,18 @@ void CCamera::render(C3DScene* pScene, CViewport* pViewport, bool bForceWideFOV,
             Context.tStatistics.m_iNumChunksDrawn += tLayerContext.tStatistics.m_iNumChunksDrawn;
             Context.tStatistics.m_iNumFrustumTests += tLayerContext.tStatistics.m_iNumFrustumTests;
             Context.tStatistics.m_iNumRayIntersectionTests += tLayerContext.tStatistics.m_iNumRayIntersectionTests;
+
+            // Flush the nanosecond accumulators gathered without locking during the
+            // layer pass: a single locked map update per key per pass, no per-draw cost
+            if (CTimeSampler::getInstance()->isEnabled() == true)
+            {
+                CTimeSampler::getInstance()->addSampleTime(QString("Chunk_Terrain"), tLayerContext.tStatistics.m_iChunkTerrainNs);
+                CTimeSampler::getInstance()->addSampleTime(QString("Chunk_Water"), tLayerContext.tStatistics.m_iChunkWaterNs);
+                CTimeSampler::getInstance()->addSampleTime(QString("Chunk_Bounded"), tLayerContext.tStatistics.m_iChunkBoundedNs);
+                CTimeSampler::getInstance()->addSampleTime(QString("Material_Activate"), tLayerContext.tStatistics.m_iMaterialActivateNs);
+                CTimeSampler::getInstance()->addSampleTime(QString("Mesh_BindState"), tLayerContext.tStatistics.m_iMeshBindStateNs);
+                CTimeSampler::getInstance()->addSampleTime(QString("Mesh_Draw"), tLayerContext.tStatistics.m_iMeshDrawNs);
+            }
         }
 
         // Restore the main range on the camera once all layers are painted

@@ -150,6 +150,9 @@ public:
     //!
     void setOverlookFOV(double value) { m_dOverlookFOV = value; }
 
+    //!
+    void setLightRaysEnabled(bool value) { m_bLightRaysEnabled = value; }
+
     //-------------------------------------------------------------------------------------------------
     // Getters
     //-------------------------------------------------------------------------------------------------
@@ -276,6 +279,9 @@ public:
 
     //!
     double overlookFOV() const { return m_dOverlookFOV; }
+
+    //!
+    bool lightRaysEnabled() const { return m_bLightRaysEnabled; }
 
     //-------------------------------------------------------------------------------------------------
     // Control methods
@@ -448,6 +454,7 @@ protected:
     double                                  m_dTime;
     double                                  m_dSunIntensity;
     double                                  m_dOverlookFOV;
+    bool                                    m_bLightRaysEnabled;
     QImage                                  m_imgFrameBuffer;
 
     // Shared data

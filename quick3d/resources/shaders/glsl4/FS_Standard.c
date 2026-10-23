@@ -88,6 +88,8 @@ uniform float           u_IR_factor;
 
 uniform int             u_inverse_polarity_enable;
 
+uniform int             u_lightrays_enable;
+
 // Interpolated values
 
 in vec3			vo_position;
@@ -1222,7 +1224,10 @@ void main()
                 }
 
                 // Light rays
-                color += vec4(lightRays(u_camera_position, eyeToVertex, xy), 0.0);
+                if (bool(u_lightrays_enable))
+                {
+                    color += vec4(lightRays(u_camera_position, eyeToVertex, xy), 0.0);
+                }
 
                 // Apply effects
                 color = vec4(postEffects(color.rgb, xy), color.a);

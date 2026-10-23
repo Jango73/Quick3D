@@ -316,13 +316,13 @@
          </widget>
         </item>
         <item>
-         <widget class="QGroupBox" name="groupBox_8">
-          <property name="minimumSize">
-           <size>
-            <width>180</width>
-            <height>170</height>
-           </size>
-          </property>
+          <widget class="QGroupBox" name="groupBox_8">
+           <property name="minimumSize">
+            <size>
+             <width>180</width>
+             <height>190</height>
+            </size>
+           </property>
           <property name="title">
            <string>Misc</string>
           </property>
@@ -516,6 +516,25 @@
            </property>
            <property name="text">
             <string>Edit</string>
+           </property>
+          </widget>
+          <widget class="QCheckBox" name="m_chkLightRays">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>160</y>
+             <width>91</width>
+             <height>17</height>
+            </rect>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
+           <property name="text">
+            <string>Light rays</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
            </property>
           </widget>
          </widget>

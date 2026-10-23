@@ -4,7 +4,6 @@
 #include <QFile>
 #include <QDir>
 #include <QDateTime>
-#include <QColorDialog>
 #include <QComboBox>
 #include <QDialog>
 #include <QDoubleSpinBox>

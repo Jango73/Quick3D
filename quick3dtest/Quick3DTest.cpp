@@ -4,7 +4,6 @@
 #include <QFile>
 #include <QDir>
 #include <QDateTime>
-#include <QColorDialog>
 #include <QComboBox>
 #include <QDialog>
 #include <QDoubleSpinBox>
@@ -64,7 +63,7 @@ Quick3DTest::Quick3DTest(QString sSceneFileName, QWidget *parent, Qt::WFlags fla
     , m_iSingleSteps(0)
     , m_pRemoteHandler(nullptr)
     , m_pRemoteServer(nullptr)
-    , m_pFogColorDialog(nullptr)
+    , m_tColorSelector(this)
 {
     // CConsoleBoard::getInstance()->start();
 
@@ -127,6 +126,7 @@ Quick3DTest::Quick3DTest(QString sSceneFileName, QWidget *parent, Qt::WFlags fla
     connect(ui.m_chkDepth, SIGNAL(clicked()), this, SLOT(onDepthClicked()));
     connect(ui.m_chkOverlook, SIGNAL(clicked()), this, SLOT(onOverlookClicked()));
     connect(ui.m_chkEdit, SIGNAL(clicked()), this, SLOT(onEditClicked()));
+    connect(ui.m_chkLightRays, SIGNAL(clicked()), this, SLOT(onLightRaysClicked()));
 
     connect(ui.m_bReset, SIGNAL(clicked()), this, SLOT(onResetClicked()));
     connect(ui.m_bPause, SIGNAL(toggled(bool)), this, SLOT(onPauseToggled(bool)));
@@ -584,35 +584,26 @@ void Quick3DTest::onEnvironmentClicked()
 
     connect(pGlobalAmbientButton, &QPushButton::clicked, [this]()
     {
-        Math::CVector3 vCurrent = m_pScene->globalAmbientColor();
-        QColor tChosen = QColorDialog::getColor(QColor(int(vCurrent.X * 255.0), int(vCurrent.Y * 255.0), int(vCurrent.Z * 255.0)), this, "Global ambient");
-
-        if (tChosen.isValid() == true)
+        m_tColorSelector.editColor(this, "Global ambient", CColorSelector::vectorToColor(m_pScene->globalAmbientColor()), [this](const QColor& tChosen)
         {
-            m_pScene->setGlobalAmbientColor(Math::CVector3(double(tChosen.red()) / 255.0, double(tChosen.green()) / 255.0, double(tChosen.blue()) / 255.0));
-        }
+            m_pScene->setGlobalAmbientColor(CColorSelector::colorToVector(tChosen));
+        });
     });
 
     connect(pSkyColorButton, &QPushButton::clicked, [this]()
     {
-        Math::CVector3 vCurrent = m_pScene->skyColor();
-        QColor tChosen = QColorDialog::getColor(QColor(int(vCurrent.X * 255.0), int(vCurrent.Y * 255.0), int(vCurrent.Z * 255.0)), this, "Sky color");
-
-        if (tChosen.isValid() == true)
+        m_tColorSelector.editColor(this, "Sky color", CColorSelector::vectorToColor(m_pScene->skyColor()), [this](const QColor& tChosen)
         {
-            m_pScene->setSkyColor(Math::CVector3(double(tChosen.red()) / 255.0, double(tChosen.green()) / 255.0, double(tChosen.blue()) / 255.0));
-        }
+            m_pScene->setSkyColor(CColorSelector::colorToVector(tChosen));
+        });
     });
 
     connect(pFogColorButton, &QPushButton::clicked, [this]()
     {
-        Math::CVector3 vCurrent = m_pScene->fogColor();
-        QColor tChosen = QColorDialog::getColor(QColor(int(vCurrent.X * 255.0), int(vCurrent.Y * 255.0), int(vCurrent.Z * 255.0)), this, "Fog color");
-
-        if (tChosen.isValid() == true)
+        m_tColorSelector.editColor(this, "Fog color", CColorSelector::vectorToColor(m_pScene->fogColor()), [this](const QColor& tChosen)
         {
-            m_pScene->setFogColor(Math::CVector3(double(tChosen.red()) / 255.0, double(tChosen.green()) / 255.0, double(tChosen.blue()) / 255.0));
-        }
+            m_pScene->setFogColor(CColorSelector::colorToVector(tChosen));
+        });
     });
 
     tDialog.exec();
@@ -622,50 +613,10 @@ void Quick3DTest::onEnvironmentClicked()
 
 void Quick3DTest::onFogColorClicked()
 {
-    if (m_pFogColorDialog != nullptr)
+    m_tColorSelector.editColor(this, "Fog color", CColorSelector::vectorToColor(m_pScene->fogColor()), [this](const QColor& tChosen)
     {
-        m_pFogColorDialog->raise();
-        m_pFogColorDialog->activateWindow();
-        return;
-    }
-
-    Math::CVector3 vCurrent = m_pScene->fogColor();
-
-    m_pFogColorDialog = new QColorDialog(
-        QColor(int(vCurrent.X * 255.0), int(vCurrent.Y * 255.0), int(vCurrent.Z * 255.0)),
-        this);
-
-    m_pFogColorDialog->setOption(QColorDialog::DontUseNativeDialog, true);
-    m_pFogColorDialog->setWindowTitle("Fog color");
-
-    connect(m_pFogColorDialog, SIGNAL(currentColorChanged(const QColor&)), this, SLOT(onFogColorChanged(const QColor&)));
-    connect(m_pFogColorDialog, SIGNAL(finished(int)), this, SLOT(onFogColorDialogClosed()));
-
-    m_pFogColorDialog->show();
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void Quick3DTest::onFogColorChanged(const QColor& tColor)
-{
-    if (tColor.isValid())
-    {
-        m_pScene->setFogColor(Math::CVector3(
-            double(tColor.red()) / 255.0,
-            double(tColor.green()) / 255.0,
-            double(tColor.blue()) / 255.0));
-    }
-}
-
-//-------------------------------------------------------------------------------------------------
-
-void Quick3DTest::onFogColorDialogClosed()
-{
-    if (m_pFogColorDialog != nullptr)
-    {
-        m_pFogColorDialog->deleteLater();
-        m_pFogColorDialog = nullptr;
-    }
+        m_pScene->setFogColor(CColorSelector::colorToVector(tChosen));
+    });
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -851,4 +802,11 @@ void Quick3DTest::onOverlookClicked()
 void Quick3DTest::onEditClicked()
 {
     m_pScene->setEditMode(ui.m_chkEdit->checkState() == Qt::Checked);
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void Quick3DTest::onLightRaysClicked()
+{
+    m_pScene->setLightRaysEnabled(ui.m_chkLightRays->checkState() == Qt::Checked);
 }

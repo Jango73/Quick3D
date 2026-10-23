@@ -13,12 +13,12 @@
 // Application
 #include "ui_Quick3DTest.h"
 #include "CGLWidgetScene.h"
+#include "CColorSelector.h"
 #include "CComponent.h"
 #include "CView.h"
 
 class CRemoteControlServer;
 class CUiRemoteControlHandler;
-class QColorDialog;
 
 class Quick3DTest : public QMainWindow
 {
@@ -139,8 +139,6 @@ private slots:
     void onFogLevelChanged(int iValue);
     void onEnvironmentClicked();
     void onFogColorClicked();
-    void onFogColorChanged(const QColor& tColor);
-    void onFogColorDialogClosed();
     void onWindLevelChanged(int iValue);
     void onShaderQualityChanged(int iValue);
     void onTerrainResChanged(int iValue);
@@ -158,6 +156,7 @@ private slots:
     void onDepthClicked();
     void onOverlookClicked();
     void onEditClicked();
+    void onLightRaysClicked();
     void onResize();
 
     //-------------------------------------------------------------------------------------------------
@@ -180,5 +179,5 @@ protected:
     int                             m_iSingleSteps;
     CUiRemoteControlHandler*        m_pRemoteHandler;
     CRemoteControlServer*           m_pRemoteServer;
-    QColorDialog*                   m_pFogColorDialog;
+    CColorSelector                  m_tColorSelector;
 };

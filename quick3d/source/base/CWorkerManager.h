@@ -5,6 +5,9 @@
 #include <QThread>
 #include <QMutex>
 
+// Std
+#include <atomic>
+
 // qt-plus
 #include "CSingleton.h"
 
@@ -72,5 +75,5 @@ protected:
 
     QRecursiveMutex              m_mMutex;			// Mutex protecting concurrent accesses
     QVector<CWorker*>   m_vWorkers;			// Worker pool
-    bool                m_bStopRequested;	// Indicates whether stopping the work is requested
+    std::atomic<bool>   m_bStopRequested;	// Indicates whether stopping the work is requested
 };

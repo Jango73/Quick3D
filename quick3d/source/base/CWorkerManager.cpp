@@ -24,17 +24,32 @@ CWorkerManager::CWorkerManager()
 
 CWorkerManager::~CWorkerManager()
 {
-    QMutexLocker locker(&m_mMutex);
-
+    // Signal the service thread without holding the mutex: run() polls this
+    // flag without the mutex, and joining the thread while holding m_mMutex
+    // would deadlock (run() needs the mutex to service the queue).
     m_bStopRequested = true;
     wait();
 
-    foreach (CWorker* pWorker, m_vWorkers)
+    // Service thread exited: drain the pool one worker at a time. Each step
+    // takes the mutex only to pick the next worker; removeWorker() joins it
+    // outside any held lock because a finishing worker may need the
+    // singleton pool lock (logging, getInstance) or this mutex to wind down.
+    for (;;)
     {
-        if (pWorker->isStarted())
+        CWorker* pWorker = nullptr;
+
         {
-            pWorker->abort();
+            QMutexLocker locker(&m_mMutex);
+
+            if (m_vWorkers.isEmpty())
+            {
+                break;
+            }
+
+            pWorker = m_vWorkers.first();
         }
+
+        removeWorker(pWorker);
     }
 }
 
@@ -117,24 +132,32 @@ void CWorkerManager::addWorker(CWorker* pWorker)
 
 void CWorkerManager::removeWorker(CWorker* pWorker)
 {
-    QMutexLocker locker(&m_mMutex);
+    bool bFound = false;
 
-    for (int iIndex = 0; iIndex < m_vWorkers.count(); iIndex++)
     {
-        if (m_vWorkers[iIndex] == pWorker)
+        QMutexLocker locker(&m_mMutex);
+
+        for (int iIndex = 0; iIndex < m_vWorkers.count(); iIndex++)
         {
-            m_vWorkers.remove(iIndex);
-
-            // Wait outside any ambiguity: a worker whose finished flag is
-            // already set while its thread is still exiting must be joined
-            // before its owner destroys it. wait() on a finished thread
-            // returns immediately.
-            if (pWorker->isStarted() == true)
+            if (m_vWorkers[iIndex] == pWorker)
             {
-                pWorker->abort();
+                m_vWorkers.remove(iIndex);
+                bFound = true;
+                break;
             }
+        }
+    }
 
-            return;
+    if (bFound == true)
+    {
+        // Wait outside any lock: a worker whose finished flag is
+        // already set while its thread is still exiting must be joined
+        // before its owner destroys it. wait() on a finished thread
+        // returns immediately. Joining under m_mMutex would deadlock a
+        // finishing worker that needs the mutex or the singleton pool.
+        if (pWorker->isStarted() == true)
+        {
+            pWorker->abort();
         }
     }
 }

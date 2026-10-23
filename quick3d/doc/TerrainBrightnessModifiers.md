@@ -1,0 +1,52 @@
+# Terrain Brightness Modifiers — Mesh to Pixel
+
+Exhaustive chain of everything that modifies terrain brightness, from raw mesh to final pixel. One modifier per line.
+
+- `quick3d/source/mesh/CFace.cpp:135` `CFace::computeNormal()`: face orientation from `U.cross(V)` set by triangle winding.
+- `quick3d/source/mesh/CMeshGeometry.cpp:526` `computeNormals()`: vertex normals reset then averaged from faces via `normalDivider()`.
+- `quick3d/source/mesh/CMeshGeometry.cpp:552` extension faces excluded from core normal averaging.
+- `quick3d/source/mesh/CMesh.cpp:259` `CMesh::flipNormals()` / `CPatchSkirtBuilder.cpp:144` `vUp` inversion: global normal direction.
+- `quick3d/source/mesh/CVertex.h:44` `a_normal` + `a_tangent` + `binormal=cross` in `VS_Standard.c:207`: lighting local basis.
+- `quick3d/source/mesh/CWorldChunk.cpp:595` `shaderQuality>0.7` threshold: chunk build/render branch.
+- `quick3d/source/mesh/CMaterial.cpp:45` `m_cAmbient=(0.03,0.03,0.03)` added raw in `FS_Standard.c:909`.
+- `quick3d/source/mesh/CMaterial.cpp:46` `m_cDiffuse=(1,1,1)` multiplicative factor of `uberShader()` and `selfIllum` in `FS_Standard.c:909`.
+- `quick3d/source/mesh/CMaterial.cpp:47` `m_cSpecular=(1,1,1)` glossy color in `uberShader()` at `FS_Standard.c:892`.
+- `quick3d/source/mesh/CMaterial.cpp:48` `m_cSubdermal` + `m_dSSSFactor/m_dSSSRadius/m_dMetalness/m_dShininess`: dielectric/metallic mix and `roughness=1-glossiness` in `FS_Standard.c:837`.
+- `quick3d/source/mesh/CMaterial.cpp:32` `m_dSelfIllumination` (plus `u_IR_factor` boost when `u_IR_enable`) in `FS_Standard.c:852`.
+- `quick3d/source/mesh/CMaterial.cpp:235` `u_texture_diffuse_enable` + `u_shaderQuality>=0.20`: `getTexture()` returns white otherwise in `FS_Standard.c:1011`.
+- `quick3d/source/mesh/CGLMeshData.cpp:193` weights `a_difftext_weight_0_1_2/3_4_5/6_7_8`: chained `mix()` starting from black in `FS_Standard.c:1013`, sum<1 darkens.
+- `quick3d/source/mesh/CTiledMaterial.cpp:69` missing tile/null texture: diffuse disabled, terrain left untextured in `FS_Standard.c:1009`.
+- `quick3d/source/mesh/CMaterial.cpp:67` procedural `texCoords()` `fmod(Lat*111000,1000)*0.05`: texture pattern/scale.
+- `quick3d/source/render/CLight.cpp:25` `m_dLightingDistance=0.0`: `0`=no distance attenuation, else `1-dist/max` in `FS_Standard.c:872`.
+- `quick3d/source/render/CLight.cpp:27` `m_bCastShadows` + `u_shadow_enable`: `0.25` factor when `shadowDepth<sc.z-0.001` in `FS_Standard.c:1055`.
+- `quick3d/source/render/CLight.cpp:89` per-`CLight` XML `<Color r/g/b>`: `u_light_color[]` summed in `doLighting()`.
+- `quick3d/source/render/CGLWidgetScene.cpp:403` non-`SUN` lights rejected beyond `2000m` plus `MAX_GL_LIGHTS=8` cap: lost contribution.
+- `quick3d/source/render/CGLWidgetScene.cpp:878` `u_light_direction/u_light_spot_angle`: zeroed outside cone `dot<cos(cutoff)` in `FS_Standard.c:878`.
+- `quick3d/source/render/CGLWidgetScene.cpp:430` `u_light_occlusion` (`computeLightsOcclusion`, camera-light raycast): `lightRays()` skipped when `==0`.
+- `quick3d/source/render/CGLWidgetScene.cpp:312` `TimeOfDay` slider to `dSunAngle=(normTime*-360)+180` to `gSunPosition(0,dSunAngle,1e8)`: `SUN` position/direction.
+- `quick3d/source/render/CGLWidgetScene.cpp:322` `dSunElevationSine=vSunDir.dot(camPos.normalized())`: sun height relative to camera.
+- `quick3d/source/render/CSunlightModel.h:31` `computeSunlightColor()`: Rayleigh+ozone Kasten-Young transmittance, `SunRadianceScale=1.46`, black below horizon.
+- `quick3d/source/render/CEnvironmentDefaults.h:81` `OzoneAmount`: Chappuis green absorption tuning `u_sun_color` tint.
+- `quick3d/source/render/CGLWidgetScene.cpp:323` `m_dSunIntensity=(sine+1)*0.5` then `max(...,1-atmosphereFactor)`: high-altitude intensity floor.
+- `quick3d/source/render/CGLWidgetScene.cpp:328` underwater camera `Altitude<0`: per-channel Beer-Lambert `exp(-Kd*depth)` with `WaterAttenuationR/G/B`.
+- `quick3d/source/render/C3DScene.cpp:66` `GlobalAmbient=(0.05,0.05,0.15)` via `CEnvironment`: `u_global_ambient` base in `FS_Standard.c:909`.
+- `quick3d/source/render/C3DScene.h:88` daytime `FogColor` base scaled by `*m_dSunIntensity*WaterAttenuation` each frame in `CGLWidgetScene.cpp:370`.
+- `quick3d/source/render/C3DScene.h:86` daytime `SkyColor` base scaled by `*m_dSunIntensity` into `vSkyZenithColor`, ignored when `Physical` model active.
+- `quick3d/source/render/CEnvironmentDefaults.h:86` `SkyExposure=32.0` + `RayleighBeta/ScaleHeight/OzoneBeta`: `Physical` sky uniforms in `RayleighSky.inc.c`.
+- `quick3d/source/render/CGLWidgetScene.cpp:337` `atmosphereFactor=(atmoAlt-camAlt)/atmoAlt`: weights clouds, `lightRays`, fog.
+- `quick3d/source/render/CGLWidgetScene.cpp:342` `dFogDistance=(1-fogLevel)*maxDistance` clamped to `fogMinimumDistance`, forced to `underwaterFogDistance` underwater.
+- `quick3d/source/render/CGLWidgetScene.cpp:238` `m_vWorldOrigin` subtracted from `u_camera_position/u_light_position/vo_position`: local render frame.
+- `quick3d/source/render/CGLWidgetScene.cpp:231` `Shader quality` slider `u_shaderQuality`: thresholds `0.20` textures, `0.25/0.75` water, `0.90` shadows.
+- `quick3d/source/render/FS_Standard.c:838` `orenNayarDiffuse(NdotL,roughness)`: angular diffuse, back-facing `NdotL<=0` goes dark.
+- `quick3d/source/render/FS_Standard.c:839` `ggxGlossy(NdotH,roughness)`: specular driven by `viewDirection=eyeToVertex`.
+- `quick3d/source/render/VS_Standard.c:204` `u_model_matrix*a_position/a_normal/a_tangent`: world transform applied before lighting.
+- `quick3d/source/render/FS_Standard.c:1153` `color*=getTexture()`: texture luminance directly multiplies computed lighting.
+- `quick3d/source/render/FS_Standard.c:1156` `color*=getShadow()`: screen-space shadowmap multiplier.
+- `quick3d/source/render/FS_Standard.c:1159` `u_sky_enable`: `standardSkyAt()` overwrites terrain with sky.
+- `quick3d/source/render/FS_Standard.c:1165` `u_wave_enable` (water only): `turb*color` and `alpha=gSeaAltitudeFactor_1`, shares shader but no terrain effect.
+- `quick3d/source/render/FS_Standard.c:915` `computeLinearFog()`: `fogDistance*4` when sky, `pow(1-fogFactor,fogDensity)*atmosphereFactor`, `mix(sun*0.75,fogColor,fogFactor)`.
+- `quick3d/source/render/FS_Standard.c:936` `u_IR_enable`: fog `*0.6` then gray `0.2125/0.7154/0.0721+noise`, `Quick3DTest` `IR/Debug` checkboxes.
+- `quick3d/source/render/FS_Standard.c:1217` `u_inverse_polarity_enable`: final `1.0-rgb`.
+- `quick3d/source/render/FS_Standard.c:619` `lightRays()`: halo `amount^2*glowFactor` plus disc `pow(amount,1000or32)*dim`, weighted by `gAtmosphereFactor` and `u_fog_level`.
+- `quick3d/source/render/FS_Standard.c:1068` `postEffects()`: `BRIGHTNESS=0.8/CONTRAST=1.3/SATURATION=1.0` applied to every terrain pixel.
+- `quick3d/source/render/FS_Standard.c:1089` debug modes `u_depth_computing/u_rendering_shadows/u_normals_only` (`View depth/Normals`, `CCameraDepth`): replace terrain color.

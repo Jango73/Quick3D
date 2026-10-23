@@ -3,6 +3,7 @@
     <Camera1 Name="Man1.Head" />
     <Camera2 Name="VBCI.Pilot" />
     <Camera3 Name="Drone01.Pilot" />
+    <Camera4 Name="Plascoa01.Pilot" />
     <ControlledComponent Name="Man1" />
 
     <Environment AtmosphereAltitude="100000.0" FogMinimumDistance="50.0" UnderwaterFogDistance="1000.0" SkyModel="Physical">
@@ -765,9 +766,9 @@
         </Component>
 
         <Component Name="Plascoa01" Class="CAircraft">
-            <Geoloc Latitude="19.250000" Longitude="10.880000" Altitude="0.0" />
-            <Rotation x="0.0" y="0.0" z="0.0" />
-            <Mesh Name="Plascoa1500.obj" />
+            <Geoloc Latitude="19.240000" Longitude="10.893000" Altitude="0.0" />
+            <Rotation x="0.0" y="180.0" z="0.0" />
+            <Mesh Name="models/Plascoa1500.q3d" />
             <IR Factor="0.8" />
             <Physics MassKG="8000.0" Drag="0.01" AngularDrag="1.0" />
             <Controller Class="CAircraftController" PositionTarget=".Pilot" RotationTarget=".Pilot" Engine1Target=".Engine" RudderTarget=".Rudder" />

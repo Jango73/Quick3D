@@ -1,25 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>resources/Plascoa1500.mtl</file>
-        <file>resources/Plascoa1500.obj</file>
-        <file>resources/PVP.mtl</file>
-        <file>resources/PVP.obj</file>
-        <file>resources/BigMast.mtl</file>
-        <file>resources/BigMast.obj</file>
-        <file>resources/CargoShip.mtl</file>
-        <file>resources/CargoShip.obj</file>
-        <file>resources/Axis.mtl</file>
-        <file>resources/Axis.obj</file>
-        <file>resources/PCC.mtl</file>
-        <file>resources/PCC.obj</file>
-        <file>resources/BDD_Base.obj</file>
-        <file>resources/BDD_Pan.obj</file>
-        <file>resources/BDD_Tilt.obj</file>
-        <file>resources/BDD_Mat01.obj</file>
-        <file>resources/BDD_Mat02.obj</file>
-        <file>resources/BDD_Mat03.obj</file>
-        <file>resources/BDD_Mat04.obj</file>
-        <file>resources/BDD_Mat05.obj</file>
         <file>resources/SmoothingTest.mtl</file>
         <file>resources/SmoothingTest.obj</file>
     </qresource>

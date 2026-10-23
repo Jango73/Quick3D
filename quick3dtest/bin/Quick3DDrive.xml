@@ -765,7 +765,7 @@
         <Component Name="Plascoa01" Class="CAircraft">
             <Geoloc Latitude="19.250000" Longitude="10.880000" Altitude="0.0" />
             <Rotation x="0.0" y="0.0" z="0.0" />
-            <Mesh Name="Plascoa1500.obj" />
+            <Mesh Name="models/Plascoa1500.q3d" />
             <IR Factor="0.8" />
             <Physics MassKG="8000.0" Drag="0.01" AngularDrag="1.0" />
             <Controller Class="CAircraftController" PositionTarget=".Pilot" RotationTarget=".Pilot" Engine1Target=".Engine" RudderTarget=".Rudder" />

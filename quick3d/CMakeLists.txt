@@ -127,6 +127,7 @@ add_library(Quick3D SHARED
     source/terrain/CWorldTerrainMap.cpp
     source/utils/CConsoleBoard.cpp
     source/utils/CColorSelector.cpp
+    source/utils/CColorEdit.cpp
     source/utils/CCollisionResolver.cpp
     source/utils/CImageFilter.cpp
     source/utils/CImageFilter_Matrix.cpp

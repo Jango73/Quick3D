@@ -131,8 +131,8 @@ float pixelDistanceY = 0.01;
 #define SUN_DISC_SHARP_EXPONENT   1000.0
 #define SUN_DISC_BLURRY_EXPONENT  32.0
 #define SUN_DISC_BLURRY_DIM_FACTOR 0.2
-#define SUN_GLOW_SHARP_FACTOR     0.25
-#define SUN_GLOW_BLURRY_FACTOR    0.3
+#define SUN_GLOW_SHARP_FACTOR     0.08
+#define SUN_GLOW_BLURRY_FACTOR    0.12
 #define FOG_DENSE_FALLOFF_EXPONENT 0.5
 
 //-------------------------------------------------------------------------------------------------
@@ -902,13 +902,14 @@ vec3 doLighting(vec3 worldPosition, vec3 surfaceNormal, vec3 viewDirection, vec2
                             1.4
                             );
 
-                finalColor = finalColor + (diffuseColor.rgb * attenuation);
+                finalColor = finalColor + (diffuseColor.rgb * u_light_color[index] * attenuation);
             }
         }
     }
 
-    // Return material ambient plus light color
-    return u_global_ambient + u_material_ambient.xyz + u_material_diffuse.xyz * selfIllumination + finalColor;
+    // Return material ambient plus direct light. Global ambient is added
+    // after texturing in main(), otherwise a dark texture would absorb it
+    return u_material_ambient.xyz + u_material_diffuse.xyz * selfIllumination + finalColor;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1070,9 +1071,9 @@ vec3 getShadow()
 vec3 postEffects(vec3 rgb, vec2 xy)
 {
     // Contrast / saturation / brightness
-    #define CONTRAST 1.3
+    #define CONTRAST 1.0
     #define SATURATION 1.0
-    #define BRIGHTNESS 0.8
+    #define BRIGHTNESS 1.0
 
     rgb = mix(vec3(0.5), mix(vec3(dot(vec3(0.2125, 0.7154, 0.0721), rgb * BRIGHTNESS)), rgb * BRIGHTNESS, SATURATION), CONTRAST);
 
@@ -1156,6 +1157,10 @@ void main()
 
                 // Apply shadow
                 color *= vec4(getShadow(), 1.0);
+
+                // Apply global ambient after texture and shadow so it lifts
+                // dark textured ground as much as untextured objects
+                color.rgb += u_global_ambient;
 
                 // Apply sky if asked
                 if (bool(u_sky_enable))

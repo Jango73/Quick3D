@@ -20,6 +20,7 @@
 
 // Quick3D
 #include "CConsoleBoard.h"
+#include "CColorEdit.h"
 #include "CQ3DConstants.h"
 #include "CComponentFactory.h"
 #include "CComponentLoader.h"
@@ -567,44 +568,38 @@ void Quick3DTest::onEnvironmentClicked()
     pUnderwaterFog->setValue(m_pScene->underwaterFogDistance());
     pLayout->addRow("Underwater fog distance", pUnderwaterFog);
 
-    QPushButton* pGlobalAmbientButton = new QPushButton("Choose...", &tDialog);
-    pLayout->addRow("Global ambient", pGlobalAmbientButton);
+    CColorEdit* pGlobalAmbientEdit = new CColorEdit(&tDialog);
+    pGlobalAmbientEdit->setColor(CColorSelector::vectorToColor(m_pScene->globalAmbientColor()));
+    pLayout->addRow("Global ambient", pGlobalAmbientEdit);
 
-    QPushButton* pSkyColorButton = new QPushButton("Choose...", &tDialog);
-    pLayout->addRow("Sky color", pSkyColorButton);
+    CColorEdit* pSkyColorEdit = new CColorEdit(&tDialog);
+    pSkyColorEdit->setColor(CColorSelector::vectorToColor(m_pScene->skyColor()));
+    pLayout->addRow("Sky color", pSkyColorEdit);
 
-    QPushButton* pFogColorButton = new QPushButton("Choose...", &tDialog);
-    pLayout->addRow("Fog color", pFogColorButton);
+    CColorEdit* pFogColorEdit = new CColorEdit(&tDialog);
+    pFogColorEdit->setColor(CColorSelector::vectorToColor(m_pScene->fogColor()));
+    pLayout->addRow("Fog color", pFogColorEdit);
+
+    connect(pGlobalAmbientEdit, &CColorEdit::colorChanged, [this](const QColor& tChosen)
+    {
+        m_pScene->setGlobalAmbientColor(CColorSelector::colorToVector(tChosen));
+    });
+
+    connect(pSkyColorEdit, &CColorEdit::colorChanged, [this](const QColor& tChosen)
+    {
+        m_pScene->setSkyColor(CColorSelector::colorToVector(tChosen));
+    });
+
+    connect(pFogColorEdit, &CColorEdit::colorChanged, [this](const QColor& tChosen)
+    {
+        m_pScene->setFogColor(CColorSelector::colorToVector(tChosen));
+    });
 
     connect(pSkyModel, &QComboBox::currentTextChanged, [this](const QString& sName) { m_pScene->setSkyModel(sName); });
     connect(pOzoneAmount, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this](double dValue) { m_pScene->setOzoneAmount(dValue); });
     connect(pAtmosphereAltitude, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this](double dValue) { m_pScene->setAtmosphereAltitude(dValue); });
     connect(pFogMinimum, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this](double dValue) { m_pScene->setFogMinimumDistance(dValue); });
     connect(pUnderwaterFog, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this](double dValue) { m_pScene->setUnderwaterFogDistance(dValue); });
-
-    connect(pGlobalAmbientButton, &QPushButton::clicked, [this]()
-    {
-        m_tColorSelector.editColor(this, "Global ambient", CColorSelector::vectorToColor(m_pScene->globalAmbientColor()), [this](const QColor& tChosen)
-        {
-            m_pScene->setGlobalAmbientColor(CColorSelector::colorToVector(tChosen));
-        });
-    });
-
-    connect(pSkyColorButton, &QPushButton::clicked, [this]()
-    {
-        m_tColorSelector.editColor(this, "Sky color", CColorSelector::vectorToColor(m_pScene->skyColor()), [this](const QColor& tChosen)
-        {
-            m_pScene->setSkyColor(CColorSelector::colorToVector(tChosen));
-        });
-    });
-
-    connect(pFogColorButton, &QPushButton::clicked, [this]()
-    {
-        m_tColorSelector.editColor(this, "Fog color", CColorSelector::vectorToColor(m_pScene->fogColor()), [this](const QColor& tChosen)
-        {
-            m_pScene->setFogColor(CColorSelector::colorToVector(tChosen));
-        });
-    });
 
     tDialog.exec();
 }
